@@ -104,7 +104,6 @@ void intro()
     if (ncmdlines <= LINES) { // LINES is an int maintained by the curses
                               // library, equal to the number of lines in
                               // the screen
-<<<<<<< HEAD
        cmdstartrow = 0;
        nwinlines = ncmdlines;
     }
