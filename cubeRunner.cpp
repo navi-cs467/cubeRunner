@@ -2,7 +2,7 @@
 
 // runs the shell command 'ps ax' and dislays the last lines of its output,
 // as many as the window will fit; allows the user to move up and down
-// within the window, with the option to kill whichever process is 
+// within the window, with the option to kill whichever process is
 // currently highlighted
 
 // usage:  psax
@@ -42,13 +42,12 @@ using std::endl;
 #define RESET   "\033[0m"
 
 WINDOW *scrn;; 	// will point to curses window object
-int colors = init_intro_color();	//Initialize color indexes for intro
 
 vector<string> cmdoutlines(MAXROW, "");  // Screen output vector
 
 int ncmdlines,  // number of rows in cmdoutlines
-    nwinlines,  // number of rows our "ps ax" output occupies in the 
-                //  xterm (or equiv.) window 
+    nwinlines,  // number of rows our "ps ax" output occupies in the
+                //  xterm (or equiv.) window
     winrow,  // current row position in screen
     cmdstartrow,  // index of first row in cmdoutlines to be displayed
     cmdlastrow;  // index of last row in cmdoutlines to be displayed
@@ -56,9 +55,9 @@ int ncmdlines,  // number of rows in cmdoutlines
 // rewrites the line at winrow in bold font
 void highlight()
 {  int clinenum;
-   attron(A_BOLD);  // this curses library call says that whatever we 
-                    // write from now on (until we say otherwise) 
-                    // will be in bold font 
+   attron(A_BOLD);  // this curses library call says that whatever we
+                    // write from now on (until we say otherwise)
+                    // will be in bold font
    // we'll need to rewrite the cmdoutlines line currently displayed
    // at line winrow in the screen, so as to get the bold font
    clinenum = cmdstartrow + winrow;
@@ -110,8 +109,8 @@ void intro()
    cmdlastrow = cmdstartrow + nwinlines - 1;
    // now paint the rows to the screen
    int color;
-   for (row = cmdstartrow, winrow = 0, color = 1; 
-	row <= cmdlastrow; row++,winrow++, color++) {  
+   for (row = cmdstartrow, winrow = 0, color = 1;
+	row <= cmdlastrow; row++,winrow++, color++) {
       if(color == 7) color = 1;		//Cycle to first index when necessary
 	  //Change color
 	  attron(COLOR_PAIR(color));
@@ -125,13 +124,13 @@ void intro()
    }
    attron(COLOR_PAIR(0));	//Reset to default
    // highlight the last line
-   //winrow--;  
+   //winrow--;
    //highlight();
 }
 
 // moves up/down one line
 void updown(int inc)
-{  int tmp = winrow + inc; 
+{  int tmp = winrow + inc;
    // ignore attempts to go off the edge of the screen
    if (tmp >= 0 && tmp < LINES)  {
       // rewrite the current line before moving; since our current font
@@ -155,24 +154,17 @@ void updown(int inc)
 {  char *pid;
    // strtok() is from C library; see man page
    pid = strtok(cmdoutlines[cmdstartrow+winrow]," ");
-   kill(atoi(pid),9);  // this is a Unix system call to send signal 9, 
+   kill(atoi(pid),9);  // this is a Unix system call to send signal 9,
                        // the kill signal, to the given process
    rerun();
 } */
 
 int main()
-{  
+{
 
 	//Tried putting these in both initColorCodes.h & here...
 	//start_color();
 	//refresh();
-
-	//Exit if terminal does not support color
-//	if (has_colors() == FALSE) {
-//    endwin();
-//    printf("Your terminal does not support color\n");
-//    exit(1);
-//	}
 
 	char c;
    // window setup, next 3 lines are curses library calls, a standard
@@ -181,6 +173,15 @@ int main()
    noecho();  // don't echo keystrokes
    cbreak();  // keyboard input valid immediately, not after hit Enter
    // run 'ps ax' and process the output
+
+   //Exit if terminal does not support color
+ 	if (has_colors() == FALSE) {
+    endwin();
+    printf("Your terminal does not support color\n");
+    exit(1);
+ 	}
+
+   int colors = init_intro_color();	//Initialize color indexes for intro
    loadIntro();
    // display in the window
    intro();
@@ -197,9 +198,9 @@ int main()
    }
    // restore original settings and leave
    endwin();
-   
+
    //cout << RED << "TEST" << RESET << endl;
-   
+
    return 0;
 }
 
