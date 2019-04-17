@@ -2,7 +2,7 @@
 
 // runs the shell command 'ps ax' and dislays the last lines of its output,
 // as many as the window will fit; allows the user to move up and down
-// within the window, with the option to kill whichever process is 
+// within the window, with the option to kill whichever process is
 // currently highlighted
 
 // usage:  psax
@@ -50,8 +50,8 @@ WINDOW *scrn; 	// will point to curses window object
 vector<string> cmdoutlines(MAXROW, "");  // Screen output vector
 
 int ncmdlines,  // number of rows in cmdoutlines
-    nwinlines,  // number of rows our "ps ax" output occupies in the 
-                //  xterm (or equiv.) window 
+    nwinlines,  // number of rows our "ps ax" output occupies in the
+                //  xterm (or equiv.) window
     winrow,  // current row position in screen
     cmdstartrow,  // index of first row in cmdoutlines to be displayed
     cmdlastrow;  // index of last row in cmdoutlines to be displayed
@@ -59,9 +59,9 @@ int ncmdlines,  // number of rows in cmdoutlines
 // rewrites the line at winrow in bold font
 void highlight()
 {  int clinenum;
-   attron(A_BOLD);  // this curses library call says that whatever we 
-                    // write from now on (until we say otherwise) 
-                    // will be in bold font 
+   attron(A_BOLD);  // this curses library call says that whatever we
+                    // write from now on (until we say otherwise)
+                    // will be in bold font
    // we'll need to rewrite the cmdoutlines line currently displayed
    // at line winrow in the screen, so as to get the bold font
    clinenum = cmdstartrow + winrow;
@@ -104,6 +104,7 @@ void intro()
     if (ncmdlines <= LINES) { // LINES is an int maintained by the curses
                               // library, equal to the number of lines in
                               // the screen
+<<<<<<< HEAD
        cmdstartrow = 0;
        nwinlines = ncmdlines;
     }
@@ -126,8 +127,8 @@ void intro()
 	   attron(COLOR_PAIR(color));
 	   mvaddstr(winrow,0,
 		 cmdoutlines[row].c_str());  // curses call to move to the
-												// specified position and
-												// paint a string there
+									 // specified position and
+									 // paint a string there
     usleep(100 * 1000);	//Sleep for 100 milliseconds for animation effect
     refresh();  		// now make the changes actually appear on the screen,
 						// using this call to the curses library
@@ -173,7 +174,7 @@ void intro()
 
 // moves up/down one line
 void updown(int inc)
-{  int tmp = winrow + inc; 
+{  int tmp = winrow + inc;
    // ignore attempts to go off the edge of the screen
    if (tmp >= 0 && tmp < LINES) {
       // rewrite the current line before moving; since our current font
@@ -244,7 +245,6 @@ void validateWinSize() {
 
 int main(void)
 {  
-
 	// window setup, next 3 lines are curses library calls, a standard
     // initializing sequence for curses programs
     scrn = initscr();
