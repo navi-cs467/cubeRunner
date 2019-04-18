@@ -44,6 +44,8 @@ using std::endl;
 
 #define INTRO_HEIGHT 28
 #define INTRO_WIDTH 120
+#define MAIN_BORDER_ROW_WIDTH 2
+#define MAIN_BORDER_COL_WIDTH 6
 
 #define RED     "\033[31m"      /* Red */
 #define RESET   "\033[0m"
@@ -273,20 +275,26 @@ int main(void)
 	
 	clear();  // curses clear-screen call
 
-	// Paint in alternating colors converging into square middle of screen
-	for(int i = LINES, j = COLS, color = rand() % 6 + 9; 
-		i >= 0; i -= 4, j -= 4, color++){
+	// Paint in alternating color perimeters converging into middle of screen
+	for(int i = LINES, j = COLS, color = rand() % 6 + 9, z = 0; 
+		//i >= MAIN_BORDER_ROW_WIDTH * 2 && j >= MAIN_BORDER_COL_WIDTH * 2; 
+		z < 12;
+		i -= MAIN_BORDER_ROW_WIDTH, j -= MAIN_BORDER_COL_WIDTH, color++, z++){
 		if(color == 15) color = 9;	//Reset color when necessary
 		attron(COLOR_PAIR(color));
-		for(int k = LINES - i; k < i/2; k++) 
-			mvhline(k, 0, ' ', COLS - LINES - i);	
-		for(int k = 0 + (LINES - i); k < i/2; k++) 
-			mvhline(k, 0, ' ', COLS - LINES - i);
-		for(int k = 0 + (COLS - j); k < j/2; k++) 
-			mvvline(k, 0, ' ', LINES - COLS - j);
-		for(int k = COLS - j; k < j/2; k++)
-			mvvline(k, 0, ' ', LINES - COLS - j);
+		for(int k = LINES - i, l = 0; l < MAIN_BORDER_ROW_WIDTH; l++) 
+			mvhline(k + l, COLS - j, ' ', j - (z * MAIN_BORDER_COL_WIDTH));
+		for(int k = i - 1, l = 0; l < MAIN_BORDER_ROW_WIDTH; l++) 
+			mvhline(k - l, COLS - j, ' ', j - (z * MAIN_BORDER_COL_WIDTH));
+		for(int k = COLS - j, l = 0; l < MAIN_BORDER_COL_WIDTH; l++) 
+			mvvline(LINES - i, k + l, ' ', i - (z * MAIN_BORDER_ROW_WIDTH));
+		for(int k = j - 1, l = 0; l < MAIN_BORDER_COL_WIDTH; l++) 
+			mvvline(LINES - i, j - l, ' ', i - (z * MAIN_BORDER_ROW_WIDTH));
+		
+		usleep(100 * 1000);	//Sleep for 100 milliseconds for animation effect
+		refresh();
 	}
+	
 	
     while (1)  {
        // get user command
