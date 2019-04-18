@@ -20,6 +20,13 @@
 #define CYAN_CYAN 12
 #define BLUE_BLUE 13
 #define MAGENTA_MAGENTA 14
+#define RED_WHITE 15
+#define YELLOW_WHITE 16
+#define GREEN_WHITE 17
+#define CYAN_WHITE 18
+#define BLUE_WHITE 19
+#define MAGENTA_WHITE 20
+#define WHITE_BLACK 21
 
 int initColor(){
 	
@@ -40,6 +47,13 @@ int initColor(){
 	init_pair(12, COLOR_CYAN, COLOR_CYAN);
 	init_pair(13, COLOR_BLUE, COLOR_BLUE);
 	init_pair(14, COLOR_MAGENTA, COLOR_MAGENTA);
+	init_pair(15, COLOR_RED, COLOR_WHITE);
+	init_pair(16, COLOR_YELLOW, COLOR_WHITE);
+	init_pair(17, COLOR_GREEN, COLOR_WHITE);
+	init_pair(18, COLOR_CYAN, COLOR_WHITE);
+	init_pair(19, COLOR_BLUE, COLOR_WHITE);
+	init_pair(20, COLOR_MAGENTA, COLOR_WHITE);
+	init_pair(20, COLOR_WHITE, COLOR_BLACK);
 	
 	return 0;
 }
