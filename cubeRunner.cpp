@@ -42,6 +42,9 @@ using std::ios;
 using std::cout;
 using std::endl;
 
+#define INTRO_HEIGHT 28
+#define INTRO_WIDTH 120
+
 #define RED     "\033[31m"      /* Red */
 #define RESET   "\033[0m"
 
@@ -52,7 +55,7 @@ vector<string> cmdoutlines(MAXROW, "");  // Screen output vector
 int ncmdlines,  // number of rows in cmdoutlines
     nwinlines,  // number of rows our "ps ax" output occupies in the
                 //  xterm (or equiv.) window
-    winrow,  // current row position in screen
+    winrow,  	// current row position in screen
     cmdstartrow,  // index of first row in cmdoutlines to be displayed
     cmdlastrow;  // index of last row in cmdoutlines to be displayed
 
@@ -73,9 +76,9 @@ void highlight()
 
 // loads intro graphic in cmdoutlines
 void loadIntro()
-{  fstream f; string line; int row;
+{  fstream f; string line;
    f.open("cubeRunner.txt", ios::in);  // open intro graphic file
-   for (row = 0; row < MAXROW; row++) {
+   for (int row = 0; row < INTRO_HEIGHT; row++) {
       if (getline(f, line))	{	  // if not end of file, add line to cmdoutlines
 		  // don't want stored line to exceed width of screen, which the
 		  // curses library provides to us in the variable COLS, so truncate
@@ -88,7 +91,7 @@ void loadIntro()
 	  }
 	  else break;
    }
-   ncmdlines = row;
+   ncmdlines = INTRO_HEIGHT;
    f.close();  // close pipe
 }
 
@@ -96,64 +99,59 @@ void loadIntro()
 void intro()
 {  
 	clear();  // curses clear-screen call
-
-    int row;
-    // prepare to paint the (last part of the) 'ps ax' output on the screen
-    // two cases, depending on whether there is more output than screen rows;
-    // first, the case in which the entire output fits in one screen:
-    if (ncmdlines <= LINES) { // LINES is an int maintained by the curses
-                              // library, equal to the number of lines in
-                              // the screen
-       cmdstartrow = 0;
-       nwinlines = ncmdlines;
+	
+	// paint screen black
+	attron(COLOR_PAIR(BLACK_BLACK));
+    for (int y = 0; y < LINES; y++) {
+        mvhline(y, 0, ' ', COLS);
     }
-    else { // now the case in which the output is bigger than one screen
-       // show only the last part of the graphic as space permits
-	   cmdstartrow = ncmdlines - LINES;
-       nwinlines = LINES;
-    }
-    cmdlastrow = cmdstartrow + nwinlines - 1;
+	refresh();
    
     // turn on bold attribute
     attron(A_BOLD);
+	
+	int startingCol = (COLS - INTRO_WIDTH)/2, 
+		startingRow = (LINES - INTRO_HEIGHT)/2;
+	WINDOW *subscrn = newwin(INTRO_HEIGHT, INTRO_WIDTH, 
+							 startingRow, startingCol);
    
-    // now paint the rows to the screen
-    int color;
-    for (row = cmdstartrow, winrow = 0, color = rand() % 6 + 1; 
-			row < cmdlastrow; row++,winrow++, color++) {  
+    // paint the rows to the screen
+    int color, row;
+    for (row = 0, color = rand() % 6 + 1; 
+			row < INTRO_HEIGHT - 2; row++, color++) {  
        if(color == 7) color = 1;		//Cycle to first index when necessary
 	   //Change color
-	   attron(COLOR_PAIR(color));
-	   mvaddstr(winrow,0,
+	   wattron(subscrn, COLOR_PAIR(color)); 
+	   mvwaddstr(subscrn, row, 0,
 		 cmdoutlines[row].c_str());  // curses call to move to the
 									 // specified position and
 									 // paint a string there
-    usleep(100 * 1000);	//Sleep for 100 milliseconds for animation effect
-    refresh();  		// now make the changes actually appear on the screen,
-						// using this call to the curses library
+		usleep(100 * 1000);	//Sleep for 100 milliseconds for animation effect
+		wrefresh(subscrn);  // now make the changes actually appear on the screen,
+							// using this call to the curses library
     }
 	
-	attron(COLOR_PAIR(BLACK_BLACK));	//Ensures these two lines are painted 
-	mvhline(winrow, 0, ' ', COLS);	//correctly before threading below
-	mvhline(winrow + 1, 0, ' ', COLS);	
+	wattron(subscrn, COLOR_PAIR(BLACK_BLACK));		//Ensures these two lines are painted 
+	mvwhline(subscrn, row, 0, ' ', INTRO_WIDTH);	//correctly before threading below
+	mvwhline(subscrn, row + 1, 0, ' ', INTRO_WIDTH);	
 		
 	usleep(200 * 1000);	//Sleep for 200 milliseconds
 	
 	// print blinking continue prompt
 	bool inputReceived = false;
 	omp_set_num_threads(2);
-	#pragma omp parallel sections shared(inputReceived, winrow, row, COLS, cmdoutlines)
+	#pragma omp parallel sections shared(subscrn, inputReceived, winrow, row, COLS, cmdoutlines)
 	{
 		#pragma omp section
 		{
 			while(!inputReceived) {
-				attron(COLOR_PAIR(RED_BLACK));
-				mvaddstr(winrow + 1, 0, cmdoutlines[row].c_str());
-				refresh();
+				wattron(subscrn, COLOR_PAIR(RED_BLACK));
+				mvwaddstr(subscrn, row + 1, 0, cmdoutlines[row + 1].c_str());
+				wrefresh(subscrn);
 				usleep(1000 * 1000);
-				attron(COLOR_PAIR(BLACK_BLACK));
-				mvhline(winrow + 1, 0, ' ', COLS);
-				refresh();
+				wattron(subscrn, COLOR_PAIR(BLACK_BLACK));
+				mvwhline(subscrn, row + 1, 0, ' ', INTRO_WIDTH);
+				wrefresh(subscrn);
 				usleep(400 * 1000);
 			}
 		}
@@ -169,6 +167,8 @@ void intro()
     
 	//attron(COLOR_PAIR(0));	//Reset to default
     //attroff(A_BOLD);
+	
+	//delwin(subscrn);
 }
 
 // moves up/down one line
@@ -263,12 +263,6 @@ int main(void)
 	validateWinSize();
 	
 	srand(time(NULL));	//Seed random number generator with system time
-	
-	// paint screen black
-	attron(COLOR_PAIR(BLACK_BLACK));
-    for (int y = 0; y < LINES; y++) {
-        mvhline(y, 0, ' ', COLS);
-    }
 
     char c;
     // load intro graphic into cmdoutlines from file
