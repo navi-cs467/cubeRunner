@@ -277,8 +277,8 @@ int main(void)
 
 	// Paint in alternating color perimeters converging into middle of screen
 	for(int i = LINES, j = COLS, color = rand() % 6 + 9, z = 0; 
-		//i >= MAIN_BORDER_ROW_WIDTH * 2 && j >= MAIN_BORDER_COL_WIDTH * 2; 
-		z < 12;
+		i >= LINES/2 && j >= COLS/2; 
+		//z < 12;
 		i -= MAIN_BORDER_ROW_WIDTH, j -= MAIN_BORDER_COL_WIDTH, color++, z++){
 		if(color == 15) color = 9;	//Reset color when necessary
 		attron(COLOR_PAIR(color));
