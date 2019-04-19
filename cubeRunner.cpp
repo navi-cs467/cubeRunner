@@ -49,8 +49,8 @@ using std::endl;
 #define INTRO_WIDTH 120
 #define MM_CUBE_GRAPHIC_HEIGHT 9			//MM stands for Main Menu
 #define MM_CUBE_GRAPHIC_WIDTH 40
-#define MM_HEIGHT
-#define MM_WIDTH 
+#define MM_HEIGHT 25
+#define MM_WIDTH 25
 #define MAIN_BORDER_ANIMATION_ROW_WIDTH 2
 #define MAIN_BORDER_ANIMATION_COL_WIDTH 6
 #define MAX_MENU_ITEMS 4
@@ -182,7 +182,7 @@ void intro()
 		 cmdoutlines[row].c_str());  //Curses call to move to the
 									 //specified position and
 									 //paint a string there
-		usleep(100 * 1000);	//Sleep for 100 milliseconds for animation effect
+		usleep(1 * 1000);	//Sleep for 100 milliseconds for animation effect
 		wrefresh(subscrn);  //Now make the changes actually appear on the screen,
 							//using this call to the curses library
     }
@@ -310,7 +310,7 @@ void validateWinSize() {
 		mvwprintw(subscrn, 6, 11, "Press any key to exit.");
 		refresh();
 		wrefresh(subscrn);
-		char c = getch();
+		getch();
 		
 		//Cleanup  and exit
 		delwin(scrn);
@@ -342,10 +342,10 @@ void paintCube(WINDOW *subscrn, string fileName) {
 WINDOW *printMenu(vector<string> menuItems, int seedColor, int lineColors[]) { 
 	
 	//Setup subscreen for menu
-	startingCol = (COLS - MM_CUBE_GRAPHIC_WIDTH)/2 + 1, 
-	startingRow = ((LINES - MM_CUBE_GRAPHIC_HEIGHT)/4) + MM_CUBE_GRAPHIC_HEIGHT + 5 + 1;	
-	WINDOW *subscrnMenu = newwin(MM_HEIGHT, MM_WIDTH, startingRow, startingCol);
-	wattron(subscrnMenu, COLOR_PAIR(WHITE_BLACK));
+	int startingCol = (COLS - MM_CUBE_GRAPHIC_WIDTH)/2 + 1, 
+		startingRow = ((LINES - MM_CUBE_GRAPHIC_HEIGHT)/4) + MM_CUBE_GRAPHIC_HEIGHT + 5 + 1;	//Starts 5 rows below	
+	WINDOW *subscrnMenu = newwin(MM_HEIGHT, MM_WIDTH, startingRow, startingCol);				//cube graphic, + 1
+	wattron(subscrnMenu, COLOR_PAIR(WHITE_BLACK));												//due to outer border
 	box(subscrnMenu, '|', '_'); 
 	wborder(subscrnMenu, '|', '|', '-', '-', '*', '*', '*', '*');
 	wrefresh(subscrnMenu);
@@ -357,10 +357,10 @@ WINDOW *printMenu(vector<string> menuItems, int seedColor, int lineColors[]) {
 	//Print and store menu line items and line colors...
 	int i = 1;
 	for(vector<string>::iterator it = menuItems.begin(); it != menuItems.end(); it++) {
-		if(lineColors) lineColors[0] = seedColor;
+		if(lineColors) lineColors[i - 1] = seedColor;
 		wattron(subscrnMenu, COLOR_PAIR(seedColor++));
 		mvwprintw(subscrnMenu, i++, MM_WIDTH - it->length()/2, it->c_str());
-		cmdoutlines.push_back(item);
+		//cmdoutlines.push_back(item);
 		wrefresh(subscrnMenu);
 		if(seedColor == 7) seedColor = 1;
 	}
@@ -397,7 +397,7 @@ WINDOW *printMenu(vector<string> menuItems, int seedColor, int lineColors[]) {
 	wrefresh(subscrnMenu1);
 	if(seedColor == 7) seedColor = 1;			//In case more items are added later
 	 */
-	return subscrnMenu1;
+	return subscrnMenu;
 	
 }
 
@@ -444,7 +444,7 @@ int main(void)
 	wattron(subscrnGraphic, COLOR_PAIR(rand() % 6 + 15));
 	
 	//Print initial cube graphic
-	printCube(subscrnGraphic, "menuCubeRight1_1.txt");
+	paintCube(subscrnGraphic, "menuCubeRight1_1.txt");
 	
 	//Setup subscreen for menu outer border
 	startingCol = (COLS - MM_CUBE_GRAPHIC_WIDTH)/2, 
@@ -452,7 +452,7 @@ int main(void)
 	WINDOW *subscrnMenuBorder = newwin(MM_HEIGHT + 2, MM_WIDTH + 2, startingRow, startingCol);
 	wattron(subscrnMenuBorder, COLOR_PAIR(WHITE_BLACK));
 	box(subscrnMenuBorder, '|', '_'); 
-	wborder(subscrnMenu, '|', '|', '-', '-', '*', '*', '*', '*');
+	wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 	wrefresh(subscrnMenuBorder);
 	
 	//Print menu 1 with random starting line color
@@ -469,7 +469,7 @@ int main(void)
 	bool gameOn = false;
 	omp_set_num_threads(2);
 	#pragma omp parallel sections shared(subscrnMenu1, subscrnMenu2, \
-	subscrnGraphic, cursorPos, cmdoutlines, input, lineColors, currMenu, \
+	subscrnGraphic, cursorPos, cmdoutlines, lineColors, currMenu, \
 	playerCount, startingLineColor)
 	{
 		#pragma omp section
@@ -477,28 +477,28 @@ int main(void)
 			int graphicIterator = 0;
 			while(!gameOn) {
 				if(cursorPos == 1 || cursorPos == 4) {
-					if(graphicIterator == 0) printCube(subscrnGraphic, "menuCubeLeft1_1.text");
-					else if(graphicIterator == 1) printCube(subscrnGraphic, "menuCubeRight1_1.text");
-					else if(graphicIterator == 2) printCube(subscrnGraphic, "menuCubeRight2_1.text");
-					else printCube(subscrnGraphic, "menuCubeLeft2_1.text");
+					if(graphicIterator == 0) paintCube(subscrnGraphic, "menuCubeLeft1_1.text");
+					else if(graphicIterator == 1) paintCube(subscrnGraphic, "menuCubeRight1_1.text");
+					else if(graphicIterator == 2) paintCube(subscrnGraphic, "menuCubeRight2_1.text");
+					else paintCube(subscrnGraphic, "menuCubeLeft2_1.text");
 					graphicIterator++;
 					if(graphicIterator == 4) graphicIterator = 0;
 					usleep(500 * 1000);
 				}
 				else if(cursorPos == 2) {
-					if(graphicIterator == 0) printCube(subscrnGraphic, "menuCubeLeft1_2.text");
-					else if(graphicIterator == 1) printCube(subscrnGraphic, "menuCubeRight1_2.text");
-					else if(graphicIterator == 2) printCube(subscrnGraphic, "menuCubeRight2_2.text");
-					else printCube(subscrnGraphic, "menuCubeLeft2_2.text");
+					if(graphicIterator == 0) paintCube(subscrnGraphic, "menuCubeLeft1_2.text");
+					else if(graphicIterator == 1) paintCube(subscrnGraphic, "menuCubeRight1_2.text");
+					else if(graphicIterator == 2) paintCube(subscrnGraphic, "menuCubeRight2_2.text");
+					else paintCube(subscrnGraphic, "menuCubeLeft2_2.text");
 					graphicIterator++;
 					if(graphicIterator == 4) graphicIterator = 0;
 					usleep(500 * 1000);
 				}
 				if(cursorPos == 3 && currMenu == 1) {
-					if(graphicIterator == 0) printCube(subscrnGraphic, "menuCubeLeft1_1.text");
-					else if(graphicIterator == 1) printCube(subscrnGraphic, "menuCubeRight1_1.text");
-					else if(graphicIterator == 2) printCube(subscrnGraphic, "menuCubeRight2_1.text");
-					else printCube(subscrnGraphic, "menuCubeLeft2_1.text");
+					if(graphicIterator == 0) paintCube(subscrnGraphic, "menuCubeLeft1_1.text");
+					else if(graphicIterator == 1) paintCube(subscrnGraphic, "menuCubeRight1_1.text");
+					else if(graphicIterator == 2) paintCube(subscrnGraphic, "menuCubeRight2_1.text");
+					else paintCube(subscrnGraphic, "menuCubeLeft2_1.text");
 					graphicIterator++;
 					if(graphicIterator == 4) graphicIterator = 0;
 					usleep(500 * 1000);
@@ -509,60 +509,72 @@ int main(void)
 		#pragma omp section
 		{
 			while(1) {
-				c = getch();
-				if(c = KEY_DOWN) {
-					if(cursorPos != 4) {
-						unhighlight(subscrnMenu, cursorPos, lineColors[cursorPos++]);
-						highlight(subscrnMenu, cursorPos, lineColors[cursorPos]);
+				char c = getch();
+				if(c == KEY_DOWN) {
+					if(cursorPos != 4 && currMenu == 1) {
+						unhighlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
+						cursorPos++;
+						highlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
 					}
+					else if(cursorPos != 4 && currMenu == 2) {
+						unhighlight(subscrnMenu2, cursorPos, lineColors[cursorPos]);
+						cursorPos++;
+						highlight(subscrnMenu2, cursorPos, lineColors[cursorPos]);
 					if(currMenu == 1 && cursorPos == 2) playerCount = 2;
 					
 				}
-				else if(c = KEY_UP) {
-					if(curPos != 1) {
-						unhighlight(subscrnMenu, cursorPos, lineColors[cursorPos--]);
-						highlight(subscrnMenu, cursorPos, lineColors[cursorPos]);
+				else if(c == KEY_UP) {
+					if(cursorPos != 1 && currMenu == 1) {
+						unhighlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
+						cursorPos--;
+						highlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
+					}
+					else if(cursorPos != 1 && currMenu == 2) {
+						unhighlight(subscrnMenu2, cursorPos, lineColors[cursorPos]);
+						cursorPos--;
+						highlight(subscrnMenu2, cursorPos, lineColors[cursorPos]);
 					}
 					if(currMenu == 1 && cursorPos == 1) playerCount = 1;
 					else if(currMenu == 1 && cursorPos == 2) playerCount = 2;
 				}
-				else if(c = KEY_ENTER) {
-					if(currMenu == 1 && (cursorPos == 1 || cursorPos == 2)) {
-						delwin(subscrnMenu1);
-						subscrnMenu2 = printMenu2(startingLineColor, NULL);
-						cursorPos = 2;
-						highlight(subscrnMenu, cursorPos, lineColors[cursorPos]);
-						currMenu = 2;
-					}
-					else if(currMenu == 1 && cursorPos == 3) {
-						delwin(subscrnMenu1);
-						//showHighScores();
-						break;	// Temporary
-					}
-					else if(currMenu == 1 && cursorPos == 4) {
-						delwin(subscrnMenu1);
-						// restore original settings and leave
-						endwin();
-						exit(0);
-					}
-					else if(currMenu == 2 && cursorPos == 1) {
-						delwin(subscrnMenu2);
-						//startGame(easy, playerCount);
-					}
-					else if(currMenu == 2 && cursorPos == 2) {
-						delwin(subscrnMenu2);
-						//startGame(normal, playerCount);
-					}
-					else if(currMenu == 2 && cursorPos == 3) {
-						delwin(subscrnMenu2);
-						//startGame(hard, playerCount);
-					}
-					else if(currMenu == 2 && cursorPos == 4) {
-						delwin(subscrnMenu2);
-						subscrnMenu1 = printMenu1(startingLineColor, NULL);
-						cursorPos = 1;
-						highlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
-						currMenu = 1;
+				else if(c == KEY_ENTER) {
+						if(currMenu == 1 && (cursorPos == 1 || cursorPos == 2)) {
+							delwin(subscrnMenu1);
+							subscrnMenu2 = printMenu(menu2Items, startingLineColor, NULL);
+							cursorPos = 2;
+							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos]);
+							currMenu = 2;
+						}
+						else if(currMenu == 1 && cursorPos == 3) {
+							delwin(subscrnMenu1);
+							//showHighScores();
+							break;	// Temporary
+						}
+						else if(currMenu == 1 && cursorPos == 4) {
+							delwin(subscrnMenu1);
+							// restore original settings and leave
+							endwin();
+							exit(0);
+						}
+						else if(currMenu == 2 && cursorPos == 1) {
+							delwin(subscrnMenu2);
+							//startGame(easy, playerCount);
+						}
+						else if(currMenu == 2 && cursorPos == 2) {
+							delwin(subscrnMenu2);
+							//startGame(normal, playerCount);
+						}
+						else if(currMenu == 2 && cursorPos == 3) {
+							delwin(subscrnMenu2);
+							//startGame(hard, playerCount);
+						}
+						else if(currMenu == 2 && cursorPos == 4) {
+							delwin(subscrnMenu2);
+							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL);
+							cursorPos = 1;
+							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
+							currMenu = 1;
+						}
 					}
 				}
 			}
