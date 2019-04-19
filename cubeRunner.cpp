@@ -104,8 +104,10 @@ void highlight(WINDOW *subscrn, int cursorPos, int color)
    if(color == MAGENTA_BLACK) highlightColor = MAGENTA_WHITE;
    
    //Highlight line
-   wattron(subscrn, COLOR_PAIR(highlightColor));
-   mvaddstr(cursorPos, 0, cmdoutlines[cursorPos - 1].c_str());
+   wattron(subscrn, COLOR_PAIR(WHITE_RED));
+   mvwaddstr(subscrn, cursorPos, 
+		(MM_WIDTH - cmdoutlines[cursorPos - 1].length())/2, 
+		cmdoutlines[cursorPos - 1].c_str());
    wrefresh(subscrn);  // make the change appear on the screen
 }
 
@@ -121,20 +123,22 @@ void unhighlight(WINDOW *subscrn, int cursorPos, int color)
    if(color == MAGENTA_WHITE) highlightColor = MAGENTA_BLACK;
    
    //Highlight line
-   wattron(subscrn, COLOR_PAIR(highlightColor));
-   mvaddstr(cursorPos, 0, cmdoutlines[cursorPos - 1].c_str());
+   wattron(subscrn, COLOR_PAIR(RED_WHITE));
+   mvwaddstr(subscrn, cursorPos, 
+		(MM_WIDTH - cmdoutlines[cursorPos - 1].length())/2, 
+		cmdoutlines[cursorPos - 1].c_str());
    wrefresh(subscrn);  // make the change appear on the screen
 }
 
 
-//Loads intro graphic in cmdoutlines
-void loadGraphic(string fileName)
+//Loads intro graphic in cmdoutlinesGraphics
+void loadGraphic(const char* fileName)
 {  
    //Clear cmdoutlines
    cmdoutlinesGraphics.clear();
    
    fstream f; string line;
-   f.open(fileName.c_str(), ios::in);  //Open intro graphic file
+   f.open(fileName, ios::in);  //Open intro graphic file
    for (int row = 0; row < INTRO_HEIGHT; row++) {
       if (getline(f, line))	{	  //If not end of file, add line to cmdoutlines
 		  //Don't want stored line to exceed width of screen, which the
@@ -168,7 +172,7 @@ void intro()
 	WINDOW *subscrn = newwin(INTRO_HEIGHT, INTRO_WIDTH, 
 							 startingRow, startingCol);
    
-    //Load intro graphic into cmdoutlines from file
+    //Load intro graphic into cmdoutlinesGraphics from file
     loadGraphic("cubeRunner.txt");
    
     //Paint the rows to the screen
@@ -179,7 +183,7 @@ void intro()
 	   //Change color
 	   wattron(subscrn, COLOR_PAIR(color)); 
 	   mvwaddstr(subscrn, row, 0,
-		 cmdoutlines[row].c_str());  //Curses call to move to the
+		 cmdoutlinesGraphics[row].c_str());  //Curses call to move to the
 									 //specified position and
 									 //paint a string there
 		usleep(1 * 1000);	//Sleep for 100 milliseconds for animation effect
@@ -194,21 +198,30 @@ void intro()
 	usleep(200 * 1000);	//Sleep for 200 milliseconds
 	
 	//Print blinking continue prompt
+	//attron(A_BLINK);	//Doesn't work, (at least for some terminals)
 	bool inputReceived = false;
-	omp_set_num_threads(2);
-	#pragma omp parallel sections shared(subscrn, inputReceived, winrow, row, COLS, cmdoutlines)
+	omp_set_num_threads(2); double time = omp_get_wtime(); bool visible = false;
+	#pragma omp parallel sections shared(subscrn, inputReceived, \
+	winrow, row, COLS, cmdoutlinesGraphics)
 	{
 		#pragma omp section
 		{
 			while(!inputReceived) {
-				wattron(subscrn, COLOR_PAIR(RED_BLACK));
-				mvwaddstr(subscrn, row + 1, 0, cmdoutlines[row + 1].c_str());
-				wrefresh(subscrn);
-				usleep(1000 * 1000);
-				wattron(subscrn, COLOR_PAIR(BLACK_BLACK));
-				mvwhline(subscrn, row + 1, 0, ' ', INTRO_WIDTH);
-				wrefresh(subscrn);
-				usleep(400 * 1000);
+				if(time + 0.6 < omp_get_wtime() && visible == false){
+					time = omp_get_wtime();
+					wattron(subscrn, COLOR_PAIR(RED_BLACK));
+					mvwaddstr(subscrn, row + 1, 0, 
+						cmdoutlinesGraphics[row + 1].c_str());
+					wrefresh(subscrn);
+					visible = true;
+				}
+				else if(time + 1.75 < omp_get_wtime() && visible == true){
+					time = omp_get_wtime();
+					wattron(subscrn, COLOR_PAIR(BLACK_BLACK));
+					mvwhline(subscrn, row + 1, 0, ' ', INTRO_WIDTH);
+					wrefresh(subscrn);
+					visible = false;
+				}
 			}
 		}
 		
@@ -234,11 +247,11 @@ void intro()
 		for(int l = 0; l < MAIN_BORDER_ANIMATION_COL_WIDTH; l++) 
 			mvvline(LINES - i, j - l, ' ', i - (z * MAIN_BORDER_ANIMATION_ROW_WIDTH));
 		
-		usleep(100 * 1000);	//Sleep for 100 milliseconds for animation effect
+		usleep(1 * 1000);	//Sleep for 100 milliseconds for animation effect
 		refresh();
 	}
 	
-	//attron(A_BLINK);	//Doesn't work, (at least for some terminals)
+	
     
 	//attron(COLOR_PAIR(0));	//Reset to default
     //attroff(A_BOLD);
@@ -319,13 +332,19 @@ void validateWinSize() {
     }
 }
 
-void paintCube(WINDOW *subscrn, string fileName) {
+void paintCube(WINDOW *subscrn, const char* fileName, int seedColor) {
 	
 	loadGraphic(fileName);
 	
+	/* //Clear contents of sub-window
+	wattron(subscrn, COLOR_PAIR(BLACK_BLACK));
+	for (int y = 0; y < MM_CUBE_GRAPHIC_HEIGHT; y++)
+		mvwhline(subscrn, y, 0, ' ', MM_CUBE_GRAPHIC_WIDTH);
+	wrefresh(subscrn); */
+	
 	//Paint the rows to the screen
     int color, row;
-    for (row = 0, color = rand() % 6 + 1; 
+    for (row = 0, color = seedColor; 
 			row < MM_CUBE_GRAPHIC_HEIGHT; row++, color++) {  
        if(color == 7) color = 1;		//Cycle to first index when necessary
 	   //Change color
@@ -342,9 +361,10 @@ void paintCube(WINDOW *subscrn, string fileName) {
 WINDOW *printMenu(vector<string> menuItems, int seedColor, int lineColors[]) { 
 	
 	//Setup subscreen for menu
-	int startingCol = (COLS - MM_CUBE_GRAPHIC_WIDTH)/2 + 1, 
+	int startingCol = (COLS - MM_CUBE_GRAPHIC_WIDTH)/2 + 
+						(MM_CUBE_GRAPHIC_WIDTH - MM_WIDTH)/2 + 1, 
 		startingRow = ((LINES - MM_CUBE_GRAPHIC_HEIGHT)/4) + MM_CUBE_GRAPHIC_HEIGHT + 5 + 1;	//Starts 5 rows below	
-	WINDOW *subscrnMenu = newwin(MM_HEIGHT, MM_WIDTH, startingRow, startingCol);				//cube graphic, + 1
+	WINDOW *subscrnMenu = newwin(MENU1_LENGTH + 2, MM_WIDTH, startingRow, startingCol);				//cube graphic, + 1
 	wattron(subscrnMenu, COLOR_PAIR(WHITE_BLACK));												//due to outer border
 	box(subscrnMenu, '|', '_'); 
 	wborder(subscrnMenu, '|', '|', '-', '-', '*', '*', '*', '*');
@@ -357,13 +377,16 @@ WINDOW *printMenu(vector<string> menuItems, int seedColor, int lineColors[]) {
 	//Print and store menu line items and line colors...
 	int i = 1;
 	for(vector<string>::iterator it = menuItems.begin(); it != menuItems.end(); it++) {
+		if(seedColor == BLUE_BLACK) seedColor++;	//No blue, too hard to see against black
 		if(lineColors) lineColors[i - 1] = seedColor;
 		wattron(subscrnMenu, COLOR_PAIR(seedColor++));
-		mvwprintw(subscrnMenu, i++, MM_WIDTH - it->length()/2, it->c_str());
-		//cmdoutlines.push_back(item);
+		mvwprintw(subscrnMenu, i++, (MM_WIDTH - it->length())/2, it->c_str());
+		cmdoutlines.push_back(*it);		//Stores current menu items in cmdoutlines
 		wrefresh(subscrnMenu);
 		if(seedColor == 7) seedColor = 1;
 	}
+	
+	//mvaddstr(6, 6, (cmdoutlines[0]+cmdoutlines[1]).c_str());
 	
 	/* //Line 1
 	if(lineColors) lineColors[0] = seedColor;
@@ -436,7 +459,7 @@ int main(void)
 	refresh();
 	
 	//Setup subscreen for cube graphic
-	int startingCol = (COLS - MM_CUBE_GRAPHIC_WIDTH)/2, 
+	int startingCol = (COLS - MM_CUBE_GRAPHIC_WIDTH)/2,
 		startingRow = (LINES - MM_CUBE_GRAPHIC_HEIGHT)/4;		//Graphic starts one-quarter of the way down the screen
 	WINDOW *subscrnGraphic = newwin(MM_CUBE_GRAPHIC_HEIGHT, MM_CUBE_GRAPHIC_WIDTH, 
 							 startingRow, startingCol);
@@ -444,16 +467,21 @@ int main(void)
 	wattron(subscrnGraphic, COLOR_PAIR(rand() % 6 + 15));
 	
 	//Print initial cube graphic
-	paintCube(subscrnGraphic, "menuCubeRight1_1.txt");
+	paintCube(subscrnGraphic, "menuCubeRight1_1.txt", rand()%6+1);
 	
 	//Setup subscreen for menu outer border
-	startingCol = (COLS - MM_CUBE_GRAPHIC_WIDTH)/2, 
+	startingCol = startingCol + (MM_CUBE_GRAPHIC_WIDTH - MM_WIDTH) / 2, 
 	startingRow = ((LINES - MM_CUBE_GRAPHIC_HEIGHT)/4) + MM_CUBE_GRAPHIC_HEIGHT + 5;		//Menu starts 5 lines below the graphic
-	WINDOW *subscrnMenuBorder = newwin(MM_HEIGHT + 2, MM_WIDTH + 2, startingRow, startingCol);
+	WINDOW *subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);
 	wattron(subscrnMenuBorder, COLOR_PAIR(WHITE_BLACK));
 	box(subscrnMenuBorder, '|', '_'); 
 	wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 	wrefresh(subscrnMenuBorder);
+	
+	//Print Game Menu header
+	attron(COLOR_PAIR(WHITE_BLACK));
+	mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
+	refresh();
 	
 	//Print menu 1 with random starting line color
 	int startingLineColor = rand() % 6 + 1, lineColors[MAX_MENU_ITEMS];
@@ -466,42 +494,52 @@ int main(void)
 	int cursorPos = 1, currMenu = 1, playerCount = 1;
 	highlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
 							 
-	bool gameOn = false;
-	omp_set_num_threads(2);
+	bool gameOn = false; double time = omp_get_wtime(); 
+	omp_set_num_threads(2); 
 	#pragma omp parallel sections shared(subscrnMenu1, subscrnMenu2, \
 	subscrnGraphic, cursorPos, cmdoutlines, lineColors, currMenu, \
 	playerCount, startingLineColor)
 	{
 		#pragma omp section
 		{
-			int graphicIterator = 0;
+			int graphicIterator = 0, seedColor = rand() % 6 + 1;
 			while(!gameOn) {
-				if(cursorPos == 1 || cursorPos == 4) {
-					if(graphicIterator == 0) paintCube(subscrnGraphic, "menuCubeLeft1_1.text");
-					else if(graphicIterator == 1) paintCube(subscrnGraphic, "menuCubeRight1_1.text");
-					else if(graphicIterator == 2) paintCube(subscrnGraphic, "menuCubeRight2_1.text");
-					else paintCube(subscrnGraphic, "menuCubeLeft2_1.text");
+				if(time + 1 < omp_get_wtime()) {
+					time = omp_get_wtime();
 					graphicIterator++;
 					if(graphicIterator == 4) graphicIterator = 0;
-					usleep(500 * 1000);
+					seedColor++;
+					if(seedColor == 7) seedColor = 1;
+				}
+				if(cursorPos == 1 || cursorPos == 4) {
+					if(graphicIterator == 0) paintCube(subscrnGraphic, 
+						"menuCubeLeft1_1.txt", seedColor);
+					else if(graphicIterator == 1) paintCube(subscrnGraphic, 
+						"menuCubeRight1_1.txt", seedColor);
+					else if(graphicIterator == 2) paintCube(subscrnGraphic, 
+						"menuCubeLeft2_1.txt", seedColor);
+					else paintCube(subscrnGraphic, 
+						"menuCubeRight2_1.text", seedColor);
 				}
 				else if(cursorPos == 2) {
-					if(graphicIterator == 0) paintCube(subscrnGraphic, "menuCubeLeft1_2.text");
-					else if(graphicIterator == 1) paintCube(subscrnGraphic, "menuCubeRight1_2.text");
-					else if(graphicIterator == 2) paintCube(subscrnGraphic, "menuCubeRight2_2.text");
-					else paintCube(subscrnGraphic, "menuCubeLeft2_2.text");
-					graphicIterator++;
-					if(graphicIterator == 4) graphicIterator = 0;
-					usleep(500 * 1000);
+					if(graphicIterator == 0) paintCube(subscrnGraphic, 
+						"menuCubeLeft1_2.txt", seedColor);
+					else if(graphicIterator == 1) paintCube(subscrnGraphic, 
+						"menuCubeRight1_2.txt", seedColor);
+					else if(graphicIterator == 2) paintCube(subscrnGraphic, 
+						"menuCubeLeft2_2.txt", seedColor);
+					else paintCube(subscrnGraphic, 
+						"menuCubeRight2_2.text", seedColor);
 				}
-				if(cursorPos == 3 && currMenu == 1) {
-					if(graphicIterator == 0) paintCube(subscrnGraphic, "menuCubeLeft1_1.text");
-					else if(graphicIterator == 1) paintCube(subscrnGraphic, "menuCubeRight1_1.text");
-					else if(graphicIterator == 2) paintCube(subscrnGraphic, "menuCubeRight2_1.text");
-					else paintCube(subscrnGraphic, "menuCubeLeft2_1.text");
-					graphicIterator++;
-					if(graphicIterator == 4) graphicIterator = 0;
-					usleep(500 * 1000);
+				else if(cursorPos == 3 && currMenu == 1) {
+					if(graphicIterator == 0) paintCube(subscrnGraphic, 
+						"menuCubeLeft1_1.txt", seedColor);
+					else if(graphicIterator == 1) paintCube(subscrnGraphic, 
+						"menuCubeRight1_1.txt", seedColor);
+					else if(graphicIterator == 2) paintCube(subscrnGraphic, 
+						"menuCubeLeft2_1.txt", seedColor);
+					else paintCube(subscrnGraphic, 
+						"menuCubeRight2_1.txt", seedColor);
 				}
 			}
 		}
@@ -510,29 +548,29 @@ int main(void)
 		{
 			while(1) {
 				char c = getch();
-				if(c == KEY_DOWN) {
-					if(cursorPos != 4 && currMenu == 1) {
-						unhighlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
+				if(c == KEY_DOWN || c == 'k') { ostringstream ostr; ostr << lineColors[0];
+					if(cursorPos != 4 && currMenu == 1) { mvaddstr(6, 6, ostr.str().c_str()); refresh();
+						//unhighlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1]);
 						cursorPos++;
-						highlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
+						highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1]);
 					}
 					else if(cursorPos != 4 && currMenu == 2) {
-						unhighlight(subscrnMenu2, cursorPos, lineColors[cursorPos]);
+						unhighlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1]);
 						cursorPos++;
-						highlight(subscrnMenu2, cursorPos, lineColors[cursorPos]);
+						highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1]);
 					if(currMenu == 1 && cursorPos == 2) playerCount = 2;
 					
 				}
-				else if(c == KEY_UP) {
+				else if(c == KEY_UP || c == 'i') {
 					if(cursorPos != 1 && currMenu == 1) {
-						unhighlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
+						unhighlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1]);
 						cursorPos--;
-						highlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
+						highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1]);
 					}
 					else if(cursorPos != 1 && currMenu == 2) {
-						unhighlight(subscrnMenu2, cursorPos, lineColors[cursorPos]);
+						unhighlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1]);
 						cursorPos--;
-						highlight(subscrnMenu2, cursorPos, lineColors[cursorPos]);
+						highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1]);
 					}
 					if(currMenu == 1 && cursorPos == 1) playerCount = 1;
 					else if(currMenu == 1 && cursorPos == 2) playerCount = 2;
@@ -542,7 +580,7 @@ int main(void)
 							delwin(subscrnMenu1);
 							subscrnMenu2 = printMenu(menu2Items, startingLineColor, NULL);
 							cursorPos = 2;
-							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos]);
+							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1]);
 							currMenu = 2;
 						}
 						else if(currMenu == 1 && cursorPos == 3) {
@@ -572,7 +610,7 @@ int main(void)
 							delwin(subscrnMenu2);
 							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL);
 							cursorPos = 1;
-							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos]);
+							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1]);
 							currMenu = 1;
 						}
 					}

@@ -27,6 +27,7 @@
 #define BLUE_WHITE 19
 #define MAGENTA_WHITE 20
 #define WHITE_BLACK 21
+#define WHITE_WHITE 22
 
 int initColor(){
 	
@@ -53,7 +54,8 @@ int initColor(){
 	init_pair(18, COLOR_CYAN, COLOR_WHITE);
 	init_pair(19, COLOR_BLUE, COLOR_WHITE);
 	init_pair(20, COLOR_MAGENTA, COLOR_WHITE);
-	init_pair(20, COLOR_WHITE, COLOR_BLACK);
+	init_pair(21, COLOR_WHITE, COLOR_BLACK);
+	init_pair(22, COLOR_WHITE, COLOR_WHITE);
 	
 	return 0;
 }
