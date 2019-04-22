@@ -202,6 +202,7 @@ void acceptConnections(int socketFD, char* p, int playerToggle)
 		addr_size = sizeof client_addr;
 		firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
 		printf("Connected to client...");
+	}
 
 	// need some method of determining which connections we want to read from, will probably use SELECT function
 }
