@@ -238,7 +238,16 @@ void starGameSinglePlayer(int client)
 {
 	while(1)
 	{
+		//buffers for messages sent from client
+		char clientMsg[1024];
+		memset(clientMsg, '\0', sizeof(clientMsg));
 
+		char confirm[100] = "Server: I have received your message\n";
+
+		recv(client, clientMsg, sizeof clientMsg, 0);
+		// otherwise, print the message
+		printf("Received from client: %s\n", clientMsg);
+		sendMessage(client, confirm);
 	}
 }
 
@@ -274,7 +283,8 @@ void acceptConnections(int socketFD, char* p, int playerToggle)
 		// accept incomming connection from first client
 		addr_size = sizeof client_addr;
 		firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
-		printf("Connected to client...");
+		printf("Connected to client...\n");
+		starGameSinglePlayer(firstClient);
 	}
 
 	// need some method of determining which connections we want to read from, will probably use SELECT function
