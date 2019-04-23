@@ -171,6 +171,77 @@ void bindSocket(int socketFD, struct addrinfo *servinfo)
 	bind(socketFD, servinfo->ai_addr, servinfo->ai_addrlen);
 }
 
+// start the game with two clients, determining which connections have input on sockets to read from
+// for now we start chat, wait for client input and then send a confirmation message
+// loops until SIGINT *** will adjust this later
+void starGameMultiPlayer(int firstClient, int secondClient)
+{
+	while(1)
+	{
+		fd_set readfds;
+
+		// clear the set ahead of time
+		FD_ZERO(&readfds);
+
+		// add descriptors to the set
+		FD_SET(firstClient, &readfds);
+		FD_SET(secondClient, &readfds);
+
+		//buffers for messages sent from client
+		char clientMsg1[1024];
+		memset(clientMsg1, '\0', sizeof(clientMsg1));
+
+		//buffers for messages sent from client
+		char clientMsg2[1024];
+		memset(clientMsg2, '\0', sizeof(clientMsg2));
+
+		int n = secondClient + 1;
+
+		int status = select(n, &readfds, NULL, NULL, NULL);
+
+		if (status == -1)
+		{
+    	printf("error: select"); // error occurred in select()
+		}
+		else if (status == 0)
+		{
+    	//no data
+		}
+		else
+		{
+			char confirm[100] = "Server: I have received your message\n";
+
+	    // one or both of the descriptors have data, so we check both
+	    if (FD_ISSET(firstClient, &readfds))
+			{
+	        recv(firstClient, clientMsg1, sizeof clientMsg1, 0);
+					// otherwise, print the message
+					printf("Received from client 1: %s\n", clientMsg1);
+					sendMessage(firstClient, confirm);
+	    }
+
+	    if (FD_ISSET(secondClient, &readfds))
+			{
+	        recv(secondClient, clientMsg2, sizeof clientMsg2, 0);
+					printf("Received from client 2: %s\n", clientMsg2);
+					sendMessage(secondClient, confirm);
+	    }
+		}
+
+	}
+}
+
+// start the game with one clients
+// for now we start chat, wait for client input and then send a confirmation message
+// loops until SIGINT *** will adjust this later
+void starGameSinglePlayer(int client)
+{
+	while(1)
+	{
+
+	}
+}
+
 /*
  Accepts new connections, accepting 1 new connection for single player and 2 for multiplayer
 */
@@ -188,12 +259,14 @@ void acceptConnections(int socketFD, char* p, int playerToggle)
 		// accept incomming connection from first client
 		addr_size = sizeof client_addr;
 		firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
-		printf("Connected to first client...");
+		printf("Connected to first client...\n");
 
 		// accept incomming connection from second client
 		addr_size = sizeof client_addr;
 		secondClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
-		printf("Connected to second client...");
+		printf("Connected to second client...\n");
+
+		starGameMultiPlayer(firstClient, secondClient);
 	}
 
 	if (playerToggle == 0)
@@ -205,7 +278,9 @@ void acceptConnections(int socketFD, char* p, int playerToggle)
 	}
 
 	// need some method of determining which connections we want to read from, will probably use SELECT function
+
 }
+
 
 /*
     starts server, binds the initial socket for listening on and
