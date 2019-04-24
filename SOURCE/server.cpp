@@ -55,7 +55,7 @@ struct addrinfo* getServerInfo(char* portNum)
 */
 struct addrinfo* getClientInfo(char* hostname, char* portNum)
 {
-	// from Beej's guide, get addrees info to fill addrinfo struct
+	// from Beej's guide, get address info to fill addrinfo struct
 	int status;
 	struct addrinfo hints;
 	struct addrinfo *clientinfo;
