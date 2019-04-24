@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ ! -d "OBJECT" ]; then
+	mkdir -p OBJECT
+fi
