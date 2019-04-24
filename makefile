@@ -20,7 +20,7 @@ PROGRAM_NAME = cubeRunner
 
 _OBJ = cubeRunner.o highlight.o hostPrompt.o intro.o loadGraphic.o \
 	   paintCubeGraphic.o paintGraphic.o printMenu.o validateWinSize.o \
-	   initColors.o
+	   initColors.o server.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 _HDR = constants.hpp highlight.hpp hostPrompt.hpp include.hpp \
@@ -31,7 +31,8 @@ HDR = $(patsubst %,$(IDIR)/%,$(_HDR))
 
 _SRC = cubeRunner.cpp highlight.cpp hostPrompt.cpp intro.cpp \
 	   loadGraphic.cpp paintCubeGraphic.cpp paintGraphic.cpp \
-	   printMenu.cpp validateWinSize.cpp initColors.cpp
+	   printMenu.cpp validateWinSize.cpp initColors.cpp \
+	   server.cpp
 SRC = $(patsubst %,$(SDIR)/%,$(_SRC))
 
 $(PROGRAM_NAME): $(OBJ)
