@@ -11,7 +11,6 @@ References: CS 372 & CS 344 Programming Assignments, https://beej.us/guide/bgnet
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
-#include <dirent.h>
 #include <arpa/inet.h>
 #include <sys/stat.h>
 
@@ -320,15 +319,15 @@ void initServer(char* portNum, int playerToggle)
 }
 
 // starting out with command line entered values for now, will change in coming weeks***
-/* int main(int argc, char *argv[])
-{
-
-	// save command-line entered port number
-	char* portNum = argv[1];
-
-	// 0 for single player, 1 for multiplayer
-	int playerToggle = atoi(argv[2]);
-
-	// starts server processes
-	initServer(portNum, playerToggle);
-} */
+// int main(int argc, char *argv[])
+// {
+//
+// 	// save command-line entered port number
+// 	char* portNum = argv[1];
+//
+// 	// 0 for single player, 1 for multiplayer
+// 	int playerToggle = atoi(argv[2]);
+//
+// 	// starts server processes
+// 	initServer(portNum, playerToggle);
+// }
