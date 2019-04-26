@@ -89,16 +89,19 @@ int Game::playGame() {
 		#pragma omp section
 		{
 			int scrollRate = gameMode * 200;
-			double lastRefreshTime = numeric_limits<double>::max();
+			double lastScrollime = numeric_limits<double>::max();
 			while (cube.lives > 0 && ch != 27 || ch != KEY_END) {
-				if(time - lastRefreshTime > scrollRate) 
-					world.renderWorld();
+				if(time - lastScrollTime > scrollRate) 
+					world.scroll();
 				if(deathCheck()) {
 					//Death Sequence
 				}
 				else {
-					cube.print();
+					cube.paint();
 					lock1 = 0;
+				}
+				if(time - lastRefreshTime > REFRESH_RATE) {
+					world.refresh();
 				}
 			}
 		}
