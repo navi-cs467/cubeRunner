@@ -47,12 +47,19 @@ Water::Water(int gameMode, int numPlayers) :
 		
 		clear();  // curses clear-screen call
 	
-		//Paint screen blue
+		//Paint all but last 4 lines of the screen blue
 		attron(COLOR_PAIR(BLUE_BLUE));
-		for (int y = 0; y < LINES; y++) {
+		for (int y = 0; y < LINES - 4; y++) 
 			mvhline(y, 0, ' ', COLS);
-		}
+		
+		//Paint LINES - 4 to LINES - 1 brown (as the "ocean floor")
+		attron(COLOR_PAIR(BROWN_BROWN));
+		for (int y = LINES - 4; y < LINES - 1; y++)
+			mvhline(y, 0, ' ', COLS);
+		
 		refresh();
+		
+		//Last line is reserved for life count, timer, and score display
 }
 
 void Water::renderWorld() {
@@ -82,7 +89,7 @@ void Water::renderWorld() {
 		
 		if(typeid(**it) == typeid(Seaweed))
 			for(int i = xCoord + xOffset; 
-				i < Seaweed::graphicLines.length() && i < LINES - 1; i++) 
+				i < Seaweed::graphicLines.length() && i < LINES - 4; i++) 
 				for(j = yCoord + yOffset; 
 					j < Seaweed::graphicLines[i].length() && j < COLS; j++) {
 					Game::getBoard()[i][j] = Seaweed::graphicLines[i][j];
@@ -91,7 +98,7 @@ void Water::renderWorld() {
 				
 		if(typeid(**it) == typeid(Coral))
 			for(int i = xCoord + xOffset; 
-				i < Coral::graphicLines.length() && i < LINES - 1; i++) 
+				i < Coral::graphicLines.length() && i < LINES - 4; i++) 
 				for(j = yCoord + yOffset; 
 					j < Coral::graphicLines[i].length() && j < COLS; j++) {
 					Game::getBoard()[i][j] = Coral::graphicLines[i][j];
@@ -100,7 +107,7 @@ void Water::renderWorld() {
 				
 		if(typeid(**it) == typeid(Shark))
 			for(int i = xCoord + xOffset; 
-				i < Shark::graphicLines.length() && i < LINES - 1; i++) 
+				i < Shark::graphicLines.length() && i < LINES - 4; i++) 
 				for(j = yCoord + yOffset; 
 					j < Shark::graphicLines[i].length() && j < COLS; j++) {
 					Game::getBoard()[i][j] = Shark::graphicLines[i][j];
@@ -109,7 +116,7 @@ void Water::renderWorld() {
 				
 		if(typeid(**it) == typeid(Octopus))
 			for(int i = xCoord + xOffset; 
-				i < Octopus::graphicLines.length() && i < LINES - 1; i++) 
+				i < Octopus::graphicLines.length() && i < LINES - 4; i++) 
 				for(j = yCoord + yOffset; 
 					j < Octopus::graphicLines[i].length() && j < COLS; j++) {
 					Game::getBoard()[i][j] = Octopus::graphicLines[i][j];
@@ -120,7 +127,7 @@ void Water::renderWorld() {
 	//Print all the miniCubes
 	for(set<pair<int, int>::iterator it = miniCubes.begin();
 		it != miniCubes.end(); it++)
-		Game::board[*it.first][*it.second] = '/254';
+		Game::board[*it.first][*it.second] = '\254';	// '\254' is ascii "square"
 		
 	//Temp string to hold single character
 	char tmpStr[2]; tempStr[1] = '/0';
