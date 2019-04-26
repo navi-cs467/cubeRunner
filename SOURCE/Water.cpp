@@ -16,8 +16,8 @@
 
 #include "Water.hpp"
 
-Water::Water(int gameMode, int numPlayers) : 
-	World(gameMode, numPlayers) {
+Water::Water(int gameMode, bool isTwoPlayers) : 
+	World(gameMode, isTwoPlayers) {
 		int obstacleCount;
 		if(gameMode == 3)
 			obstacleCount = 4;
@@ -27,23 +27,27 @@ Water::Water(int gameMode, int numPlayers) :
 			obstacleCount = 10;
 		for(int i = 0, random = rand() % 4; 
 			i < obstacleCount; i++, rand = rand % 4) {
-				if(random == 0) {
-					obstacles.push_back(new Seaweed());
+				//if(random == 0) {
+				if(1) {
+					obstacles.push_back(new Seaweed(this));
 					updateObsCoords(obstacles.back());
 				}
 				else if(random == 1) {
-					obstacles.push_back(new Coral());
+					obstacles.push_back(new Coral(this));
 					updateObsCoords(obstacles.back());
 				}
 				else if(random == 2) {
-					obstacles.push_back(new Shark());
+					obstacles.push_back(new Shark(this));
 					updateObsCoords(obstacles.back());
 				}
 				else {
-					obstacles.push_back(new Octopus());
+					obstacles.push_back(new Octopus(this));
 					updateObsCoords(obstacles.back());
 				}
 		}
+		
+		//Load miniCubes here, making sure not to encroach on
+		//obstacles...
 		
 		clear();  // curses clear-screen call
 	
@@ -56,6 +60,8 @@ Water::Water(int gameMode, int numPlayers) :
 		attron(COLOR_PAIR(BROWN_BROWN));
 		for (int y = LINES - 4; y < LINES - 1; y++)
 			mvhline(y, 0, ' ', COLS);
+		
+		renderWorld();
 		
 		refresh();
 		
@@ -139,6 +145,9 @@ void Water::renderWorld() {
 			mvaddr(i, j, tmpStr);
 		}
 	refresh();
+	
+	//**NOTE: scroll function needs to free memory and delete obstacles as
+	//		  they leave the screen!
 }
 			
 		

@@ -8,11 +8,12 @@
 **				executer of the game state and progression.
 *******************************************************************/
 
-Game::Game(bool isTwoPlayer, int gameMode) : 
+Game::Game(int gameMode, bool isTwoPlayer) : 
 	isTwoPlayer(isTwoPlayer), gameMode(gameMode) {
 		//Create a random starting World
 		int worldSelector = rand() % 3;
-		if(worldSelector == 0)
+		//if(worldSelector == 0)
+		if(1)
 			world = new Water();
 		else if(worldSelector == 1)
 			world = new Land();
@@ -70,17 +71,19 @@ int Game::playGame() {
 		//Thread (2) for updating timer & score display
 		#pragma omp section
 		{
-			string output; ostringstream timeDisplay, scoreDisplay;
+			string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 			while (cube.lives > 0 && ch != 27 || ch != KEY_END) {
 				if(time < omp_get_wtime()) {
 					timeDisplay.clear();
-					timeDisplay << time / 3600 << ":" << time / 60 
+					timeDisplay << "Time: " << time / 3600 << ":" << time / 60 
 						 << ":" << (time / 60) % 60;
 				}
+				//lifeDisplay.clear();
+				//lifeDisplay << "Lives: " << cube.numLives << "   ";
 				scoreDisplay.clear();
-				scoreDisplay << score;
-				output = string(timeDisplay.c_str()) + 
-						 string(scoreDisplay.c_str());
+				scoreDisplay << score << "   ";
+				output = string(timeDisplay.c_str())  + "   "
+						 string(scoreDisplay.c_str()) + "   ";
 				mvaddr(LINES - 1, COLS - output.length() + 10, output.c_str());
 				refresh();
 			}
@@ -89,21 +92,23 @@ int Game::playGame() {
 		#pragma omp section
 		{
 			int scrollRate = gameMode * 200;
-			double lastScrollime = numeric_limits<double>::max();
+			double lastScrollTime = numeric_limits<double>::max();
 			while (cube.lives > 0 && ch != 27 || ch != KEY_END) {
-				if(time - lastScrollTime > scrollRate) 
+				/* if(omp_get_wtime() - lastScrollTime > scrollRate) {
+					lastScrollTime = omp_get_wtime();
 					world.scroll();
-				if(deathCheck()) {
+				} */
+				/* if(deathCheck()) {
 					//Death Sequence
-				}
-				else {
+				} */
+				/* else {
 					cube.paint();
 					lock1 = 0;
+				} */
+				if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
+					lastRefreshTime = omp_get_wtime();
+					world->renderWorld();
 				}
-				if(time - lastRefreshTime > REFRESH_RATE) {
-					world.refresh();
-				}
-			}
 		}
 	}
 }

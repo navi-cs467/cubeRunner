@@ -443,8 +443,10 @@ int main(void)
 				}
 			}
 		}
-		//startGame(mode, playerCount, host, port)
-		//gameOn = false;
+		//int score = startGame(mode, playerCount, host, port);
+		Game game = Game(3, false);
+		game.playGame();
+		gameOn = false;
 	}		
 	return 0;
 }   

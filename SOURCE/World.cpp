@@ -3,10 +3,10 @@
 ** CS467 Capstone - 2D Runner - "Cube Runner"
 ** Team: NAVI
 ** Date: 4/25/2019
-** Description: Header file for World class. The World class is 
+** Description: Source file for World class. The World class is 
 ** 				abstract and provides non-derived class specific
-**				member declarations and definitions for the dynamic
-**				screen layout during gameplay.
+**				member definitions for the dynamic screen layout 
+**				during gameplay.
 ********************************************************************/
 
 void World::updateObsCoords(Obstacle *ob) {

@@ -16,7 +16,7 @@
 
 class Water : public World {
 	public:
-		Water();
+		Water(int gameMode, bool isTwoPlayers);
 		virtual void renderWorld();
 		virtual void scroll();
 };

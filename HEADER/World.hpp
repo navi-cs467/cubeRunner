@@ -5,22 +5,22 @@
 ** Date: 4/25/2019
 ** Description: Header file for World class. The World class is 
 ** 				abstract and provides non-derived class specific
-**				member declarations and definitions for the dynamic
-**				screen layout during gameplay.
+**				member declarations for the dynamic screen layout 
+**				during gameplay.
 ********************************************************************/
 
 class World {
 	protected:
 		list<Obstacle*> obstacles;
 		set<pair<int, int>> miniCubes, obsCoords;
-		vector<WINDOW*> subscrns;
-		int gameMode, numPlayers;
+		//vector<WINDOW*> subscrns;
+		int gameMode;
+		bool isTwoPlayers;
 		
 	public:
-		World(int gameMode, int numPlayers) :
-			gameMode(gameMode), numPlayers(numPlayers) {}
+		World(int gameMode, bool isTwoPlayers) :
+			gameMode(gameMode), isTwoPlayers(isTwoPlayers) {}
 		void updateObsCoords(Obstacle *ob);
-		virtual void renderWorld() = 0;
 		virtual void renderWorld() = 0;
 		virtual void scroll() = 0;
 		
