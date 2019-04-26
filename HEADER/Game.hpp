@@ -16,10 +16,14 @@ class Game {
 		int score;
 		double time;
 		int gameMode;		//(1) is Hard, (2) is Normal, (3) is Easy
+		static int board[LINES - 1][ROWS];	//Last line of screen is reserved
+											//for life count, time, and score
+											//display
 
 	public:
 		Game(bool isTwoPlayers, int gameMode);
 		int getScore() {return score;}
 		void setScore(int score); {this->score = score;}
 		int playGame();
+		static int** getBoard() {return board;}
 };

@@ -18,6 +18,9 @@ Game::Game(bool isTwoPlayer, int gameMode) :
 			world = new Land();
 		else
 			world = new Space();
+		for(int i = 0; i < LINES - 1; i++)
+			for(int j = 0; j < COLS; j++)
+				board[i][j] = ' ';
 	}
 
 int Game::playGame() {

@@ -55,11 +55,17 @@ Water::Water(int gameMode, int numPlayers) :
 		refresh();
 }
 
-void World::renderWorld() {
+void Water::renderWorld() {
 	
-	WINDOW* subscrns[obstacles.size()];
+	//Clear coordinates with objects tracker
+	obsCoords.clear();
+	
+	//Clear board
+	for(int i = 0; i < LINES; i++) 
+		memset(Game::board[i], ' ', COLS * sizeof(int));
+			
+	
 	int obsNum = 0;
-	
 	for(list<Obstacle*>::iterator it; it != obstacles.end(); it++, obsNum++) {
 
 		int xCoord = (*it)->getXCoord, yCoord = (*it)->getYCoord,
@@ -70,14 +76,63 @@ void World::renderWorld() {
 			// exceed LINES or COLS)
 			xOffset = 0, yOffset = 0;
 			
+		//Determine offsets	if necessary (i.e. part of graphic is off screen)
 		if(xCoord < 0) xOffset = -xCoord;
 		if(yCoord < 0) yOffset = -yCoord;
-			
+		
 		if(typeid(**it) == typeid(Seaweed))
-			for(int i = xOffset; i < Seaweed::graphicLines.length(); i++) {
-				if(yCoord < 0) xOffset = -yCoord;
-				subscrns[obsNum] = newwin(
+			for(int i = xCoord + xOffset; 
+				i < Seaweed::graphicLines.length() && i < LINES - 1; i++) 
+				for(j = yCoord + yOffset; 
+					j < Seaweed::graphicLines[i].length() && j < COLS; j++) {
+					Game::getBoard()[i][j] = Seaweed::graphicLines[i][j];
+					obsCoords.insert(make_pair(i, j));
+				}
 				
+		if(typeid(**it) == typeid(Coral))
+			for(int i = xCoord + xOffset; 
+				i < Coral::graphicLines.length() && i < LINES - 1; i++) 
+				for(j = yCoord + yOffset; 
+					j < Coral::graphicLines[i].length() && j < COLS; j++) {
+					Game::getBoard()[i][j] = Coral::graphicLines[i][j];
+					obsCoords.insert(make_pair(i, j));
+				}
+				
+		if(typeid(**it) == typeid(Shark))
+			for(int i = xCoord + xOffset; 
+				i < Shark::graphicLines.length() && i < LINES - 1; i++) 
+				for(j = yCoord + yOffset; 
+					j < Shark::graphicLines[i].length() && j < COLS; j++) {
+					Game::getBoard()[i][j] = Shark::graphicLines[i][j];
+					obsCoords.insert(make_pair(i, j));
+				}
+				
+		if(typeid(**it) == typeid(Octopus))
+			for(int i = xCoord + xOffset; 
+				i < Octopus::graphicLines.length() && i < LINES - 1; i++) 
+				for(j = yCoord + yOffset; 
+					j < Octopus::graphicLines[i].length() && j < COLS; j++) {
+					Game::getBoard()[i][j] = Octopus::graphicLines[i][j];
+					obsCoords.insert(make_pair(i, j));
+				}
+	}
+		
+	//Print all the miniCubes
+	for(set<pair<int, int>::iterator it = miniCubes.begin();
+		it != miniCubes.end(); it++)
+		Game::board[*it.first][*it.second] = '/254';
+		
+	//Temp string to hold single character
+	char tmpStr[2]; tempStr[1] = '/0';
+	
+	//Output board to screen
+	for(int i = 0; i < LINES - 1; i++)
+		for(int j =0; j < COLS; j++) {
+			tmpStr[0] = Game::board[i][j];
+			mvaddr(i, j, tmpStr);
+		}
+	refresh();
+}
 			
 		
 	

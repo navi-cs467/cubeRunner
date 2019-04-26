@@ -13,6 +13,7 @@ class World {
 	protected:
 		list<Obstacle*> obstacles;
 		set<pair<int, int>> miniCubes, obsCoords;
+		vector<WINDOW*> subscrns;
 		int gameMode, numPlayers;
 		
 	public:
@@ -22,7 +23,12 @@ class World {
 		virtual void renderWorld() = 0;
 		virtual void renderWorld() = 0;
 		virtual void scroll() = 0;
-		friend list<Obstacle*>& Obstacle::getWorldObs();
+		
+		//The following two functions are used by the Obstacle
+		//constructor to ensure a new obstacle is not placed on
+		//top of an existing obstacle or minicube.
+		set<pair<int, int>>& getWorldObsCoords() {return obsCoords;}
+		set<pair<int, int>>& getWorldMiniCubes() {return miniCubes;};
 };
 		
 		
