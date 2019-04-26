@@ -331,6 +331,9 @@ int main(void)
 							
 							//Return from network prompt if a connection is not established
 							if(!connected) {
+								//Clear and delete host prompt menu
+								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+								
 								//Reinstate outer menu border
 								box(subscrnMenuBorder, '|', '_'); 
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
@@ -367,6 +370,9 @@ int main(void)
 								hostPrompt(startingColMenu3, startingRowMenu3, 
 									&subscrnGraphic, &currMenu, &connected, host, &port);
 							if(!connected) {
+								//Clear and delete host prompt menu
+								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+								
 								//Reinstate outer menu border
 								box(subscrnMenuBorder, '|', '_'); 
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
@@ -403,6 +409,9 @@ int main(void)
 								hostPrompt(startingColMenu3, startingRowMenu3, 
 									&subscrnGraphic, &currMenu, &connected, host, &port);
 							if(!connected) {
+								//Clear and delete host prompt menu
+								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+								
 								//Reinstate outer menu border
 								box(subscrnMenuBorder, '|', '_'); 
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
@@ -444,9 +453,9 @@ int main(void)
 			}
 		}
 		//int score = startGame(mode, playerCount, host, port);
-		Game game = Game(3, false);
-		game.playGame();
-		gameOn = false;
+		//Game game = Game(3, false);
+		//game.playGame();
+		//gameOn = false;
 	}		
 	return 0;
 }   

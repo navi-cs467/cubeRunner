@@ -30,7 +30,7 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 	refresh();	
 	
 	
-	char portStr[6]; int i = 0, ch;
+	char portStr[6]; int i = 0, j = 0, ch;
 	//Get hostname or IP address
 	do{
 		ch = getch();
@@ -57,9 +57,15 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 	//Get port number
 	i = 0;
 	do{
+		
+		//** Should probably use wgetnstr here instead... **
+		//** Coming Soon **
+		
 		ch = getch();
 		if(ch == KEY_BACKSPACE && i > 0) i--;
 		else if(i < 5) portStr[i++] = ch;
+		if(i == 5) noecho();
+		else echo();
 	}
 	while(ch != '\n' && ch != 27 && ch != KEY_END);
 	//If escape key is entered, go back to menu 2
