@@ -23,5 +23,6 @@
 #define MENU1_LENGTH 4
 #define MENU2_LENGTH 4
 #define MENU3_LENGTH 4
+#define REFRESH_RATE 0.001
 
 #endif /* constants_hpp */
