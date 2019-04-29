@@ -8,24 +8,33 @@
 **				progression.
 ********************************************************************/
 
+#ifndef Game_hpp
+#define Game_hpp
+
+#include "World.hpp"
+#include "Water.hpp"
+//#include "include.hpp"
+#include "constants.hpp"
+
 class Game {
 	private:
-		Cube cube;
+		//Cube cube;
 		World *world;
-		bool isTwoPlayers;
+		bool isTwoPlayer;
 		int score;
 		double time;
-		int gameMode;		//(1) is Hard, (2) is Normal, (3) is Easy
-		static int board[][];	//Last line of screen is reserved
-											//for life count, time, and score
-											//display.
+		int gameMode;			//(1) is Hard, (2) is Normal, (3) is Easy
+		
+		static char **board;	//Last line of screen is reserved
+								//for life count, time, and score
+								//display.
 
 	public:
-		Game(int gameMode, bool isTwoPlayers);
+		Game(int gameMode, bool isTwoPlayer);
 		int getScore() {return score;}
-		void setScore(int score); {this->score = score;}
+		void setScore(int score) {this->score = score;}
 		int playGame();
-		static int** getBoard() {return board;}
+		static char** getBoard() {return board;}
 };
 
-int Game::board[LINES - 1][ROWS];
+#endif /* Game_hpp */

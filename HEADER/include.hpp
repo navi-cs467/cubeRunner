@@ -20,6 +20,13 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <set>
+#include <list>
+#include <set>
+#include <utility>
+#include <limits>
+#include <typeinfo>
+#include <string>
 #include "colorDefs.hpp"
 
 #endif /* include_hpp */

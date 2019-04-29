@@ -14,12 +14,19 @@
 **				by the player.
 ********************************************************************/
 
+#ifndef Water_hpp
+#define Water_hpp
+
+#include "../HEADER/World.hpp"
+
 class Water : public World {
 	public:
-		Water(int gameMode, bool isTwoPlayers);
+		Water(int gameMode, bool isTwoPlayer);
 		virtual void renderWorld();
-		virtual void scroll();
+		//virtual void scroll_();
 };
+
+#endif /* Water_hpp */
 		
 		
 // Ref

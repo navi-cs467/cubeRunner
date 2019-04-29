@@ -23,6 +23,9 @@
 #include "../HEADER/printMenu.hpp"
 #include "../HEADER/validateWinSize.hpp"
 
+//Game class
+#include "../HEADER/Game.hpp"
+
 /*************************** GLOBALS *********************************/
 
 WINDOW *scrn; 	//Will point to curses window object
@@ -453,9 +456,9 @@ int main(void)
 			}
 		}
 		//int score = startGame(mode, playerCount, host, port);
-		//Game game = Game(3, false);
-		//game.playGame();
-		//gameOn = false;
+		Game game = Game(3, false);
+		game.playGame();
+		gameOn = false;
 	}		
 	return 0;
 }   

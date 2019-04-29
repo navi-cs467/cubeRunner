@@ -20,5 +20,10 @@ using std::ios;
 using std::cout;
 using std::cin;
 using std::endl;
+using std::list;
+using std::pair;
+using std::set;
+using std::numeric_limits;
+using std::make_pair;
 
 #endif /* using_hpp */

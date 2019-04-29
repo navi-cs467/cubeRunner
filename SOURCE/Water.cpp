@@ -14,10 +14,15 @@
 **				by the player.
 ********************************************************************/
 
-#include "Water.hpp"
+#include "../HEADER/Water.hpp"
 
-Water::Water(int gameMode, bool isTwoPlayers) : 
-	World(gameMode, isTwoPlayers) {
+Water::Water(int gameMode, bool isTwoPlayer) : 
+	World(gameMode, isTwoPlayer) {
+		//Set bottom row to LINES - 5, to allow for 
+		//score, life count, and timer display +
+		//3 lines of brown
+		bottomRow = LINES - 5;
+		
 		int obstacleCount;
 		if(gameMode == 3)
 			obstacleCount = 4;
@@ -26,7 +31,7 @@ Water::Water(int gameMode, bool isTwoPlayers) :
 		else
 			obstacleCount = 10;
 		for(int i = 0, random = rand() % 4; 
-			i < obstacleCount; i++, rand = rand % 4) {
+			i < obstacleCount; i++) {
 				//if(random == 0) {
 				if(1) {
 					obstacles.push_back(new Seaweed(this));
@@ -44,6 +49,7 @@ Water::Water(int gameMode, bool isTwoPlayers) :
 					obstacles.push_back(new Octopus(this));
 					updateObsCoords(obstacles.back());
 				}
+				rand = rand % 4;
 		}
 		
 		//Load miniCubes here, making sure not to encroach on
@@ -136,7 +142,7 @@ void Water::renderWorld() {
 		Game::board[*it.first][*it.second] = '\254';	// '\254' is ascii "square"
 		
 	//Temp string to hold single character
-	char tmpStr[2]; tempStr[1] = '/0';
+	char tmpStr[2]; tempStr[1] = '\0';
 	
 	//Output board to screen
 	for(int i = 0; i < LINES - 1; i++)

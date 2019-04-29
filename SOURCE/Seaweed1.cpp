@@ -6,7 +6,9 @@
 ** Description: Source file for Seaweed class, a derived Obstacle.
 ********************************************************************/
 
-Seaweed::Seaweed(World* world) : Obstacle(world), isStationary(true) {
+#include "../HEADER/Seaweed.hpp"
+
+Seaweed1::Seaweed1(World *world) : Obstacle(world), isStationary(true) {
 	
 	//Find random starting position that does not
 	//encroach on existing world obstacles or miniCubes
