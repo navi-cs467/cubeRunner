@@ -6,22 +6,27 @@
 ** Description: Source file for Seaweed class, a derived Obstacle.
 ********************************************************************/
 
-#include "../HEADER/Seaweed.hpp"
+#include "../HEADER/Seaweed1.hpp"
 
-Seaweed1::Seaweed1(World *world) : Obstacle(world), isStationary(true) {
+Seaweed1::Seaweed1(World *world) : Obstacle() {
 	
-	//Find random starting position that does not
-	//encroach on existing world obstacles or miniCubes
-	set<pair<int,int>>::iterator it1, it2;
-	bool enchroaches = false;
-	do {
-		posX = rand() % LINES - 4;
-		posY = rand() % COLS + 10;		//No obstacles start in first 10 columns
-		for(int i = 0; i < graphicLines.length(); i++) 
-			for(int j = 0; j < graphicLines[i].length(); j++)
-				it1 = world->getWorldObsCoords().find(make_pair(i, j));
-				it2 = world->getMiniCubes().find(make_pair(i, j));
-				if(it1 != world->getWorldObsCoords().end() || 
-				   it2 != world->getMiniCubes().end())
-					enchroaches = true;
-	} while(enchroaches == true);
+	isStationary = true;
+	createObstacle(world, graphicLines, lengthGL);
+}
+
+string Seaweed1::graphicLines[] = {string("(   )"),
+								   string(" ) ("),
+								   string(" ( )"),
+								   string(" ) ("),
+								   string("(   )")};
+
+int Seaweed1::lengthGL = 5;
+
+//  Not working as intended...							   
+/* int Seaweed1::lengthGL = 
+	sizeof(Seaweed1::getGraphicLines()) / sizeof(string); */
+	
+int Seaweed1::color = GREEN_BLUE;
+
+// References
+// https://ubuntuforums.org/showthread.php?t=836043

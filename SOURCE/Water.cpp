@@ -20,24 +20,24 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 	World(gameMode, isTwoPlayer) {
 		//Set bottom row to LINES - 5, to allow for 
 		//score, life count, and timer display +
-		//3 lines of brown
+		//3 lines of green
 		bottomRow = LINES - 5;
 		
 		int obstacleCount;
 		if(gameMode == 3)
-			obstacleCount = 4;
-		else if(gameMode == 2)
-			obstacleCount = 7;
-		else
 			obstacleCount = 10;
+		else if(gameMode == 2)
+			obstacleCount = 15;
+		else
+			obstacleCount = 25;
 		for(int i = 0, random = rand() % 4; 
-			i < obstacleCount; i++) {
+			i < obstacleCount; i++, random = rand() % 4) {
 				//if(random == 0) {
 				if(1) {
-					obstacles.push_back(new Seaweed(this));
+					obstacles.push_back(new Seaweed1(this));
 					updateObsCoords(obstacles.back());
 				}
-				else if(random == 1) {
+				/* else if(random == 1) {
 					obstacles.push_back(new Coral(this));
 					updateObsCoords(obstacles.back());
 				}
@@ -48,28 +48,26 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 				else {
 					obstacles.push_back(new Octopus(this));
 					updateObsCoords(obstacles.back());
-				}
-				rand = rand % 4;
+				} */
 		}
 		
-		//Load miniCubes here, making sure not to encroach on
-		//obstacles...
+		initMiniCubes(gameMode * 20);
 		
 		clear();  // curses clear-screen call
 	
 		//Paint all but last 4 lines of the screen blue
 		attron(COLOR_PAIR(BLUE_BLUE));
-		for (int y = 0; y < LINES - 4; y++) 
+		for (int y = 0; y <= bottomRow; y++) 
 			mvhline(y, 0, ' ', COLS);
 		
 		//Paint LINES - 4 to LINES - 1 brown (as the "ocean floor")
-		attron(COLOR_PAIR(BROWN_BROWN));
-		for (int y = LINES - 4; y < LINES - 1; y++)
+		attron(COLOR_PAIR(GREEN_GREEN));
+		for (int y = bottomRow + 1; y < LINES - 1; y++)
 			mvhline(y, 0, ' ', COLS);
 		
-		renderWorld();
-		
 		refresh();
+		
+		renderWorld();
 		
 		//Last line is reserved for life count, timer, and score display
 }
@@ -81,13 +79,18 @@ void Water::renderWorld() {
 	
 	//Clear board
 	for(int i = 0; i < LINES; i++) 
-		memset(Game::board[i], ' ', COLS * sizeof(int));
+		memset(Game::getBoard()[i], ' ', COLS * sizeof(char));
+	
+	//for(int i = 0; i <= 3; i++)
+	//	for(int j = 0; j < 3; j++)
+	//		Game::setBoard(i, j, ' ');
 			
 	
 	int obsNum = 0;
-	for(list<Obstacle*>::iterator it; it != obstacles.end(); it++, obsNum++) {
+	for(list<Obstacle*>::iterator it = obstacles.begin();
+			it != obstacles.end(); it++, obsNum++) {
 
-		int xCoord = (*it)->getXCoord, yCoord = (*it)->getYCoord,
+		int xCoord = (*it)->getPosX(), yCoord = (*it)->getPosY(),
 			
 			//Used when obstacle is partially off-screen (left or top)
 			//(Not needed for right or bottom because ncurses will 
@@ -95,61 +98,74 @@ void Water::renderWorld() {
 			// exceed LINES or COLS)
 			xOffset = 0, yOffset = 0;
 			
-		//Determine offsets	if necessary (i.e. part of graphic is off screen)
+		//Determine offsets	if necessary (i.e. when part of graphic is off screen)
 		if(xCoord < 0) xOffset = -xCoord;
 		if(yCoord < 0) yOffset = -yCoord;
 		
-		if(typeid(**it) == typeid(Seaweed))
-			for(int i = xCoord + xOffset; 
-				i < Seaweed::graphicLines.length() && i < LINES - 4; i++) 
-				for(j = yCoord + yOffset; 
-					j < Seaweed::graphicLines[i].length() && j < COLS; j++) {
-					Game::getBoard()[i][j] = Seaweed::graphicLines[i][j];
-					obsCoords.insert(make_pair(i, j));
+		//Temporary c-string used in call to mvaddstr below
+		char tmpStr[2]; tmpStr[1] = '\0';
+		
+		if(typeid(**it) == typeid(Seaweed1)) {
+			attron(COLOR_PAIR(Seaweed1::getColor()));
+			for(int i = 0; i < Seaweed1::getLengthGL() && 
+				i + xCoord + xOffset <= bottomRow; i++) 
+				for(int j = 0; j < Seaweed1::getGraphicLines()[i].length() && 
+					j + yCoord + yOffset < COLS &&
+					j + yCoord + yOffset >= 0; j++) {
+					Game::setBoard(i + xCoord + xOffset, 
+								   j + yCoord + yOffset,
+								   Seaweed1::getGraphicLines()[i][j]);
+					obsCoords.insert(make_pair(i + xCoord + xOffset, 
+											   j + yCoord + yOffset));
+					tmpStr[0] = Seaweed1::getGraphicLines()[i][j];
+					//output to screen
+					mvaddstr(i + xCoord + xOffset, 
+							 j + yCoord + yOffset, 
+							 tmpStr);
 				}
+		}
 				
-		if(typeid(**it) == typeid(Coral))
+		/* if(typeid(**it) == typeid(Coral))
 			for(int i = xCoord + xOffset; 
 				i < Coral::graphicLines.length() && i < LINES - 4; i++) 
-				for(j = yCoord + yOffset; 
+				for(int j = yCoord + yOffset; 
 					j < Coral::graphicLines[i].length() && j < COLS; j++) {
-					Game::getBoard()[i][j] = Coral::graphicLines[i][j];
+					Game::getBoard()[i][j] = Coral::getGraphicLines()[i][j];
 					obsCoords.insert(make_pair(i, j));
 				}
 				
 		if(typeid(**it) == typeid(Shark))
 			for(int i = xCoord + xOffset; 
 				i < Shark::graphicLines.length() && i < LINES - 4; i++) 
-				for(j = yCoord + yOffset; 
+				for(int j = yCoord + yOffset; 
 					j < Shark::graphicLines[i].length() && j < COLS; j++) {
-					Game::getBoard()[i][j] = Shark::graphicLines[i][j];
+					Game::getBoard()[i][j] = Shark::getGraphicLines()[i][j];
 					obsCoords.insert(make_pair(i, j));
 				}
 				
 		if(typeid(**it) == typeid(Octopus))
 			for(int i = xCoord + xOffset; 
 				i < Octopus::graphicLines.length() && i < LINES - 4; i++) 
-				for(j = yCoord + yOffset; 
+				for(int j = yCoord + yOffset; 
 					j < Octopus::graphicLines[i].length() && j < COLS; j++) {
-					Game::getBoard()[i][j] = Octopus::graphicLines[i][j];
+					Game::getBoard()[i][j] = Octopus::getGraphicLines()[i][j];
 					obsCoords.insert(make_pair(i, j));
-				}
+				} */
 	}
 		
 	//Print all the miniCubes
-	for(set<pair<int, int>::iterator it = miniCubes.begin();
-		it != miniCubes.end(); it++)
-		Game::board[*it.first][*it.second] = '\254';	// '\254' is ascii "square"
-		
-	//Temp string to hold single character
-	char tmpStr[2]; tempStr[1] = '\0';
-	
-	//Output board to screen
-	for(int i = 0; i < LINES - 1; i++)
-		for(int j =0; j < COLS; j++) {
-			tmpStr[0] = Game::board[i][j];
-			mvaddr(i, j, tmpStr);
+	//wchar_t mc = 0x25A0;		//Trying to print unicode square '\u25A0'...
+	char mc = 'c';
+	attron(COLOR_PAIR(BLUE_BLACK)); attron(A_BOLD);
+	for(set<pair<int, int>>::iterator it = miniCubes.begin();
+		it != miniCubes.end(); it++) {
+			Game::setBoard(it->first, it->second,'c');	// '\254' is ascii "square"
+			//mvaddwstr(it->first, it->second, mc); refresh();
+			move(it->first, it->second);
+			//printw(L"%lc", mc);
+			printw("%c", mc);
 		}
+		
 	refresh();
 	
 	//**NOTE: scroll function needs to free memory and delete obstacles as

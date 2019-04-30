@@ -43,6 +43,7 @@ void intro()
 									 //specified position and
 									 //paint a string there
 		usleep(100 * 1000);	//Sleep for 100 milliseconds for animation effect
+		//usleep(1 * 1000);	//Sleep for 1 milliseconds (testing only)
 		wrefresh(subscrn);  //Now make the changes actually appear on the screen,
 							//using this call to the curses library
     }
@@ -110,6 +111,7 @@ void intro()
 			mvvline(LINES - i, j - l, ' ', i - (z * MAIN_BORDER_ANIMATION_ROW_WIDTH));
 		
 		usleep(100 * 1000);	//Sleep for 100 milliseconds for animation effect
+		//usleep(1 * 1000);	//Sleep for 1 milliseconds (testing only)
 		refresh();
 	}
 	

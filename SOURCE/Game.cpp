@@ -12,10 +12,16 @@
 
 Game::Game(int gameMode, bool isTwoPlayer) : 
 	isTwoPlayer(isTwoPlayer), gameMode(gameMode) {
+		
 		//Allocate memory for board
-		board = new char*[world->getBottomRow()+1];
-		for(int i = 0; i <= world->getBottomRow(); i++)
+		board = new char*[LINES];
+		for(int i = 0; i < LINES; i++)
 			board[i] = new char[COLS];
+		
+		//Print space characters on board
+		for(int i = 0; i < LINES - 1; i++)
+			for(int j = 0; j < COLS; j++)
+				board[i][j] = ' ';
 		
 		//Create a random starting World
 		int worldSelector = rand() % 3;
@@ -26,10 +32,12 @@ Game::Game(int gameMode, bool isTwoPlayer) :
 			world = new Land(gameMode, isTwoPlayer);
 		else
 			world = new Space(gameMode, isTwoPlayer); */
-		for(int i = 0; i < LINES - 1; i++)
-			for(int j = 0; j < COLS; j++)
-				board[i][j] = ' ';
-	}
+		
+		//move(3, 4);
+		//printw("%d %d %s", board, 54, "testing_again\n\n"); refresh();
+		
+		//usleep(100000000);
+}
 
 int Game::playGame() {
 	
@@ -81,8 +89,9 @@ int Game::playGame() {
 		{
 			int time = static_cast<int>(omp_get_wtime());
 			string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
-			while (/* cube.lives > 0 && */ userInput != 27 || 
-										   userInput != KEY_END) {
+			/* while (// cube.lives > 0 &&
+					userInput != 27 || 
+					userInput != KEY_END) {
 				if(time < static_cast<int>(omp_get_wtime())) {
 					time = static_cast<int>(omp_get_wtime());
 					timeDisplay.clear();
@@ -97,7 +106,7 @@ int Game::playGame() {
 						 string(scoreDisplay.str().c_str()) + "   ";
 				mvaddstr(LINES - 1, COLS - output.length() + 10, output.c_str());
 				refresh();
-			}
+			} */
 		}
 		//Thread (3) for game engine
 		#pragma omp section
@@ -128,7 +137,7 @@ int Game::playGame() {
 	return score;
 }
 	
-
+char **Game::board = nullptr;
 
 
 // References

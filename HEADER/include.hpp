@@ -10,9 +10,13 @@
 #ifndef include_hpp
 #define include_hpp
 
-#include <ncurses.h>
+//#include <ncurses.h>
+#include <ncursesw/ncurses.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <locale.h>
+#include <wchar.h>
 #include <omp.h>
 #include <time.h>
 #include <fstream>
@@ -27,6 +31,7 @@
 #include <limits>
 #include <typeinfo>
 #include <string>
+#include <cstring>
 #include "colorDefs.hpp"
 
 #endif /* include_hpp */

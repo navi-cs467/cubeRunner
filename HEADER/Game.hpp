@@ -11,7 +11,8 @@
 #ifndef Game_hpp
 #define Game_hpp
 
-#include "World.hpp"
+//#include "World.hpp"
+class World;
 #include "Water.hpp"
 //#include "include.hpp"
 #include "constants.hpp"
@@ -32,9 +33,11 @@ class Game {
 	public:
 		Game(int gameMode, bool isTwoPlayer);
 		int getScore() {return score;}
+		int getGameMode() {return gameMode;}
 		void setScore(int score) {this->score = score;}
 		int playGame();
 		static char** getBoard() {return board;}
+		static void setBoard(int x, int y, char ch) {board[x][y] = ch;}
 };
 
 #endif /* Game_hpp */

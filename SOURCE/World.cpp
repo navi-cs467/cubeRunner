@@ -33,4 +33,23 @@ void World::updateObsCoords(Obstacle *ob) {
 				obsCoords.insert(make_pair(ob->getXCoord + i,
 										   ob->getYCoord + j)); */
 }
+
+void World::initMiniCubes(int numMiniCubes) {
+	//Find random starting position that does not
+	//encroach on existing world obstacles
+	set<pair<int,int>>::iterator it;
+	bool enchroaches;
+	int posX, posY;
+	for(int i = 0; i < numMiniCubes; i++) {
+		do {
+			posX = rand() % bottomRow;
+			posY = (rand() % (COLS - 10)) + 10;		//No miniCubes start in first 10 columns
+			it = obsCoords.find(make_pair(posX, posY));
+			if(it != obsCoords.end())
+				enchroaches = true;
+			else enchroaches = false;
+		} while(enchroaches == true);
+		miniCubes.insert(make_pair(posX, posY));
+	}
+}
 	

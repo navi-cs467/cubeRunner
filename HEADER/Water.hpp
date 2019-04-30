@@ -17,7 +17,8 @@
 #ifndef Water_hpp
 #define Water_hpp
 
-#include "../HEADER/World.hpp"
+#include "World.hpp"
+#include "Game.hpp"
 
 class Water : public World {
 	public:
