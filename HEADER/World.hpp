@@ -9,29 +9,47 @@
 **				during gameplay.
 ********************************************************************/
 
+#ifndef World_hpp
+#define World_hpp
+
+class Game;
+//#include "Game.hpp"
+#include "Obstacle.hpp"
+#include "Seaweed1.hpp"
+#include "using.hpp"
+
 class World {
 	protected:
 		list<Obstacle*> obstacles;
 		set<pair<int, int>> miniCubes, obsCoords;
 		//vector<WINDOW*> subscrns;
 		int gameMode;
-		bool isTwoPlayers;
+		int bottomRow;
+		bool isTwoPlayer;
+		void initMiniCubes(int numMiniCubes);
 		
 	public:
-		World(int gameMode, bool isTwoPlayers) :
-			gameMode(gameMode), isTwoPlayers(isTwoPlayers) {}
+		World(int gameMode, bool isTwoPlayer) :
+			gameMode(gameMode), isTwoPlayer(isTwoPlayer) {}
 		void updateObsCoords(Obstacle *ob);
+		//void updateMiniCubes(pair<int, int>);
 		virtual void renderWorld() = 0;
-		virtual void scroll() = 0;
+		//virtual void scroll_() = 0;
 		
 		//The following two functions are used by the Obstacle
 		//constructor to ensure a new obstacle is not placed on
 		//top of an existing obstacle or minicube.
-		set<pair<int, int>>& getWorldObsCoords() {return obsCoords;}
-		set<pair<int, int>>& getWorldMiniCubes() {return miniCubes;};
+		set<pair<int, int>>& getObsCoords() {return obsCoords;}
+		set<pair<int, int>>& getMiniCubes() {return miniCubes;}
+		
+		int getBottomRow() const {return bottomRow;}
 };
+
+#endif /* World_hpp */
 		
 		
 // Ref
 // http://www.cplusplus.com/reference/utility/pair/pair/
 // http://www.cplusplus.com/reference/set/set/find/
+// https://www.geeksforgeeks.org/pair-in-cpp-stl/
+// https://ubuntuforums.org/showthread.php?t=836043

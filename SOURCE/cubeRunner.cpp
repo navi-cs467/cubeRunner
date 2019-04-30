@@ -23,6 +23,9 @@
 #include "../HEADER/printMenu.hpp"
 #include "../HEADER/validateWinSize.hpp"
 
+//Game class
+#include "../HEADER/Game.hpp"
+
 /*************************** GLOBALS *********************************/
 
 WINDOW *scrn; 	//Will point to curses window object
@@ -68,6 +71,8 @@ const string networkPrompt = "Please enter a Hostname or IP Address "
 
 int main(void)
 {  
+	setlocale(LC_ALL, "");		//Trying to print unicode square '\u25A0'...
+
 	//Window setup, next 3 lines are curses library calls, a standard
     //initializing sequence for curses programs
     scrn = initscr();
@@ -353,7 +358,7 @@ int main(void)
 							}
 							else {
 								gameOn = true;
-								gameMode = 1;
+								gameMode = 3;
 							}
 						}
 						
@@ -431,7 +436,7 @@ int main(void)
 							}
 							else {
 								gameOn = true;
-								gameMode = 3;
+								gameMode = 1;
 							}
 						}
 						
@@ -452,10 +457,14 @@ int main(void)
 				}
 			}
 		}
+		
+		//move(0,0);
+		//printw("%d %d %s", 23, 54, "testing\n\n"); refresh();
+		
 		//int score = startGame(mode, playerCount, host, port);
-		//Game game = Game(3, false);
-		//game.playGame();
-		//gameOn = false;
+		Game game = Game(3, false);
+		game.playGame();
+		gameOn = false;
 	}		
 	return 0;
 }   

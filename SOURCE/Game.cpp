@@ -8,25 +8,40 @@
 **				executer of the game state and progression.
 *******************************************************************/
 
+#include "../HEADER/Game.hpp"
+
 Game::Game(int gameMode, bool isTwoPlayer) : 
 	isTwoPlayer(isTwoPlayer), gameMode(gameMode) {
+		
+		//Allocate memory for board
+		board = new char*[LINES];
+		for(int i = 0; i < LINES; i++)
+			board[i] = new char[COLS];
+		
+		//Print space characters on board
+		for(int i = 0; i < LINES - 1; i++)
+			for(int j = 0; j < COLS; j++)
+				board[i][j] = ' ';
+		
 		//Create a random starting World
 		int worldSelector = rand() % 3;
 		//if(worldSelector == 0)
 		if(1)
-			world = new Water();
-		else if(worldSelector == 1)
-			world = new Land();
+			world = new Water(gameMode, isTwoPlayer);
+		/* else if(worldSelector == 1)
+			world = new Land(gameMode, isTwoPlayer);
 		else
-			world = new Space();
-		for(int i = 0; i < LINES - 1; i++)
-			for(int j = 0; j < COLS; j++)
-				board[i][j] = ' ';
-	}
+			world = new Space(gameMode, isTwoPlayer); */
+		
+		//move(3, 4);
+		//printw("%d %d %s", board, 54, "testing_again\n\n"); refresh();
+		
+		//usleep(100000000);
+}
 
 int Game::playGame() {
 	
-	int userInput = 0;
+	int userInput = 0, score = 0;
 		
 	//Set number of omp threads
 	omp_set_num_threads(3);
@@ -47,15 +62,16 @@ int Game::playGame() {
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
 		{
-			while (cube.lives > 0 && ch != 27 || ch != KEY_END) {
+			while (/* cube.lives > 0 && */ userInput != 27 || 
+										   userInput != KEY_END) {
 				userInput = getch();
 				//if(omp_test_lock(&lockPos)) {
-				if(!lock1) {
+				/* if(!lock1) {
 					if(userInput == KEY_UP && cube.getPosX() > 0) {
 						cube.decPosX();
 					}
 					//Last line is reserved for timer and score display
-					else if(userInput == KEY_DOWN && cube.getPosX() < LINES - 1) {
+					else if(userInput == KEY_DOWN && cube.getPosX() <= world->bottomRow) {
 						cube.incPosX();
 					}
 					else if(userInput == KEY_RIGHT && cube.getPosY() < COLS) {
@@ -65,15 +81,19 @@ int Game::playGame() {
 						cube.decPosY();
 					}
 					lock1 = 1;
-				}
+				} */
 			}
 		}
 		//Thread (2) for updating timer & score display
 		#pragma omp section
 		{
+			int time = static_cast<int>(omp_get_wtime());
 			string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
-			while (cube.lives > 0 && ch != 27 || ch != KEY_END) {
-				if(time < omp_get_wtime()) {
+			/* while (// cube.lives > 0 &&
+					userInput != 27 || 
+					userInput != KEY_END) {
+				if(time < static_cast<int>(omp_get_wtime())) {
+					time = static_cast<int>(omp_get_wtime());
 					timeDisplay.clear();
 					timeDisplay << "Time: " << time / 3600 << ":" << time / 60 
 						 << ":" << (time / 60) % 60;
@@ -82,18 +102,20 @@ int Game::playGame() {
 				//lifeDisplay << "Lives: " << cube.numLives << "   ";
 				scoreDisplay.clear();
 				scoreDisplay << score << "   ";
-				output = string(timeDisplay.c_str())  + "   "
-						 string(scoreDisplay.c_str()) + "   ";
-				mvaddr(LINES - 1, COLS - output.length() + 10, output.c_str());
+				output = string(timeDisplay.str().c_str())  + "   " +
+						 string(scoreDisplay.str().c_str()) + "   ";
+				mvaddstr(LINES - 1, COLS - output.length() + 10, output.c_str());
 				refresh();
-			}
+			} */
 		}
 		//Thread (3) for game engine
 		#pragma omp section
 		{
 			int scrollRate = gameMode * 200;
-			double lastScrollTime = numeric_limits<double>::max();
-			while (cube.lives > 0 && ch != 27 || ch != KEY_END) {
+			double lastScrollTime = numeric_limits<double>::max(),
+				   lastRefreshTime = omp_get_wtime();
+			while (/* cube.lives > 0 && */ userInput != 27 || 
+										   userInput != KEY_END) {
 				/* if(omp_get_wtime() - lastScrollTime > scrollRate) {
 					lastScrollTime = omp_get_wtime();
 					world.scroll();
@@ -109,9 +131,13 @@ int Game::playGame() {
 					lastRefreshTime = omp_get_wtime();
 					world->renderWorld();
 				}
+			}
 		}
 	}
+	return score;
 }
+	
+char **Game::board = nullptr;
 
 
 // References

@@ -43,6 +43,7 @@
 #define BLACK_BLUE 27
 #define BLACK_MAGENTA 28
 #define BLACK_WHITE 29
+#define GREEN_BLUE 30
 
 #endif /* colorDefs_hpp */
 
