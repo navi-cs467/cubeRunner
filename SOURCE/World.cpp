@@ -12,9 +12,9 @@
 #include "../HEADER/World.hpp"
 
 void World::updateObsCoords(Obstacle *ob) {
-	if(typeid(*ob) == typeid(Seaweed1))
-		for(int i = 0; i < Seaweed1::getGraphicLines()[ob->getGT()].size(); i++)
-			for(int j = 0; j < Seaweed1::getGraphicLines()[ob->getGT()][i].length(); j++)
+	if(typeid(*ob) == typeid(Seaweed))
+		for(int i = 0; i < Seaweed::getGraphicLines()[ob->getGT()].size(); i++)
+			for(int j = 0; j < Seaweed::getGraphicLines()[ob->getGT()][i].length(); j++)
 				obsCoords.insert(make_pair(ob->getPosX() + i,
 										   ob->getPosY() + j));
 	/* else if(typeid(*ob) == typeid(Coral)

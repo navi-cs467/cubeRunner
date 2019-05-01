@@ -34,7 +34,7 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 			i < obstacleCount; i++, random = rand() % 4) {
 				//if(random == 0) {
 				if(1) {
-					obstacles.push_back(new Seaweed1(this));
+					obstacles.push_back(new Seaweed(this));
 					updateObsCoords(obstacles.back());
 				}
 				/* else if(random == 1) {
@@ -105,20 +105,20 @@ void Water::renderWorld() {
 		//Temporary c-string used in call to mvaddstr below
 		char tmpStr[2]; tmpStr[1] = '\0';
 		
-		if(typeid(**it) == typeid(Seaweed1)) {
-			attron(COLOR_PAIR(Seaweed1::getColor()));
-			for(int i = 0; i < Seaweed1::getGraphicLines()[(*it)->getGT()].size() && 
+		if(typeid(**it) == typeid(Seaweed)) {
+			attron(COLOR_PAIR(Seaweed::getColor()));
+			for(int i = 0; i < Seaweed::getGraphicLines()[(*it)->getGT()].size() && 
 				i + xCoord + xOffset <= bottomRow; i++) 
 				for(int j = 0; 
-				j < Seaweed1::getGraphicLines()[(*it)->getGT()][i].length() &&
+				j < Seaweed::getGraphicLines()[(*it)->getGT()][i].length() &&
 				j + yCoord + yOffset < COLS &&
 				j + yCoord + yOffset >= 0; j++) {
 					Game::setBoard(i + xCoord + xOffset, 
 								   j + yCoord + yOffset,
-								   Seaweed1::getGraphicLines()[(*it)->getGT()][i][j]);
+								   Seaweed::getGraphicLines()[(*it)->getGT()][i][j]);
 					obsCoords.insert(make_pair(i + xCoord + xOffset, 
 											   j + yCoord + yOffset));
-					tmpStr[0] = Seaweed1::getGraphicLines()[(*it)->getGT()][i][j];
+					tmpStr[0] = Seaweed::getGraphicLines()[(*it)->getGT()][i][j];
 					//output to screen
 					mvaddstr(i + xCoord + xOffset, 
 							 j + yCoord + yOffset, 

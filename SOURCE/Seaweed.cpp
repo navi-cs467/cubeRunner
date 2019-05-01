@@ -6,15 +6,15 @@
 ** Description: Source file for Seaweed class, a derived Obstacle.
 ********************************************************************/
 
-#include "../HEADER/Seaweed1.hpp"
+#include "../HEADER/Seaweed.hpp"
 
-Seaweed1::Seaweed1(World *world, int specificGraphic) : Obstacle() {
+Seaweed::Seaweed(World *world, int specificGraphic) : Obstacle() {
 	
 	isStationary = true;
 	createObstacle(world, graphicLines, specificGraphic);
 }
 
-vector<vector<string>> Seaweed1::initializeVectorGraphics () {
+vector<vector<string>> Seaweed::initializeVectorGraphics () {
 	vector<vector<string>> tmpV {{string("(   )"),
 								  string(" ) ("),
 								  string(" ( )"),
@@ -38,11 +38,13 @@ vector<vector<string>> Seaweed1::initializeVectorGraphics () {
 	return tmpV;
 }
 
-vector<vector<string>> Seaweed1::graphicLines = 
-	Seaweed1::initializeVectorGraphics();	  
+vector<vector<string>> Seaweed::graphicLines = 
+	Seaweed::initializeVectorGraphics();	  
 
 //Color scheme	
-int Seaweed1::color = GREEN_BLUE;
+int Seaweed::color = GREEN_BLUE;
 
 // References
 // https://ubuntuforums.org/showthread.php?t=836043
+// https://stackoverflow.com/questions/17663186/initializing-a-two-dimensional-stdvector
+// https://stackoverflow.com/questions/1115854/how-to-resolve-error-bad-index-fatal-index-file-corrupt-when-using-git
