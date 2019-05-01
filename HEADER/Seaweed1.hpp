@@ -18,16 +18,14 @@ class Obstacle;
 
 class Seaweed1 : public Obstacle {
 	private:
-		static string graphicLines[];
-		static int lengthGL;		//Number of "strings" or rows 
-									//that make up the graphicLines[]
+		static vector<vector<string>> graphicLines;
 		static int color;
 	
 	public:
-		Seaweed1(World *world);
-		static string* getGraphicLines() {return graphicLines;}
-		static int getLengthGL() {return lengthGL;};
+		Seaweed1(World *world, int specificGraphic = -1);
+		static vector<vector<string>> getGraphicLines() {return graphicLines;}
 		static int getColor() {return color;}
+		static vector<vector<string>> initializeVectorGraphics();
 		virtual ~Seaweed1() {}
 		
 };

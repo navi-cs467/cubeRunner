@@ -8,24 +8,40 @@
 
 #include "../HEADER/Seaweed1.hpp"
 
-Seaweed1::Seaweed1(World *world) : Obstacle() {
+Seaweed1::Seaweed1(World *world, int specificGraphic) : Obstacle() {
 	
 	isStationary = true;
-	createObstacle(world, graphicLines, lengthGL);
+	createObstacle(world, graphicLines, specificGraphic);
 }
 
-string Seaweed1::graphicLines[] = {string("(   )"),
-								   string(" ) ("),
-								   string(" ( )"),
-								   string(" ) ("),
-								   string("(   )")};
+vector<vector<string>> Seaweed1::initializeVectorGraphics () {
+	vector<vector<string>> tmpV {{string("(   )"),
+								  string(" ) ("),
+								  string(" ( )"),
+								  string(" ) ("),
+								  string("(   )")},
+								
+								 {string(" |o |o"),
+								  string("  \\/"),
+								  string("  /o"),
+								  string("o/"),
+								  string("|"),
+								  string("|")},
+								 
+								 {string(" |o |o"),
+								  string("  \\/"),
+								  string("  o\\"),
+								  string("    \\o"),
+								  string("    |"),
+								  string("    |")}};
+								  
+	return tmpV;
+}
 
-int Seaweed1::lengthGL = 5;
+vector<vector<string>> Seaweed1::graphicLines = 
+	Seaweed1::initializeVectorGraphics();	  
 
-//  Not working as intended...							   
-/* int Seaweed1::lengthGL = 
-	sizeof(Seaweed1::getGraphicLines()) / sizeof(string); */
-	
+//Color scheme	
 int Seaweed1::color = GREEN_BLUE;
 
 // References

@@ -107,17 +107,18 @@ void Water::renderWorld() {
 		
 		if(typeid(**it) == typeid(Seaweed1)) {
 			attron(COLOR_PAIR(Seaweed1::getColor()));
-			for(int i = 0; i < Seaweed1::getLengthGL() && 
+			for(int i = 0; i < Seaweed1::getGraphicLines()[(*it)->getGT()].size() && 
 				i + xCoord + xOffset <= bottomRow; i++) 
-				for(int j = 0; j < Seaweed1::getGraphicLines()[i].length() && 
-					j + yCoord + yOffset < COLS &&
-					j + yCoord + yOffset >= 0; j++) {
+				for(int j = 0; 
+				j < Seaweed1::getGraphicLines()[(*it)->getGT()][i].length() &&
+				j + yCoord + yOffset < COLS &&
+				j + yCoord + yOffset >= 0; j++) {
 					Game::setBoard(i + xCoord + xOffset, 
 								   j + yCoord + yOffset,
-								   Seaweed1::getGraphicLines()[i][j]);
+								   Seaweed1::getGraphicLines()[(*it)->getGT()][i][j]);
 					obsCoords.insert(make_pair(i + xCoord + xOffset, 
 											   j + yCoord + yOffset));
-					tmpStr[0] = Seaweed1::getGraphicLines()[i][j];
+					tmpStr[0] = Seaweed1::getGraphicLines()[(*it)->getGT()][i][j];
 					//output to screen
 					mvaddstr(i + xCoord + xOffset, 
 							 j + yCoord + yOffset, 

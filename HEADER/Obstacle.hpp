@@ -25,8 +25,9 @@ class Obstacle {
 		int posY;
 		bool isStationary;
 		void createObstacle(World *world, 
-							string graphicLines[], 
-							int lengthGL);
+							vector<vector<string>> graphicLines, 
+							int specificGraphic = -1);
+		int gt;	//Short for "graphic type"
 
 	public:
 		int getPosX() {return posX;}
@@ -34,6 +35,7 @@ class Obstacle {
 		void setPosX(int posX) {this->posX = posX;}
 		void setPosY(int posY) {this->posY = posY;}
 		bool getIsStationary() {return isStationary;}
+		int getGT() {return gt;}
 		
 		//Renders class abstract, since there is no
 		//candidate for a pure virtual function that

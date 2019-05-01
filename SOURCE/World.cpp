@@ -13,23 +13,23 @@
 
 void World::updateObsCoords(Obstacle *ob) {
 	if(typeid(*ob) == typeid(Seaweed1))
-		for(int i = 0; i < Seaweed1::getLengthGL(); i++)
-			for(int j = 0; j < Seaweed1::getGraphicLines()[i].length(); j++)
+		for(int i = 0; i < Seaweed1::getGraphicLines()[ob->getGT()].size(); i++)
+			for(int j = 0; j < Seaweed1::getGraphicLines()[ob->getGT()][i].length(); j++)
 				obsCoords.insert(make_pair(ob->getPosX() + i,
 										   ob->getPosY() + j));
 	/* else if(typeid(*ob) == typeid(Coral)
-		for(int i = 0; i < Coral::graphicLines.length(); i++)
-			for(j = 0; j < Coral::graphicLines[i].length(); j++)
+		for(int i = 0; i < Coral::getLengthGL()[gt]; i++)
+			for(j = 0; j < Coral::getGraphicLines()[gt][i].length(); j++)
 				obsCoords.insert(make_pair(ob->getXCoord + i,
 										   ob->getYCoord + j));
 	else if(typeid(*ob) == typeid(Shark)
-		for(int i = 0; i < Shark::graphicLines.length(); i++)
-			for(j = 0; j < Shark::graphicLines[i].length(); j++)
+		for(int i = 0; i < Shark::getLengthGL()[gt]; i++)
+			for(j = 0; j < Shark::getGraphicLines()[gt][i].length(); j++)
 				obsCoords.insert(make_pair(ob->getXCoord + i,
 										   ob->getYCoord + j));
 	else if(typeid(*ob) == typeid(Octopus)
-		for(int i = 0; i < Octopus::graphicLines.length(); i++)
-			for(j = 0; j < Octopus::graphicLines[i].length(); j++)
+		for(int i = 0; i < Octopus::getLengthGL()[gt]; i++)
+			for(j = 0; j < Octopus::getGraphicLines()[gt][i].length(); j++)
 				obsCoords.insert(make_pair(ob->getXCoord + i,
 										   ob->getYCoord + j)); */
 }
