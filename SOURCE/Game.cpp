@@ -114,6 +114,9 @@ int Game::playGame() {
 			int scrollRate = gameMode * 200;
 			double lastScrollTime = numeric_limits<double>::max(),
 				   lastRefreshTime = omp_get_wtime();
+			int statsTime, startTime, seconds = 0, minutes = 0, hours = 0;
+			bool startTimeLogged = false;
+			string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 			while (/* cube.lives > 0 && */ userInput != 27 || 
 										   userInput != KEY_END) {
 				/* if(omp_get_wtime() - lastScrollTime > scrollRate) {
@@ -130,6 +133,55 @@ int Game::playGame() {
 				if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 					lastRefreshTime = omp_get_wtime();
 					world->renderWorld();
+				}
+				
+				//Render time, life count, and score display every second
+				if(!startTimeLogged) {
+					statsTime = startTime = static_cast<int>(omp_get_wtime());
+					startTimeLogged = true;
+				}
+				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
+				if(statsTime < static_cast<int>(omp_get_wtime())) {
+					statsTime = static_cast<int>(omp_get_wtime());
+					seconds++;
+					if(seconds == 60) {
+						seconds = 0;
+						minutes++;
+					}
+					if(minutes == 60) {
+						minutes = 0;
+						hours++;
+					}
+					
+					//Time display
+					timeDisplay.clear();
+					if(hours < 10)
+						timeDisplay << "Time: " << "0" << hours << ":";
+					else
+						timeDisplay << "Time: " << hours << ":";
+					if(minutes < 10)
+						timeDisplay << "0" << minutes << ":";
+					else
+						timeDisplay << minutes << ":";
+					if(seconds < 10)
+						timeDisplay << "0" << seconds;
+					else
+						timeDisplay << seconds;
+					
+					//Life count display
+					livesDisplay.clear();
+					//livesDisplay << "Lives: " << cube.numLives << "   ";
+					livesDisplay << "Lives: " << 1;
+					
+					//Score display
+					scoreDisplay.clear();
+					scoreDisplay << "Score: " << score;
+					output = string(timeDisplay.str().c_str())  + "   " +
+							 string(scoreDisplay.str().c_str()) + "   " +
+							 string(livesDisplay.str().c_str());
+					mvhline(LINES - 1, 0, ' ', COLS);
+					mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
+					refresh();
 				}
 			}
 		}
