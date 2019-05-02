@@ -8,7 +8,7 @@
 
 CXX = g++
 CXXFLAGS = -g -std=c++0x -Wall -Werror -Wfatal-errors \
-		   -lcurses -lm -fopenmp -Wno-error=sign-compare \
+		   -lncursesw -lm -fopenmp -Wno-error=sign-compare \
 		   -Wno-error=unused-but-set-variable \
 		   -Wno-error=unused-variable --pedantic-errors
    

@@ -155,16 +155,17 @@ void Water::renderWorld() {
 	}
 		
 	//Print all the miniCubes
-	//wchar_t mc = 0x25A0;		//Trying to print unicode square '\u25A0'...
-	char mc = 'c';
+	wchar_t mc[]  =L"\u25A0";		//Trying to print unicode square '\u25A0'...
+	//char mc = 'c';
 	attron(COLOR_PAIR(BLUE_BLACK)); attron(A_BOLD);
 	for(set<pair<int, int>>::iterator it = miniCubes.begin();
 		it != miniCubes.end(); it++) {
 			Game::setBoard(it->first, it->second,'c');	// '\254' is ascii "square"
-			//mvaddwstr(it->first, it->second, mc); refresh();
-			move(it->first, it->second);
-			//printw(L"%lc", mc);
-			printw("%c", mc);
+			attron(COLOR_PAIR(BLACK_BLUE));
+                        mvaddwstr(it->first, it->second, mc); //refresh();
+			//move(it->first, it->second);
+			printw("%lc", mc);
+			//printw("%c", mc);
 		}
 		
 	refresh();
