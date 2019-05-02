@@ -162,7 +162,7 @@ void Water::renderWorld() {
 		it != miniCubes.end(); it++) {
 			Game::setBoard(it->first, it->second,'c');	// '\254' is ascii "square"
 			attron(COLOR_PAIR(BLACK_BLUE));
-      mvaddwstr(it->first, it->second, mc); //refresh();
+                        mvaddwstr(it->first, it->second, mc); //refresh();
 			//move(it->first, it->second);
 			printw("%lc", mc);
 			//printw("%c", mc);
