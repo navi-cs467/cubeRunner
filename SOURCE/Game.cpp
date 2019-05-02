@@ -179,6 +179,7 @@ int Game::playGame() {
 					output = string(timeDisplay.str().c_str())  + "   " +
 							 string(scoreDisplay.str().c_str()) + "   " +
 							 string(livesDisplay.str().c_str());
+					attron(COLOR_PAIR(YELLOW_BLACK));
 					mvhline(LINES - 1, 0, ' ', COLS);
 					mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
 					refresh();
