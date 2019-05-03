@@ -1,5 +1,9 @@
 /*
- References: CS 372 & CS 344 Programming Assignments, https://beej.us/guide/bgnet/
+ References: CS 372 & CS 344 Programming Assignments
+ https://beej.us/guide/bgnet/
+ https://www.comrevo.com/2016/01/how-to-create-threads-using-openmp-api.html?m=1
+ https://linux.die.net/man/3/getch
+ https://stackoverflow.com/questions/15306463/getchar-returns-the-same-value-27-for-up-and-down-arrow-keys
 */
 
 #include <stdio.h>
@@ -13,6 +17,9 @@
 #include <sys/ioctl.h>
 #include <arpa/inet.h>
 #include <sys/stat.h>
+#include <sys/time.h>
+#include <omp.h>
+#include <ncurses.h>
 
 /*
   Function uses getaddrinfo to return a addrinfo* struct, which
@@ -86,7 +93,7 @@ void startConnection(int socketFD, struct addrinfo *servinfo)
 	Receives messages sent from sever over the socket, if the value of recv is 0
 	the server has closed the connection and the program exits
 */
-void receiveMessage(int socketFD)
+char* receiveMessage(int socketFD)
 {
 	// buffer to hold messages received from the server
 	char messageReceived[2048];
@@ -110,10 +117,10 @@ void receiveMessage(int socketFD)
 		exit(0);
 	}
 
-	// otherwise print the message
+	// otherwise save the message
 	else
 	{
-		printf("Received from server: %s\n", messageReceived);
+	  return messageReceived;
 	}
 }
 
@@ -154,22 +161,39 @@ int initSocket(char* hostname, char* portNum)
 // start game with connection to server, loops until SIGINT for now
 void startGame(int socketFD)
 {
-	while (1)
-	{
-		//buffers for messages for client to server
-		char userInput[2048];
-		memset(userInput, '\0', sizeof(userInput));
+		//create two threads, one for sending data to server and one for receiving
+		//we do this so that we will still receive server data despite the blocking of getch
+		#pragma omp parallel sections num_threads(2)
+		{
+		 #pragma omp section
+     {
+			 while(1)
+			 {
+					//buffers for messages for client to server
+	 			  char userInput[2048];
 
-		// Get input from the user
-		fgets(userInput, sizeof(userInput), stdin);
+	 			  memset(userInput, '\0', sizeof(userInput));
 
-		// remove trailing \n from fgets
-		userInput[strcspn(userInput, "\n")] = '\0';
+	 		 		// Get input from the user using getch to avoid the user needing to press enter
+					int ch = getch();
 
-		sendMessage(socketFD, userInput);
+					sprintf(userInput, "%c", ch);;
 
-		//receive confirmation from server
-		receiveMessage(socketFD);
+	 		 		sendMessage(socketFD, userInput);
+			 }
+     }
+
+		 //receving data from server periodically on different thread
+		 #pragma omp section
+     {
+			while(1)
+			{
+					//receive data from server, if there is any
+			 	 	receiveMessage(socketFD);
+
+					//create another function to parse server data (game metrics) ***
+			}
+     }
 	}
 }
 
@@ -178,6 +202,11 @@ void startGame(int socketFD)
 // starting out with command line entered values for now
 // int main(int argc, char *argv[])
 // {
+// 	/* Curses Initialisations */
+// 	initscr();
+// 	keypad(stdscr, TRUE);
+// 	noecho();
+// 	cbreak();
 //
 // 	// save command-line entered hostname
 // 	char* hostname = argv[1];
@@ -189,4 +218,5 @@ void startGame(int socketFD)
 //
 // 	// start game, with client sending first message
 // 	startGame(socketFD);
+// 	endwin();
 // }

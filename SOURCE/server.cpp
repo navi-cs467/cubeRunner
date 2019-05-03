@@ -1,5 +1,5 @@
 /*
-References: CS 372 & CS 344 Programming Assignments, https://beej.us/guide/bgnet/
+ References: CS 372 & CS 344 Programming Assignments, https://beej.us/guide/bgnet/
 */
 
 #include <stdio.h>
@@ -13,6 +13,7 @@ References: CS 372 & CS 344 Programming Assignments, https://beej.us/guide/bgnet
 #include <sys/ioctl.h>
 #include <arpa/inet.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 
 /*
 	Function uses getaddrinfo to return a addrinfo* struct, which
@@ -177,7 +178,12 @@ void starGameMultiPlayer(int firstClient, int secondClient)
 {
 	while(1)
 	{
+		struct timeval tv;
 		fd_set readfds;
+
+		// adding 2.5s timer for testing, will shorten this later ***
+		tv.tv_sec = 2;
+    tv.tv_usec = 500000;
 
 		// clear the set ahead of time
 		FD_ZERO(&readfds);
@@ -196,7 +202,7 @@ void starGameMultiPlayer(int firstClient, int secondClient)
 
 		int n = secondClient + 1;
 
-		int status = select(n, &readfds, NULL, NULL, NULL);
+		int status = select(n, &readfds, NULL, NULL, &tv);
 
 		if (status == -1)
 		{
@@ -216,44 +222,26 @@ void starGameMultiPlayer(int firstClient, int secondClient)
 	        recv(firstClient, clientMsg1, sizeof clientMsg1, 0);
 					// otherwise, print the message
 					printf("Received from client 1: %s\n", clientMsg1);
-					sendMessage(firstClient, confirm);
 	    }
 
 	    if (FD_ISSET(secondClient, &readfds))
 			{
 	        recv(secondClient, clientMsg2, sizeof clientMsg2, 0);
 					printf("Received from client 2: %s\n", clientMsg2);
-					sendMessage(secondClient, confirm);
 	    }
 		}
 
-	}
-}
+		char data[100] = "Server: Sending data periodically to client\n";
+		sendMessage(firstClient, data);
+		sendMessage(secondClient, data);
 
-// start the game with one clients
-// for now we start chat, wait for client input and then send a confirmation message
-// loops until SIGINT *** will adjust this later
-void starGameSinglePlayer(int client)
-{
-	while(1)
-	{
-		//buffers for messages sent from client
-		char clientMsg[1024];
-		memset(clientMsg, '\0', sizeof(clientMsg));
-
-		char confirm[100] = "Server: I have received your message\n";
-
-		recv(client, clientMsg, sizeof clientMsg, 0);
-		// otherwise, print the message
-		printf("Received from client: %s\n", clientMsg);
-		sendMessage(client, confirm);
 	}
 }
 
 /*
  Accepts new connections, accepting 1 new connection for single player and 2 for multiplayer
 */
-void acceptConnections(int socketFD, char* p, int playerToggle)
+void acceptConnections(int socketFD, char* p)
 {
 	// Beej's guide accepting connections from clients
 	int firstClient, secondClient;
@@ -262,32 +250,18 @@ void acceptConnections(int socketFD, char* p, int playerToggle)
 
 	printf("\nListening for new connections...\n");
 
-	if (playerToggle == 1)
-	{
-		// accept incomming connection from first client
-		addr_size = sizeof client_addr;
-		firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
-		printf("Connected to first client...\n");
+	// accept incomming connection from first client
+	addr_size = sizeof client_addr;
+	firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
 
-		// accept incomming connection from second client
-		addr_size = sizeof client_addr;
-		secondClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
-		printf("Connected to second client...\n");
+	printf("Connected to first client...\n");
 
-		starGameMultiPlayer(firstClient, secondClient);
-	}
+	// accept incomming connection from second client
+	addr_size = sizeof client_addr;
+	secondClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
+	printf("Connected to second client...\n");
 
-	if (playerToggle == 0)
-	{
-		// accept incomming connection from first client
-		addr_size = sizeof client_addr;
-		firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
-		printf("Connected to client...\n");
-		starGameSinglePlayer(firstClient);
-	}
-
-	// need some method of determining which connections we want to read from, will probably use SELECT function
-
+	starGameMultiPlayer(firstClient, secondClient);
 }
 
 
@@ -295,7 +269,7 @@ void acceptConnections(int socketFD, char* p, int playerToggle)
     starts server, binds the initial socket for listening on and
     then calls acceptConnections to accept new connections to the server
 */
-void initServer(char* portNum, int playerToggle)
+void initServer(char* portNum)
 {
 	struct addrinfo *servinfo = getServerInfo(portNum);
 
@@ -312,7 +286,7 @@ void initServer(char* portNum, int playerToggle)
 	listen(socketFD, 10);
 
 	// accepting new connections
-	acceptConnections(socketFD, portNum, playerToggle);
+	acceptConnections(socketFD, portNum);
 
 	// free servinfo linked list
 	freeaddrinfo(servinfo);
@@ -325,9 +299,6 @@ void initServer(char* portNum, int playerToggle)
 // 	// save command-line entered port number
 // 	char* portNum = argv[1];
 //
-// 	// 0 for single player, 1 for multiplayer
-// 	int playerToggle = atoi(argv[2]);
-//
 // 	// starts server processes
-// 	initServer(portNum, playerToggle);
+// 	initServer(portNum);
 // }
