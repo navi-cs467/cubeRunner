@@ -12,17 +12,33 @@
 #include "../HEADER/World.hpp"
 
 void World::updateObsCoords(Obstacle *ob) {
-	if(typeid(*ob) == typeid(Seaweed))
+	
+	int longest = 0;
+	if(typeid(*ob) == typeid(Seaweed)) {
+		//find length of longest string in graphicLines array
 		for(int i = 0; i < Seaweed::getGraphicLines()[ob->getGT()].size(); i++)
-			for(int j = 0; j < Seaweed::getGraphicLines()[ob->getGT()][i].length(); j++)
+			if(Seaweed::getGraphicLines()[ob->getGT()][i].size() > longest)
+				longest = Seaweed::getGraphicLines()[ob->getGT()][i].size();
+		
+		//Update obsCoords	
+		for(int i = 0; i < Seaweed::getGraphicLines()[ob->getGT()].size(); i++)
+			for(int j = 0; j < longest; j++)
 				obsCoords.insert(make_pair(ob->getPosX() + i,
 										   ob->getPosY() + j));
-	/* else if(typeid(*ob) == typeid(Coral)
-		for(int i = 0; i < Coral::getLengthGL()[gt]; i++)
-			for(j = 0; j < Coral::getGraphicLines()[gt][i].length(); j++)
-				obsCoords.insert(make_pair(ob->getXCoord + i,
-										   ob->getYCoord + j));
-	else if(typeid(*ob) == typeid(Shark)
+	}
+	else if(typeid(*ob) == typeid(Coral)) {
+		//find length of longest string in graphicLines array
+		for(int i = 0; i < Coral::getGraphicLines()[ob->getGT()].size(); i++)
+			if(Coral::getGraphicLines()[ob->getGT()][i].size() > longest)
+				longest = Coral::getGraphicLines()[ob->getGT()][i].size();
+	
+		//Update obsCoords
+		for(int i = 0; i < Coral::getGraphicLines()[ob->getGT()].size(); i++)
+			for(int j = 0; j < longest; j++)
+				obsCoords.insert(make_pair(ob->getPosX() + i,
+										   ob->getPosY() + j));
+	}
+	/* else if(typeid(*ob) == typeid(Shark)
 		for(int i = 0; i < Shark::getLengthGL()[gt]; i++)
 			for(j = 0; j < Shark::getGraphicLines()[gt][i].length(); j++)
 				obsCoords.insert(make_pair(ob->getXCoord + i,

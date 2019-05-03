@@ -35,16 +35,21 @@ void Obstacle::createObstacle(World *world,
 	do {
 		posX = rand() % world->getBottomRow();
 		posY = (rand() % (COLS - 10)) + 10;		//No obstacles start in first 10 columns
-		for(int i = 0; i < graphicLines[gt].size(); i++) 
+		for(int i = 0; i < graphicLines[gt].size(); i++) {
 			for(int j = 0; j < graphicLines[gt][i].length(); j++) {
 				it1 = world->getObsCoords().
 					find(make_pair(i + posX, j + posY));
 				it2 = world->getMiniCubes().
 					find(make_pair(i + posX, j + posY));
 				if(it1 != world->getObsCoords().end() || 
-				   it2 != world->getMiniCubes().end())
+				   it2 != world->getMiniCubes().end()) {
 					enchroaches = true;
+					break;
+				}
 				else enchroaches = false;
 			}
+			if(enchroaches == true) break;
+		}
+		
 	} while(enchroaches == true);
 }

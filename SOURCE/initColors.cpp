@@ -47,6 +47,11 @@ int initColors(){
 	init_pair(28, COLOR_BLACK, COLOR_MAGENTA);
 	init_pair(29, COLOR_BLACK, COLOR_WHITE);
 	init_pair(30, COLOR_GREEN, COLOR_BLUE);
+	init_pair(31, COLOR_RED, COLOR_BLUE);
+	init_pair(32, COLOR_YELLOW, COLOR_BLUE);
+	init_pair(33, COLOR_CYAN, COLOR_BLUE);
+	init_pair(34, COLOR_MAGENTA, COLOR_BLUE);
+	init_pair(35, COLOR_WHITE, COLOR_BLUE);
 	
 	return 0;
 }

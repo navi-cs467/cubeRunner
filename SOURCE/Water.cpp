@@ -31,17 +31,17 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 		else
 			obstacleCount = 25;
 		for(int i = 0, random = rand() % 4; 
-			i < obstacleCount; i++, random = rand() % 4) {
-				//if(random == 0) {
-				if(1) {
+			i < obstacleCount; i++, random = rand() % 2) {
+				if(random == 0) {
 					obstacles.push_back(new Seaweed(this));
 					updateObsCoords(obstacles.back());
 				}
-				/* else if(random == 1) {
+				// else if(random == 1) {
+				else {
 					obstacles.push_back(new Coral(this));
 					updateObsCoords(obstacles.back());
 				}
-				else if(random == 2) {
+				/* else if(random == 2) {
 					obstacles.push_back(new Shark(this));
 					updateObsCoords(obstacles.back());
 				}
@@ -126,16 +126,30 @@ void Water::renderWorld() {
 				}
 		}
 				
-		/* if(typeid(**it) == typeid(Coral))
-			for(int i = xCoord + xOffset; 
-				i < Coral::graphicLines.length() && i < LINES - 4; i++) 
-				for(int j = yCoord + yOffset; 
-					j < Coral::graphicLines[i].length() && j < COLS; j++) {
-					Game::getBoard()[i][j] = Coral::getGraphicLines()[i][j];
-					obsCoords.insert(make_pair(i, j));
+		if(typeid(**it) == typeid(Coral)) {
+			int nextColor = Coral::getColorSeed();
+			for(int i = 0; i < Coral::getGraphicLines()[(*it)->getGT()].size() && 
+				i + xCoord + xOffset <= bottomRow; i++) 
+				for(int j = 0; 
+				j < Coral::getGraphicLines()[(*it)->getGT()][i].length() &&
+				j + yCoord + yOffset < COLS &&
+				j + yCoord + yOffset >= 0; j++) {
+					Game::setBoard(i + xCoord + xOffset, 
+								   j + yCoord + yOffset,
+								   Coral::getGraphicLines()[(*it)->getGT()][i][j]);
+					obsCoords.insert(make_pair(i + xCoord + xOffset, 
+											   j + yCoord + yOffset));
+					tmpStr[0] = Coral::getGraphicLines()[(*it)->getGT()][i][j];
+					//output to screen
+					attron(COLOR_PAIR(nextColor++));
+					mvaddstr(i + xCoord + xOffset, 
+							 j + yCoord + yOffset, 
+							 tmpStr);
+					if(nextColor == 35) nextColor = 30;
 				}
+		}
 				
-		if(typeid(**it) == typeid(Shark))
+		/* if(typeid(**it) == typeid(Shark))
 			for(int i = xCoord + xOffset; 
 				i < Shark::graphicLines.length() && i < LINES - 4; i++) 
 				for(int j = yCoord + yOffset; 
@@ -157,14 +171,13 @@ void Water::renderWorld() {
 	//Print all the miniCubes
 	wchar_t mc[]  =L"\u25A0";		//Trying to print unicode square '\u25A0'...
 	//char mc = 'c';
-	attron(COLOR_PAIR(BLUE_BLACK)); attron(A_BOLD);
 	for(set<pair<int, int>>::iterator it = miniCubes.begin();
 		it != miniCubes.end(); it++) {
-			Game::setBoard(it->first, it->second,'c');	// '\254' is ascii "square"
-			attron(COLOR_PAIR(BLACK_BLUE));
-                        mvaddwstr(it->first, it->second, mc); //refresh();
+			//Game::setBoard(it->first, it->second,'c');	// '\254' is ascii "square"
+			attron(COLOR_PAIR(WHITE_BLUE));
+            mvaddwstr(it->first, it->second, mc); //refresh();
 			//move(it->first, it->second);
-			printw("%lc", mc);
+			//printw("%lc", mc);
 			//printw("%c", mc);
 		}
 		
