@@ -1,5 +1,9 @@
 /*
- References: CS 372 & CS 344 Programming Assignments, https://beej.us/guide/bgnet/
+ References: CS 372 & CS 344 Programming Assignments
+ https://beej.us/guide/bgnet/
+ https://www.comrevo.com/2016/01/how-to-create-threads-using-openmp-api.html?m=1
+ https://linux.die.net/man/3/getch
+ https://stackoverflow.com/questions/15306463/getchar-returns-the-same-value-27-for-up-and-down-arrow-keys
 */
 
 #include <stdio.h>
@@ -13,6 +17,9 @@
 #include <sys/ioctl.h>
 #include <arpa/inet.h>
 #include <sys/stat.h>
+#include <sys/time.h>
+#include <omp.h>
+#include <ncurses.h>
 
 /*
   Function uses getaddrinfo to return a addrinfo* struct, which
@@ -86,20 +93,17 @@ void startConnection(int socketFD, struct addrinfo *servinfo)
 	Receives messages sent from sever over the socket, if the value of recv is 0
 	the server has closed the connection and the program exits
 */
-void receiveMessage(int socketFD)
+char* receiveMessage(int socketFD, char* buffer)
 {
-	// buffer to hold messages received from the server
-	char messageReceived[2048];
-	memset(messageReceived, '\0', sizeof(messageReceived));
-
 	int len_received, bytes_received;
-	len_received = sizeof(messageReceived);
-	bytes_received = recv(socketFD, messageReceived, len_received, 0);
+	len_received = sizeof(buffer);
+	bytes_received = recv(socketFD, buffer, len_received, 0);
 
 	//check for error
 	if (bytes_received == -1)
 	{
 		fprintf(stderr,"Error receving from socket\n");
+		exit(0);
 	}
 
 	// server closed the connection so client is terminated
@@ -107,13 +111,14 @@ void receiveMessage(int socketFD)
 	{
 		fprintf(stderr,"Server has closed the connection\n");
 		close(socketFD);
+		endwin();
 		exit(0);
 	}
 
-	// otherwise print the message
+	// otherwise save the message
 	else
 	{
-		printf("Received from server: %s\n", messageReceived);
+	  return buffer;
 	}
 }
 
@@ -154,39 +159,73 @@ int initSocket(char* hostname, char* portNum)
 // start game with connection to server, loops until SIGINT for now
 void startGame(int socketFD)
 {
-	while (1)
-	{
-		//buffers for messages for client to server
-		char userInput[2048];
-		memset(userInput, '\0', sizeof(userInput));
+		//create two threads, one for sending data to server and one for receiving
+		//we do this so that we will still receive server data despite the blocking of getch
+		omp_set_num_threads(2);
 
-		// Get input from the user
-		fgets(userInput, sizeof(userInput), stdin);
+		#pragma omp parallel sections
+		{
+			// get user input to send to server
+		 #pragma omp section
+     {
+			 while(1)
+			 {
+					//buffers for messages for client to server
+	 			  char userInput[2048];
 
-		// remove trailing \n from fgets
-		userInput[strcspn(userInput, "\n")] = '\0';
+	 			  memset(userInput, '\0', sizeof(userInput));
 
-		sendMessage(socketFD, userInput);
+	 		 		// Get input from the user using getch to avoid the user needing to press enter
+					int ch = getch();
 
-		//receive confirmation from server
-		receiveMessage(socketFD);
+					sprintf(userInput, "%c", ch);;
+
+	 		 		sendMessage(socketFD, userInput);
+			 }
+     }
+
+		 //receving data from server periodically on different thread
+		 #pragma omp section
+     {
+			while(1)
+			{
+				// buffer to hold messages received from the server
+				char messageReceived[2048];
+				memset(messageReceived, '\0', sizeof(messageReceived));
+
+				//receive data from server, if there is any
+			 	receiveMessage(socketFD, messageReceived);
+
+				//print out for testing purposes
+				printw("%s", messageReceived);
+				refresh();
+
+				//create another function to parse server data (game metrics) ***
+			}
+     }
 	}
 }
 
 
 
 // starting out with command line entered values for now
-// int main(int argc, char *argv[])
-// {
-//
-// 	// save command-line entered hostname
-// 	char* hostname = argv[1];
-//
-// 	// save command-line entered port number
-// 	char* portNum = argv[2];
-//
-// 	int socketFD = initSocket(hostname, portNum);
-//
-// 	// start game, with client sending first message
-// 	startGame(socketFD);
-// }
+int main(int argc, char *argv[])
+{
+	/* Curses Initialisations */
+	initscr();
+	keypad(stdscr, TRUE);
+	noecho();
+	cbreak();
+
+	// save command-line entered hostname
+	char* hostname = argv[1];
+
+	// save command-line entered port number
+	char* portNum = argv[2];
+
+	int socketFD = initSocket(hostname, portNum);
+
+	// start game, with client sending first message
+	startGame(socketFD);
+	endwin();
+}
