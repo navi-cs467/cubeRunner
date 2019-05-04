@@ -93,20 +93,17 @@ void startConnection(int socketFD, struct addrinfo *servinfo)
 	Receives messages sent from sever over the socket, if the value of recv is 0
 	the server has closed the connection and the program exits
 */
-char* receiveMessage(int socketFD)
+char* receiveMessage(int socketFD, char* buffer)
 {
-	// buffer to hold messages received from the server
-	char messageReceived[2048];
-	memset(messageReceived, '\0', sizeof(messageReceived));
-
 	int len_received, bytes_received;
-	len_received = sizeof(messageReceived);
-	bytes_received = recv(socketFD, messageReceived, len_received, 0);
+	len_received = sizeof(buffer);
+	bytes_received = recv(socketFD, buffer, len_received, 0);
 
 	//check for error
 	if (bytes_received == -1)
 	{
 		fprintf(stderr,"Error receving from socket\n");
+		exit(0);
 	}
 
 	// server closed the connection so client is terminated
@@ -114,13 +111,14 @@ char* receiveMessage(int socketFD)
 	{
 		fprintf(stderr,"Server has closed the connection\n");
 		close(socketFD);
+		endwin();
 		exit(0);
 	}
 
 	// otherwise save the message
 	else
 	{
-	  return messageReceived;
+	  return buffer;
 	}
 }
 
@@ -163,8 +161,11 @@ void startGame(int socketFD)
 {
 		//create two threads, one for sending data to server and one for receiving
 		//we do this so that we will still receive server data despite the blocking of getch
-		#pragma omp parallel sections num_threads(2)
+		omp_set_num_threads(2);
+
+		#pragma omp parallel sections
 		{
+			// get user input to send to server
 		 #pragma omp section
      {
 			 while(1)
@@ -188,10 +189,18 @@ void startGame(int socketFD)
      {
 			while(1)
 			{
-					//receive data from server, if there is any
-			 	 	receiveMessage(socketFD);
+				// buffer to hold messages received from the server
+				char messageReceived[2048];
+				memset(messageReceived, '\0', sizeof(messageReceived));
 
-					//create another function to parse server data (game metrics) ***
+				//receive data from server, if there is any
+			 	receiveMessage(socketFD, messageReceived);
+
+				//print out for testing purposes
+				printw("%s", messageReceived);
+				refresh();
+
+				//create another function to parse server data (game metrics) ***
 			}
      }
 	}
@@ -200,23 +209,23 @@ void startGame(int socketFD)
 
 
 // starting out with command line entered values for now
-// int main(int argc, char *argv[])
-// {
-// 	/* Curses Initialisations */
-// 	initscr();
-// 	keypad(stdscr, TRUE);
-// 	noecho();
-// 	cbreak();
-//
-// 	// save command-line entered hostname
-// 	char* hostname = argv[1];
-//
-// 	// save command-line entered port number
-// 	char* portNum = argv[2];
-//
-// 	int socketFD = initSocket(hostname, portNum);
-//
-// 	// start game, with client sending first message
-// 	startGame(socketFD);
-// 	endwin();
-// }
+int main(int argc, char *argv[])
+{
+	/* Curses Initialisations */
+	initscr();
+	keypad(stdscr, TRUE);
+	noecho();
+	cbreak();
+
+	// save command-line entered hostname
+	char* hostname = argv[1];
+
+	// save command-line entered port number
+	char* portNum = argv[2];
+
+	int socketFD = initSocket(hostname, portNum);
+
+	// start game, with client sending first message
+	startGame(socketFD);
+	endwin();
+}

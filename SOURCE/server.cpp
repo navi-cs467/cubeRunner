@@ -14,6 +14,7 @@
 #include <arpa/inet.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <omp.h>
 
 /*
 	Function uses getaddrinfo to return a addrinfo* struct, which
@@ -44,35 +45,6 @@ struct addrinfo* getServerInfo(char* portNum)
 	status = getaddrinfo(NULL, portNum, &hints, &servinfo);
 
 	return servinfo;
-}
-
-/*
-  Function uses getaddrinfo to return a addrinfo* struct, which
-	contains an Internet address that can be specified in future calls to connect,
-	it also sets the criteria for selecting socket address structures returned in
-	the list pointed to by servinfo such as the desired address family and the
-	desired address socktype
-*/
-struct addrinfo* getClientInfo(char* hostname, char* portNum)
-{
-	// from Beej's guide, get address info to fill addrinfo struct
-	int status;
-	struct addrinfo hints;
-	struct addrinfo *clientinfo;
-
-	// initialize struct as empty
-	memset(&hints, 0, sizeof hints);
-
-	// IPv4
-	hints.ai_family = AF_INET;
-
-	// tcp connection
-	hints.ai_socktype = SOCK_STREAM;
-
-	// getting ready to connect to host
-	status = getaddrinfo(hostname, portNum, &hints, &clientinfo);
-
-	return clientinfo;
 }
 
 /*
@@ -181,7 +153,7 @@ void starGameMultiPlayer(int firstClient, int secondClient)
 		struct timeval tv;
 		fd_set readfds;
 
-		// adding 2.5s timer for testing, will shorten this later ***
+		// adding 2.5s timer for testing, will shorten this later as needed for game to run smoothly ***
 		tv.tv_sec = 2;
     tv.tv_usec = 500000;
 
@@ -231,10 +203,24 @@ void starGameMultiPlayer(int firstClient, int secondClient)
 	    }
 		}
 
+		//periodically send data to clients, this will be replaced with game data
+		//send data in two different threads
 		char data[100] = "Server: Sending data periodically to client\n";
-		sendMessage(firstClient, data);
-		sendMessage(secondClient, data);
 
+		//Set number of omp threads
+		omp_set_num_threads(2);
+
+		#pragma omp parallel sections
+		{
+		 #pragma omp section
+     {
+			 sendMessage(firstClient, data);
+     }
+		 #pragma omp section
+     {
+			 sendMessage(secondClient, data);
+     }
+	 	}
 	}
 }
 
@@ -293,12 +279,12 @@ void initServer(char* portNum)
 }
 
 // starting out with command line entered values for now, will change in coming weeks***
-// int main(int argc, char *argv[])
-// {
-//
-// 	// save command-line entered port number
-// 	char* portNum = argv[1];
-//
-// 	// starts server processes
-// 	initServer(portNum);
-// }
+int main(int argc, char *argv[])
+{
+
+	// save command-line entered port number
+	char* portNum = argv[1];
+
+	// starts server processes
+	initServer(portNum);
+}
