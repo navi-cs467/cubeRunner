@@ -37,7 +37,7 @@ void Obstacle::createObstacle(World *world,
 		//if(typeid(*world) != Space)
 		//Can't have partial graphic beneath "ground" for Water or Land
 		if(world->getBottomRow() - posX < graphicLines[gt].size())
-			posX = world->getBottomRow() - graphicLines[gt].size();
+			posX = world->getBottomRow() - (graphicLines[gt].size() - 1);
 		
 		posY = (rand() % (COLS - 10)) + 10;		//No obstacles start in first 10 columns
 		

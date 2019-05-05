@@ -279,7 +279,7 @@ void initServer(char* portNum)
 }
 
 // starting out with command line entered values for now, will change in coming weeks***
-int main(int argc, char *argv[])
+/* int main(int argc, char *argv[])
 {
 
 	// save command-line entered port number
@@ -287,4 +287,4 @@ int main(int argc, char *argv[])
 
 	// starts server processes
 	initServer(portNum);
-}
+} */
