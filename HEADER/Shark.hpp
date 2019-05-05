@@ -24,7 +24,8 @@ class Shark : public Obstacle {
 		int sameDirectionMoveCount;
 	
 	public:
-		Shark(World *world, int specificGraphic = -1);
+		Shark(World *world, Direction offScreen = none,
+			  int specificGraphic = -1);
 		static vector<vector<string>> getGraphicLines() {return graphicLines;}
 		static int getColor() {return color;}
 		static vector<vector<string>> initializeVectorGraphics();

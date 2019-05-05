@@ -14,6 +14,7 @@
 
 void Obstacle::createObstacle(World *world, 
 							  vector<vector<string>> graphicLines,
+							  Direction offScreenDirection,
 							  int specificGraphic) {
 	
 	//Number of potential graphics for this Obstacle
@@ -40,6 +41,17 @@ void Obstacle::createObstacle(World *world,
 			posX = world->getBottomRow() - (graphicLines[gt].size() - 1);
 		
 		posY = (rand() % (COLS - 10)) + 10;		//No obstacles start in first 10 columns
+		
+		if(offScreenDirection != none) {
+			if(offScreenDirection == right)
+				posY = posY + COLS;
+			else if(offScreenDirection == left)
+				posY = -posY;
+			else if(offScreenDirection == up)
+				posX = -posX;
+			else
+				posX = posX + LINES;
+		}
 		
 		for(int i = 0; i < graphicLines[gt].size(); i++) {
 			for(int j = 0; j < graphicLines[gt][i].length(); j++) {

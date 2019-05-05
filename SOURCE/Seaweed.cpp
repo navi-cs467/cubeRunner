@@ -8,10 +8,11 @@
 
 #include "../HEADER/Seaweed.hpp"
 
-Seaweed::Seaweed(World *world, int specificGraphic) : Obstacle() {
+Seaweed::Seaweed(World *world, Direction offScreen,
+				 int specificGraphic) : Obstacle() {
 	
 	isStationary = true;
-	createObstacle(world, graphicLines, specificGraphic);
+	createObstacle(world, graphicLines, offScreen, specificGraphic);
 }
 
 vector<vector<string>> Seaweed::initializeVectorGraphics () {

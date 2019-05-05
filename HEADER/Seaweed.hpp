@@ -22,7 +22,8 @@ class Seaweed : public Obstacle {
 		static int color;
 	
 	public:
-		Seaweed(World *world, int specificGraphic = -1);
+		Seaweed(World *world, Direction offScreen = none, 
+				int specificGraphic = -1);
 		static vector<vector<string>> getGraphicLines() {return graphicLines;}
 		static int getColor() {return color;}
 		static vector<vector<string>> initializeVectorGraphics();

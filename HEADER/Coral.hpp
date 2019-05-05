@@ -22,7 +22,7 @@ class Coral : public Obstacle {
 		static int colorSeed;
 	
 	public:
-		Coral(World *world, int specificGraphic = -1);
+		Coral(World *world, Direction offScreen = none, int specificGraphic = -1);
 		static vector<vector<string>> getGraphicLines() {return graphicLines;}
 		static int getColorSeed() {return colorSeed;}
 		static vector<vector<string>> initializeVectorGraphics();

@@ -26,6 +26,7 @@ class Obstacle {
 		bool isStationary;
 		void createObstacle(World *world, 
 							vector<vector<string>> graphicLines, 
+							Direction offScreenDirection = none,
 							int specificGraphic = -1);
 		int gt;	//Short for "graphic type"
 

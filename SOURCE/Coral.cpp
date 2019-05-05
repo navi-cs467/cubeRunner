@@ -8,10 +8,11 @@
 
 #include "../HEADER/Coral.hpp"
 
-Coral::Coral(World *world, int specificGraphic) : Obstacle() {
+Coral::Coral(World *world, Direction offScreen,
+			 int specificGraphic) : Obstacle() {
 	
 	isStationary = true;
-	createObstacle(world, graphicLines, specificGraphic);
+	createObstacle(world, graphicLines, offScreen, specificGraphic);
 }
 
 vector<vector<string>> Coral::initializeVectorGraphics () {

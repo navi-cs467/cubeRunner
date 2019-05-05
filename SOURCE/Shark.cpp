@@ -8,12 +8,13 @@
 
 #include "../HEADER/Shark.hpp"
 
-Shark::Shark(World *world, int specificGraphic) : Obstacle() {
+Shark::Shark(World *world, Direction offScreen, 
+			 int specificGraphic) : Obstacle() {
 	
 	isStationary = false;
 	curDirection = left;
 	sameDirectionMoveCount = 0;
-	createObstacle(world, graphicLines, specificGraphic);
+	createObstacle(world, graphicLines, offScreen, specificGraphic);
 }
 
 vector<vector<string>> Shark::initializeVectorGraphics () {
