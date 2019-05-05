@@ -34,7 +34,13 @@ void Obstacle::createObstacle(World *world,
 	bool enchroaches;
 	do {
 		posX = rand() % world->getBottomRow();
+		//if(typeid(*world) != Space)
+		//Can't have partial graphic beneath "ground" for Water or Land
+		if(world->getBottomRow() - posX < graphicLines[gt].size())
+			posX = world->getBottomRow() - graphicLines[gt].size();
+		
 		posY = (rand() % (COLS - 10)) + 10;		//No obstacles start in first 10 columns
+		
 		for(int i = 0; i < graphicLines[gt].size(); i++) {
 			for(int j = 0; j < graphicLines[gt][i].length(); j++) {
 				it1 = world->getObsCoords().

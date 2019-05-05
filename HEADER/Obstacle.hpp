@@ -12,7 +12,7 @@
 #define Obstacle_hpp
 
 #include "using.hpp"
-//#include "World.hpp"
+#include "Direction.hpp"
 
 //Forward declaration needed to workaround a
 //cyclic dependency. (https://stackoverflow.com/questions/
@@ -36,6 +36,8 @@ class Obstacle {
 		void setPosY(int posY) {this->posY = posY;}
 		bool getIsStationary() {return isStationary;}
 		int getGT() {return gt;}
+		void setGT(int newGraphic) {gt = newGraphic;}
+		virtual Direction getDirection() {return none;}
 		
 		//Renders class abstract, since there is no
 		//candidate for a pure virtual function that

@@ -32,21 +32,21 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 			obstacleCount = 25;
 
 		for(int i = 0, random = rand() % 4; 
-			i < obstacleCount; i++, random = rand() % 2) {
+			i < obstacleCount; i++, random = rand() % 3) {
 				if(random == 0) {
 					obstacles.push_back(new Seaweed(this));
 					updateObsCoords(obstacles.back());
 				}
-				// else if(random == 1) {
-				else {
+				else if(random == 1) {
 					obstacles.push_back(new Coral(this));
 					updateObsCoords(obstacles.back());
 				}
-				/* else if(random == 2) {
+				// else if(random == 2) {
+				else {
 					obstacles.push_back(new Shark(this));
 					updateObsCoords(obstacles.back());
 				}
-				else {
+				/* else {
 					obstacles.push_back(new Octopus(this));
 					updateObsCoords(obstacles.back());
 				} */
@@ -114,9 +114,9 @@ void Water::renderWorld() {
 				j < Seaweed::getGraphicLines()[(*it)->getGT()][i].length() &&
 				j + yCoord + yOffset < COLS &&
 				j + yCoord + yOffset >= 0; j++) {
-					Game::setBoard(i + xCoord + xOffset,
+					/* Game::setBoard(i + xCoord + xOffset,
 								   j + yCoord + yOffset,
-								   Seaweed::getGraphicLines()[(*it)->getGT()][i][j]);
+								   Seaweed::getGraphicLines()[(*it)->getGT()][i][j]); */
 					obsCoords.insert(make_pair(i + xCoord + xOffset,
 											   j + yCoord + yOffset));
 					tmpStr[0] = Seaweed::getGraphicLines()[(*it)->getGT()][i][j];
@@ -129,15 +129,16 @@ void Water::renderWorld() {
 				
 		if(typeid(**it) == typeid(Coral)) {
 			int nextColor = Coral::getColorSeed();
+			attron(A_BOLD);
 			for(int i = 0; i < Coral::getGraphicLines()[(*it)->getGT()].size() && 
 				i + xCoord + xOffset <= bottomRow; i++) 
 				for(int j = 0; 
 				j < Coral::getGraphicLines()[(*it)->getGT()][i].length() &&
 				j + yCoord + yOffset < COLS &&
 				j + yCoord + yOffset >= 0; j++) {
-					Game::setBoard(i + xCoord + xOffset, 
+					/* Game::setBoard(i + xCoord + xOffset, 
 								   j + yCoord + yOffset,
-								   Coral::getGraphicLines()[(*it)->getGT()][i][j]);
+								   Coral::getGraphicLines()[(*it)->getGT()][i][j]); */
 					obsCoords.insert(make_pair(i + xCoord + xOffset, 
 											   j + yCoord + yOffset));
 					tmpStr[0] = Coral::getGraphicLines()[(*it)->getGT()][i][j];
@@ -150,16 +151,46 @@ void Water::renderWorld() {
 				}
 		}
 				
-		/* if(typeid(**it) == typeid(Shark))
-			for(int i = xCoord + xOffset; 
-				i < Shark::graphicLines.length() && i < LINES - 4; i++) 
-				for(int j = yCoord + yOffset; 
-					j < Shark::graphicLines[i].length() && j < COLS; j++) {
-					Game::getBoard()[i][j] = Shark::getGraphicLines()[i][j];
-					obsCoords.insert(make_pair(i, j));
+		if(typeid(**it) == typeid(Shark)) {
+			int color = Shark::getColor();
+			attron(A_BOLD);
+			
+			//Face Shark based on movement direction
+			if((*it)->getDirection() == left ||
+			   (*it)->getDirection() == left_down ||
+			   (*it)->getDirection() == left_up)
+					(*it)->setGT(1);			//Shark::graphicLines[1] = sharkLeft
+			else if((*it)->getDirection() == right ||
+			   (*it)->getDirection() == right_down ||
+			   (*it)->getDirection() == right_up)
+					(*it)->setGT(0);			//Shark::graphicLines[0] = sharkRight
+			//else if(cube->getPosY <= (*it)->getPosY())
+			//	(*it)->setGT(1);			//Shark::graphicLines[1] = sharkLeft
+			else
+				(*it)->setGT(0);			//Shark::graphicLines[0] = sharkRight
+			
+			
+			for(int i = 0; i < Shark::getGraphicLines()[(*it)->getGT()].size() && 
+				i + xCoord + xOffset <= bottomRow; i++) 
+				for(int j = 0; 
+				j < Shark::getGraphicLines()[(*it)->getGT()][i].length() &&
+				j + yCoord + yOffset < COLS &&
+				j + yCoord + yOffset >= 0; j++) {
+					/* Game::setBoard(i + xCoord + xOffset, 
+								   j + yCoord + yOffset,
+								   Shark::getGraphicLines()[(*it)->getGT()][i][j]); */
+					obsCoords.insert(make_pair(i + xCoord + xOffset, 
+											   j + yCoord + yOffset));
+					tmpStr[0] = Shark::getGraphicLines()[(*it)->getGT()][i][j];
+					//output to screen
+					attron(COLOR_PAIR(color));
+					mvaddstr(i + xCoord + xOffset, 
+							 j + yCoord + yOffset, 
+							 tmpStr);
 				}
+		}
 
-		if(typeid(**it) == typeid(Octopus))
+		/* if(typeid(**it) == typeid(Octopus))
 			for(int i = xCoord + xOffset;
 				i < Octopus::graphicLines.length() && i < LINES - 4; i++)
 				for(int j = yCoord + yOffset;
