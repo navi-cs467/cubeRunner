@@ -18,6 +18,7 @@ class Game;
 #include "Seaweed.hpp"
 #include "Coral.hpp"
 #include "Shark.hpp"
+#include "Octopus.hpp"
 #include "using.hpp"
 
 class World {

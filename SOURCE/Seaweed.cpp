@@ -16,11 +16,15 @@ Seaweed::Seaweed(World *world, Direction offScreen,
 }
 
 vector<vector<string>> Seaweed::initializeVectorGraphics () {
-	vector<vector<string>> tmpV {{string("(   )"),
-								  string(" ) ("),
-								  string(" ( )"),
-								  string(" ) ("),
-								  string("(   )")},
+	vector<vector<string>> tmpV {{string("\\\\   //"),
+								  string("//   \\\\"),
+								  string("\\\\   //"),
+								  string(" \\\\ //"),
+								  string(" // \\\\"),
+								  string(" \\\\ //"),
+								  string(" // \\\\"),
+								  string(" \\\\ //"),
+								  string(" |||||")},
 								
 								 {string(" |o |o"),
 								  string("  \\/"),

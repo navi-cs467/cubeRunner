@@ -50,11 +50,18 @@ void World::updateObsCoords(Obstacle *ob) {
 				obsCoords.insert(make_pair(ob->getPosX() + i,
 										   ob->getPosY() + j));
 	}
-	/* else if(typeid(*ob) == typeid(Octopus)
-		for(int i = 0; i < Octopus::getLengthGL()[gt]; i++)
-			for(j = 0; j < Octopus::getGraphicLines()[gt][i].length(); j++)
-				obsCoords.insert(make_pair(ob->getXCoord + i,
-										   ob->getYCoord + j)); */
+	else if(typeid(*ob) == typeid(Octopus)) {
+		//find length of longest string in graphicLines array
+		for(int i = 0; i < Octopus::getGraphicLines()[ob->getGT()].size(); i++)
+			if(Octopus::getGraphicLines()[ob->getGT()][i].size() > longest)
+				longest = Octopus::getGraphicLines()[ob->getGT()][i].size();
+	
+		//Update obsCoords
+		for(int i = 0; i < Octopus::getGraphicLines()[ob->getGT()].size(); i++)
+			for(int j = 0; j < longest; j++)
+				obsCoords.insert(make_pair(ob->getPosX() + i,
+										   ob->getPosY() + j));
+	}
 }
 
 void World::initMiniCubes(int numMiniCubes) {

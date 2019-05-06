@@ -32,7 +32,7 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 			obstacleCount = 25;
 
 		for(int i = 0, random = rand() % 4; 
-			i < obstacleCount; i++, random = rand() % 3) {
+			i < obstacleCount; i++, random = rand() % 4) {
 				if(random == 0) {
 					obstacles.push_back(new Seaweed(this));
 					updateObsCoords(obstacles.back());
@@ -41,15 +41,14 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 					obstacles.push_back(new Coral(this));
 					updateObsCoords(obstacles.back());
 				}
-				// else if(random == 2) {
-				else {
+				else if(random == 2) {
 					obstacles.push_back(new Shark(this));
 					updateObsCoords(obstacles.back());
 				}
-				/* else {
+				else {
 					obstacles.push_back(new Octopus(this));
 					updateObsCoords(obstacles.back());
-				} */
+				}
 		}
 
 		initMiniCubes(gameMode * 20);
@@ -164,7 +163,7 @@ void Water::renderWorld() {
 			   (*it)->getDirection() == right_down ||
 			   (*it)->getDirection() == right_up)
 					(*it)->setGT(0);			//Shark::graphicLines[0] = sharkRight
-			//else if(cube->getPosY <= (*it)->getPosY())
+			//else if(cube->getPosY() <= (*it)->getPosY())
 			//	(*it)->setGT(1);			//Shark::graphicLines[1] = sharkLeft
 			else
 				(*it)->setGT(0);			//Shark::graphicLines[0] = sharkRight
@@ -190,14 +189,44 @@ void Water::renderWorld() {
 				}
 		}
 
-		/* if(typeid(**it) == typeid(Octopus))
-			for(int i = xCoord + xOffset;
-				i < Octopus::graphicLines.length() && i < LINES - 4; i++)
-				for(int j = yCoord + yOffset;
-					j < Octopus::graphicLines[i].length() && j < COLS; j++) {
-					Game::getBoard()[i][j] = Octopus::getGraphicLines()[i][j];
-					obsCoords.insert(make_pair(i, j));
-				} */
+		if(typeid(**it) == typeid(Octopus)) {
+			int color = static_cast<Octopus *>(*it)->getColor();
+			attron(A_BOLD);
+			
+			//Face Octopus based on movement direction
+			if((*it)->getDirection() == left ||
+			   (*it)->getDirection() == left_down ||
+			   (*it)->getDirection() == left_up)
+					(*it)->setGT(1);			//Octopus::graphicLines[1] = sharkLeft
+			else if((*it)->getDirection() == right ||
+			   (*it)->getDirection() == right_down ||
+			   (*it)->getDirection() == right_up)
+					(*it)->setGT(0);			//Octopus::graphicLines[0] = sharkRight
+			//else if(cube->getPosY() <= (*it)->getPosY())
+			//	(*it)->setGT(1);			//Octopus::graphicLines[1] = sharkLeft
+			else
+				(*it)->setGT(0);			//Octopus::graphicLines[0] = sharkRight
+			
+			
+			for(int i = 0; i < Octopus::getGraphicLines()[(*it)->getGT()].size() && 
+				i + xCoord + xOffset <= bottomRow; i++) 
+				for(int j = 0; 
+				j < Octopus::getGraphicLines()[(*it)->getGT()][i].length() &&
+				j + yCoord + yOffset < COLS &&
+				j + yCoord + yOffset >= 0; j++) {
+					/* Game::setBoard(i + xCoord + xOffset, 
+								   j + yCoord + yOffset,
+								   Octopus::getGraphicLines()[(*it)->getGT()][i][j]); */
+					obsCoords.insert(make_pair(i + xCoord + xOffset, 
+											   j + yCoord + yOffset));
+					tmpStr[0] = Octopus::getGraphicLines()[(*it)->getGT()][i][j];
+					//output to screen
+					attron(COLOR_PAIR(color));
+					mvaddstr(i + xCoord + xOffset, 
+							 j + yCoord + yOffset, 
+							 tmpStr);
+				}
+		}
 	}
 
 	//Print all the miniCubes
