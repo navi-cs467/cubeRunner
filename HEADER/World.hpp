@@ -29,7 +29,8 @@ class World {
 		int gameMode;
 		int bottomRow;
 		bool isTwoPlayer;
-		void initMiniCubes(int numMiniCubes);
+		void initMiniCubes(int numMiniCubes, 
+						   Direction offScreenDirection = none);
 		
 	public:
 		World(int gameMode, bool isTwoPlayer) :
@@ -37,7 +38,10 @@ class World {
 		void updateObsCoords(Obstacle *ob);
 		//void updateMiniCubes(pair<int, int>);
 		virtual void renderWorld() = 0;
-		//virtual void scroll_() = 0;
+		//virtual void scroll_(bool newObs) = 0;
+		virtual void scroll_() = 0;
+		virtual void loadOSObs() = 0;	//Load offscreen Obstacles (for scrolling)
+		virtual void loadOSMCs() = 0;	//Load offscreen miniCubes (for scrolling)
 		
 		//The following two functions are used by the Obstacle
 		//constructor to ensure a new obstacle is not placed on

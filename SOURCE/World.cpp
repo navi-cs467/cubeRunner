@@ -13,67 +13,59 @@
 
 void World::updateObsCoords(Obstacle *ob) {
 	
-	int longest = 0;
 	if(typeid(*ob) == typeid(Seaweed)) {
-		//find length of longest string in graphicLines array
-		for(int i = 0; i < Seaweed::getGraphicLines()[ob->getGT()].size(); i++)
-			if(Seaweed::getGraphicLines()[ob->getGT()][i].size() > longest)
-				longest = Seaweed::getGraphicLines()[ob->getGT()][i].size();
-		
-		//Update obsCoords	
-		for(int i = 0; i < Seaweed::getGraphicLines()[ob->getGT()].size(); i++)
-			for(int j = 0; j < longest; j++)
+		for(int i = 0; i < ob->getGTS(); i++)
+			for(int j = 0; j < ob->getLongestGS(); j++)
 				obsCoords.insert(make_pair(ob->getPosX() + i,
 										   ob->getPosY() + j));
 	}
 	else if(typeid(*ob) == typeid(Coral)) {
-		//find length of longest string in graphicLines array
-		for(int i = 0; i < Coral::getGraphicLines()[ob->getGT()].size(); i++)
-			if(Coral::getGraphicLines()[ob->getGT()][i].size() > longest)
-				longest = Coral::getGraphicLines()[ob->getGT()][i].size();
-	
-		//Update obsCoords
-		for(int i = 0; i < Coral::getGraphicLines()[ob->getGT()].size(); i++)
-			for(int j = 0; j < longest; j++)
+		for(int i = 0; i < ob->getGTS(); i++)
+			for(int j = 0; j < ob->getLongestGS(); j++)
 				obsCoords.insert(make_pair(ob->getPosX() + i,
 										   ob->getPosY() + j));
 	}
 	else if(typeid(*ob) == typeid(Shark)) {
-		//find length of longest string in graphicLines array
-		for(int i = 0; i < Shark::getGraphicLines()[ob->getGT()].size(); i++)
-			if(Shark::getGraphicLines()[ob->getGT()][i].size() > longest)
-				longest = Shark::getGraphicLines()[ob->getGT()][i].size();
-	
-		//Update obsCoords
-		for(int i = 0; i < Shark::getGraphicLines()[ob->getGT()].size(); i++)
-			for(int j = 0; j < longest; j++)
+		for(int i = 0; i < ob->getGTS(); i++)
+			for(int j = 0; j < ob->getLongestGS(); j++)
 				obsCoords.insert(make_pair(ob->getPosX() + i,
 										   ob->getPosY() + j));
 	}
-	else if(typeid(*ob) == typeid(Octopus)) {
-		//find length of longest string in graphicLines array
-		for(int i = 0; i < Octopus::getGraphicLines()[ob->getGT()].size(); i++)
-			if(Octopus::getGraphicLines()[ob->getGT()][i].size() > longest)
-				longest = Octopus::getGraphicLines()[ob->getGT()][i].size();
-	
-		//Update obsCoords
-		for(int i = 0; i < Octopus::getGraphicLines()[ob->getGT()].size(); i++)
-			for(int j = 0; j < longest; j++)
+	else if(typeid(*ob) == typeid(Octopus)) {	
+		for(int i = 0; i < ob->getGTS(); i++)
+			for(int j = 0; j < ob->getLongestGS(); j++)
 				obsCoords.insert(make_pair(ob->getPosX() + i,
 										   ob->getPosY() + j));
 	}
 }
 
-void World::initMiniCubes(int numMiniCubes) {
+void World::initMiniCubes(int numMiniCubes, 
+						  Direction offScreenDirection) {
 	//Find random starting position that does not
 	//encroach on existing world obstacles
 	set<pair<int,int>>::iterator it;
 	bool enchroaches;
 	int posX, posY;
+	
 	for(int i = 0; i < numMiniCubes; i++) {
 		do {
 			posX = rand() % bottomRow;
-			posY = (rand() % (COLS - 10)) + 10;		//No miniCubes start in first 10 columns
+			
+			if(offScreenDirection == none)
+				posY = (rand() % (COLS - 10)) + 10;		//No miniCubes start in first 10 columns
+			else
+				posY = rand() % COLS;	
+			
+			if(offScreenDirection != none) {
+				if(offScreenDirection == right)
+					posY = posY + COLS;
+				else if(offScreenDirection == left)
+					posY = -posY;
+				else if(offScreenDirection == up)
+					posX = -posX;
+				else
+					posX = posX + LINES;
+			}
 			it = obsCoords.find(make_pair(posX, posY));
 			if(it != obsCoords.end())
 				enchroaches = true;
@@ -82,4 +74,6 @@ void World::initMiniCubes(int numMiniCubes) {
 		miniCubes.insert(make_pair(posX, posY));
 	}
 }
-	
+
+// References
+// http://www.cplusplus.com/reference/string/string/length/

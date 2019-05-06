@@ -13,6 +13,17 @@ Seaweed::Seaweed(World *world, Direction offScreen,
 	
 	isStationary = true;
 	createObstacle(world, graphicLines, offScreen, specificGraphic);
+	
+	//Update size of graphic type array 
+	//and length of longest graphic string
+	gts = Seaweed::getGraphicLines()[gt].size();
+	longestGS = 0;
+	for(int i = 0; i < gts; i++)
+		if(Seaweed::getGraphicLines()[gt][i].size() > longestGS)
+			longestGS = Seaweed::getGraphicLines()[gt][i].size();
+		
+	//Update World's obsCoords with new graphic position
+	world->updateObsCoords(this);
 }
 
 vector<vector<string>> Seaweed::initializeVectorGraphics () {

@@ -16,6 +16,17 @@ Octopus::Octopus(World *world, Direction offScreen,
 	sameDirectionMoveCount = 0;
 	color = rand() % 4 + 31;
 	createObstacle(world, graphicLines, offScreen, specificGraphic);
+	
+	//Update size of graphic type array 
+	//and length of longest graphic string
+	gts = Octopus::getGraphicLines()[gt].size();
+	longestGS = 0;
+	for(int i = 0; i < gts; i++)
+		if(Octopus::getGraphicLines()[gt][i].size() > longestGS)
+			longestGS = Octopus::getGraphicLines()[gt][i].size();
+		
+	//Update World's obsCoords with new graphic position
+	world->updateObsCoords(this);
 }
 
 vector<vector<string>> Octopus::initializeVectorGraphics () {

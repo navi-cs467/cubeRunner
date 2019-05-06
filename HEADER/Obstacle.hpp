@@ -28,7 +28,9 @@ class Obstacle {
 							vector<vector<string>> graphicLines, 
 							Direction offScreenDirection = none,
 							int specificGraphic = -1);
-		int gt;	//Short for "graphic type"
+		int gt;			//Short for "graphic type"
+		int gts;		//Short for "graphic type size" (size of string array)
+		int longestGS;	//GS short for "graphic string"
 
 	public:
 		int getPosX() {return posX;}
@@ -37,7 +39,11 @@ class Obstacle {
 		void setPosY(int posY) {this->posY = posY;}
 		bool getIsStationary() {return isStationary;}
 		int getGT() {return gt;}
-		void setGT(int newGraphic) {gt = newGraphic;}
+		void setGT(int newGraphic); 
+		int getGTS() {return gts;}
+		void setGTS(int size) {gts = size;}
+		int getLongestGS() {return longestGS;}
+		void setLongestGS(int length) {longestGS = length;}
 		virtual Direction getDirection() {return none;}
 		
 		//Renders class abstract, since there is no

@@ -40,7 +40,10 @@ void Obstacle::createObstacle(World *world,
 		if(world->getBottomRow() - posX < graphicLines[gt].size())
 			posX = world->getBottomRow() - (graphicLines[gt].size() - 1);
 		
-		posY = (rand() % (COLS - 10)) + 10;		//No obstacles start in first 10 columns
+		if(offScreenDirection == none)
+			posY = (rand() % (COLS - 10)) + 10;		//No obstacles start in first 10 columns
+		else
+			posY = rand() % COLS;
 		
 		if(offScreenDirection != none) {
 			if(offScreenDirection == right)
@@ -71,3 +74,36 @@ void Obstacle::createObstacle(World *world,
 		
 	} while(enchroaches == true);
 }
+
+void Obstacle::setGT(int newGraphic) {
+	//Update graphic type
+	gt = newGraphic;
+	
+	//Update graphic type size and length of longest graphic string
+	longestGS = 0;
+	if(typeid(*this) == typeid(Seaweed)) {
+		gts = Seaweed::getGraphicLines()[gt].size();
+		for(int i = 0; i < gts; i++)
+			if(Seaweed::getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Seaweed::getGraphicLines()[gt][i].size();
+	}
+	else if(typeid(*this) == typeid(Coral)) {
+		gts = Coral::getGraphicLines()[gt].size();
+		for(int i = 0; i < gts; i++)
+			if(Coral::getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Coral::getGraphicLines()[gt][i].size();
+	}
+	else if(typeid(*this) == typeid(Shark)) {
+		gts = Shark::getGraphicLines()[gt].size();
+		for(int i = 0; i < gts; i++)
+			if(Shark::getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Shark::getGraphicLines()[gt][i].size();
+	}
+	else if(typeid(*this) == typeid(Octopus)) {
+		gts = Octopus::getGraphicLines()[gt].size();
+		for(int i = 0; i < gts; i++)
+			if(Octopus::getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Octopus::getGraphicLines()[gt][i].size();
+	}
+}
+	

@@ -24,5 +24,9 @@
 #define MENU2_LENGTH 4
 #define MENU3_LENGTH 4
 #define REFRESH_RATE 0.001
+#define OBS_COUNT_HARD 25
+#define OBS_COUNT_MED 15
+#define OBS_COUNT_EASY 10
+#define NUM_MCS_HARD 20
 
 #endif /* constants_hpp */

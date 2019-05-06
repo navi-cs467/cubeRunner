@@ -15,6 +15,17 @@ Shark::Shark(World *world, Direction offScreen,
 	curDirection = left;
 	sameDirectionMoveCount = 0;
 	createObstacle(world, graphicLines, offScreen, specificGraphic);
+	
+	//Update size of graphic type array 
+	//and length of longest graphic string
+	gts = Shark::getGraphicLines()[gt].size();
+	longestGS = 0;
+	for(int i = 0; i < gts; i++)
+		if(Shark::getGraphicLines()[gt][i].size() > longestGS)
+			longestGS = Shark::getGraphicLines()[gt][i].size();
+	
+	//Update World's obsCoords with new graphic position
+	world->updateObsCoords(this);
 }
 
 vector<vector<string>> Shark::initializeVectorGraphics () {

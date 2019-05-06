@@ -13,7 +13,7 @@
 Game::Game(int gameMode, bool isTwoPlayer) : 
 	isTwoPlayer(isTwoPlayer), gameMode(gameMode) {
 		
-		//Allocate memory for board
+		/* //Allocate memory for board
 		board = new char*[LINES];
 		for(int i = 0; i < LINES; i++)
 			board[i] = new char[COLS];
@@ -21,7 +21,7 @@ Game::Game(int gameMode, bool isTwoPlayer) :
 		//Print space characters on board
 		for(int i = 0; i < LINES - 1; i++)
 			for(int j = 0; j < COLS; j++)
-				board[i][j] = ' ';
+				board[i][j] = ' '; */
 		
 		//Create a random starting World
 		int worldSelector = rand() % 3;
@@ -111,18 +111,32 @@ int Game::playGame() {
 		//Thread (3) for game engine
 		#pragma omp section
 		{
-			int scrollRate = gameMode * 200;
-			double lastScrollTime = numeric_limits<double>::max(),
-				   lastRefreshTime = omp_get_wtime();
-			int statsTime, startTime, seconds = 0, minutes = 0, hours = 0;
+			//Establish scrollRate based on game difficulty (gameMode)
+			double scrollRate;
+			if(gameMode == 1) {
+				scrollRate = 0.35;
+			}
+			else if(gameMode == 2) {
+				scrollRate = 0.75;
+			}
+			else {
+				scrollRate = .10;
+			}
+			//Establish the interval (secs) at which new 
+			//Obstacles will be populated offscreen, based
+			//on scrollRate.
+			//double newObsInterval = COLS / (1./scrollRate);
+			
+			double lastScrollTime = omp_get_wtime(),
+				   lastRefreshTime = omp_get_wtime(),
+				   lastNewObsTime = omp_get_wtime();
+			int statsTime, startTime, scrollCount = 0,
+				seconds = 0, minutes = 0, hours = 0;
 			bool startTimeLogged = false;
 			string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 			while (/* cube.lives > 0 && */ userInput != 27 || 
 										   userInput != KEY_END) {
-				/* if(omp_get_wtime() - lastScrollTime > scrollRate) {
-					lastScrollTime = omp_get_wtime();
-					world.scroll();
-				} */
+				
 				/* if(deathCheck()) {
 					//Death Sequence
 				} */
@@ -133,6 +147,23 @@ int Game::playGame() {
 				if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 					lastRefreshTime = omp_get_wtime();
 					world->renderWorld();
+				}
+				
+				if(omp_get_wtime() - lastScrollTime > scrollRate) {
+					lastScrollTime = omp_get_wtime();
+					world->scroll_();
+					//if(typeid(*world) != typeid(Space))
+						if(scrollCount == COLS) {
+							world->loadOSObs();
+							world->loadOSMCs();
+						}
+					if(scrollCount == COLS) scrollCount = 0;
+					else scrollCount++;
+					/* if(omp_get_wtime() - lastNewObsTime > 1) {
+						world->scroll_(true);
+						lastNewObsTime = omp_get_wtime();
+					}
+					else world->scroll_(false); */
 				}
 				
 				//Render time, life count, and score display every second
