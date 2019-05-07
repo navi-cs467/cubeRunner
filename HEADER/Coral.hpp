@@ -18,14 +18,14 @@ class Obstacle;
 
 class Coral : public Obstacle {
 	private:
-		static vector<vector<string>> graphicLines;
+		static vector<vector<wstring>> graphicLines;
 		static int colorSeed;
 	
 	public:
 		Coral(World *world, Direction offScreen = none, int specificGraphic = -1);
-		static vector<vector<string>> getGraphicLines() {return graphicLines;}
+		static vector<vector<wstring>> getGraphicLines() {return graphicLines;}
 		static int getColorSeed() {return colorSeed;}
-		static vector<vector<string>> initializeVectorGraphics();
+		static vector<vector<wstring>> initializeVectorGraphics();
 		virtual ~Coral() {}
 		
 };

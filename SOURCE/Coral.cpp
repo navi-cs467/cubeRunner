@@ -26,27 +26,27 @@ Coral::Coral(World *world, Direction offScreen,
 	world->updateObsCoords(this);
 }
 
-vector<vector<string>> Coral::initializeVectorGraphics () {
-	vector<vector<string>> tmpV {{string(" /\\  /"),
-								  string("/  \\/      /"),
-								  string("\\         /"),
-								  string(" \\     /\\/"),
-								  string("  \\___/  \\"),
-								  string("  /"),
-								  string(" /")},
+vector<vector<wstring>> Coral::initializeVectorGraphics () {
+	vector<vector<wstring>> tmpV {{L" /\\  /",
+								   L"/  \\/      /",
+								   L"\\         /",
+								   L" \\     /\\/",
+								   L"  \\___/  \\",
+								   L"  /",
+								   L" /"},
 								
-								 {string("      \\  /\\"),
-								  string("\\      \\/  \\"),
-								  string(" \\         /"),
-								  string("  \\/\\     /"),
-								  string("  /	 \\___/"),
-								  string("         \\"),
-								  string("          \\")}};
+								  {L"      \\  /\\",
+								   L"\\      \\/  \\",
+								   L" \\         /",
+								   L"  \\/\\     /",
+								   L"  /	 \\___/",
+								   L"         \\",
+								   L"          \\"}};
 								  
 	return tmpV;
 }
 
-vector<vector<string>> Coral::graphicLines = 
+vector<vector<wstring>> Coral::graphicLines = 
 	Coral::initializeVectorGraphics();	  
 
 //Color scheme	

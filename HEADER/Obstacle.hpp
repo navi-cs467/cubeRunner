@@ -25,7 +25,7 @@ class Obstacle {
 		int posY;
 		bool isStationary;
 		void createObstacle(World *world, 
-							vector<vector<string>> graphicLines, 
+							vector<vector<wstring>> graphicLines, 
 							Direction offScreenDirection = none,
 							int specificGraphic = -1);
 		int gt;			//Short for "graphic type"
@@ -59,3 +59,5 @@ class Obstacle {
 // References
 // https://stackoverflow.com/questions/461203/when-to-use-virtual-destructors
 // https://www.geeksforgeeks.org/virtual-destructor/
+// http://www.cplusplus.com/reference/string/wstring/
+// https://stackoverflow.com/questions/402283/stdwstring-vs-stdstring

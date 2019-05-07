@@ -26,35 +26,35 @@ Seaweed::Seaweed(World *world, Direction offScreen,
 	world->updateObsCoords(this);
 }
 
-vector<vector<string>> Seaweed::initializeVectorGraphics () {
-	vector<vector<string>> tmpV {{string("\\\\   //"),
-								  string("//   \\\\"),
-								  string("\\\\   //"),
-								  string(" \\\\ //"),
-								  string(" // \\\\"),
-								  string(" \\\\ //"),
-								  string(" // \\\\"),
-								  string(" \\\\ //"),
-								  string(" |||||")},
+vector<vector<wstring>> Seaweed::initializeVectorGraphics () {
+	vector<vector<wstring>> tmpV {{L"\\\\   //",
+								   L"//   \\\\",
+								   L"\\\\   //",
+								   L" \\\\ //",
+								   L" // \\\\",
+								   L" \\\\ //",
+								   L" // \\\\",
+								   L" \\\\ //",
+								   L" |||||"},
 								
-								 {string(" |o |o"),
-								  string("  \\/"),
-								  string("  /o"),
-								  string("o/"),
-								  string("|"),
-								  string("|")},
+								  {L" |o |o",
+								   L"  \\/",
+								   L"  /o",
+								   L"o/",
+								   L"|",
+								   L"|"},
 								 
-								 {string(" |o |o"),
-								  string("  \\/"),
-								  string("  o\\"),
-								  string("    \\o"),
-								  string("    |"),
-								  string("    |")}};
+								  {L" |o |o",
+								   L"  \\/",
+								   L"  o\\",
+								   L"    \\o",
+								   L"    |",
+								   L"    |"}};
 								  
 	return tmpV;
 }
 
-vector<vector<string>> Seaweed::graphicLines = 
+vector<vector<wstring>> Seaweed::graphicLines = 
 	Seaweed::initializeVectorGraphics();	  
 
 //Color scheme	

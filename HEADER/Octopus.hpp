@@ -18,7 +18,7 @@ class Obstacle;
 
 class Octopus : public Obstacle {
 	private:
-		static vector<vector<string>> graphicLines;
+		static vector<vector<wstring>> graphicLines;
 		int color;
 		Direction curDirection;
 		int sameDirectionMoveCount;
@@ -26,9 +26,9 @@ class Octopus : public Obstacle {
 	public:
 		Octopus(World *world, Direction offScreen = none,
 			  int specificGraphic = -1);
-		static vector<vector<string>> getGraphicLines() {return graphicLines;}
+		static vector<vector<wstring>> getGraphicLines() {return graphicLines;}
 		int getColor() {return color;}
-		static vector<vector<string>> initializeVectorGraphics();
+		static vector<vector<wstring>> initializeVectorGraphics();
 		Direction getDirection() {return curDirection;}
 		void setDirection(Direction newDirection) {curDirection = newDirection;}
 		virtual ~Octopus() {}

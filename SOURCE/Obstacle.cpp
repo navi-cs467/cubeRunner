@@ -13,7 +13,7 @@
 #include "../HEADER/World.hpp"
 
 void Obstacle::createObstacle(World *world, 
-							  vector<vector<string>> graphicLines,
+							  vector<vector<wstring>> graphicLines,
 							  Direction offScreenDirection,
 							  int specificGraphic) {
 	

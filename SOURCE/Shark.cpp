@@ -17,7 +17,7 @@ Shark::Shark(World *world, Direction offScreen,
 	createObstacle(world, graphicLines, offScreen, specificGraphic);
 	
 	//Update size of graphic type array 
-	//and length of longest graphic string
+	//and length of longest graphic wstring
 	gts = Shark::getGraphicLines()[gt].size();
 	longestGS = 0;
 	for(int i = 0; i < gts; i++)
@@ -28,27 +28,27 @@ Shark::Shark(World *world, Direction offScreen,
 	world->updateObsCoords(this);
 }
 
-vector<vector<string>> Shark::initializeVectorGraphics () {
-	vector<vector<string>> tmpV {{string("            ,`\\"),
-								  string(",\\      ____)  \\________________"),
-								  string("\\ `────´                       /"),
-								  string("{ ,──._         « « «  <o  ___/"),
-								  string(" `     `─.__    ´ ´ ´     /´´´"),
-								  string("            \\/---|  )--.  \\."),
-								  string("                 ;,´    `-´")},
+vector<vector<wstring>> Shark::initializeVectorGraphics () {
+	vector<vector<wstring>> tmpV {{L"            ,`\\",
+								   L",\\      ____)  \\________________",
+								   L"\\ `────´                       /",
+								   L"{ ,──._         « « «  <o  ___/",
+								   L" `     `─.__    ´ ´ ´     /´´´",
+								   L"            \\/---|  )--.  \\.",
+								   L"                 ;,´    `-´"},
 								
-								 {string("                 /´,"),
-								  string("________________/  (____      /,"),
-								  string("\\                       `────´ /"),
-								  string(" \\___  o>  » » »         .──, }"),
-								  string("  ```\\     ` ` `    __.─´"),
-								  string("    ./  .--(  |---\\/"),
-								  string("     `-´    `,;")}};
+								 { L"                 /´,",
+								   L"________________/  (____      /,",
+								   L"\\                       `────´ /",
+								   L" \\___  o>  » » »         .──, }",
+								   L"  ```\\     ` ` `    __.─´",
+								   L"    ./  .--(  |---\\/",
+								   L"     `-´    `,;"}};
 								  
 	return tmpV;
 }
 
-vector<vector<string>> Shark::graphicLines = 
+vector<vector<wstring>> Shark::graphicLines = 
 	Shark::initializeVectorGraphics();	  
 
 //Color scheme	

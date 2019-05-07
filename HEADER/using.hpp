@@ -26,5 +26,6 @@ using std::set;
 using std::numeric_limits;
 using std::make_pair;
 using std::memset;
+using std::wstring;
 
 #endif /* using_hpp */

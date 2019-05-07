@@ -29,27 +29,27 @@ Octopus::Octopus(World *world, Direction offScreen,
 	world->updateObsCoords(this);
 }
 
-vector<vector<string>> Octopus::initializeVectorGraphics () {
-	vector<vector<string>> tmpV {{string("  oOOo"),
-								  string(" O    O"),
-								  string("O  o o O"),
-								  string(" OooooO"),
-								  string("//// \\\\\\\\"),
-								  string("\\\\\\\\ ////"),
-								  string("//// \\\\\\\\")},
+vector<vector<wstring>> Octopus::initializeVectorGraphics () {
+	vector<vector<wstring>> tmpV {{L"  oOOo",
+								   L" O    O",
+								   L"O  o o O",
+								   L" OooooO",
+								   L"//// \\\\\\\\",
+								   L"\\\\\\\\ ////",
+								   L"//// \\\\\\\\"},
 								
-								 {string("  oOOo"),
-								  string(" O    O"),
-								  string("O o o  O"),
-								  string(" OooooO"),
-								  string("//// \\\\\\\\"),
-								  string("\\\\\\\\ ////"),
-								  string("//// \\\\\\\\")}};
+								  {L"  oOOo",
+								   L" O    O",
+								   L"O o o  O",
+								   L" OooooO",
+								   L"//// \\\\\\\\",
+								   L"\\\\\\\\ ////",
+								   L"//// \\\\\\\\"}};
 								  
 	return tmpV;
 }
 
-vector<vector<string>> Octopus::graphicLines = 
+vector<vector<wstring>> Octopus::graphicLines = 
 	Octopus::initializeVectorGraphics();	  
 
 

@@ -151,8 +151,8 @@ void Water::renderWorld() {
 		if(yCoord < 0) yOffset = -yCoord;
 
 		//Temporary c-string used in call to mvaddstr below
-		char tmpStr[2]; tmpStr[1] = '\0';
-
+		wchar_t tmpWChArr[2]; tmpWChArr[1] = '\0';
+		
 		if(typeid(**it) == typeid(Seaweed)) {
 			attron(COLOR_PAIR(Seaweed::getColor()));
 			for(int i = 0; i < (*it)->getGTS() &&
@@ -166,9 +166,10 @@ void Water::renderWorld() {
 					/* obsCoords.insert(make_pair(i + xCoord + xOffset,
 											   j + yCoord + yOffset)); */
 					if(j - yOffset < 0) continue;
-					tmpStr[0] = Seaweed::getGraphicLines()[(*it)->getGT()][i][j];
+					tmpWChArr[0] = Seaweed::getGraphicLines()[(*it)->getGT()][i][j];
 					//output to screen
-					mvaddstr(i + xCoord, j + yCoord, tmpStr);
+					move(i + xCoord, j + yCoord);
+					printw("%lc", tmpWChArr[0]);
 				}
 		}
 				
@@ -186,10 +187,11 @@ void Water::renderWorld() {
 					/* obsCoords.insert(make_pair(i + xCoord + xOffset, 
 											   j + yCoord + yOffset)); */
 					if(j - yOffset < 0) continue;
-					tmpStr[0] = Coral::getGraphicLines()[(*it)->getGT()][i][j];
+					tmpWChArr[0] = Coral::getGraphicLines()[(*it)->getGT()][i][j];
 					//output to screen
 					attron(COLOR_PAIR(nextColor++));
-					mvaddstr(i + xCoord, j + yCoord, tmpStr);
+					move(i + xCoord, j + yCoord);
+					printw("%lc", tmpWChArr[0]);
 					if(nextColor == 35) nextColor = 30;
 				}
 		}
@@ -224,10 +226,12 @@ void Water::renderWorld() {
 					/* obsCoords.insert(make_pair(i + xCoord + xOffset, 
 											   j + yCoord + yOffset)); */
 					if(j - yOffset < 0) continue;
-					tmpStr[0] = Shark::getGraphicLines()[(*it)->getGT()][i][j];
+					//tmpStr[0] = Shark::getGraphicLines()[(*it)->getGT()][i][j];
+					tmpWChArr[0] = Shark::getGraphicLines()[(*it)->getGT()][i][j];
 					//output to screen
 					attron(COLOR_PAIR(color));
-					mvaddstr(i + xCoord, j + yCoord, tmpStr);
+					move(i + xCoord, j + yCoord);
+					printw("%lc", tmpWChArr[0]);
 				}
 		}
 
@@ -261,16 +265,17 @@ void Water::renderWorld() {
 					/* obsCoords.insert(make_pair(i + xCoord + xOffset, 
 											   j + yCoord + yOffset)); */
 					if(j - yOffset < 0) continue;
-					tmpStr[0] = Octopus::getGraphicLines()[(*it)->getGT()][i][j];
+					tmpWChArr[0] = Octopus::getGraphicLines()[(*it)->getGT()][i][j];
 					//output to screen
 					attron(COLOR_PAIR(color));
-					mvaddstr(i + xCoord, j + yCoord, tmpStr);
+					move(i + xCoord, j + yCoord);
+					printw("%lc", tmpWChArr[0]);
 				}
 		}
 	}
 
 	//Print all the miniCubes
-	wchar_t mc[]  =L"\u25A0";		//Trying to print unicode square '\u25A0'...
+	wchar_t mc[] = L"\u25A0";		
 	//char mc = 'c';
 	for(set<pair<int, int>>::iterator it = miniCubes.begin();
 		it != miniCubes.end(); it++) {

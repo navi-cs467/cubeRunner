@@ -18,15 +18,15 @@ class Obstacle;
 
 class Seaweed : public Obstacle {
 	private:
-		static vector<vector<string>> graphicLines;
+		static vector<vector<wstring>> graphicLines;
 		static int color;
 	
 	public:
 		Seaweed(World *world, Direction offScreen = none, 
 				int specificGraphic = -1);
-		static vector<vector<string>> getGraphicLines() {return graphicLines;}
+		static vector<vector<wstring>> getGraphicLines() {return graphicLines;}
 		static int getColor() {return color;}
-		static vector<vector<string>> initializeVectorGraphics();
+		static vector<vector<wstring>> initializeVectorGraphics();
 		virtual ~Seaweed() {}
 		
 };
