@@ -28,5 +28,6 @@
 #define OBS_COUNT_MED 15
 #define OBS_COUNT_EASY 10
 #define NUM_MCS_HARD 20
+#define NUM_DIRECTIONS 8
 
 #endif /* constants_hpp */

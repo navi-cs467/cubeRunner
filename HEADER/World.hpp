@@ -42,6 +42,8 @@ class World {
 		virtual void scroll_() = 0;
 		virtual void loadOSObs() = 0;	//Load offscreen Obstacles (for scrolling)
 		virtual void loadOSMCs() = 0;	//Load offscreen miniCubes (for scrolling)
+		int getBottomRow() const {return bottomRow;}
+		void moveObs();
 		
 		//The following two functions are used by the Obstacle
 		//constructor to ensure a new obstacle is not placed on
@@ -49,7 +51,6 @@ class World {
 		set<pair<int, int>>& getObsCoords() {return obsCoords;}
 		set<pair<int, int>>& getMiniCubes() {return miniCubes;}
 		
-		int getBottomRow() const {return bottomRow;}
 };
 
 #endif /* World_hpp */

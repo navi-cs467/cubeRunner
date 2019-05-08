@@ -106,4 +106,238 @@ void Obstacle::setGT(int newGraphic) {
 				longestGS = Octopus::getGraphicLines()[gt][i].size();
 	}
 }
+
+void Obstacle::move(World*) {
+	
+	Direction randDir = rand() % NUM_DIRECTIONS;
+	bool moveCleared;
+	set<pair<int,int>>::iterator itObs, itCubes;
+	for(int i = 0; i < NUM_DIRECTIONS && !moveCleared; i++) {
+		moveCleared = true;
+		if(randDir == left) {
+			for(int j = 0; j < gts; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX + j, posY - 1));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			if(moveCleared) {
+				for(int j = 0; j < gts; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX + j, posY - 1));
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+			}
+		}
+		if(randDir == left_down) {
+			for(int j = 1; j <= gts; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX + j, posY - 1));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			for(int j = 0; j < longestGS - 1; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX + gts, posY + j));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			if(moveCleared) {
+				for(int j = 1; j <= gts; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX + j, posY - 1));
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+				for(int j = 0; j < longestGS - 1; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX + gts, posY + j));
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+			}
+		}
+		if(randDir == down) {
+			for(int j = 0; j < longestGS; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX + gts, posY + j));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			if(moveCleared) {
+				for(int j = 0; j < longestGS; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX + gts, posY + j)) != 
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+			}
+		}
+		if(randDir == right_down) {
+			for(int j = 1; j <= gts; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX + j, posY + longestGS));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			for(int j = 1; j <= longestGS; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX + gts, posY + j));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			if(moveCleared) {
+				for(int j = 1; j <= gts; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX + j, posY + longestGS)) != 
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+				for(int j = 1; j <= longestGS; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX + gts, posY + j)) != 
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+			}
+		}
+		if(randDir == right) {
+			for(int j = 0; j < gts; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX + j, posY + longestGS));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			if(moveCleared) {
+				for(int j = 0; j < gts; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX + j, posY + longestGS)) != 
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+			}
+		}
+		if(randDir == right_up) {
+			for(int j = -1; j < gts - 1; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX + j, posY + longestGS));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			for(int j = 1; j < longestGS; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX - 1, posY + j));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			if(moveCleared) {
+				for(int j = -1; j < gts - 1; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX + j, posY + longestGS)) != 
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+				for(int j = 1; j < longestGS; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX - 1, posY + j)) != 
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+			}
+		}
+		if(randDir == up) {
+			for(int j = 0; j < longestGS; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX - 1, posY + j));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			if(moveCleared) {
+				for(int j = 0; j < longestGS; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX - 1, posY + j)) != 
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+			}
+		}
+		if(randDir == left_up) {
+			for(int j = -1; j < gts - 1; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX + j, posY - 1));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			for(int j = 0; j < longestGS - 1; j++) {
+				itObs = world->getObsCoords().
+					find(make_pair(posX - 1, posY + j));
+				if(itObs != world->getObsCoords.end()) {
+					randDir++;
+					moveCleared = false;
+					continue;
+				}
+			}
+			if(moveCleared) {
+				for(int j = -1; j < gts - 1; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX + j, posY - 1)) != 
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+				for(int j = 0; j < longestGS - 1; j++) {
+					itCubes = world->getMiniCubes().
+						find(make_pair(posX - 1, posY + j)) != 
+					if(itCubes != world->miniCubes.end()) {
+						miniCubes.erase(itCubes);
+					}
+				}
+			}
+		}
+	}
+}
 	

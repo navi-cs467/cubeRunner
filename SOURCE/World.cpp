@@ -75,5 +75,12 @@ void World::initMiniCubes(int numMiniCubes,
 	}
 }
 
+void World::moveObs() {
+	for(list<Obstacle*>::iterator it = obstacles.begin();
+		it != obstacles.end(); it++) 
+			if(!(*it)->getIsStationary())
+				(*it)->move(this);
+}
+
 // References
 // http://www.cplusplus.com/reference/string/string/length/

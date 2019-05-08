@@ -45,6 +45,7 @@ class Obstacle {
 		int getLongestGS() {return longestGS;}
 		void setLongestGS(int length) {longestGS = length;}
 		virtual Direction getDirection() {return none;}
+		virtual void move(World*);
 		
 		//Renders class abstract, since there is no
 		//candidate for a pure virtual function that

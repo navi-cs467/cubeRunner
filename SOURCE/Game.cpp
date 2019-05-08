@@ -111,8 +111,9 @@ int Game::playGame() {
 		//Thread (3) for game engine
 		#pragma omp section
 		{
-			//Establish scrollRate based on game difficulty (gameMode)
-			double scrollRate;
+			//Establish scrollRate & moveRate,
+			//based on game difficulty (gameMode)
+			double scrollRate, moveRate;
 			if(gameMode == 1) {
 				scrollRate = 0.35;
 			}
@@ -122,12 +123,15 @@ int Game::playGame() {
 			else {
 				scrollRate = .10;
 			}
+			moveRate = scrollRate / 2.;
+			
 			//Establish the interval (secs) at which new 
 			//Obstacles will be populated offscreen, based
 			//on scrollRate.
 			//double newObsInterval = COLS / (1./scrollRate);
 			
 			double lastScrollTime = omp_get_wtime(),
+				   lastMoveTime = omp_get_wtime(),
 				   lastRefreshTime = omp_get_wtime(),
 				   lastNewObsTime = omp_get_wtime();
 			int statsTime, startTime, scrollCount = 0,
@@ -156,14 +160,14 @@ int Game::playGame() {
 						if(scrollCount == COLS) {
 							world->loadOSObs();
 							world->loadOSMCs();
-						}
+						}			
 					if(scrollCount == COLS) scrollCount = 0;
 					else scrollCount++;
-					/* if(omp_get_wtime() - lastNewObsTime > 1) {
-						world->scroll_(true);
-						lastNewObsTime = omp_get_wtime();
-					}
-					else world->scroll_(false); */
+				}
+				
+				if(omp_get_wtime() - lastMoveTime > moveRate) {
+					lastMoveTime = omp_get_wtime();
+					world->moveObs();
 				}
 				
 				//Render time, life count, and score display every second
