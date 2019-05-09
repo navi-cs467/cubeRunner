@@ -19,4 +19,10 @@ enum Direction { left,
 				 left_up,
 				 none
 			   };
+			   
+Direction& operator++(Direction& dir);
+
 #endif
+
+// References
+// https://stackoverflow.com/questions/3475152/why-cant-i-increment-a-variable-of-an-enumerated-type

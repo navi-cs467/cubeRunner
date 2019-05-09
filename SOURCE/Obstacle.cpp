@@ -107,39 +107,84 @@ void Obstacle::setGT(int newGraphic) {
 	}
 }
 
-void Obstacle::move(World*) {
+void Obstacle::move(World* world) {
 	
-	Direction randDir = rand() % NUM_DIRECTIONS;
+	Direction mvDir; //int testMvDir;
+	//Randomly assign a new "seed" direction for the
+	//following for loop if the last move direction has 
+	//been "exhausted" per the move counter.
+	if(mvCounter == 0) {
+		mvDir = static_cast<Direction>(rand() % NUM_DIRECTIONS);
+		//Randomly assign a new value for
+		//the move counter between MAX_MOVE_COUNTER
+		//and MIN_MOVE_COUNTER
+		mvCounter = rand() % (MAX_MOVE_COUNTER -
+							  MIN_MOVE_COUNTER + 1) +
+							  MIN_MOVE_COUNTER;
+	}
+	else mvDir = lastMV;
+	
+	//This loop starts with mvDir, then cycles through
+	//all possible move directions to find one that will
+	//not cause an overlap with an existing object. If
+	//no direction is available (i.e. the object is 
+	//surrounded by other objects on all sides and in all
+	//directions) the object will not move. If the object
+	//moves into a space occupied by a miniCube, the miniCube
+	//is removed.
 	bool moveCleared;
 	set<pair<int,int>>::iterator itObs, itCubes;
 	for(int i = 0; i < NUM_DIRECTIONS && !moveCleared; i++) {
 		moveCleared = true;
-		if(randDir == left) {
+		if(mvDir == left) { 
 			for(int j = 0; j < gts; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY - 1));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
 			}
 			if(moveCleared) {
 				for(int j = 0; j < gts; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX + j, posY + longestGS - 1);
+					world->getObsCoords().erase(itObs);
+				}
+				posY--;
+				for(int j = 0; j < gts; j++) {
+					world->getObsCoords().
+						insert(make_pair(posX + j, posY));
+				}
+				if(lastMV == left) mvCounter--;
+				else {
+					lastMV = left;
+					mvCounter = rand() % (MAX_MOVE_COUNTER -
+							  MIN_MOVE_COUNTER + 1) +
+							  MIN_MOVE_COUNTER;
+				}
+				for(int j = 0; j < gts; j++) {
 					itCubes = world->getMiniCubes().
 						find(make_pair(posX + j, posY - 1));
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				break;
 			}
 		}
-		if(randDir == left_down) {
+		else if(mvDir == left_down) {
+			//if(typeof(world*) != typeof(Space) &&
+			//	 posX + gts == world->getBottomRow() + 1) continue;
+			if(posX + gts == world->getBottomRow() + 1) continue;
 			for(int j = 1; j <= gts; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY - 1));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
@@ -147,55 +192,102 @@ void Obstacle::move(World*) {
 			for(int j = 0; j < longestGS - 1; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + gts, posY + j));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
 			}
 			if(moveCleared) {
+				for(int j = 0; j < gts; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX + j, posY + longestGS - 1);
+					world->getObsCoords().erase(itObs);
+				}
+				for(int j = 0; j < longestGS; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX, posY + j);
+					world->getObsCoords().erase(itObs);
+				}
+				posX++; posY--;
+				for(int j = 0; j < gts; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX + j, posY);
+					world->getObsCoords().erase(itObs);
+				}
+				for(int j = 0; j < longestGS; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX + gts - 1, posY + j);
+					world->getObsCoords().erase(itObs);
+				}
+				if(lastMV == left_down) mvCounter--;
+				else {
+					lastMV = left_down;
+					mvCounter = rand() % (MAX_MOVE_COUNTER -
+							  MIN_MOVE_COUNTER + 1) +
+							  MIN_MOVE_COUNTER;
+				}
 				for(int j = 1; j <= gts; j++) {
 					itCubes = world->getMiniCubes().
 						find(make_pair(posX + j, posY - 1));
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
 				for(int j = 0; j < longestGS - 1; j++) {
 					itCubes = world->getMiniCubes().
 						find(make_pair(posX + gts, posY + j));
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				break;
 			}
 		}
-		if(randDir == down) {
+		else if(mvDir == down) {
+			//if(typeof(world*) != typeof(Space) &&
+			//	 posX + gts == world->getBottomRow() + 1) continue;
+			if(posX + gts == world->getBottomRow() + 1) continue;
 			for(int j = 0; j < longestGS; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + gts, posY + j));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
 			}
 			if(moveCleared) {
+				posX++;
+				if(lastMV == down) mvCounter--;
+				else {
+					lastMV = down;
+					mvCounter = rand() % (MAX_MOVE_COUNTER -
+							  MIN_MOVE_COUNTER + 1) +
+							  MIN_MOVE_COUNTER;
+				}
 				for(int j = 0; j < longestGS; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + gts, posY + j)) != 
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+						find(make_pair(posX + gts, posY + j)); 
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				break;
 			}
 		}
-		if(randDir == right_down) {
+		else if(mvDir == right_down) {
+			//if(typeof(world*) != typeof(Space) &&
+			//	 posX + gts == world->getBottomRow() + 1) continue;
+			if(posX + gts == world->getBottomRow() + 1) continue;
 			for(int j = 1; j <= gts; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY + longestGS));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
@@ -203,55 +295,76 @@ void Obstacle::move(World*) {
 			for(int j = 1; j <= longestGS; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + gts, posY + j));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
 			}
 			if(moveCleared) {
+				posX++; posY++;
+				if(lastMV == right_down) mvCounter--;
+				else {
+					lastMV = right_down;
+					mvCounter = rand() % (MAX_MOVE_COUNTER -
+							  MIN_MOVE_COUNTER + 1) +
+							  MIN_MOVE_COUNTER;
+				}
 				for(int j = 1; j <= gts; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + j, posY + longestGS)) != 
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+						find(make_pair(posX + j, posY + longestGS)); 
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
 				for(int j = 1; j <= longestGS; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + gts, posY + j)) != 
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+						find(make_pair(posX + gts, posY + j));
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				break;
 			}
 		}
-		if(randDir == right) {
+		else if(mvDir == right) {
 			for(int j = 0; j < gts; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY + longestGS));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
 			}
 			if(moveCleared) {
+				posY++;
+				if(lastMV == right) mvCounter--;
+				else {
+					lastMV = right;
+					mvCounter = rand() % (MAX_MOVE_COUNTER -
+							  MIN_MOVE_COUNTER + 1) +
+							  MIN_MOVE_COUNTER;
+				}
 				for(int j = 0; j < gts; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + j, posY + longestGS)) != 
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+						find(make_pair(posX + j, posY + longestGS)); 
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				break;
 			}
 		}
-		if(randDir == right_up) {
+		else if(mvDir == right_up) {
 			for(int j = -1; j < gts - 1; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY + longestGS));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
@@ -259,55 +372,76 @@ void Obstacle::move(World*) {
 			for(int j = 1; j < longestGS; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX - 1, posY + j));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
 			}
 			if(moveCleared) {
+				posX--; posY++;
+				if(lastMV == right_up) mvCounter--;
+				else {
+					lastMV = right_up;
+					mvCounter = rand() % (MAX_MOVE_COUNTER -
+							  MIN_MOVE_COUNTER + 1) +
+							  MIN_MOVE_COUNTER;
+				}
 				for(int j = -1; j < gts - 1; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + j, posY + longestGS)) != 
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+						find(make_pair(posX + j, posY + longestGS)); 
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
 				for(int j = 1; j < longestGS; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX - 1, posY + j)) != 
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+						find(make_pair(posX - 1, posY + j));
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				break;
 			}
 		}
-		if(randDir == up) {
+		else if(mvDir == up) {
 			for(int j = 0; j < longestGS; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX - 1, posY + j));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
 			}
 			if(moveCleared) {
+				posX--;
+				if(lastMV == up) mvCounter--;
+				else {
+					lastMV = up;
+					mvCounter = rand() % (MAX_MOVE_COUNTER -
+							  MIN_MOVE_COUNTER + 1) +
+							  MIN_MOVE_COUNTER;
+				}
 				for(int j = 0; j < longestGS; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX - 1, posY + j)) != 
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+						find(make_pair(posX - 1, posY + j));
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				break;
 			}
 		}
-		if(randDir == left_up) {
+		else if(mvDir == left_up) {
 			for(int j = -1; j < gts - 1; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY - 1));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
@@ -315,27 +449,37 @@ void Obstacle::move(World*) {
 			for(int j = 0; j < longestGS - 1; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX - 1, posY + j));
-				if(itObs != world->getObsCoords.end()) {
-					randDir++;
+				if(itObs != world->getObsCoords().end()) {
+					++mvDir;
+					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
 				}
 			}
 			if(moveCleared) {
+				posX--; posY--;
+				if(lastMV == left_up) mvCounter--;
+				else {
+					lastMV = left_up;
+					mvCounter = rand() % (MAX_MOVE_COUNTER -
+							  MIN_MOVE_COUNTER + 1) +
+							  MIN_MOVE_COUNTER;
+				}
 				for(int j = -1; j < gts - 1; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + j, posY - 1)) != 
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+						find(make_pair(posX + j, posY - 1));
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
 				for(int j = 0; j < longestGS - 1; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX - 1, posY + j)) != 
-					if(itCubes != world->miniCubes.end()) {
-						miniCubes.erase(itCubes);
+						find(make_pair(posX - 1, posY + j));
+					if(itCubes != world->getMiniCubes().end()) {
+						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				break;
 			}
 		}
 	}

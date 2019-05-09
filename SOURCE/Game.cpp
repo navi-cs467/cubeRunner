@@ -121,9 +121,9 @@ int Game::playGame() {
 				scrollRate = 0.75;
 			}
 			else {
-				scrollRate = .10;
+				scrollRate = .5;
 			}
-			moveRate = scrollRate / 2.;
+			moveRate = scrollRate / 4.;
 			
 			//Establish the interval (secs) at which new 
 			//Obstacles will be populated offscreen, based
@@ -167,7 +167,7 @@ int Game::playGame() {
 				
 				if(omp_get_wtime() - lastMoveTime > moveRate) {
 					lastMoveTime = omp_get_wtime();
-					world->moveObs();
+					//world->moveObs();
 				}
 				
 				//Render time, life count, and score display every second

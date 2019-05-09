@@ -13,6 +13,7 @@
 
 #include "using.hpp"
 #include "Direction.hpp"
+#include "constants.hpp"
 
 //Forward declaration needed to workaround a
 //cyclic dependency. (https://stackoverflow.com/questions/
@@ -28,9 +29,14 @@ class Obstacle {
 							vector<vector<wstring>> graphicLines, 
 							Direction offScreenDirection = none,
 							int specificGraphic = -1);
-		int gt;			//Short for "graphic type"
-		int gts;		//Short for "graphic type size" (size of string array)
-		int longestGS;	//GS short for "graphic string"
+		int gt;				//Short for "graphic type"
+		int gts;			//Short for "graphic type size" (size of string array)
+		int longestGS;		//GS short for "graphic string"
+		Direction lastMV;	//Last Move Direction
+		int mvCounter;		//Counter to keep Obstacle moving in
+							//the same direction if possible for
+							//a random number of moves [between 5 - 25,
+							//see Obstacle.cpp - move(World* world)]
 
 	public:
 		int getPosX() {return posX;}
@@ -45,7 +51,7 @@ class Obstacle {
 		int getLongestGS() {return longestGS;}
 		void setLongestGS(int length) {longestGS = length;}
 		virtual Direction getDirection() {return none;}
-		virtual void move(World*);
+		virtual void move(World* world);
 		
 		//Renders class abstract, since there is no
 		//candidate for a pure virtual function that
