@@ -9,6 +9,7 @@
 #ifndef constants_hpp
 #define constants_hpp
 
+//Menu-Related
 #define MIN_WIN_HEIGHT 32					
 #define MIN_WIN_WIDTH 135					
 #define INTRO_HEIGHT 28
@@ -23,6 +24,16 @@
 #define MENU1_LENGTH 4
 #define MENU2_LENGTH 4
 #define MENU3_LENGTH 4
+#define ONE_PLAYER 1
+#define TWO_PLAYER 2
+#define HIGH_SCORE 3
+#define EXIT 4
+#define EASY 1
+#define NORMAL 2
+#define HARD 3
+#define BACK 4
+
+//Game-Related
 #define REFRESH_RATE 0.001
 #define OBS_COUNT_HARD 25
 #define OBS_COUNT_MED 15

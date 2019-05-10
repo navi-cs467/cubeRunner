@@ -11,6 +11,7 @@
 
 #include "../HEADER/Obstacle.hpp"
 #include "../HEADER/World.hpp"
+#include "../HEADER/Water.hpp"
 
 void Obstacle::createObstacle(World *world, 
 							  vector<vector<wstring>> graphicLines,
@@ -109,6 +110,12 @@ void Obstacle::setGT(int newGraphic) {
 
 void Obstacle::move(World* world) {
 	
+	//Do not move the Obstacle if it is offscreen left or right
+	//for Water and Land Worlds
+	if((typeid(*world) == typeid(Water)) //||
+		//typeid(*world) == typeid(Land)) &&
+		&& (posY > COLS || posY < 0 - longestGS)) return;
+	
 	Direction mvDir; //int testMvDir;
 	//Randomly assign a new "seed" direction for the
 	//following for loop if the last move direction has 
@@ -170,7 +177,7 @@ void Obstacle::move(World* world) {
 				}
 				for(int j = 0; j < gts; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + j, posY - 1));
+						find(make_pair(posX + j, posY));
 					if(itCubes != world->getMiniCubes().end()) {
 						world->getMiniCubes().erase(itCubes);
 					}
@@ -239,14 +246,14 @@ void Obstacle::move(World* world) {
 							  MIN_MOVE_COUNTER + 1) +
 							  MIN_MOVE_COUNTER;
 				}
-				for(int j = 1; j <= gts; j++) {
+				for(int j = 0; j < gts; j++) {
 					itCubes = world->getMiniCubes().
 						find(make_pair(posX + j, posY - 1));
 					if(itCubes != world->getMiniCubes().end()) {
 						world->getMiniCubes().erase(itCubes);
 					}
 				}
-				for(int j = 0; j < longestGS - 1; j++) {
+				for(int j = 0; j < longestGS; j++) {
 					itCubes = world->getMiniCubes().
 						find(make_pair(posX + gts, posY + j));
 					if(itCubes != world->getMiniCubes().end()) {
@@ -298,7 +305,7 @@ void Obstacle::move(World* world) {
 				}
 				for(int j = 0; j < longestGS; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + gts, posY + j)); 
+						find(make_pair(posX + gts - 1, posY + j)); 
 					if(itCubes != world->getMiniCubes().end()) {
 						world->getMiniCubes().erase(itCubes);
 					}
@@ -366,14 +373,14 @@ void Obstacle::move(World* world) {
 							  MIN_MOVE_COUNTER + 1) +
 							  MIN_MOVE_COUNTER;
 				}
-				for(int j = 1; j <= gts; j++) {
+				for(int j = 0; j < gts; j++) {
 					itCubes = world->getMiniCubes().
 						find(make_pair(posX + j, posY + longestGS)); 
 					if(itCubes != world->getMiniCubes().end()) {
 						world->getMiniCubes().erase(itCubes);
 					}
 				}
-				for(int j = 1; j <= longestGS; j++) {
+				for(int j = 0; j < longestGS; j++) {
 					itCubes = world->getMiniCubes().
 						find(make_pair(posX + gts, posY + j));
 					if(itCubes != world->getMiniCubes().end()) {
@@ -419,7 +426,7 @@ void Obstacle::move(World* world) {
 				}
 				for(int j = 0; j < gts; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + j, posY + longestGS)); 
+						find(make_pair(posX + j, posY + longestGS - 1)); 
 					if(itCubes != world->getMiniCubes().end()) {
 						world->getMiniCubes().erase(itCubes);
 					}
@@ -484,14 +491,14 @@ void Obstacle::move(World* world) {
 				}
 				for(int j = -1; j < gts - 1; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + j, posY + longestGS)); 
+						find(make_pair(posX + j, posY + longestGS - 1)); 
 					if(itCubes != world->getMiniCubes().end()) {
 						world->getMiniCubes().erase(itCubes);
 					}
 				}
 				for(int j = 1; j < longestGS; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX - 1, posY + j));
+						find(make_pair(posX, posY + j));
 					if(itCubes != world->getMiniCubes().end()) {
 						world->getMiniCubes().erase(itCubes);
 					}
@@ -535,7 +542,7 @@ void Obstacle::move(World* world) {
 				}
 				for(int j = 0; j < longestGS; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX - 1, posY + j));
+						find(make_pair(posX, posY + j));
 					if(itCubes != world->getMiniCubes().end()) {
 						world->getMiniCubes().erase(itCubes);
 					}
@@ -597,16 +604,16 @@ void Obstacle::move(World* world) {
 							  MIN_MOVE_COUNTER + 1) +
 							  MIN_MOVE_COUNTER;
 				}
-				for(int j = -1; j < gts - 1; j++) {
+				for(int j = 0; j < gts; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX + j, posY - 1));
+						find(make_pair(posX + j, posY));
 					if(itCubes != world->getMiniCubes().end()) {
 						world->getMiniCubes().erase(itCubes);
 					}
 				}
-				for(int j = 0; j < longestGS - 1; j++) {
+				for(int j = 0; j < longestGS; j++) {
 					itCubes = world->getMiniCubes().
-						find(make_pair(posX - 1, posY + j));
+						find(make_pair(posX, posY + j));
 					if(itCubes != world->getMiniCubes().end()) {
 						world->getMiniCubes().erase(itCubes);
 					}

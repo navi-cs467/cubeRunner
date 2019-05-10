@@ -14,6 +14,7 @@
 #include "using.hpp"
 #include "Direction.hpp"
 #include "constants.hpp"
+#include "include.hpp"
 
 //Forward declaration needed to workaround a
 //cyclic dependency. (https://stackoverflow.com/questions/

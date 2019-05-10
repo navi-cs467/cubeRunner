@@ -89,6 +89,10 @@ int main(void)
 	
 	initColors();	//Initialize color indexes
 	
+	//Make sure users window is at least
+	//MIN_WIN_WIDTH x MIN_WIN_HEIGHT (see constants.hpp)
+	//(Instructs user to resize window then exits with
+	//key press if minimum window dimensions are not met.)
 	validateWinSize();
 	
 	srand(time(NULL));	//Seed random number generator with system time
@@ -274,47 +278,47 @@ int main(void)
 				while(!gameOn) {
 					int c = getch();
 					if(c == KEY_DOWN || c == 'k') {
-						if(cursorPos != 4 && currMenu == 1) {
+						if(cursorPos != EXIT && currMenu == 1) {
 							cursorPos++;
 							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1], 
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 						}
-						else if(cursorPos != 4 && currMenu == 2) {
+						else if(cursorPos != EXIT && currMenu == 2) {
 							cursorPos++;
 							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1], 
 								startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
 						}
-						if(currMenu == 1 && cursorPos == 2) playerCount = 2;
+						if(currMenu == 1 && cursorPos == TWO_PLAYER) playerCount = 2;
 					}
 					else if(c == KEY_UP || c == 'i') {  
-						if(cursorPos != 1 && currMenu == 1) {
+						if(cursorPos != ONE_PLAYER && currMenu == 1) {
 							cursorPos--;
 							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1], 
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 						}
-						else if(cursorPos != 1 && currMenu == 2) {
+						else if(cursorPos != EASY && currMenu == 2) {
 							cursorPos--;
 							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1], 
 								startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
 						}
-						if(currMenu == 1 && cursorPos == 1) playerCount = 1;
-						else if(currMenu == 1 && cursorPos == 2) playerCount = 2;
+						if(currMenu == 1 && cursorPos == ONE_PLAYER) playerCount = 1;
+						else if(currMenu == 1 && cursorPos == TWO_PLAYER) playerCount = 2;
 					}
 					else if(c == KEY_ENTER || c == 10 || c == 13) {
-						if(currMenu == 1 && (cursorPos == 1 || cursorPos == 2)) {
+						if(currMenu == 1 && (cursorPos == ONE_PLAYER || cursorPos == TWO_PLAYER)) {
 							delwin(subscrnMenu1);
 							subscrnMenu2 = printMenu(menu2Items, 
 								startingLineColor, NULL, MENU2_LENGTH, MM_WIDTH);
-							cursorPos = 2;
+							cursorPos = NORMAL;
 							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1], 
 								startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
 							currMenu = 2;
 						}
-						else if(currMenu == 1 && cursorPos == 3) {
+						else if(currMenu == 1 && cursorPos == HIGH_SCORE) {
 							//delwin(subscrnMenu1);
 							//showHighScores();
 						}
-						else if(currMenu == 1 && cursorPos == 4) {
+						else if(currMenu == 1 && cursorPos == EXIT) {
 							delwin(subscrnMenu1);
 							// restore original settings and leave
 							endwin();
@@ -322,12 +326,12 @@ int main(void)
 						}
 						
 						//Easy game...
-						else if(currMenu == 2 && cursorPos == 1 && playerCount == 1) {
+						else if(currMenu == 2 && cursorPos == EASY && playerCount == 1) {
 							gameOn = true;
 							gameMode = 1;
 						}
 						//Go to network prompt if multi-player mode is selected
-						else if(currMenu == 2 && cursorPos == 1 && playerCount == 2) {
+						else if(currMenu == 2 && cursorPos == EASY && playerCount == 2) {
 							delwin(subscrnMenu2); 
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenu3 = 
@@ -363,12 +367,12 @@ int main(void)
 						}
 						
 						//Normal game...
-						else if(currMenu == 2 && cursorPos == 1 && playerCount == 1) {
+						else if(currMenu == 2 && cursorPos == NORMAL && playerCount == 1) {
 							gameOn = true;
 							gameMode = 2;
 						}
 						//Go to network prompt if multi-player mode is selected
-						else if(currMenu == 2 && cursorPos == 2 && playerCount == 2) {
+						else if(currMenu == 2 && cursorPos == NORMAL && playerCount == 2) {
 							delwin(subscrnMenu2); 
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenu3 = 
@@ -402,12 +406,12 @@ int main(void)
 						}
 						
 						//Hard game...
-						else if(currMenu == 2 && cursorPos == 1 && playerCount == 1) {
+						else if(currMenu == 2 && cursorPos == HARD && playerCount == 1) {
 							gameOn = true;
-							gameMode = 3;
+							gameMode = 1;
 						}
 						//Go to network prompt if multi-player mode is selected
-						else if(currMenu == 2 && cursorPos == 3 && playerCount == 2) {
+						else if(currMenu == 2 && cursorPos == HARD && playerCount == 2) {
 							delwin(subscrnMenu2); 
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenu3 = 
@@ -441,14 +445,14 @@ int main(void)
 						}
 						
 						//Exit
-						else if(currMenu == 2 && cursorPos == 4) {
+						else if(currMenu == 2 && cursorPos == BACK) {
 							delwin(subscrnMenu2);
 							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL,
 														MENU1_LENGTH, MM_WIDTH);
 							subscrnGraphic = paintCubeGraphic(subscrnGraphic,
 												"GRAPHICS/menuCubeRight1_1.txt");
-							if(playerCount == 1) cursorPos = 1;
-							else cursorPos = 2;
+							if(playerCount == 1) cursorPos = ONE_PLAYER;
+							else cursorPos = TWO_PLAYER;
 							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1], 
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 							currMenu = 1;

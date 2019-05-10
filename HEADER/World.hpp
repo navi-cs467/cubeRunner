@@ -29,14 +29,14 @@ class World {
 		int gameMode;
 		int bottomRow;
 		bool isTwoPlayer;
-		void initMiniCubes(int numMiniCubes, 
-						   Direction offScreenDirection = none);
 		
 	public:
 		World(int gameMode, bool isTwoPlayer) :
 			gameMode(gameMode), isTwoPlayer(isTwoPlayer) {}
 		void updateObsCoords(Obstacle *ob);
 		//void updateMiniCubes(pair<int, int>);
+		void initMiniCubes(int numMiniCubes, 
+						   Direction offScreenDirection = none);
 		virtual void renderWorld() = 0;
 		//virtual void scroll_(bool newObs) = 0;
 		virtual void scroll_() = 0;

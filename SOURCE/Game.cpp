@@ -160,7 +160,10 @@ int Game::playGame() {
 						if(scrollCount == COLS) {
 							world->loadOSObs();
 							world->loadOSMCs();
-						}			
+						}
+					if(world->getMiniCubes().size() 
+							< (gameMode * NUM_MCS_HARD) / 2)
+						world->initMiniCubes(1);		
 					if(scrollCount == COLS) scrollCount = 0;
 					else scrollCount++;
 				}
