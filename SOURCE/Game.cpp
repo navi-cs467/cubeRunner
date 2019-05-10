@@ -44,7 +44,7 @@ int Game::playGame() {
 	int userInput = 0, score = 0;
 		
 	//Set number of omp threads
-	omp_set_num_threads(3);
+	omp_set_num_threads(2);
 	
 	//Lock needed so position cannot be changed
 	//in such rapid succession that some positions
@@ -84,31 +84,8 @@ int Game::playGame() {
 				} */
 			}
 		}
-		//Thread (2) for updating timer & score display
-		#pragma omp section
-		{
-			int time = static_cast<int>(omp_get_wtime());
-			string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
-			/* while (// cube.lives > 0 &&
-					userInput != 27 || 
-					userInput != KEY_END) {
-				if(time < static_cast<int>(omp_get_wtime())) {
-					time = static_cast<int>(omp_get_wtime());
-					timeDisplay.clear();
-					timeDisplay << "Time: " << time / 3600 << ":" << time / 60 
-						 << ":" << (time / 60) % 60;
-				}
-				//lifeDisplay.clear();
-				//lifeDisplay << "Lives: " << cube.numLives << "   ";
-				scoreDisplay.clear();
-				scoreDisplay << score << "   ";
-				output = string(timeDisplay.str().c_str())  + "   " +
-						 string(scoreDisplay.str().c_str()) + "   ";
-				mvaddstr(LINES - 1, COLS - output.length() + 10, output.c_str());
-				refresh();
-			} */
-		}
-		//Thread (3) for game engine
+		
+		//Thread (2) for game engine
 		#pragma omp section
 		{
 			//Establish scrollRate & moveRate,
@@ -161,9 +138,14 @@ int Game::playGame() {
 							world->loadOSObs();
 							world->loadOSMCs();
 						}
+					
+					//Repopulate miniCubes if too many have been
+					//consumed by moving obstacles according to this
+					//threshold
 					if(world->getMiniCubes().size() 
 							< (gameMode * NUM_MCS_HARD) / 2)
-						world->initMiniCubes(1);		
+						world->initMiniCubes(1);
+					
 					if(scrollCount == COLS) scrollCount = 0;
 					else scrollCount++;
 				}
