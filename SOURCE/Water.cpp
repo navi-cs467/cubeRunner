@@ -139,15 +139,15 @@ void Water::renderWorld() {
 
 		int xCoord = (*it)->getPosX(), yCoord = (*it)->getPosY(),
 
-			//Used when obstacle is partially off-screen (left or top)
-			//(Not needed for right or bottom because ncurses will
-			// print partial sub-windows if print coordinates
-			// exceed LINES or COLS)
-			//xOffset = 0, 			//xOffset not needed for Water
-			yOffset = 0;
+		//Used when obstacle is partially off-screen (left or top)
+		//(Not needed for right or bottom because ncurses will
+		// print partial sub-windows if print coordinates
+		// exceed LINES or COLS)
+		xOffset = 0, 			//xOffset not needed for Water
+		yOffset = 0;
 
 		//Determine offsets	if necessary (i.e. when part of graphic is off screen)
-		//if(xCoord < 0) xOffset = -xCoord;
+		if(xCoord < 0) xOffset = -xCoord;
 		if(yCoord < 0) yOffset = -yCoord;
 
 		//Temporary c-string used in call to mvaddstr below
@@ -155,10 +155,10 @@ void Water::renderWorld() {
 		
 		if(typeid(**it) == typeid(Seaweed)) {
 			attron(COLOR_PAIR(Seaweed::getColor()));
-			for(int i = 0; i < (*it)->getGTS() &&
+			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++)
 				for(int j = 0;
-					j < Seaweed::getGraphicLines()[(*it)->getGT()][i].length() &&
+					j < Seaweed::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					/* Game::setBoard(i + xCoord + xOffset,
 								   j + yCoord + yOffset,
@@ -166,9 +166,9 @@ void Water::renderWorld() {
 					/* obsCoords.insert(make_pair(i + xCoord + xOffset,
 											   j + yCoord + yOffset)); */
 					if(j - yOffset < 0) continue;
-					tmpWChArr[0] = Seaweed::getGraphicLines()[(*it)->getGT()][i][j];
+					tmpWChArr[0] = Seaweed::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					//output to screen
-					move(i + xCoord, j + yCoord);
+					move(i + xCoord + xOffset, j + yCoord);
 					printw("%lc", tmpWChArr[0]);
 				}
 		}
@@ -176,10 +176,10 @@ void Water::renderWorld() {
 		if(typeid(**it) == typeid(Coral)) {
 			int nextColor = Coral::getColorSeed();
 			attron(A_BOLD);
-			for(int i = 0; i < (*it)->getGTS() && 
+			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Coral::getGraphicLines()[(*it)->getGT()][i].length() &&
+					j < Coral::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					/* Game::setBoard(i + xCoord + xOffset, 
 								   j + yCoord + yOffset,
@@ -187,10 +187,10 @@ void Water::renderWorld() {
 					/* obsCoords.insert(make_pair(i + xCoord + xOffset, 
 											   j + yCoord + yOffset)); */
 					if(j - yOffset < 0) continue;
-					tmpWChArr[0] = Coral::getGraphicLines()[(*it)->getGT()][i][j];
+					tmpWChArr[0] = Coral::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					//output to screen
 					attron(COLOR_PAIR(nextColor++));
-					move(i + xCoord, j + yCoord);
+					move(i + xCoord + xOffset, j + yCoord);
 					printw("%lc", tmpWChArr[0]);
 					if(nextColor == 35) nextColor = 30;
 				}
@@ -200,7 +200,7 @@ void Water::renderWorld() {
 			int color = Shark::getColor();
 			attron(A_BOLD);
 			
-			//Face Shark based on movement direction
+			/* //Face Shark based on movement direction
 			if((*it)->getDirection() == left ||
 			   (*it)->getDirection() == left_down ||
 			   (*it)->getDirection() == left_up)
@@ -212,13 +212,13 @@ void Water::renderWorld() {
 			//else if(cube->getPosY() <= (*it)->getPosY())
 			//	(*it)->setGT(1);				//Shark::graphicLines[1] = sharkLeft
 			else
-				(*it)->setGT(0);				//Shark::graphicLines[0] = sharkRight
+				(*it)->setGT(0);				//Shark::graphicLines[0] = sharkRight */
 			
 			
-			for(int i = 0; i < (*it)->getGTS() && 
+			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Shark::getGraphicLines()[(*it)->getGT()][i].length() &&
+					j < Shark::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					/* Game::setBoard(i + xCoord + xOffset, 
 								   j + yCoord + yOffset,
@@ -227,10 +227,10 @@ void Water::renderWorld() {
 											   j + yCoord + yOffset)); */
 					if(j - yOffset < 0) continue;
 					//tmpStr[0] = Shark::getGraphicLines()[(*it)->getGT()][i][j];
-					tmpWChArr[0] = Shark::getGraphicLines()[(*it)->getGT()][i][j];
+					tmpWChArr[0] = Shark::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					//output to screen
 					attron(COLOR_PAIR(color));
-					move(i + xCoord, j + yCoord);
+					move(i + xCoord + xOffset, j + yCoord);
 					printw("%lc", tmpWChArr[0]);
 				}
 		}
@@ -239,7 +239,7 @@ void Water::renderWorld() {
 			int color = static_cast<Octopus *>(*it)->getColor();
 			attron(A_BOLD);
 			
-			//Face Octopus based on movement direction
+			/* //Face Octopus based on movement direction
 			if((*it)->getDirection() == left ||
 			   (*it)->getDirection() == left_down ||
 			   (*it)->getDirection() == left_up)
@@ -251,13 +251,13 @@ void Water::renderWorld() {
 			//else if(cube->getPosY() <= (*it)->getPosY())
 			//	(*it)->setGT(1);			//Octopus::graphicLines[1] = sharkLeft
 			else
-				(*it)->setGT(0);			//Octopus::graphicLines[0] = sharkRight
+				(*it)->setGT(0);			//Octopus::graphicLines[0] = sharkRight */
 			
 			
-			for(int i = 0; i < (*it)->getGTS() && 
+			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Octopus::getGraphicLines()[(*it)->getGT()][i].length() &&
+					j < Octopus::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					/* Game::setBoard(i + xCoord + xOffset, 
 								   j + yCoord + yOffset,
@@ -265,10 +265,10 @@ void Water::renderWorld() {
 					/* obsCoords.insert(make_pair(i + xCoord + xOffset, 
 											   j + yCoord + yOffset)); */
 					if(j - yOffset < 0) continue;
-					tmpWChArr[0] = Octopus::getGraphicLines()[(*it)->getGT()][i][j];
+					tmpWChArr[0] = Octopus::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					//output to screen
 					attron(COLOR_PAIR(color));
-					move(i + xCoord, j + yCoord);
+					move(i + xCoord + xOffset, j + yCoord);
 					printw("%lc", tmpWChArr[0]);
 				}
 		}
@@ -304,24 +304,44 @@ void Water::scroll_() {
 	for(int i = bottomRow + 1; i < LINES - 1; i++)
 		mvhline(i, 0, ' ', COLS); */
 	
+	set<pair<int, int>>::iterator itObs;
+	
 	for(list<Obstacle*>::iterator it = obstacles.begin();
 			it != obstacles.end(); it++) {
 		(*it)->setPosY((*it)->getPosY() - 1);
 		
+		int xCoord = (*it)->getPosX(), yCoord = (*it)->getPosY();
+		
 		//Free memory and delete Obstacle from obstacles and
 		//remove all associated obsCoords if Obstacle goes
-		//completely offscreen
-		if((*it)->getPosY() <= -((*it)->getLongestGS())) {
-			/* //Remove all associated obsCoords
-			for(int i = (*it)->getPosX(); i < (*it)->getGTS(); i++) 
-				for(int j = (*it)->getPosY() + 1; 
-					j < (*it)->getLongestGS(); j++) 
-					obsCoords.erase(obsCoords.find(make_pair(i,j))); */
+		//completely offscreen a full screen width to the left
+		//or a full-screen width above
+		if((*it)->getPosY() <= -COLS) {
+			//Remove all associated obsCoords
+			for(int i = 0; i <(*it)->getGTS(); i++) 
+				for(int j = 0; j < (*it)->getLongestGS(); j++) 
+					itObs = obsCoords.find
+							(make_pair(i + xCoord, j + yCoord));
+					if(itObs != obsCoords.end()) obsCoords.erase(itObs);
 			//Free memory
 			delete *it;
 			//Remove pointer from list
 			obstacles.erase(it);
 			it = obstacles.begin();
+		}
+		else if((*it)->getPosX() <= -LINES) {
+			//Remove all associated obsCoords
+			for(int i = 0; i < (*it)->getGTS(); i++) 
+				for(int j = 0; j <(*it)->getLongestGS(); j++) 
+					itObs = obsCoords.find
+							(make_pair(i + xCoord, j + yCoord));
+					if(itObs != obsCoords.end()) obsCoords.erase(itObs);
+			//Free memory
+			delete *it;
+			//Remove pointer from list
+			obstacles.erase(it);
+			//it = obstacles.begin();
+			it--;
 		}
 	}
 	
@@ -332,9 +352,10 @@ void Water::scroll_() {
 	for(set<pair<int, int>>::iterator it = obsCoords.begin();
 		it != obsCoords.end(); it++) {
 			//Do not keep any obsCoord that is a full screen size
-			//offscreen
-			if(it->second > -LINES)
-				newObsCoords.insert(make_pair(it->first, it->second - 1));
+			//offscreen to the left or a full screen width offscreen
+			//above
+			//if(it->second > -COLS && it->first > -LINES)
+			newObsCoords.insert(make_pair(it->first, it->second - 1));
 			//Set to blank background where obsCoords will be removed
 			mvaddstr(it->first, it->second, " ");
 	}

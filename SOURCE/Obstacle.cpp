@@ -132,19 +132,19 @@ void Obstacle::move(World* world) {
 	//directions) the object will not move. If the object
 	//moves into a space occupied by a miniCube, the miniCube
 	//is removed.
-	bool moveCleared;
+	bool moveCleared = true;
 	set<pair<int,int>>::iterator itObs, itCubes;
-	for(int i = 0; i < NUM_DIRECTIONS && !moveCleared; i++) {
-		moveCleared = true;
+	for(int i = 0; i < NUM_DIRECTIONS; i++, moveCleared = true) {
 		if(mvDir == left) { 
 			for(int j = 0; j < gts; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY - 1));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = left_down;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			if(moveCleared) {
@@ -152,7 +152,8 @@ void Obstacle::move(World* world) {
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY + longestGS - 1));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				posY--;
 				for(int j = 0; j < gts; j++) {
@@ -174,31 +175,37 @@ void Obstacle::move(World* world) {
 						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				setGT(1);
 				break;
 			}
 		}
 		else if(mvDir == left_down) {
 			//if(typeof(world*) != typeof(Space) &&
 			//	 posX + gts == world->getBottomRow() + 1) continue;
-			if(posX + gts == world->getBottomRow() + 1) continue;
+			if(posX + gts == world->getBottomRow() + 1) {
+				mvDir = down;
+				continue;
+			}
 			for(int j = 1; j <= gts; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY - 1));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = down;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			for(int j = 0; j < longestGS - 1; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + gts, posY + j));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = down;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			if(moveCleared) {
@@ -206,12 +213,14 @@ void Obstacle::move(World* world) {
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY + longestGS - 1));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				for(int j = 0; j < longestGS - 1; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX, posY + j));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				posX++; posY--;
 				for(int j = 0; j < gts; j++) {
@@ -244,21 +253,26 @@ void Obstacle::move(World* world) {
 						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				setGT(1);
 				break;
 			}
 		}
 		else if(mvDir == down) {
 			//if(typeof(world*) != typeof(Space) &&
 			//	 posX + gts == world->getBottomRow() + 1) continue;
-			if(posX + gts == world->getBottomRow() + 1) continue;
+			if(posX + gts == world->getBottomRow() + 1) {
+				mvDir = right_down;
+				continue;
+			}
 			for(int j = 0; j < longestGS; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + gts, posY + j));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = right_down;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			if(moveCleared) {
@@ -266,7 +280,8 @@ void Obstacle::move(World* world) {
 				for(int j = 0; j < longestGS; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX, posY + j));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				posX++;
 				for(int j = 0; j < longestGS; j++) {
@@ -294,22 +309,27 @@ void Obstacle::move(World* world) {
 		else if(mvDir == right_down) {
 			//if(typeof(world*) != typeof(Space) &&
 			//	 posX + gts == world->getBottomRow() + 1) continue;
-			if(posX + gts == world->getBottomRow() + 1) continue;
+			if(posX + gts == world->getBottomRow() + 1) {
+				mvDir = right;
+				continue;
+			}
 			for(int j = 1; j <= gts; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY + longestGS));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = right;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			for(int j = 1; j <= longestGS; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + gts, posY + j));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = right;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
 					continue;
@@ -320,12 +340,14 @@ void Obstacle::move(World* world) {
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				for(int j = 1; j < longestGS; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX, posY + j));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				posX++; posY++;
 				for(int j = 0; j < gts; j++) {
@@ -358,6 +380,7 @@ void Obstacle::move(World* world) {
 						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				setGT(0);
 				break;
 			}
 		}
@@ -366,10 +389,11 @@ void Obstacle::move(World* world) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY + longestGS));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = right_up;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			if(moveCleared) {
@@ -377,7 +401,8 @@ void Obstacle::move(World* world) {
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				posY++;
 				for(int j = 0; j < gts; j++) {
@@ -399,6 +424,7 @@ void Obstacle::move(World* world) {
 						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				setGT(0);
 				break;
 			}
 		}
@@ -407,20 +433,22 @@ void Obstacle::move(World* world) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY + longestGS));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = up;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			for(int j = 1; j < longestGS; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX - 1, posY + j));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = up;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			if(moveCleared) {
@@ -428,12 +456,14 @@ void Obstacle::move(World* world) {
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				for(int j = 1; j < longestGS; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + gts - 1, posY + j));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				posX--; posY++;
 				for(int j = 0; j < gts; j++) {
@@ -443,11 +473,6 @@ void Obstacle::move(World* world) {
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX, posY + j));
-				}
-				
-				for(int j = 0; j < gts; j++) {
-					world->getObsCoords().
-						insert(make_pair(posX + j, posY + longestGS - 1));
 				}
 				
 				if(lastMV == right_up) mvCounter--;
@@ -471,6 +496,7 @@ void Obstacle::move(World* world) {
 						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				setGT(0);
 				break;
 			}
 		}
@@ -479,10 +505,11 @@ void Obstacle::move(World* world) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX - 1, posY + j));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = left_up;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			if(moveCleared) {
@@ -490,7 +517,8 @@ void Obstacle::move(World* world) {
 				for(int j = 0; j < longestGS; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + gts - 1, posY + j));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				posX--;
 				for(int j = 0; j < longestGS; j++) {
@@ -520,20 +548,22 @@ void Obstacle::move(World* world) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY - 1));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = left;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			for(int j = 0; j < longestGS - 1; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX - 1, posY + j));
 				if(itObs != world->getObsCoords().end()) {
-					++mvDir;
+					//++mvDir;
+					mvDir = left;
 					if(mvDir == none) mvDir = left;
 					moveCleared = false;
-					continue;
+					break;
 				}
 			}
 			if(moveCleared) {
@@ -541,12 +571,14 @@ void Obstacle::move(World* world) {
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY + longestGS - 1));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				for(int j = 0; j < longestGS - 1; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + gts - 1, posY + j));
-					world->getObsCoords().erase(itObs);
+					if(itObs != world->getObsCoords().end())
+						world->getObsCoords().erase(itObs);
 				}
 				posX--; posY--;
 				for(int j = 0; j < gts; j++) {
@@ -579,6 +611,7 @@ void Obstacle::move(World* world) {
 						world->getMiniCubes().erase(itCubes);
 					}
 				}
+				setGT(1);
 				break;
 			}
 		}
