@@ -148,9 +148,10 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
+				//Update obsCoords
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
-						find(make_pair(posX + j, posY + longestGS - 1);
+						find(make_pair(posX + j, posY + longestGS - 1));
 					world->getObsCoords().erase(itObs);
 				}
 				posY--;
@@ -158,6 +159,7 @@ void Obstacle::move(World* world) {
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY));
 				}
+				
 				if(lastMV == left) mvCounter--;
 				else {
 					lastMV = left;
@@ -200,25 +202,27 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
+				//Update obsCoords
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
-						find(make_pair(posX + j, posY + longestGS - 1);
+						find(make_pair(posX + j, posY + longestGS - 1));
 					world->getObsCoords().erase(itObs);
 				}
-				for(int j = 0; j < longestGS; j++) {
+				for(int j = 0; j < longestGS - 1; j++) {
 					itObs = world->getObsCoords().
-						find(make_pair(posX, posY + j);
+						find(make_pair(posX, posY + j));
 					world->getObsCoords().erase(itObs);
 				}
 				posX++; posY--;
 				for(int j = 0; j < gts; j++) {
-					itObs = world->getObsCoords().
-						insert(posX + j, posY);
+					world->getObsCoords().
+						insert(make_pair(posX + j, posY));
 				}
 				for(int j = 0; j < longestGS; j++) {
-					itObs = world->getObsCoords().
-						insert(posX + gts - 1, posY + j);
+					world->getObsCoords().
+						insert(make_pair(posX + gts - 1, posY + j));
 				}
+				
 				if(lastMV == left_down) mvCounter--;
 				else {
 					lastMV = left_down;
@@ -258,16 +262,18 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
+				//Update obsCoords
 				for(int j = 0; j < longestGS; j++) {
 					itObs = world->getObsCoords().
-						find(make_pair(posX, posY + j);
+						find(make_pair(posX, posY + j));
 					world->getObsCoords().erase(itObs);
 				}
 				posX++;
 				for(int j = 0; j < longestGS; j++) {
-					itObs = world->getObsCoords().
-						insert(posX + gts - 1, posY + j);
+					world->getObsCoords().
+						insert(make_pair(posX + gts - 1, posY + j));
 				}
+				
 				if(lastMV == down) mvCounter--;
 				else {
 					lastMV = down;
@@ -310,25 +316,27 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
-				/* for(int j = 0; j < gts; j++) {
+				//Update obsCoords
+				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
-						find(make_pair(posX + j, posY + longestGS - 1);
+						find(make_pair(posX + j, posY));
 					world->getObsCoords().erase(itObs);
 				}
-				for(int j = 0; j < longestGS; j++) {
+				for(int j = 1; j < longestGS; j++) {
 					itObs = world->getObsCoords().
-						find(make_pair(posX, posY + j);
+						find(make_pair(posX, posY + j));
 					world->getObsCoords().erase(itObs);
 				}
 				posX++; posY++;
 				for(int j = 0; j < gts; j++) {
-					itObs = world->getObsCoords().
-						insert(posX + j, posY);
+					world->getObsCoords().
+						insert(make_pair(posX + j, posY + longestGS - 1));
 				}
 				for(int j = 0; j < longestGS; j++) {
-					itObs = world->getObsCoords().
-						insert(posX + gts - 1, posY + j);
-				} */
+					world->getObsCoords().
+						insert(make_pair(posX + gts - 1, posY + j));
+				}
+				
 				if(lastMV == right_down) mvCounter--;
 				else {
 					lastMV = right_down;
@@ -365,7 +373,18 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
+				//Update obsCoords
+				for(int j = 0; j < gts; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX + j, posY));
+					world->getObsCoords().erase(itObs);
+				}
 				posY++;
+				for(int j = 0; j < gts; j++) {
+					world->getObsCoords().
+						insert(make_pair(posX + j, posY + longestGS - 1));
+				}
+				
 				if(lastMV == right) mvCounter--;
 				else {
 					lastMV = right;
@@ -405,7 +424,32 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
+				//Update obsCoords
+				for(int j = 0; j < gts; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX + j, posY));
+					world->getObsCoords().erase(itObs);
+				}
+				for(int j = 1; j < longestGS; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX + gts - 1, posY + j));
+					world->getObsCoords().erase(itObs);
+				}
 				posX--; posY++;
+				for(int j = 0; j < gts; j++) {
+					world->getObsCoords().
+						insert(make_pair(posX + j, posY + longestGS - 1));
+				}
+				for(int j = 0; j < longestGS; j++) {
+					world->getObsCoords().
+						insert(make_pair(posX, posY + j));
+				}
+				
+				for(int j = 0; j < gts; j++) {
+					world->getObsCoords().
+						insert(make_pair(posX + j, posY + longestGS - 1));
+				}
+				
 				if(lastMV == right_up) mvCounter--;
 				else {
 					lastMV = right_up;
@@ -442,7 +486,18 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
+				//Update obsCoords
+				for(int j = 0; j < longestGS; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX + gts - 1, posY + j));
+					world->getObsCoords().erase(itObs);
+				}
 				posX--;
+				for(int j = 0; j < longestGS; j++) {
+					world->getObsCoords().
+						insert(make_pair(posX, posY + j));
+				}
+				
 				if(lastMV == up) mvCounter--;
 				else {
 					lastMV = up;
@@ -482,7 +537,27 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
+				//Update obsCoords
+				for(int j = 0; j < gts; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX + j, posY + longestGS - 1));
+					world->getObsCoords().erase(itObs);
+				}
+				for(int j = 0; j < longestGS - 1; j++) {
+					itObs = world->getObsCoords().
+						find(make_pair(posX + gts - 1, posY + j));
+					world->getObsCoords().erase(itObs);
+				}
 				posX--; posY--;
+				for(int j = 0; j < gts; j++) {
+					world->getObsCoords().
+						insert(make_pair(posX + j, posY));
+				}
+				for(int j = 0; j < longestGS; j++) {
+					world->getObsCoords().
+						insert(make_pair(posX, posY + j));
+				}
+				
 				if(lastMV == left_up) mvCounter--;
 				else {
 					lastMV = left_up;
