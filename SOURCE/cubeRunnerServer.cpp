@@ -67,10 +67,10 @@ int main(int argc, char* argv[]) {
 		//Initialize lock
 		omp_init_lock(&lock1);
 		
-		//User to ensure user sees every move input 
+		//Used to ensure user sees every move input 
 		//(so cube doesn't appear to "skip" around) 
 		//if input is coming in too fast
-		bool renderedLastMv1 = true, renderedLastMv2 = true;
+		bool renderedLastMv1 = true, renderedLastMv2 = true, deathFlag = false;
 		
 		#pragma omp parallel sections shared(deathFlag, lock1, \
 											 renderedLastMv1, renderedLastMv2)
@@ -81,13 +81,11 @@ int main(int argc, char* argv[]) {
 				//Variable for user 1 input
 				int userInput1;
 				
-				while (/* cube.lives > 0 && */ userInput1 != 27 || 
-											   userInput1 != KEY_END ||
-											   userInput1 != 'q' ||
-											   userInput1 != 'Q') {
+				while (userInput1 != 'q') {
 					
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput1 from connection1;
+					// (Optional ?) SEND Confirmation Connection1
 					
 					while(renderedLastMv1 == false){}
 					
@@ -119,13 +117,11 @@ int main(int argc, char* argv[]) {
 				//Variable for user 2 input
 				int userInput2;
 				
-				while (/* cube.lives > 0 && */ userInput1 != 27 || 
-											   userInput1 != KEY_END ||
-											   userInput1 != 'q' ||
-											   userInput1 != 'Q') {
+				while (userInput2 != 'q') {
 					
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput2 from connection2;
+					// (Optional ?) SEND: Confirmation Connection2
 					
 					while(renderedLastMv2 == false){}
 					
@@ -179,9 +175,41 @@ int main(int argc, char* argv[]) {
 				//Flag to indicate world transition, int to indicate next world type
 				bool isNewWorldFlag = false; int newWorldType;
 				
-				while (/* cube.lives > 0 && */ userInput != 27 || 
-											   userInput != KEY_END) {
+				while (1) {
 					
+					/**** SEND EARLY TERMINATION STATUS ****/
+					//If either user quits, report back early termination to other player,
+					//and score to both, then break
+					if(userInput1 == 'q') {
+						//SEND Connection1 score
+						//CLOSE CONNECTION1
+						//SEND Connection2 "ET"		//Early Termination
+						//(Optional ?) RECEIVE confirmation Connection2
+						//SEND Connection2 score
+						//CLOSE CONNECTION2
+						break;
+					}
+					//Otherwise report no early termination to other player
+					else {
+						//SEND Connection 2 "NT"	//No Early Termination
+						//(Optional ?) RECEIVE Confirmation Connection2
+					}
+					
+					if(userInput2 == 'q') {
+						//SEND Connection2 score
+						//CLOSE CONNECTION2
+						//SEND Connection1 "ET"		//Early Termination
+						//(Optional ?) RECEIVE confirmation Connection1
+						//SEND Connection1 score
+						//CLOSE CONNECTION1
+						break;
+					}
+					//Otherwise report no early termination to other player
+					else {
+						//SEND Connection 1 "NT"	//No Early Termination
+						//(Optional ?) RECEIVE Confirmation Connection1
+					}
+					/**** END SEND EARLY TERMINATION STATUS ****/
 					
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();
@@ -222,7 +250,6 @@ int main(int argc, char* argv[]) {
 							if(cube->getLives() == 0) {
 						//		SEND Connection1: 1		//Game over, no need for confirmation
 						//		CLOSE Connection1
-								break;
 							}
 							else {
 						//		SEND Connection1: 0			//Death but no game over
@@ -257,6 +284,14 @@ int main(int argc, char* argv[]) {
 						// SEND connection2: cube->getPosX(), cube->getPosY(), cube->numLives
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND CUBE DATA ****/
+						
+						/**** SEND GAME SCORE ****/
+						// SEND connection1: score
+						// (Optional ?) RECEIVE connection1: confirmation
+						
+						// SEND connection2: score
+						// (Optional ?) RECEIVE connection2: confirmation
+						/**** END SEND GAME SCORE ****/
 						
 						/**** SEND NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
 						// SEND connection1: isNewWorldFlag

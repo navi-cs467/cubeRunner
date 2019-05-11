@@ -35,7 +35,7 @@ class Game {
 		int getScore() {return score;}
 		int getGameMode() {return gameMode;}
 		void setScore(int score) {this->score = score;}
-		int playGame(char host[] = NULL, int = -1);
+		int playGame(char host[] = NULL, int = -1, int playerNum = 1);
 		static char** getBoard() {return board;}
 		static void setBoard(int x, int y, char ch) {board[x][y] = ch;}
 };

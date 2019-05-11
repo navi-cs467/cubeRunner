@@ -15,23 +15,13 @@ Game::Game(int gameMode, bool isTwoPlayer) :
 		
 		score = 0;
 		
-		/* //Allocate memory for board
-		board = new char*[LINES];
-		for(int i = 0; i < LINES; i++)
-			board[i] = new char[COLS];
-		
-		//Print space characters on board
-		for(int i = 0; i < LINES - 1; i++)
-			for(int j = 0; j < COLS; j++)
-				board[i][j] = ' '; */
-		
 		
 		if(!isTwoPlayer) world = new Water(gameMode, isTwoPlayer);
 		
 		else world = new Water();		//"Blank" world if running as client
 }
 
-int Game::playGame(char host[], int port) {
+int Game::playGame(char host[], int port, int playerNum) {
 	
 	int userInput = 0;
 		
@@ -46,7 +36,9 @@ int Game::playGame(char host[], int port) {
 	//Initialize lock
 	//omp_init_lock(&lock1);
 	
-	#pragma omp parallel sections shared(userInput)
+	bool deathFlag = false;
+	
+	#pragma omp parallel sections shared(userInput, deathFlag)
 	{
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
@@ -57,28 +49,78 @@ int Game::playGame(char host[], int port) {
 										   userInput != 'Q') {
 				
 				userInput = getch();
-				/* if(userInput == KEY_UP && cube.getPosX() > 0) {
-					cube.decPosX();
-					cube.setDirection(up);
-				}
-				//Last line is reserved for timer and score display
-				else if(userInput == KEY_DOWN && cube.getPosX() < world->getBottomRow()) {
-					cube.incPosX();
-					cube.setDirection(down);
-				}
-				else if(userInput == KEY_RIGHT && cube.getPosY() < COLS) {
-					cube.incPosY();
-					cube.setDirection(right);
-				}
-				else if(userInput == KEY_LEFT && cube.getPosY() > 0) {
-					cube.decPosY();
-					cube.setDirection(left);
+				
+				if(!isTwoPlayer) {
+					/* if(userInput == KEY_UP && cube.getPosX() > 0) {
+						cube.decPosX();
+						cube.setDirection(up);
+					}
+					//Last line is reserved for timer and score display
+					else if(userInput == KEY_DOWN && cube.getPosX() < world->getBottomRow()) {
+						cube.incPosX();
+						cube.setDirection(down);
+					}
+					else if(userInput == KEY_RIGHT && cube.getPosY() < COLS) {
+						cube.incPosY();
+						cube.setDirection(right);
+					}
+					else if(userInput == KEY_LEFT && cube.getPosY() > 0) {
+						cube.decPosY();
+						cube.setDirection(left);
+					}
+					
+					deathFlag = cube.checkDeath();	//checkDeath should "cube.setLives(cube.getLives() - 1)" if player token hits Obstacle - Returns "true" if death has occurred
+					cube.checkScore();				//checkScore should increase score by number of miniCubes contacted for this move.
+													//Should also "consume miniCubes contacted, i.e. remove them from screen (i.e. erase them from set<pair<int,int>> world->miniCubes)
+					*/
 				}
 				
-				deathFlag = cube.checkDeath();	//checkDeath should "cube.setLives(cube.getLives() - 1)" if player token hits Obstacle - Returns "true" if death has occurred
-				cube.checkScore();				//checkScore should increase score by number of miniCubes contacted for this move.
-												//Should also "consume miniCubes contacted, i.e. remove them from screen (i.e. erase them from set<pair<int,int>> world->miniCubes)
-				*/
+				//If the player inputs movement commands faster than the
+				//server can handle, the "extra commands" go unprocessed,
+				//since the code below blocks at "RECEIVE confirmation",
+				//then the input buffer is flushed
+				else {
+					if(playerNum == 1) {
+						if(userInput == KEY_UP) {
+							// SEND: KEY_UP
+							// RECEIEVE confirmation
+							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
+						}
+						else if(userInput == KEY_DOWN) {
+							// SEND: KEY_UP
+							// RECEIEVE confirmation
+							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
+						}
+						else if(userInput != 27 || 
+								userInput != KEY_END ||
+								userInput != 'q' ||
+								userInput != 'Q') {
+							// SEND: q
+							// RECEIVE score into score (as in, into this->score)
+							// CLOSE CONNECTION
+						}
+					}
+					else {
+						if(userInput == KEY_LEFT) {
+							// SEND: KEY_LEFT
+							// RECEIEVE confirmation
+							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
+						}
+						else if(userInput == KEY_RIGHT) {
+							// SEND: KEY_RIGHT
+							// RECEIEVE confirmation
+							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
+						}
+						else if(userInput != 27 || 
+								userInput != KEY_END ||
+								userInput != 'q' ||
+								userInput != 'Q') {
+							// SEND: q
+							// RECEIVE score into score (as in, into this->score)
+							// CLOSE CONNECTION
+						}
+					}
+				}
 			}
 		}
 		
@@ -234,21 +276,29 @@ int Game::playGame(char host[], int port) {
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 				
 				//Pseudocode variables... change as desired
-				int int_1, int_2, int_3, int_4, int_5, int_6;
+				int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[10];
 				
-				while (/* cube.lives > 0 && */ userInput != 27 || 
-											   userInput != KEY_END) {
-					
+				while (1) {
+						
+						/**** RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
+						// RECEIVE (10 bytes) into earlyTerm
+						// (Optional ?) SEND Confirmation
+						// If earlyTerm == "ET"
+						// 	  RECEIVE score
+						//	  Display ncurses sub-window informing player that other player has terminated early
+						//    break;
+						/**** END RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
+						
 						/**** RECEIVE DEATH FLAG ****/
 						//RECEIVE int_1			
 						//If int_1 == 1:			//Death happened
 						//	  RECEIVE int_2
 						//	  If int_2 == 1:		//Game Over
 						//		  CLOSE connection
-						//	  	  /* game_over_animation(); */
+						//	  	  /* animationTransition("GRAPHICS/gameOver.txt"); */
 						//		  break
 						//	  Else If int_2 == 0	//Death But No Game Over
-						//		  /* death_animation(); */
+						//		  /* animationTransition("GRAPHICS/death.txt"); */
 						//	      // (Optional ?) SEND: confirmation		//Probably not optional, server needs to wait for death animation
 						//Else:
 						//	  // (Optional ?) SEND: confirmation			//No Death
@@ -259,6 +309,12 @@ int Game::playGame(char host[], int port) {
 						// cube->setPosX(int_1); cube->setPosY(int_2); cube->setNumLives(int_3);
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE CUBE DATA ****/
+						
+						/**** RECEIVE GAME SCORE ****/
+						// RECEIVE int_1
+						// cube->setScore(int_1);
+						// (Optional ?) SEND: confirmation
+						/**** END RECEIVE GAME SCORE ****/
 						
 						//Now we tear down the entire world, to then rebuild... (Really Hoping we can get away with this performance-wise)
 						//(Need to do this before we receive new world indicator in case world gets deleted)
@@ -277,15 +333,15 @@ int Game::playGame(char host[], int port) {
 						//	  RECEIVE int_2:	//World type
 							  	  if(int_2 == 1) {
 									  world = new Water();
-									  /* world_transition_animation(); */
+									  /* transitionAnimation("Water.txt"); */
 								  }
 								  //else if(int_2 == 2) {
 								  //  world = new Land();
-									  /* world_transition_animation(); */
+									  /* transitionAnimation("Land.txt"); */
 								  //}
 								  //else {
 								  //  world = new Space();
-									  /* world_transition_animation(); */
+									  /* transitionAnimation("Space.txt"); */
 								  //}
 								  // (Optional ?) SEND: confirmation		//Probably not optional, need to wait for world transition animation
 						
@@ -408,3 +464,4 @@ char **Game::board = nullptr;
 
 // References
 // https://stackoverflow.com/questions/2396430/how-to-use-lock-in-openmp
+// https://stackoverflow.com/questions/7898215/how-to-clear-input-buffer-in-c/9750394
