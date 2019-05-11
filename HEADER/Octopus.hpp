@@ -20,17 +20,19 @@ class Octopus : public Obstacle {
 	private:
 		static vector<vector<wstring>> graphicLines;
 		int color;
-		Direction curDirection;
-		int sameDirectionMoveCount;
+		//Direction curDirection;
+		//int sameDirectionMoveCount;
 	
 	public:
+		Octopus(int posX, int posY, int gt, int gts) :
+			Obstacle(posX, posY, gt, gts) {}				//Constructor for client
 		Octopus(World *world, Direction offScreen = none,
-			  int specificGraphic = -1);
+			  int specificGraphic = -1);					//Constructor for server and 1-player
 		static vector<vector<wstring>> getGraphicLines() {return graphicLines;}
 		int getColor() {return color;}
 		static vector<vector<wstring>> initializeVectorGraphics();
-		Direction getDirection() {return curDirection;}
-		void setDirection(Direction newDirection) {curDirection = newDirection;}
+		//Direction getDirection() {return curDirection;}
+		//void setDirection(Direction newDirection) {curDirection = newDirection;}
 		virtual ~Octopus() {}
 		
 };

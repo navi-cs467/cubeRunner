@@ -40,6 +40,9 @@ class Obstacle {
 							//see Obstacle.cpp - move(World* world)]
 
 	public:
+		Obstacle(int posX, int posY, int gt, int gts) :
+			posX(posX), posY(posY), gt(gt), gts(gts){}
+		Obstacle() {}
 		int getPosX() {return posX;}
 		int getPosY() {return posY;}
 		void setPosX(int posX) {this->posX = posX;}

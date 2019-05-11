@@ -12,8 +12,8 @@ Octopus::Octopus(World *world, Direction offScreen,
 			 int specificGraphic) : Obstacle() {
 	
 	isStationary = false;
-	curDirection = left;
-	sameDirectionMoveCount = 0;
+	//curDirection = left;
+	//sameDirectionMoveCount = 0;
 	color = rand() % 4 + 31;
 	createObstacle(world, graphicLines, offScreen, specificGraphic);
 	

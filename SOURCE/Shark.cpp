@@ -12,8 +12,8 @@ Shark::Shark(World *world, Direction offScreen,
 			 int specificGraphic) : Obstacle() {
 	
 	isStationary = false;
-	curDirection = left;
-	sameDirectionMoveCount = 0;
+	//curDirection = left;
+	//sameDirectionMoveCount = 0;
 	createObstacle(world, graphicLines, offScreen, specificGraphic);
 	
 	//Update size of graphic type array 

@@ -10,7 +10,8 @@ CXX = g++
 CXXFLAGS = -g -std=c++0x -Wall -Werror -Wfatal-errors \
 		   -lncursesw -lm -fopenmp -Wno-error=sign-compare \
 		   -Wno-error=unused-but-set-variable \
-		   -Wno-error=unused-variable --pedantic-errors
+		   -Wno-error=unused-variable --pedantic-errors \
+		   -Wno-error=maybe-uninitialized
    
 IDIR = HEADER
 ODIR = OBJECT

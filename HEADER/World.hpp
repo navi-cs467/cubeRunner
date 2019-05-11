@@ -25,12 +25,12 @@ class World {
 	protected:
 		list<Obstacle*> obstacles;
 		set<pair<int, int>> miniCubes, obsCoords;
-		//vector<WINDOW*> subscrns;
 		int gameMode;
 		int bottomRow;
 		bool isTwoPlayer;
 		
 	public:
+		World() {}
 		World(int gameMode, bool isTwoPlayer) :
 			gameMode(gameMode), isTwoPlayer(isTwoPlayer) {}
 		void updateObsCoords(Obstacle *ob);
@@ -45,11 +45,16 @@ class World {
 		int getBottomRow() const {return bottomRow;}
 		void moveObs();
 		
+		//Method to access
+		list<Obstacle*>& getObstacles() {return obstacles;}
+		
 		//The following two functions are used by the Obstacle
 		//constructor to ensure a new obstacle is not placed on
 		//top of an existing obstacle or minicube.
 		set<pair<int, int>>& getObsCoords() {return obsCoords;}
 		set<pair<int, int>>& getMiniCubes() {return miniCubes;}
+		
+		virtual ~World() {}
 		
 };
 

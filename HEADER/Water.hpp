@@ -22,6 +22,7 @@
 
 class Water : public World {
 	public:
+		Water() : World() {};
 		Water(int gameMode, bool isTwoPlayer);
 		virtual void renderWorld();
 		//virtual void scroll_(bool newObs);
