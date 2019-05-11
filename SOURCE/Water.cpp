@@ -181,6 +181,11 @@ void Water::renderWorld() {
 					
 					tmpWChArr[0] = Coral::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
+					//To address a strange background color issue
+					//with partially off-screen right - Coral Only
+					attron(COLOR_PAIR(BLUE_BLUE));
+					mvaddstr(i + xCoord + xOffset, j + yCoord, " ");
+					
 					//output to screen
 					attron(COLOR_PAIR(nextColor++));
 					move(i + xCoord + xOffset, j + yCoord);
