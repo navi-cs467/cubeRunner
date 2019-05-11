@@ -188,7 +188,7 @@ int main(int argc, char* argv[]) {
 						
 						// World transition if cube->transitionCount 
 						//reaches TRANSITION_SCORE_INTERVAL
-						if(cube->transitionCount >= TRANSITION_SCORE_INTERVAL) {
+						if(cube->getTransitionCount() >= TRANSITION_SCORE_INTERVAL) {
 							
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
