@@ -239,7 +239,7 @@ int Game::playGame(char host[], int port) {
 				while (/* cube.lives > 0 && */ userInput != 27 || 
 											   userInput != KEY_END) {
 					
-						/**** SEND DEATH FLAG ****/
+						/**** RECEIVE DEATH FLAG ****/
 						//RECEIVE int_1			
 						//If int_1 == 1:			//Death happened
 						//	  RECEIVE int_2
@@ -252,13 +252,13 @@ int Game::playGame(char host[], int port) {
 						//	      // (Optional ?) SEND: confirmation		//Probably not optional, server needs to wait for death animation
 						//Else:
 						//	  // (Optional ?) SEND: confirmation			//No Death
-						/**** SEND DEATH FLAG ****/
+						/**** RECEIVE DEATH FLAG ****/
 						
-						/**** SEND CUBE DATA ****/
+						/**** RECEIVE CUBE DATA ****/
 						// RECEIVE int_1, int_2, int_3		//cube position x, y, and life count?
 						// cube->setPosX(int_1); cube->setPosY(int_2); cube->setNumLives(int_3);
 						// (Optional ?) SEND: confirmation
-						/**** END SEND CUBE DATA ****/
+						/**** END RECEIVE CUBE DATA ****/
 						
 						//Now we tear down the entire world, to then rebuild... (Really Hoping we can get away with this performance-wise)
 						//(Need to do this before we receive new world indicator in case world gets deleted)
@@ -272,7 +272,7 @@ int Game::playGame(char host[], int port) {
 						//Clear all pointers from list
 						world->getObstacles().clear();
 						
-						/**** SEND NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
+						/**** RECEIVE NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
 						//RECEIVE int_1			//isNewWorld flag
 						//If int_1 == 1:		//If world transition has occurred, or first loop iteration	  
 							  delete world;
@@ -296,9 +296,9 @@ int Game::playGame(char host[], int port) {
 							world->getObsCoords().clear();
 							world->getMiniCubes().clear();
 							// (Optional ?) SEND: confirmation
-						/**** END SEND NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
+						/**** END RECEIVE NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
 						
-						/**** SEND ONSCREEN OBSTACLES  ****/
+						/**** RECEIVE ONSCREEN OBSTACLES  ****/
 						//RECEIEVE int_1		//number of (onscreen) Obstacles
 						// (Optional ?) SEND: confirmation
 						
@@ -332,9 +332,9 @@ int Game::playGame(char host[], int port) {
 							
 							// (Optional ?) SEND: confirmation
 						}
-						/**** END SEND ONSCREEN OBSTACLES  ****/
+						/**** END RECEIVE ONSCREEN OBSTACLES  ****/
 						
-						/**** SEND OBSCOORDS  ****/
+						/**** RECEIVE OBSCOORDS  ****/
 						//RECEIEVE int_1		//number of obsCoords
 						// (Optional ?) SEND: confirmation	
 						for(int i = 0; i < int_1; i++) {
@@ -342,9 +342,9 @@ int Game::playGame(char host[], int port) {
 							world->getObsCoords().insert(make_pair(int_2, int_3));
 							// (Optional ?) SEND: confirmation
 						}
-						/**** END SEND OBSCOORDS  ****/
+						/**** END RECEIVE OBSCOORDS  ****/
 						
-						/**** SEND MINICUBES  ****/
+						/**** RECEIVE MINICUBES  ****/
 						//RECEIEVE int_1		//number of miniCubes
 						// (Optional ?) SEND: confirmation	
 						for(int i = 0; i < int_1; i++) {
@@ -352,12 +352,12 @@ int Game::playGame(char host[], int port) {
 							world->getMiniCubes().insert(make_pair(int_2, int_3));
 							// (Optional ?) SEND: confirmation
 						}
-						/**** END SEND MINICUBES  ****/
+						/**** END RECEIVE MINICUBES  ****/
 						
 						world->renderWorld();
 						//cube.paint();
 						
-						/**** SEND TIME  ****/
+						/**** RECEIVE TIME  ****/
 						//RECEIVE int_1 into hours
 						// (Optional ?) SEND: confirmation
 						
@@ -366,7 +366,7 @@ int Game::playGame(char host[], int port) {
 						
 						//RECEIVE int_1 into seconds
 						// (Optional ?) SEND: confirmation
-						/**** END SEND TIME  ****/
+						/**** END RECEIVE TIME  ****/
 						
 						//Time display
 						timeDisplay.clear();
