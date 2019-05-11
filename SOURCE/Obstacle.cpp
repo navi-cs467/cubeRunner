@@ -550,7 +550,7 @@ void Obstacle::move(World* world) {
 				break;
 			}
 		}
-		else if(mvDir == left_up) {
+		else {
 			for(int j = -1; j < gts - 1; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY - 1));

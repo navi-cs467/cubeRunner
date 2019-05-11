@@ -10,5 +10,7 @@
 #include "../HEADER/Direction.hpp"
 
 Direction& operator++(Direction& dir) {
-	return dir = static_cast<Direction>(static_cast<int>(dir) + 1);
+	dir = static_cast<Direction>(static_cast<int>(dir) + 1);
+	if(dir == none) dir = left;
+	return dir;
 }
