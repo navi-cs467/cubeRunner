@@ -1,10 +1,11 @@
-/**********************************************************
-** Program name: cubeRunner.cpp
+/**********************************************************************
+** Program name: cubeRunnerServer.cpp
 ** CS467 Capstone - 2D Runner - "Cube Runner"
 ** Team: NAVI
 ** Date: 4/23/2019
-** Description: Main for Capstone Project "Cube Runner.
-**********************************************************/
+** Description: Main for Capstone Project "Cube Runner" game (server).
+**				(See "cubeRunner.cpp" for client main.)
+***********************************************************************/
 
 //See constants.hpp for constant definitions
 #include "../HEADER/constants.hpp"
@@ -408,32 +409,6 @@ int main(int argc, char* argv[]) {
 							  }
 						}
 						/**** END SEND ONSCREEN OBSTACLES  ****/
-						
-						/**** SEND OBSCOORDS  ****/
-						set<pair<int, int>>::iterator itObsCoords;
-						
-						// SEND connection1: world->getObCoords().size();
-						// (Optional ?) RECEIVE connection1: confirmation
-						for(itObsCoords = world->getObstacles().begin(); 
-							itObsCoords < world->getObstacles().end();
-							itObsCoords++) {
-								//SEND connection1: itObsCoords->first,
-								//					itObsCoords->second
-								
-								// (Optional ?) RECEIVE connection1: confirmation
-						}
-						
-						// SEND connection2: world->getObCoords().size();
-						// (Optional ?) RECEIVE connection2: confirmation
-						for(itObsCoords = world->getObsCoords().begin(); 
-							itObsCoords < world->getObsCoords().end();
-							itObsCoords++) {
-								//SEND connection2: itObsCoords->first,
-								//					itObsCoords->second
-								
-								// (Optional ?) RECEIVE connection2: confirmation
-						}
-						/**** END SEND OBSCOORDS  ****/
 						
 						/**** SEND MINICUBES  ****/
 						set<pair<int, int>>::iterator miniCubes;

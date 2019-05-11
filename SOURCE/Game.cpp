@@ -48,9 +48,11 @@ int Game::playGame(char host[], int port, int playerNum) {
 										   userInput != 'q' ||
 										   userInput != 'Q') {
 				
-				userInput = getch();
+				//Input is ignored while death sequence processes
+				if(!deathFlag) userInput = getch();
 				
-				if(!isTwoPlayer) {
+				//Single Player
+				if(!isTwoPlayer && !deathFlag) {	
 					/* if(userInput == KEY_UP && cube.getPosX() > 0) {
 						cube.decPosX();
 						cube.setDirection(up);
@@ -75,11 +77,12 @@ int Game::playGame(char host[], int port, int playerNum) {
 					*/
 				}
 				
-				//If the player inputs movement commands faster than the
-				//server can handle, the "extra commands" go unprocessed,
-				//since the code below blocks at "RECEIVE confirmation",
-				//then the input buffer is flushed
-				else {
+				/***** BEGIN Client for multiplayer (SEND) *****/
+				//NOTE: If the player inputs movement commands faster than the
+				//	  	server can handle, the "extra commands" go unprocessed,
+				//		since the code below blocks at "RECEIVE confirmation",
+				//		then the input buffer is flushed
+				else if (!deathFlag) {
 					if(playerNum == 1) {
 						if(userInput == KEY_UP) {
 							// SEND: KEY_UP
@@ -121,6 +124,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 						}
 					}
 				}
+				/***** END Client for multiplayer (SEND) *****/
 			}
 		}
 		
@@ -157,6 +161,45 @@ int Game::playGame(char host[], int port, int playerNum) {
 					
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();
+						
+						// World transition if cube->transitionCount 
+						//reaches TRANSITION_SCORE_INTERVAL
+						/* if(cube->getTransitionCount() >= TRANSITION_SCORE_INTERVAL) {
+							
+							//Delete all Obstacles
+							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
+							it != world->getObstacles().begin(); it++) {
+								delete *it;
+							}
+							
+							//Create new world
+							if(typeid(*world) == typeid(Water))
+								world = new Land(gameMode, isTwoPlayer);
+							else if(typeid(*world) == typeid(Land))
+								world = new Space(gameMode, isTwoPlayer);
+							else if(typeid(*world) == typeid(Space))
+								world = new Water(gameMode, isTwoPlayer);
+							
+							//Reset cubes position to left-middle starting point
+							cube->reset();
+							
+							//Reset transitionCount
+							cube->setTransitionCount() = 0;
+						} */
+						
+						//Death animation if death occurred
+						/* if(deathFlag) {
+							transitionAnimation("death.txt");
+							cube->reset();
+							deathFlag = false;
+						}
+						
+						//Game Over animation if game over occurred
+						if(cube->getLives() == 0) {
+							transitionAnimation("gameOver.txt");
+							break;
+						} */
+						
 						world->renderWorld();
 						//cube.paint();
 					}
@@ -238,7 +281,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 				}
 			}
 			
-			//Client for multiplayer
+			//Client for multiplayer (RECEIEVE)
 			else {
 				
 				// Send connection request to cubeRunnerServer using parameters "host" and "port"
@@ -299,6 +342,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 						//		  break
 						//	  Else If int_2 == 0	//Death But No Game Over
 						//		  /* animationTransition("GRAPHICS/death.txt"); */
+						//		  //deathFlag = false;
 						//	      // (Optional ?) SEND: confirmation		//Probably not optional, server needs to wait for death animation
 						//Else:
 						//	  // (Optional ?) SEND: confirmation			//No Death
@@ -387,16 +431,6 @@ int Game::playGame(char host[], int port, int playerNum) {
 							// (Optional ?) SEND: confirmation
 						}
 						/**** END RECEIVE ONSCREEN OBSTACLES  ****/
-						
-						/**** RECEIVE OBSCOORDS  ****/
-						//RECEIEVE int_1		//number of obsCoords
-						// (Optional ?) SEND: confirmation	
-						for(int i = 0; i < int_1; i++) {
-							//RECEIVE int_2, int_3			//obCoord x & y
-							world->getObsCoords().insert(make_pair(int_2, int_3));
-							// (Optional ?) SEND: confirmation
-						}
-						/**** END RECEIVE OBSCOORDS  ****/
 						
 						/**** RECEIVE MINICUBES  ****/
 						//RECEIEVE int_1		//number of miniCubes
