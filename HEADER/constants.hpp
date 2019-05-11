@@ -42,5 +42,6 @@
 #define NUM_DIRECTIONS 8
 #define MAX_MOVE_COUNTER 25
 #define MIN_MOVE_COUNTER 5
+#define TRANSITION_SCORE_INTERVAL 500
 
 #endif /* constants_hpp */

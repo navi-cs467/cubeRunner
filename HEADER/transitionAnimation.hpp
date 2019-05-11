@@ -1,19 +1,19 @@
 /*****************************************************
-** Program name: intro.hpp
+** Program name: transitionAnimation.hpp
 ** CS467 Capstone - 2D Runner - "Cube Runner"
 ** Team: NAVI
 ** Date: 4/23/2019
-** Description: Header file for intro function.
+** Description: Header file for transitionAnimation function.
 *****************************************************/
 
-#ifndef intro_hpp
-#define intro_hpp
+#ifndef transitionAnimation_hpp
+#define transitionAnimation_hpp
 
 #include "include.hpp"
 #include "constants.hpp"
 #include "using.hpp"
 #include "loadGraphic.hpp"
 
-void intro();
+void transitionAnimation(const char* fileName);
 
-#endif /* intro_hpp */
+#endif /* transitionAnimation_hpp */

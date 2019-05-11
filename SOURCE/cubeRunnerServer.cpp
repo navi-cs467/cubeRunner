@@ -16,7 +16,7 @@
 //#include "../HEADER/highlight.hpp"		//Shouldn't need
 //#include "../HEADER/hostPrompt.hpp"		//Shouldn't need
 //#include "../HEADER/initColors.hpp"		//Shouldn't need
-//#include "../HEADER/intro.hpp"			//Shouldn't need	//This will probably be renamed, changed a bit (i.e. parameter added to specify file name) and then also used for transitions
+//#include "../HEADER/transitionAnimation.hpp"			//Shouldn't need	//This will probably be renamed, changed a bit (i.e. parameter added to specify file name) and then also used for transitions
 //#include "../HEADER/loadGraphic.hpp"		//Shouldn't need
 //#include "../HEADER/paintCubeGraphic.hpp"	//Shouldn't need	
 //#include "../HEADER/paintGraphic.hpp"		//Shouldn't need
@@ -186,6 +186,31 @@ int main(int argc, char* argv[]) {
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();
 						
+						// World transition if cube->transitionCount 
+						//reaches TRANSITION_SCORE_INTERVAL
+						if(cube->transitionCount >= TRANSITION_SCORE_INTERVAL) {
+							
+							//Delete all Obstacles
+							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
+							it != world->getObstacles().begin(); it++) {
+								delete *it;
+							}
+							
+							//Create new world
+							if(typeid(*world) == typeid(Water))
+								world = new Land(gameMode, isTwoPlayer);
+							else if(typeid(*world) == typeid(Land))
+								world = new Space(gameMode, isTwoPlayer);
+							else if(typeid(*world) == typeid(Space))
+								world = new Water(gameMode, isTwoPlayer);
+							
+							//Reset cubes position to left-middle starting point
+							cube->reset();
+							
+							//Reset transitionCount
+							cube->setTransitionCount() = 0;
+						}
+							
 						// ** COMMS WITH CLIENTS **
 						
 						omp_set_lock(&lock1);	//Block here if updating cube parameters via playerInputs,

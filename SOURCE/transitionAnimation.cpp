@@ -1,15 +1,15 @@
 /*****************************************************
-** Program name: intro.cpp
+** Program name: transitionAnimation.cpp
 ** CS467 Capstone - 2D Runner - "Cube Runner"
 ** Team: NAVI
 ** Date: 4/23/2019
-** Description: Source file for intro function.
+** Description: Source file for transitionAnimation function.
 *****************************************************/
 
-#include "../HEADER/intro.hpp"
+#include "../HEADER/transitionAnimation.hpp"
 
 //Introduction sequence (plays when game starts)
-void intro()
+void transitionAnimation(const char* fileName)
 { 
 	clear();  //Curses clear-screen call
 	
@@ -28,8 +28,8 @@ void intro()
 	WINDOW *subscrn = newwin(INTRO_HEIGHT, INTRO_WIDTH, 
 							 startingRow, startingCol);
    
-    //Load intro graphic into cmdoutlinesGraphics from file
-    loadGraphic("GRAPHICS/cubeRunner.txt");
+    //Load transitionAnimation graphic into cmdoutlinesGraphics from file
+    loadGraphic(fileName);
 	
 	//Using non-blocking read() on STDIN_FILENO so animation
 	//can be interrupted with keystroke, but will play as
@@ -95,7 +95,7 @@ void intro()
 	bool visible = false; 
 	if(animationCompleted){
 		//Set to STDIN_FILENO back to blocking if initial
-		//graphic intro plays to completion.
+		//graphic transitionAnimation plays to completion.
 		fcntl(STDIN_FILENO, F_SETFL, fcntl(0, F_GETFL) & ~O_NONBLOCK);
 		
 		#pragma omp parallel sections shared(subscrn, inputReceived, \

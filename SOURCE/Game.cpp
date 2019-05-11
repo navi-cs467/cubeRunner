@@ -268,10 +268,7 @@ int Game::playGame(char host[], int port) {
 							it != world->getObstacles().begin(); it++) {
 								delete *it;
 						}
-						
-						//Clear all pointers from list
-						world->getObstacles().clear();
-						
+							
 						/**** RECEIVE NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
 						//RECEIVE int_1			//isNewWorld flag
 						//If int_1 == 1:		//If world transition has occurred, or first loop iteration	  
@@ -292,7 +289,8 @@ int Game::playGame(char host[], int port) {
 								  //}
 								  // (Optional ?) SEND: confirmation		//Probably not optional, need to wait for world transition animation
 						
-						//Else If int == 0:		//If no world transition, we need to clear these also
+						//Else If int == 0:		//If no world transition, we need to clear these containers
+							world->getObstacles().clear();
 							world->getObsCoords().clear();
 							world->getMiniCubes().clear();
 							// (Optional ?) SEND: confirmation

@@ -16,7 +16,7 @@
 #include "../HEADER/highlight.hpp"
 #include "../HEADER/hostPrompt.hpp"
 #include "../HEADER/initColors.hpp"
-#include "../HEADER/intro.hpp"
+#include "../HEADER/transitionAnimation.hpp"
 #include "../HEADER/loadGraphic.hpp"
 #include "../HEADER/paintCubeGraphic.hpp"
 #include "../HEADER/paintGraphic.hpp"
@@ -97,8 +97,8 @@ int main(void)
 	
 	srand(time(NULL));	//Seed random number generator with system time
     
-    //Run intro animation
-    intro();
+    //Run transitionAnimation animation
+    transitionAnimation("GRAPHICS/cubeRunner.txt");
 	
 	clear();  // curses clear-screen call
 	
