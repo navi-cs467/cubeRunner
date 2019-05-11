@@ -328,7 +328,7 @@ int main(void)
 						//Easy game...
 						else if(currMenu == 2 && cursorPos == EASY && playerCount == 1) {
 							gameOn = true;
-							gameMode = 1;
+							gameMode = 3;
 						}
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == EASY && playerCount == 2) {
@@ -462,11 +462,8 @@ int main(void)
 			}
 		}
 		
-		//move(0,0);
-		//printw("%d %d %s", 23, 54, "testing\n\n"); refresh();
-		
 		//int score = startGame(mode, playerCount, host, port);
-		Game game = Game(3, false);
+		Game game = Game(gameMode, false);
 		game.playGame();
 		gameOn = false;
 	}		
