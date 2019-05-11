@@ -92,19 +92,15 @@ void Water::loadOSObs() {
 		i < obstacleCount; i++, random = rand() % 4) {
 			if(random == 0) {
 				obstacles.push_back(new Seaweed(this, right));
-				//updateObsCoords(obstacles.back());
 			}
 			else if(random == 1) {
 				obstacles.push_back(new Coral(this, right));
-				//updateObsCoords(obstacles.back());
 			}
 			else if(random == 2) {
 				obstacles.push_back(new Shark(this, right));
-				//updateObsCoords(obstacles.back());
 			}
 			else {
 				obstacles.push_back(new Octopus(this, right));
-				//updateObsCoords(obstacles.back());
 			}
 	}
 }
@@ -115,17 +111,6 @@ void Water::loadOSMCs() {
 
 void Water::renderWorld() {
 
-	//Clear coordinates with objects tracker
-	//obsCoords.clear();
-
-	/* //Clear board
-	for(int i = 0; i < LINES; i++)
-		memset(Game::getBoard()[i], ' ', COLS * sizeof(char)); */
-
-	//for(int i = 0; i <= 3; i++)
-	//	for(int j = 0; j < 3; j++)
-	//		Game::setBoard(i, j, ' ');
-
 	//Paint blank background
 	attron(COLOR_PAIR(BLUE_BLUE));
 	for(int i = 0; i <= bottomRow; i++)
@@ -133,7 +118,17 @@ void Water::renderWorld() {
 	attron(COLOR_PAIR(GREEN_GREEN));
 	for(int i = bottomRow + 1; i < LINES - 1; i++)
 		mvhline(i, 0, ' ', COLS);
-
+	
+	//Print all the miniCubes
+	wchar_t mc[] = L"\u25A0";		
+	//char mc = 'c';
+	for(set<pair<int, int>>::iterator it = miniCubes.begin();
+		it != miniCubes.end(); it++) {
+			attron(COLOR_PAIR(WHITE_BLUE));
+            mvaddwstr(it->first, it->second, mc); //refresh();
+		}
+	
+	//Print all Obstacles
 	for(list<Obstacle*>::iterator it = obstacles.begin();
 			it != obstacles.end(); it++) {
 
@@ -160,13 +155,12 @@ void Water::renderWorld() {
 				for(int j = 0;
 					j < Seaweed::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
-					/* Game::setBoard(i + xCoord + xOffset,
-								   j + yCoord + yOffset,
-								   Seaweed::getGraphicLines()[(*it)->getGT()][i][j]); */
-					/* obsCoords.insert(make_pair(i + xCoord + xOffset,
-											   j + yCoord + yOffset)); */
+					
+					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
+					
 					tmpWChArr[0] = Seaweed::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					
 					//output to screen
 					move(i + xCoord + xOffset, j + yCoord);
 					printw("%lc", tmpWChArr[0]);
@@ -181,13 +175,12 @@ void Water::renderWorld() {
 				for(int j = 0; 
 					j < Coral::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
-					/* Game::setBoard(i + xCoord + xOffset, 
-								   j + yCoord + yOffset,
-								   Coral::getGraphicLines()[(*it)->getGT()][i][j]); */
-					/* obsCoords.insert(make_pair(i + xCoord + xOffset, 
-											   j + yCoord + yOffset)); */
+
+					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
+					
 					tmpWChArr[0] = Coral::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					
 					//output to screen
 					attron(COLOR_PAIR(nextColor++));
 					move(i + xCoord + xOffset, j + yCoord);
@@ -200,34 +193,17 @@ void Water::renderWorld() {
 			int color = Shark::getColor();
 			attron(A_BOLD);
 			
-			/* //Face Shark based on movement direction
-			if((*it)->getDirection() == left ||
-			   (*it)->getDirection() == left_down ||
-			   (*it)->getDirection() == left_up)
-					(*it)->setGT(1);			//Shark::graphicLines[1] = sharkLeft
-			else if((*it)->getDirection() == right ||
-			   (*it)->getDirection() == right_down ||
-			   (*it)->getDirection() == right_up)
-					(*it)->setGT(0);			//Shark::graphicLines[0] = sharkRight
-			//else if(cube->getPosY() <= (*it)->getPosY())
-			//	(*it)->setGT(1);				//Shark::graphicLines[1] = sharkLeft
-			else
-				(*it)->setGT(0);				//Shark::graphicLines[0] = sharkRight */
-			
-			
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
 					j < Shark::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
-					/* Game::setBoard(i + xCoord + xOffset, 
-								   j + yCoord + yOffset,
-								   Shark::getGraphicLines()[(*it)->getGT()][i][j]); */
-					/* obsCoords.insert(make_pair(i + xCoord + xOffset, 
-											   j + yCoord + yOffset)); */
+					
+					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
-					//tmpStr[0] = Shark::getGraphicLines()[(*it)->getGT()][i][j];
+					
 					tmpWChArr[0] = Shark::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					
 					//output to screen
 					attron(COLOR_PAIR(color));
 					move(i + xCoord + xOffset, j + yCoord);
@@ -238,21 +214,6 @@ void Water::renderWorld() {
 		if(typeid(**it) == typeid(Octopus)) {
 			int color = static_cast<Octopus *>(*it)->getColor();
 			attron(A_BOLD);
-			
-			/* //Face Octopus based on movement direction
-			if((*it)->getDirection() == left ||
-			   (*it)->getDirection() == left_down ||
-			   (*it)->getDirection() == left_up)
-					(*it)->setGT(1);			//Octopus::graphicLines[1] = sharkLeft
-			else if((*it)->getDirection() == right ||
-			   (*it)->getDirection() == right_down ||
-			   (*it)->getDirection() == right_up)
-					(*it)->setGT(0);			//Octopus::graphicLines[0] = sharkRight
-			//else if(cube->getPosY() <= (*it)->getPosY())
-			//	(*it)->setGT(1);			//Octopus::graphicLines[1] = sharkLeft
-			else
-				(*it)->setGT(0);			//Octopus::graphicLines[0] = sharkRight */
-			
 			
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
@@ -274,26 +235,10 @@ void Water::renderWorld() {
 		}
 	}
 
-	//Print all the miniCubes
-	wchar_t mc[] = L"\u25A0";		
-	//char mc = 'c';
-	for(set<pair<int, int>>::iterator it = miniCubes.begin();
-		it != miniCubes.end(); it++) {
-			//Game::setBoard(it->first, it->second,'c');	// '\254' is ascii "square"
-			attron(COLOR_PAIR(WHITE_BLUE));
-            mvaddwstr(it->first, it->second, mc); //refresh();
-			//move(it->first, it->second);
-			//printw("%lc", mc);
-			//printw("%c", mc);
-		}
-
 	refresh();
 
-	//**NOTE: scroll function needs to free memory and delete obstacles as
-	//		  they leave the screen!
 }
 
-//void Water::scroll_(bool newObs) {
 void Water::scroll_() {
 	
 	/* //Paint blank background
@@ -372,26 +317,6 @@ void Water::scroll_() {
 				mvaddstr(it->first, it->second, " ");
 	}
 	swap(miniCubes, newMinCubes);
-	
-	/* if(newObs) {
-		int random = rand() % 4;
-		if(random == 0) {
-			obstacles.push_back(new Seaweed(this, right));
-			//updateObsCoords(obstacles.back());
-		}
-		else if(random == 1) {
-			obstacles.push_back(new Coral(this, right));
-			//updateObsCoords(obstacles.back());
-		}
-		else if(random == 2) {
-			obstacles.push_back(new Shark(this, right));
-			//updateObsCoords(obstacles.back());
-		}
-		else {
-			obstacles.push_back(new Octopus(this, right));
-			//updateObsCoords(obstacles.back());
-		}
-	} */
 }
 
 // References
