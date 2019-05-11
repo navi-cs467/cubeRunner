@@ -136,14 +136,14 @@ int Game::playGame(char host[], int port, int playerNum) {
 				//Establish scrollRate & moveRate,
 				//based on game difficulty (gameMode)
 				double scrollRate, moveRate;
-				if(gameMode == 1) {
-					scrollRate = 0.35;
+				if(gameMode == HARD) {
+					scrollRate = 0.25;
 				}
-				else if(gameMode == 2) {
+				else if(gameMode == NORMAL) {
 					scrollRate = 0.75;
 				}
 				else {
-					scrollRate = .25;
+					scrollRate = 1.5;
 				}
 				moveRate = scrollRate / 4.;
 				
@@ -156,8 +156,10 @@ int Game::playGame(char host[], int port, int playerNum) {
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
-				while (/* cube.lives > 0 && */ userInput != 27 || 
-											   userInput != KEY_END) {
+				
+				//Main game engine loop
+				while ( userInput != 27 || 
+						userInput != KEY_END) {
 					
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();
@@ -179,6 +181,12 @@ int Game::playGame(char host[], int port, int playerNum) {
 								world = new Space(gameMode, isTwoPlayer);
 							else if(typeid(*world) == typeid(Space))
 								world = new Water(gameMode, isTwoPlayer);
+							
+							//If score is less than 3000, increase scroll and move time intervals by 10%
+							//(This is the point at which all three worlds have been cycled 3 times each,
+							// and the speeds are capped.)
+							//scrollRate *= 0.9;
+							//moveRate *= 0.9;
 							
 							//Reset cubes position to left-middle starting point
 							cube->reset();
@@ -216,8 +224,8 @@ int Game::playGame(char host[], int port, int playerNum) {
 						//Repopulate miniCubes if too many have been
 						//consumed by moving obstacles according to this
 						//threshold
-						if(world->getMiniCubes().size() 
-								< (gameMode * NUM_MCS_HARD) / 2)
+						if(world->getMiniCubes().size() / 2
+								< (NUM_MCS_EASY / gameMode))
 							world->initMiniCubes(1);
 						
 						if(scrollCount == COLS) scrollCount = 0;

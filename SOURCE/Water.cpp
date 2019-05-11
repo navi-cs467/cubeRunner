@@ -24,12 +24,12 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 		bottomRow = LINES - 5;
 
 		int obstacleCount;
-		if(gameMode == 3)
-			obstacleCount = 10;
-		else if(gameMode == 2)
+		if(gameMode == HARD)
 			obstacleCount = 15;
+		else if(gameMode == NORMAL)
+			obstacleCount = 10;
 		else
-			obstacleCount = 25;
+			obstacleCount = 8;
 
 		for(int i = 0, random = rand() % 4; 
 			i < obstacleCount; i++, random = rand() % 4) {
@@ -52,7 +52,7 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 		}
 		
 		//Load miniCubes
-		initMiniCubes(gameMode * NUM_MCS_HARD);
+		initMiniCubes(NUM_MCS_EASY / (gameMode));
 		
 		//Create offscreen obs and minCubes for scrolling
 		loadOSObs();
@@ -80,12 +80,12 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 void Water::loadOSObs() {
 	
 	int obstacleCount;
-	if(gameMode == 3)
-		obstacleCount = OBS_COUNT_EASY;
-	else if(gameMode == 2)
+	if(gameMode == HARD)
+		obstacleCount = OBS_COUNT_HARD;
+	else if(gameMode == NORMAL)
 		obstacleCount = OBS_COUNT_MED;
 	else
-		obstacleCount = OBS_COUNT_HARD;
+		obstacleCount = OBS_COUNT_EASY;
 	
 	//Create offscreen obstacles for one "screens-worth"
 	for(int i = 0, random = rand() % 4; 
@@ -106,7 +106,7 @@ void Water::loadOSObs() {
 }
 
 void Water::loadOSMCs() {
-	initMiniCubes(gameMode * NUM_MCS_HARD, right);
+	initMiniCubes(NUM_MCS_EASY / gameMode, right);
 }
 
 void Water::renderWorld() {

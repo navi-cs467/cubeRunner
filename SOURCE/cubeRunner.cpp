@@ -328,7 +328,7 @@ int main(void)
 						//Easy game...
 						else if(currMenu == 2 && cursorPos == EASY && playerCount == 1) {
 							gameOn = true;
-							gameMode = 3;
+							gameMode = EASY;
 						}
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == EASY && playerCount == 2) {
@@ -362,14 +362,14 @@ int main(void)
 							}
 							else {
 								gameOn = true;
-								gameMode = 3;
+								gameMode = EASY;
 							}
 						}
 						
 						//Normal game...
 						else if(currMenu == 2 && cursorPos == NORMAL && playerCount == 1) {
 							gameOn = true;
-							gameMode = 2;
+							gameMode = NORMAL;
 						}
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == NORMAL && playerCount == 2) {
@@ -401,14 +401,14 @@ int main(void)
 							}
 							else {
 								gameOn = true;
-								gameMode = 2;
+								gameMode = NORMAL;
 							}
 						}
 						
 						//Hard game...
 						else if(currMenu == 2 && cursorPos == HARD && playerCount == 1) {
 							gameOn = true;
-							gameMode = 1;
+							gameMode = HARD;
 						}
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == HARD && playerCount == 2) {
@@ -440,7 +440,7 @@ int main(void)
 							}
 							else {
 								gameOn = true;
-								gameMode = 1;
+								gameMode = HARD;
 							}
 						}
 						
@@ -468,6 +468,7 @@ int main(void)
 		gameOn = false;
 	}		
 	return 0;
+	endwin();
 }   
 
 // References

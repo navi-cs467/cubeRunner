@@ -153,14 +153,14 @@ int main(int argc, char* argv[]) {
 				//Establish scrollRate & moveRate,
 				//based on game difficulty (gameMode)
 				double scrollRate, moveRate;
-				if(gameMode == 1) {
-					scrollRate = 0.35;
+				if(gameMode == HARD) {
+					scrollRate = 0.25;
 				}
-				else if(gameMode == 2) {
+				else if(gameMode == NORMAL) {
 					scrollRate = 0.75;
 				}
 				else {
-					scrollRate = .25;
+					scrollRate = 1.5;
 				}
 				moveRate = scrollRate / 4.;
 				
@@ -176,6 +176,7 @@ int main(int argc, char* argv[]) {
 				//Flag to indicate world transition, int to indicate next world type
 				bool isNewWorldFlag = false; int newWorldType;
 				
+				//Main game engine loop
 				while (1) {
 					
 					/**** SEND EARLY TERMINATION STATUS ****/
@@ -232,6 +233,12 @@ int main(int argc, char* argv[]) {
 								world = new Space(gameMode, isTwoPlayer);
 							else if(typeid(*world) == typeid(Space))
 								world = new Water(gameMode, isTwoPlayer);
+							
+							//If score is less than 3000, increase scroll and move time intervals by 10%
+							//(This is the point at which all three worlds have been cycled 3 times each,
+							// and the speeds are capped.)
+							scrollRate *= 0.9;
+							moveRate *= 0.9;
 							
 							//Reset cubes position to left-middle starting point
 							cube->reset();
@@ -472,7 +479,7 @@ int main(int argc, char* argv[]) {
 						//consumed by moving obstacles according to this
 						//threshold
 						if(world->getMiniCubes().size() 
-								< (gameMode * NUM_MCS_HARD) / 2)
+								< (NUM_MCS_EASY / gameMode) / 2)
 							world->initMiniCubes(1);
 						
 						if(scrollCount == COLS) scrollCount = 0;
