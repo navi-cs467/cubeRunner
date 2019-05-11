@@ -137,7 +137,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 				//based on game difficulty (gameMode)
 				double scrollRate, moveRate;
 				if(gameMode == HARD) {
-					scrollRate = 0.25;
+					scrollRate = 0.35;
 				}
 				else if(gameMode == NORMAL) {
 					scrollRate = 0.75;
