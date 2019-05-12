@@ -156,7 +156,40 @@ int Game::playGame(char host[], int port, int playerNum) {
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
-			
+				
+				//Initial Time display
+				timeDisplay.clear();
+				if(hours < 10)
+					timeDisplay << "Time: " << "0" << hours << ":";
+				else
+					timeDisplay << "Time: " << hours << ":";
+				if(minutes < 10)
+					timeDisplay << "0" << minutes << ":";
+				else
+					timeDisplay << minutes << ":";
+				if(seconds < 10)
+					timeDisplay << "0" << seconds;
+				else
+					timeDisplay << seconds;
+				
+				//Life count display
+				livesDisplay.clear();
+				//livesDisplay << "Lives: " << cube.numLives << "   ";
+				if(gameMode == EASY) livesDisplay << "Lives: " << 5;
+				else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
+				else if(gameMode == HARD) livesDisplay << "Lives: " << 3;
+				
+				//Score display
+				scoreDisplay.clear();
+				scoreDisplay << "Score: " << score;
+				output = string(timeDisplay.str().c_str())  + "   " +
+						 string(scoreDisplay.str().c_str()) + "   " +
+						 string(livesDisplay.str().c_str());
+				attron(COLOR_PAIR(YELLOW_BLACK));
+				mvhline(LINES - 1, 0, ' ', COLS);
+				mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
+				refresh();
+				
 				//Main game engine loop
 				while ( userInput != 27 &&
 						userInput != KEY_END &&
@@ -275,7 +308,9 @@ int Game::playGame(char host[], int port, int playerNum) {
 						//Life count display
 						livesDisplay.clear();
 						//livesDisplay << "Lives: " << cube.numLives << "   ";
-						livesDisplay << "Lives: " << 1;
+						if(gameMode == EASY) livesDisplay << "Lives: " << 5;
+						else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
+						else if(gameMode == HARD) livesDisplay << "Lives: " << 3;
 						
 						//Score display
 						scoreDisplay.clear();
