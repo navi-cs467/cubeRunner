@@ -23,13 +23,19 @@ WINDOW* paintCubeGraphic(WINDOW *subscrnGraphic,
 	
 	//Setup subscreen for cube graphic
 	//Graphic starts one-quarter of the way down the screen
-	int startingColCG = ((COLS - MM_GRAPHIC_WIDTH)/2) + offset,
+	int startingColCG = ((COLS - MM_GRAPHIC_WIDTH)/2) + offset > 0 ?
+						((COLS - MM_GRAPHIC_WIDTH)/2) + offset :
+						0,
 		startingRowCG = (LINES - MM_GRAPHIC_HEIGHT)/4;		
 	subscrnGraphic = newwin(MM_GRAPHIC_HEIGHT, MM_GRAPHIC_WIDTH, 
 		startingRowCG, startingColCG);
 	
 	//Paint cube graphic
-	paintGraphic(subscrnGraphic, fileName, rand()%6+1, false);
+	if(offset < -(COLS - MM_GRAPHIC_WIDTH)/2) 
+		paintGraphic(subscrnGraphic, fileName, rand()%6+1, false,
+				 -(offset + (COLS - MM_GRAPHIC_WIDTH)/2));
+	else
+		paintGraphic(subscrnGraphic, fileName, rand()%6+1, false);
 	
 	return subscrnGraphic;
 }

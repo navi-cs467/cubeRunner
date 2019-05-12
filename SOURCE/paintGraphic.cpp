@@ -12,7 +12,7 @@
 //MM_GRAPHIC_WIDTH x MM_GRAPHIC_HEIGHT for proper positioning on the
 //screen. (Set MM_GRAPHIC_WIDTH & MM_GRAPHIC_HEIGHT in constants.hpp.)
 void paintGraphic(WINDOW *subscrn, const char* fileName, 
-					int seedColor, bool toggled) {
+					int seedColor, bool toggled, int offset) {
 	
 	loadGraphic(fileName);
 	
@@ -33,7 +33,9 @@ void paintGraphic(WINDOW *subscrn, const char* fileName,
 	   //Change color
 	   wattron(subscrn, COLOR_PAIR(color)); 
 	   mvwaddstr(subscrn, row, 0,
-		 cmdoutlinesGraphics[row].c_str());							 				
+		 cmdoutlinesGraphics[row].
+			substr(offset > 0 ? offset - 1 : 0,
+				   MM_GRAPHIC_WIDTH - offset - 1).c_str());							 				
 		//usleep(100 * 1000);	
 	   wrefresh(subscrn);  
 							

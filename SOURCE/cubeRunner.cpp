@@ -100,55 +100,56 @@ int main(void)
     //Run transitionAnimation animation
     transitionAnimation("GRAPHICS/cubeRunner.txt");
 	
-	clear();  // curses clear-screen call
-	
-	//Paint screen black
-	attron(COLOR_PAIR(BLACK_BLACK));
-    for (int y = 0; y < LINES; y++) {
-        mvhline(y, 0, ' ', COLS);
-    }
-	refresh();
-	
-	//Paint initial cube graphic
-	WINDOW* subscrnGraphic = paintCubeGraphic(NULL, "../GRAPHICS/menuCubeRight1_1.txt");
-	
-	//Setup subscreen for menu outer border
-	int startingCol = (COLS - MM_GRAPHIC_WIDTH)/2 + 
-					  (MM_GRAPHIC_WIDTH - MM_WIDTH) / 2, 
-		startingRow = ((LINES - MM_GRAPHIC_HEIGHT)/4) + 
-					   MM_GRAPHIC_HEIGHT + 5;		//Menu starts 5 lines below the graphic
-	WINDOW *subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);
-	wattron(subscrnMenuBorder, COLOR_PAIR(WHITE_BLACK));
-	box(subscrnMenuBorder, '|', '_'); 
-	wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
-	wrefresh(subscrnMenuBorder);
-	
-	//Print Game Menu header
-	attron(COLOR_PAIR(WHITE_BLACK));
-	mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
-	refresh();
-	
-	//Print menu 1 with random starting line color
-	int startingLineColor = rand() % 6 + 1, lineColors[MAX_MENU_ITEMS];
-	WINDOW *subscrnMenu1 = printMenu(menu2Items, startingLineColor, lineColors,
-										MENU1_LENGTH, MM_WIDTH);
-	
-	//Declare menu 2 and 3 (for future use)
-	WINDOW *subscrnMenu2, *subscrnMenu3;
-	
-	//Initialize menu 3 starting position variables
-	int startingColMenu3 = startingCol + 
-		(MM_WIDTH - networkPrompt.length() - 2)/2;
-	int startingRowMenu3 = startingRow + 1;
-	
-	//Start highlighting at line 1
-	highlight(subscrnMenu1, 1, lineColors[0], startingLineColor,
-				menu1Items, MENU1_LENGTH, MM_WIDTH);
-		
-	//Set number of omp threads for menu
-	omp_set_num_threads(3); 
-	
 	while(1) {
+		
+		//Set number of omp threads for menu
+		omp_set_num_threads(3); 
+		
+		clear();  // curses clear-screen call
+	
+		//Paint screen black
+		attron(COLOR_PAIR(BLACK_BLACK));
+		for (int y = 0; y < LINES; y++) {
+			mvhline(y, 0, ' ', COLS);
+		}
+		refresh();
+		
+		//Paint initial cube graphic
+		WINDOW* subscrnGraphic = paintCubeGraphic(NULL, "../GRAPHICS/menuCubeRight1_1.txt");
+		
+		//Setup subscreen for menu outer border
+		int startingCol = (COLS - MM_GRAPHIC_WIDTH)/2 + 
+						  (MM_GRAPHIC_WIDTH - MM_WIDTH) / 2, 
+			startingRow = ((LINES - MM_GRAPHIC_HEIGHT)/4) + 
+						   MM_GRAPHIC_HEIGHT + 5;		//Menu starts 5 lines below the graphic
+		WINDOW *subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);
+		wattron(subscrnMenuBorder, COLOR_PAIR(WHITE_BLACK));
+		box(subscrnMenuBorder, '|', '_'); 
+		wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+		wrefresh(subscrnMenuBorder);
+		
+		//Print Game Menu header
+		attron(COLOR_PAIR(WHITE_BLACK));
+		mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
+		refresh();
+		
+		//Print menu 1 with random starting line color
+		int startingLineColor = rand() % 6 + 1, lineColors[MAX_MENU_ITEMS];
+		WINDOW *subscrnMenu1 = printMenu(menu2Items, startingLineColor, lineColors,
+											MENU1_LENGTH, MM_WIDTH);
+		
+		//Declare menu 2 and 3 (for future use)
+		WINDOW *subscrnMenu2, *subscrnMenu3;
+		
+		//Initialize menu 3 starting position variables
+		int startingColMenu3 = startingCol + 
+			(MM_WIDTH - networkPrompt.length() - 2)/2;
+		int startingRowMenu3 = startingRow + 1;
+		
+		//Start highlighting at line 1
+		highlight(subscrnMenu1, 1, lineColors[0], startingLineColor,
+					menu1Items, MENU1_LENGTH, MM_WIDTH);
+		
 		//Variables needed for menu and game
 		int cursorPos = 1, currMenu = 1, playerCount = 1, gameMode, port = -1;
 		bool gameOn = false, connected = false; 
@@ -265,7 +266,7 @@ int main(void)
 							colOffset++;
 						}
 						if(colOffset == COLS - (COLS - MM_GRAPHIC_WIDTH)/2)
-							colOffset = -((COLS - MM_GRAPHIC_WIDTH)/2);
+							colOffset = -((COLS - MM_GRAPHIC_WIDTH)/2) - MM_GRAPHIC_WIDTH;
 					}
 				}
 			}

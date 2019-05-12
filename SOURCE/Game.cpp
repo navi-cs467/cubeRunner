@@ -43,9 +43,9 @@ int Game::playGame(char host[], int port, int playerNum) {
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
 		{
-			while (/* cube.lives > 0 && */ userInput != 27 || 
-										   userInput != KEY_END ||
-										   userInput != 'q' ||
+			while (/* cube.lives > 0 && */ userInput != 27 && 
+										   userInput != KEY_END &&
+										   userInput != 'q' &&
 										   userInput != 'Q') {
 				
 				//Input is ignored while death sequence processes
@@ -94,9 +94,9 @@ int Game::playGame(char host[], int port, int playerNum) {
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
-						else if(userInput != 27 || 
-								userInput != KEY_END ||
-								userInput != 'q' ||
+						else if(userInput != 27 && 
+								userInput != KEY_END &&
+								userInput != 'q' &&
 								userInput != 'Q') {
 							// SEND: q
 							// RECEIVE score into score (as in, into this->score)
@@ -114,9 +114,9 @@ int Game::playGame(char host[], int port, int playerNum) {
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
-						else if(userInput != 27 || 
-								userInput != KEY_END ||
-								userInput != 'q' ||
+						else if(userInput != 27 && 
+								userInput != KEY_END &&
+								userInput != 'q' &&
 								userInput != 'Q') {
 							// SEND: q
 							// RECEIVE score into score (as in, into this->score)
@@ -156,10 +156,12 @@ int Game::playGame(char host[], int port, int playerNum) {
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
-				
+			
 				//Main game engine loop
-				while ( userInput != 27 || 
-						userInput != KEY_END) {
+				while ( userInput != 27 &&
+						userInput != KEY_END &&
+						userInput != 'q' &&
+						userInput != 'Q') {
 					
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();

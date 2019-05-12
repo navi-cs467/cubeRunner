@@ -15,6 +15,6 @@
 #include "using.hpp"
 
 void paintGraphic(WINDOW *subscrn, const char* fileName, 
-					int seedColor, bool toggled);
+					int seedColor, bool toggled, int offset = 0);
 
 #endif /* paintGraphic_hpp */
