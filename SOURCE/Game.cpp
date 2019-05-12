@@ -172,14 +172,14 @@ int Game::playGame(char host[], int port, int playerNum) {
 				else
 					timeDisplay << seconds;
 				
-				//Life count display
+				//Initial Life count display
 				livesDisplay.clear();
 				//livesDisplay << "Lives: " << cube.numLives << "   ";
 				if(gameMode == EASY) livesDisplay << "Lives: " << 5;
 				else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
 				else if(gameMode == HARD) livesDisplay << "Lives: " << 3;
 				
-				//Score display
+				//Initial Score display
 				scoreDisplay.clear();
 				scoreDisplay << "Score: " << score;
 				output = string(timeDisplay.str().c_str())  + "   " +
