@@ -209,23 +209,23 @@ void startGame(int socketFD)
 
 
 // starting out with command line entered values for now
-int main(int argc, char *argv[])
-{
-	/* Curses Initialisations */
-	initscr();
-	keypad(stdscr, TRUE);
-	noecho();
-	cbreak();
-
-	// save command-line entered hostname
-	char* hostname = argv[1];
-
-	// save command-line entered port number
-	char* portNum = argv[2];
-
-	int socketFD = initSocket(hostname, portNum);
-
-	// start game, with client sending first message
-	startGame(socketFD);
-	endwin();
-}
+// int main(int argc, char *argv[])
+// {
+// 	/* Curses Initialisations */
+// 	initscr();
+// 	keypad(stdscr, TRUE);
+// 	noecho();
+// 	cbreak();
+//
+// 	// save command-line entered hostname
+// 	char* hostname = argv[1];
+//
+// 	// save command-line entered port number
+// 	char* portNum = argv[2];
+//
+// 	int socketFD = initSocket(hostname, portNum);
+//
+// 	// start game, with client sending first message
+// 	startGame(socketFD);
+// 	endwin();
+// }
