@@ -52,7 +52,7 @@ WINDOW *printMenu(vector<string> menuItems, int seedColor,
 		if(seedColor != -1) wattron(subscrnMenu, COLOR_PAIR(seedColor));
 		else wattron(subscrnMenu, COLOR_PAIR(WHITE_BLACK));
 		if(seedColor != -1) 
-			mvwprintw(subscrnMenu, i, 6, it->c_str()); 	//centered for menus 1 & 2
+			mvwprintw(subscrnMenu, i, 6, it->c_str()); 	//Slightly off-centered when not highlighted
 		else
 			mvwprintw(subscrnMenu, i, 0, it->c_str());	//left - justified for menu 3
 		cmdoutlines.push_back(*it);		//Stores current menu items in cmdoutlines
