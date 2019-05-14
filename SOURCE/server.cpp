@@ -191,8 +191,8 @@ void acceptConnections(int socketFD, int* firstClient, int* secondClient)
 	*firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
 
 	//send confirmation that client 1 is connected
-	char confirm1[1] = "0";
-	char confirm2[1] = "1";
+	char confirm1[2] = "0";
+	char confirm2[2] = "1";
 
 	sendMessage(*firstClient, confirm1);
 
