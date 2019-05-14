@@ -12,7 +12,7 @@ CXXFLAGS = -g -std=c++0x -Wall -Werror -Wfatal-errors \
 		   -Wno-error=unused-but-set-variable \
 		   -Wno-error=unused-variable --pedantic-errors \
 		   -Wno-error=maybe-uninitialized
-   
+
 IDIR = HEADER
 ODIR = OBJECT
 SDIR = SOURCE
@@ -29,38 +29,39 @@ _HDR = constants.hpp highlight.hpp hostPrompt.hpp include.hpp \
 	   colorDefs.hpp transitionAnimation.hpp loadGraphic.hpp paintCubeGraphic.hpp \
 	   paintGraphic.hpp printMenu.hpp using.hpp validateWinSize.hpp \
 	   initColors.hpp Game.hpp World.hpp Water.hpp Obstacle.hpp \
-	   Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp Direction.hpp Cube.hpp
+	   Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp Direction.hpp Cube.hpp \
+		 server.hpp client.hpp
 HDR = $(patsubst %,$(IDIR)/%,$(_HDR))
 
 _SRC = cubeRunner.cpp highlight.cpp hostPrompt.cpp transitionAnimation.cpp \
 	   loadGraphic.cpp paintCubeGraphic.cpp paintGraphic.cpp \
 	   printMenu.cpp validateWinSize.cpp initColors.cpp \
-	   server.cpp Game.cpp World.cpp Water.cpp Obstacle.cpp \
+	   server.cpp client.cpp Game.cpp World.cpp Water.cpp Obstacle.cpp \
 	   Seaweed.cpp Coral.cpp Shark.cpp Octopus.cpp Direction.cpp \
-	   Cube.cpp
+	   Cube.cpp 
 SRC = $(patsubst %,$(SDIR)/%,$(_SRC))
 
 $(PROGRAM_NAME): $(OBJ)
 	$(CXX) -o $@ $^ $(CXXFLAGS)
-	
+
 $(ODIR)/%.o: $(SDIR)/%.cpp $(HDR)
 	#@chmod +x makeOBJECTDir
 	@./makeOBJECTDir
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
-# Alternate Syntax	
+# Alternate Syntax
 # $(OBJ): $(SRC) $(HDR)
 	# $(CXX) -c -o $@ $< $(CXXFLAGS)
-	
+
 run:
 	./$(PROGRAM_NAME)
-	
+
 clean:
 	rm -f -r $(OBJ) $(PROGRAM_NAME) $(ODIR)
-	
+
 zip:
 	zip $(PROGRAM_NAME).zip $(SRC) $(HDR) Makefile *.txt
-	
+
 # REFERENCES
 # http://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
 # https://stackoverflow.com/questions/19475037/function-and-difference-between-and-in-makefile
