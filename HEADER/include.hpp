@@ -33,6 +33,13 @@
 #include <typeinfo>
 #include <string>
 #include <cstring>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <sys/ioctl.h>
+#include <arpa/inet.h>
+#include <sys/stat.h>
 #include "colorDefs.hpp"
 
 #endif /* include_hpp */
