@@ -49,12 +49,14 @@ class World {
 		//Method to access
 		list<Obstacle*>& getObstacles() {return obstacles;}
 		
-		//The following two functions are used by the Obstacle
+		//The following functions are used by the Obstacle
 		//constructor to ensure a new obstacle is not placed on
 		//top of an existing obstacle or minicube.
 		set<pair<int, int>>& getObsCoords() {return obsCoords;}
-		set<pair<int, int>>& getNonWSObsCoords() {return nonWSObsCoords;}
 		set<pair<int, int>>& getMiniCubes() {return miniCubes;}
+		
+		//Used by Cube to detect Obstacle collision
+		set<pair<int, int>>& getNonWSObsCoords() {return nonWSObsCoords;}
 		
 		virtual ~World() {}
 		
