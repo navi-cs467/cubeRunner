@@ -22,21 +22,22 @@ PROGRAM_NAME = cubeRunner
 _OBJ = cubeRunner.o highlight.o hostPrompt.o transitionAnimation.o loadGraphic.o \
 	   paintCubeGraphic.o paintGraphic.o printMenu.o validateWinSize.o \
 	   initColors.o server.o Game.o World.o Water.o Obstacle.o Seaweed.o \
-	   Coral.o Shark.o Octopus.o Direction.o
+	   Coral.o Shark.o Octopus.o Direction.o Cube.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 _HDR = constants.hpp highlight.hpp hostPrompt.hpp include.hpp \
 	   colorDefs.hpp transitionAnimation.hpp loadGraphic.hpp paintCubeGraphic.hpp \
 	   paintGraphic.hpp printMenu.hpp using.hpp validateWinSize.hpp \
 	   initColors.hpp Game.hpp World.hpp Water.hpp Obstacle.hpp \
-	   Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp Direction.hpp
+	   Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp Direction.hpp Cube.hpp
 HDR = $(patsubst %,$(IDIR)/%,$(_HDR))
 
 _SRC = cubeRunner.cpp highlight.cpp hostPrompt.cpp transitionAnimation.cpp \
 	   loadGraphic.cpp paintCubeGraphic.cpp paintGraphic.cpp \
 	   printMenu.cpp validateWinSize.cpp initColors.cpp \
 	   server.cpp Game.cpp World.cpp Water.cpp Obstacle.cpp \
-	   Seaweed.cpp Coral.cpp Shark.cpp Octopus.cpp Direction.cpp
+	   Seaweed.cpp Coral.cpp Shark.cpp Octopus.cpp Direction.cpp \
+	   Cube.cpp
 SRC = $(patsubst %,$(SDIR)/%,$(_SRC))
 
 $(PROGRAM_NAME): $(OBJ)

@@ -24,6 +24,8 @@ Coral::Coral(World *world, Direction offScreen,
 		
 	//Update World's obsCoords with new graphic position
 	world->updateObsCoords(this);
+	
+	_graphicLines = Coral::initializeVectorGraphics();
 }
 
 vector<vector<wstring>> Coral::initializeVectorGraphics () {

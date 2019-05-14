@@ -27,6 +27,8 @@ Octopus::Octopus(World *world, Direction offScreen,
 		
 	//Update World's obsCoords with new graphic position
 	world->updateObsCoords(this);
+	
+	_graphicLines = Octopus::initializeVectorGraphics();
 }
 
 vector<vector<wstring>> Octopus::initializeVectorGraphics () {

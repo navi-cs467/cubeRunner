@@ -255,7 +255,7 @@ int main(int argc, char* argv[]) {
 						/**** SEND DEATH FLAG ****/
 						// SEND Connection1: deathFlag
 						if(deathFlag) {
-							if(cube->getLives() == 0) {
+							if(cube->getCubeLives() == 0) {
 						//		SEND Connection1: 1		//Game over, no need for confirmation
 						//		CLOSE Connection1
 							}
@@ -270,7 +270,7 @@ int main(int argc, char* argv[]) {
 						
 						// SEND Connection2: deathFlag
 						if(deathFlag) {
-							if(cube->getLives() == 0) {
+							if(cube->getCubeLives() == 0) {
 						//		SEND Connection2: 1		//Game over, no need for confirmation
 						//		CLOSE Connection2
 								break;

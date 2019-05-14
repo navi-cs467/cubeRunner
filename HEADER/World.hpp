@@ -24,7 +24,8 @@ class Game;
 class World {
 	protected:
 		list<Obstacle*> obstacles;
-		set<pair<int, int>> miniCubes, obsCoords;
+		set<pair<int, int>> miniCubes, obsCoords, 
+									   nonWSObsCoords;		//"Non-Whitespace" ObsCoords
 		int gameMode;
 		int bottomRow;
 		bool isTwoPlayer;
@@ -52,6 +53,7 @@ class World {
 		//constructor to ensure a new obstacle is not placed on
 		//top of an existing obstacle or minicube.
 		set<pair<int, int>>& getObsCoords() {return obsCoords;}
+		set<pair<int, int>>& getNonWSObsCoords() {return nonWSObsCoords;}
 		set<pair<int, int>>& getMiniCubes() {return miniCubes;}
 		
 		virtual ~World() {}

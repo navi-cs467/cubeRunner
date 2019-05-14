@@ -22,8 +22,10 @@ Seaweed::Seaweed(World *world, Direction offScreen,
 		if(Seaweed::getGraphicLines()[gt][i].size() > longestGS)
 			longestGS = Seaweed::getGraphicLines()[gt][i].size();
 		
-	//Update World's obsCoords with new graphic position
+	//Update World's obsCoords and nonWSObsCoords with new graphic position
 	world->updateObsCoords(this);
+	
+	_graphicLines = Seaweed::initializeVectorGraphics();
 }
 
 vector<vector<wstring>> Seaweed::initializeVectorGraphics () {

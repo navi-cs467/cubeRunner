@@ -263,29 +263,38 @@ void Water::scroll_() {
 		int xCoord = (*it)->getPosX(), yCoord = (*it)->getPosY();
 		
 		//Free memory and delete Obstacle from obstacles and
-		//remove all associated obsCoords if Obstacle goes
-		//completely offscreen a full screen width to the left
-		//or a full-screen width above
+		//remove all associated obsCoords and nonWSObsCoords if 
+		//Obstacle goes completely offscreen a full screen width 
+		//to the left or a full-screen width above
 		if((*it)->getPosY() <= -COLS) {
-			//Remove all associated obsCoords
+			//Remove all associated obsCoords and nonWSObsCoords
 			for(int i = 0; i <(*it)->getGTS(); i++) 
-				for(int j = 0; j < (*it)->getLongestGS(); j++) 
+				for(int j = 0; j < (*it)->getLongestGS(); j++) {
 					itObs = obsCoords.find
 							(make_pair(i + xCoord, j + yCoord));
 					if(itObs != obsCoords.end()) obsCoords.erase(itObs);
+					itObs = nonWSObsCoords.find
+							(make_pair(i + xCoord, j + yCoord));
+					if(itObs != nonWSObsCoords.end()) nonWSObsCoords.erase(itObs);
+				}
 			//Free memory
 			delete *it;
 			//Remove pointer from list
 			obstacles.erase(it);
-			it = obstacles.begin();
+			//it = obstacles.begin();
+			it--;
 		}
 		else if((*it)->getPosX() <= -LINES) {
 			//Remove all associated obsCoords
 			for(int i = 0; i < (*it)->getGTS(); i++) 
-				for(int j = 0; j <(*it)->getLongestGS(); j++) 
+				for(int j = 0; j <(*it)->getLongestGS(); j++) {
 					itObs = obsCoords.find
 							(make_pair(i + xCoord, j + yCoord));
 					if(itObs != obsCoords.end()) obsCoords.erase(itObs);
+					itObs = nonWSObsCoords.find
+							(make_pair(i + xCoord, j + yCoord));
+					if(itObs != nonWSObsCoords.end()) nonWSObsCoords.erase(itObs);
+				}
 			//Free memory
 			delete *it;
 			//Remove pointer from list
@@ -311,7 +320,19 @@ void Water::scroll_() {
 	}
 	swap(obsCoords, newObsCoords);
 	
+	//Temporary set of pairs used to update nonWSObsCoords values via swap
+	set<pair<int, int>> newNonWSObsCoords;
+	for(set<pair<int, int>>::iterator it = nonWSObsCoords.begin();
+		it != nonWSObsCoords.end(); it++) {
+			//Do not keep any obsCoord that is a full screen size
+			//offscreen to the left or a full screen width offscreen
+			//above
+			//if(it->second > -COLS && it->first > -LINES)
+			newNonWSObsCoords.insert(make_pair(it->first, it->second - 1));
+	}
+	swap(nonWSObsCoords, newNonWSObsCoords);
 	
+	//Temporary set of pairs used to update miniCubes values via swap
 	set<pair<int, int>> newMinCubes;
 	for(set<pair<int, int>>::iterator it = miniCubes.begin();
 		it != miniCubes.end(); it++) {

@@ -38,6 +38,7 @@ class Obstacle {
 							//the same direction if possible for
 							//a random number of moves [between 5 - 25,
 							//see Obstacle.cpp - move(World* world)]
+		vector<vector<wstring>> _graphicLines;
 
 	public:
 		Obstacle(int posX, int posY, int gt, int gts) :
@@ -56,6 +57,7 @@ class Obstacle {
 		void setLongestGS(int length) {longestGS = length;}
 		virtual Direction getDirection() {return none;}
 		virtual void move(World* world);
+		vector<vector<wstring>> _getGraphicLines() {return _graphicLines;}
 		
 		//Renders class abstract, since there is no
 		//candidate for a pure virtual function that

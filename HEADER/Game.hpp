@@ -13,22 +13,20 @@
 
 //#include "World.hpp"
 class World;
+#include "Cube.hpp"
 #include "Water.hpp"
 //#include "include.hpp"
 #include "constants.hpp"
 
 class Game {
 	private:
-		//Cube cube;
+		Cube *cube;
 		World *world;
 		bool isTwoPlayer;
 		int score;
 		double time;
 		int gameMode;			//(1) is Hard, (2) is Normal, (3) is Easy
 		
-		static char **board;	//Last line of screen is reserved
-								//for life count, time, and score
-								//display.
 
 	public:
 		Game(int gameMode, bool isTwoPlayer);
@@ -36,8 +34,6 @@ class Game {
 		int getGameMode() {return gameMode;}
 		void setScore(int score) {this->score = score;}
 		int playGame(char host[] = NULL, int = -1, int playerNum = 1);
-		static char** getBoard() {return board;}
-		static void setBoard(int x, int y, char ch) {board[x][y] = ch;}
 };
 
 #endif /* Game_hpp */

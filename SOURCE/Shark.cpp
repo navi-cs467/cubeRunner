@@ -26,6 +26,8 @@ Shark::Shark(World *world, Direction offScreen,
 	
 	//Update World's obsCoords with new graphic position
 	world->updateObsCoords(this);
+	
+	_graphicLines = Shark::initializeVectorGraphics();
 }
 
 vector<vector<wstring>> Shark::initializeVectorGraphics () {

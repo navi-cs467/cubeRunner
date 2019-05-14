@@ -25,7 +25,7 @@ WINDOW *printMenu(vector<string> menuItems, int seedColor,
 						(MM_GRAPHIC_WIDTH - MM_WIDTH)/2 + 1;
 	else startingCol = altStartingCol;						
 	if(!altStartingRow) startingRow = ((LINES - MM_GRAPHIC_HEIGHT)/4) + 
-							MM_GRAPHIC_HEIGHT + 5 + 1;	//By default tarts 5 rows below cube graphic, + 1 due to outer border
+							MM_GRAPHIC_HEIGHT + 5 + 1;	//By default starts 5 rows below cube graphic, + 1 due to outer border
 	else startingRow = altStartingRow;
 	WINDOW *subscrnMenu = newwin(menuLength + 2, menuWidth, startingRow, startingCol);			
 	wattron(subscrnMenu, COLOR_PAIR(WHITE_BLACK));							
@@ -52,7 +52,7 @@ WINDOW *printMenu(vector<string> menuItems, int seedColor,
 		if(seedColor != -1) wattron(subscrnMenu, COLOR_PAIR(seedColor));
 		else wattron(subscrnMenu, COLOR_PAIR(WHITE_BLACK));
 		if(seedColor != -1) 
-			mvwprintw(subscrnMenu, i, (menuWidth - it->length())/2, it->c_str());	//centered for menus 1 & 2
+			mvwprintw(subscrnMenu, i, 6, it->c_str()); 	//centered for menus 1 & 2
 		else
 			mvwprintw(subscrnMenu, i, 0, it->c_str());	//left - justified for menu 3
 		cmdoutlines.push_back(*it);		//Stores current menu items in cmdoutlines
