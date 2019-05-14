@@ -29,7 +29,7 @@ class Seaweed : public Obstacle {
 		static vector<vector<wstring>> _getGraphicLines() {return graphicLines;}
 		static int getColor() {return color;}
 		static vector<vector<wstring>> initializeVectorGraphics();
-		virtual getGraphicLines() override;
+		virtual vector<vector<wstring>> getGraphicLines() override;
 		virtual ~Seaweed() {}
 		
 };

@@ -29,7 +29,7 @@ class Coral : public Obstacle {
 		static vector<vector<wstring>> _getGraphicLines() {return graphicLines;}
 		static int getColorSeed() {return colorSeed;}
 		static vector<vector<wstring>> initializeVectorGraphics();
-		virtual getGraphicLines() override;
+		virtual vector<vector<wstring>> getGraphicLines() override;
 		virtual ~Coral() {}
 		
 };

@@ -87,7 +87,7 @@ void Obstacle::setGT(int newGraphic) {
 	for(int i = 0; i < gts; i++)
 		if(getGraphicLines()[gt][i].size() > longestGS)
 			longestGS = getGraphicLines()[gt][i].size();
-	}
+	
 	
 	/* if(typeid(*this) == typeid(Seaweed)) {
 		gts = Seaweed::getGraphicLines()[gt].size();

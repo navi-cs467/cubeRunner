@@ -33,7 +33,7 @@ class Octopus : public Obstacle {
 		static vector<vector<wstring>> initializeVectorGraphics();
 		//Direction getDirection() {return curDirection;}
 		//void setDirection(Direction newDirection) {curDirection = newDirection;}
-		virtual getGraphicLines() override;
+		virtual vector<vector<wstring>> getGraphicLines() override;
 		virtual ~Octopus() {}
 		
 };

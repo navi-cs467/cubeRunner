@@ -17,7 +17,7 @@ void World::updateObsCoords(Obstacle *ob) {
 		for(int j = 0; j < ob->getLongestGS(); j++) {
 			obsCoords.insert(make_pair(ob->getPosX() + i,
 									   ob->getPosY() + j));
-			if(j < ob->getGraphicLines()[ob->getGT()][i].length()) &&
+			if(j < ob->getGraphicLines()[ob->getGT()][i].length() &&
 			   (ob->getGraphicLines()[ob->getGT()][i][j]) != ' ')
 					nonWSObsCoords.insert(make_pair(ob->getPosX() + i,
 									   ob->getPosY() + j));

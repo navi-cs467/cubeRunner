@@ -24,8 +24,6 @@ Seaweed::Seaweed(World *world, Direction offScreen,
 		
 	//Update World's obsCoords and nonWSObsCoords with new graphic position
 	world->updateObsCoords(this);
-	
-	graphicLines = Seaweed::initializeVectorGraphics();
 }
 
 vector<vector<wstring>> Seaweed::initializeVectorGraphics () {
@@ -56,7 +54,7 @@ vector<vector<wstring>> Seaweed::initializeVectorGraphics () {
 	return tmpV;
 }
 
-Seaweed::getGraphicLines() {
+vector<vector<wstring>> Seaweed::getGraphicLines() {
 	return Seaweed::_getGraphicLines();
 }
 
