@@ -126,6 +126,55 @@ void bindSocket(int socketFD, struct addrinfo *servinfo)
 // start the game with two clients, determining which connections have input on sockets to read from
 // for now we start chat, wait for client input and then send a confirmation message
 // loops until SIGINT *** will adjust this later
+// start game with connection to server, loops until SIGINT for now
+	// void startGame(int socketFD)
+	// {
+	// 		//create two threads, one for sending data to server and one for receiving
+	// 		//we do this so that we will still receive server data despite the blocking of getch
+	// 		omp_set_num_threads(2);
+	//
+	// 		#pragma omp parallel sections
+	// 		{
+	// 			// get user input to send to server
+	// 		 #pragma omp section
+	//      {
+	// 			 while(1)
+	// 			 {
+	// 					//buffers for messages for client to server
+	// 	 			  char userInput[2048];
+	//
+	// 	 			  memset(userInput, '\0', sizeof(userInput));
+	//
+	// 	 		 		// Get input from the user using getch to avoid the user needing to press enter
+	// 					int ch = getch();
+	//
+	// 					sprintf(userInput, "%c", ch);;
+	//
+	// 	 		 		sendMessage(socketFD, userInput);
+	// 			 }
+	//      }
+	//
+	// 		 //receving data from server periodically on different thread
+	// 		 #pragma omp section
+	//      {
+	// 			while(1)
+	// 			{
+	// 				// buffer to hold messages received from the server
+	// 				char messageReceived[2048];
+	// 				memset(messageReceived, '\0', sizeof(messageReceived));
+	//
+	// 				//receive data from server, if there is any
+	// 			 	receiveMessage(socketFD, messageReceived);
+	//
+	// 				//print out for testing purposes
+	// 				printw("%s", messageReceived);
+	// 				refresh();
+	//
+	// 				//create another function to parse server data (game metrics) ***
+	// 			}
+	//      }
+	// 	}
+	// }
 
 
 /*
