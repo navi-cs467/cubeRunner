@@ -4,70 +4,70 @@
 ** Team: NAVI
 ** Date: 4/25/2019
 ** Description: Source file for Game class "out-of-class" function
-**				definitions. The Game class is the maintainer and 
+**				definitions. The Game class is the maintainer and
 **				executer of the game state and progression.
 *******************************************************************/
 
 #include "../HEADER/Game.hpp"
 
-Game::Game(int gameMode, bool isTwoPlayer) : 
+Game::Game(int gameMode, bool isTwoPlayer) :
 	isTwoPlayer(isTwoPlayer), gameMode(gameMode) {
-		
+
 		score = 0;
-		
+
 		if(!isTwoPlayer) world = new Water(gameMode, isTwoPlayer);
-		
+
 		else world = new Water();		//"Blank" world if running as client
-		
+
 		if(gameMode == EASY) cube = new Cube(world, 5);
 		else if(gameMode == NORMAL) cube = new Cube(world, 4);
 		else if(gameMode == HARD) cube = new Cube(world, 3);
-		
+
 }
 
 int Game::playGame(char host[], int port, int playerNum) {
-	
+
 	int userInput = 0;
-		
+
 	//Set number of omp threads
 	omp_set_num_threads(2);
-	
+
 	//Lock needed so position cannot be changed
 	//in such rapid succession that some positions
 	//are not checked for death condition.
 	//omp_lock_t lock1;
-	
+
 	//Initialize lock
 	//omp_init_lock(&lock1);
-	
+
 	bool deathFlag = false;
-	
+
 	#pragma omp parallel sections shared(userInput, deathFlag)
 	{
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
 		{
-			while ( /* cube->getCubeLives() > 0 && */  userInput != 27 && 
+			while ( /* cube->getCubeLives() > 0 && */  userInput != 27 &&
 									  userInput != KEY_END &&
 									  userInput != 'q' &&
 									  userInput != 'Q') {
-				
+
 				//Input is ignored (by this thread) while death sequence processes
 				if(!deathFlag) userInput = getch();
-				
+
 				//Single Player
-				if(!isTwoPlayer && !deathFlag) {	
+				if(!isTwoPlayer && !deathFlag) {
 					if((userInput == KEY_UP || userInput == '8')
 							&& cube->getCubeTokenCoords()[0][0] > 0) {
 						cube->updateCubeTokenPosition(0, 0, 0, 1);
 						cube->setCubeDirection(up);
 					}
-					else if((userInput == KEY_DOWN || userInput == '2') && 
+					else if((userInput == KEY_DOWN || userInput == '2') &&
 								cube->getCubeTokenCoords()[15][0] < world->getBottomRow()) {
 						cube->updateCubeTokenPosition(0, 0, 1, 0);
 						cube->setCubeDirection(down);
 					}
-					else if((userInput == KEY_RIGHT || userInput == '6') && 
+					else if((userInput == KEY_RIGHT || userInput == '6') &&
 								cube->getCubeTokenCoords()[15][1] < COLS) {
 						cube->updateCubeTokenPosition(1, 0, 0, 0);
 						cube->setCubeDirection(right);
@@ -82,8 +82,8 @@ int Game::playGame(char host[], int port, int playerNum) {
 						cube->updateCubeTokenPosition(0, 1, 0, 0);
 						cube->setCubeDirection(left_up);
 					}
-					else if(userInput == 1 && 
-							cube->getCubeTokenCoords()[15][0] < world->getBottomRow() && 
+					else if(userInput == 1 &&
+							cube->getCubeTokenCoords()[15][0] < world->getBottomRow() &&
 							cube->getCubeTokenCoords()[0][1] > 0) {
 						cube->updateCubeTokenPosition(0, 1, 0, 0);
 						cube->setCubeDirection(left_down);
@@ -93,15 +93,15 @@ int Game::playGame(char host[], int port, int playerNum) {
 						cube->updateCubeTokenPosition(0, 1, 0, 0);
 						cube->setCubeDirection(right_up);
 					}
-					else if(userInput == 3 && 
+					else if(userInput == 3 &&
 							cube->getCubeTokenCoords()[15][0] < world->getBottomRow() &&
 							cube->getCubeTokenCoords()[15][1] < COLS) {
 						cube->updateCubeTokenPosition(0, 1, 0, 0);
 						cube->setCubeDirection(right);
-					}														
-					
+					}
+
 				}
-				
+
 				/***** BEGIN Client for multiplayer (SEND) *****/
 				//NOTE: If the player inputs movement commands faster than the
 				//	  	server can handle, the "extra commands" go unprocessed,
@@ -111,6 +111,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 					if(playerNum == 1) {
 						if(userInput == KEY_UP) {
 							// SEND: KEY_UP
+							
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
@@ -119,7 +120,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
-						else if(userInput != 27 && 
+						else if(userInput != 27 &&
 								userInput != KEY_END &&
 								userInput != 'q' &&
 								userInput != 'Q') {
@@ -139,7 +140,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
-						else if(userInput != 27 && 
+						else if(userInput != 27 &&
 								userInput != KEY_END &&
 								userInput != 'q' &&
 								userInput != 'Q') {
@@ -152,10 +153,10 @@ int Game::playGame(char host[], int port, int playerNum) {
 				/***** END Client for multiplayer (SEND) *****/
 			}
 		}
-		
+
 		//Thread (2) for game engine
 		#pragma omp section
-		{	
+		{
 			//Single player game engine
 			if(!isTwoPlayer) {
 				//Establish scrollRate & moveRate,
@@ -171,7 +172,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 					scrollRate = 1.5;
 				}
 				moveRate = scrollRate / 4.;
-				
+
 				//Timer variables
 				double lastScrollTime = omp_get_wtime(),
 					   lastMoveTime = omp_get_wtime(),
@@ -181,7 +182,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
-				
+
 				//Initial Time display
 				timeDisplay.clear();
 				if(hours < 10)
@@ -196,14 +197,14 @@ int Game::playGame(char host[], int port, int playerNum) {
 					timeDisplay << "0" << seconds;
 				else
 					timeDisplay << seconds;
-				
+
 				//Initial Life count display
 				livesDisplay.clear();
 				livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
 				/* if(gameMode == EASY) livesDisplay << "Lives: " << 5;
 				else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
 				else if(gameMode == HARD) livesDisplay << "Lives: " << 3; */
-				
+
 				//Initial Score display
 				scoreDisplay.clear();
 				scoreDisplay << "Score: " << score;
@@ -214,31 +215,31 @@ int Game::playGame(char host[], int port, int playerNum) {
 				mvhline(LINES - 1, 0, ' ', COLS);
 				mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
 				refresh();
-				
+
 				//Main game engine loop
 				while ( userInput != 27 &&
 						userInput != KEY_END &&
 						userInput != 'q' &&
 						userInput != 'Q') {
-					
+
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();
-						
-						// World transition if cube->transitionCount 
+
+						// World transition if cube->transitionCount
 						//reaches TRANSITION_SCORE_INTERVAL
 						/* if(cube->getTransitionCount() >= TRANSITION_SCORE_INTERVAL) {
-							
+
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 							it != world->getObstacles().begin(); it++) {
 								delete *it;
 							}
-							
+
 							//Clear all containers
 							world->getObstacles().clear();
 							world->getObsCoords().clear();
 							world->getMiniCubes().clear();
-							
+
 							//Create new world
 							if(typeid(*world) == typeid(Water))
 								world = new Land(gameMode, isTwoPlayer);
@@ -246,39 +247,39 @@ int Game::playGame(char host[], int port, int playerNum) {
 								world = new Space(gameMode, isTwoPlayer);
 							else if(typeid(*world) == typeid(Space))
 								world = new Water(gameMode, isTwoPlayer);
-							
+
 							//If score is less than 3000, increase scroll and move time intervals by 10%
 							//(This is the point at which all three worlds have been cycled 3 times each,
 							// and the speeds are capped.)
 							//scrollRate *= 0.9;
 							//moveRate *= 0.9;
-							
+
 							//Reset cubes position to left-middle starting point
 							cube->reset();
-							
+
 							//Reset transitionCount
 							cube->setTransitionCount() = 0;
 						} */
-						
+
 						//Check for death
-						cube->checkCubeCollision(world);	
-						deathFlag = cube->getCubeIsDead();	
-						
+						cube->checkCubeCollision(world);
+						deathFlag = cube->getCubeIsDead();
+
 						world->renderWorld();
 						attron(COLOR_PAIR(cube->getColor()));
 						cube->drawCube();
 						if(deathFlag) cube->drawCubeDeath();
-						
+
 						//Death animation if death occurred
 						if(deathFlag) { //move(5,5);printw("%d", 1 ? deathFlag : 0); refresh(); getch();
-							
-							//Remove Obstacles in first 10 columns so player can be 
+
+							//Remove Obstacles in first 10 columns so player can be
 							//reset in "safety zone"
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
-								it != world->getObstacles().end(); it++) { 
+								it != world->getObstacles().end(); it++) {
 								if((*it)->getPosY() <= 10) {
 									//Remove coords from obsCoords and nonWSObsCoords
-									for(int i = 0; i < (*it)->getGTS(); i++) 
+									for(int i = 0; i < (*it)->getGTS(); i++)
 										for(int j = 0; j < (*it)->getLongestGS(); j++) {
 											/* if(world->getObsCoords().find
 													(make_pair((*it)->getPosX() + i,
@@ -299,27 +300,27 @@ int Game::playGame(char host[], int port, int playerNum) {
 										}
 									//Free memory
 									delete *it;
-									
+
 									//Remove pointer
 									world->getObstacles().erase(it--);
 								}
 							}
 						}
-						
+
 						//Game Over animation if game over occurred
 						/* if(cube->getCubeLives() == 0) {
 							transitionAnimation("gameOver.txt");
 							break;
 						} */
-						
+
 						//Reset Cube
 						if(deathFlag) cube->cubeReset(world);
-						
+
 						//Reset death flag
 						deathFlag = false;
 
 					}
-					
+
 					if(omp_get_wtime() - lastScrollTime > scrollRate) {
 						lastScrollTime = omp_get_wtime();
 						world->scroll_();
@@ -328,23 +329,23 @@ int Game::playGame(char host[], int port, int playerNum) {
 								world->loadOSObs();
 								world->loadOSMCs();
 							}
-						
+
 						//Repopulate miniCubes if too many have been
 						//consumed by moving obstacles according to this
 						//threshold
 						if(world->getMiniCubes().size() / 2
 								< (NUM_MCS_EASY / gameMode))
 							world->initMiniCubes(1);
-						
+
 						if(scrollCount == COLS) scrollCount = 0;
 						else scrollCount++;
 					}
-					
+
 					if(omp_get_wtime() - lastMoveTime > moveRate) {
 						lastMoveTime = omp_get_wtime();
 						world->moveObs();
 					}
-					
+
 					//Render time, life count, and score display every second
 					if(!startTimeLogged) {
 						statsTime = startTime = static_cast<int>(omp_get_wtime());
@@ -362,7 +363,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 							minutes = 0;
 							hours++;
 						}
-						
+
 						//Time display
 						timeDisplay.clear();
 						if(hours < 10)
@@ -377,14 +378,14 @@ int Game::playGame(char host[], int port, int playerNum) {
 							timeDisplay << "0" << seconds;
 						else
 							timeDisplay << seconds;
-						
+
 						//Life count display
 						livesDisplay.clear();
 						livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
 						/* if(gameMode == EASY) livesDisplay << "Lives: " << 5;
 						else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
 						else if(gameMode == HARD) livesDisplay << "Lives: " << 3; */
-						
+
 						//Score display
 						scoreDisplay.clear();
 						scoreDisplay << "Score: " << cube->getCubeScore();
@@ -398,49 +399,52 @@ int Game::playGame(char host[], int port, int playerNum) {
 					}
 				}
 			}
-			
+
 			//Client for multiplayer (RECEIEVE)
 			else {
-				
+
 				// Send connection request to cubeRunnerServer using parameters "host" and "port"
 				// (Optional) Send gameMode with request
-				
+
 				// Receive int message
 				// If message == 0; wait for another message to indicate player 2 has connected
-					
+
 					//Receive message; player 2 has connected (game can start)
-					
+
 					//(Optional) If message == gameMode; game difficulties match (game can start)
-					//(Optional) If message != gameMode; game difficulties do not match 
-					//									 (display error message and "continue" to restart loop, 
+					//(Optional) If message != gameMode; game difficulties do not match
+					//									 (display error message and "continue" to restart loop,
 					//									 or display ncurses window informing player the
 					//									 the easier of the two gameModes will be used, and
 					//									 to press any key to continue.)
-					
+
 					// (Optional - if display window is used to inform player easier game mode will be used) send message to cubeRunnerServer once character has been input
 					// (Optional - if display window is used to inform player easier game mode will be used) receive message back that the other player has also confirmed message (game can start)
-					
+
 				// Else if message == 1 (or optionally gameMode); player one already connected (game can start)
-				
+
 				//  // (Optional) If message == gameMode; game difficulties match (game can start)
-					// (Optional) If message != gameMode; game difficulties do not match 
-					//									 (display error message and "continue" to restart loop, 
+					// (Optional) If message != gameMode; game difficulties do not match
+					//									 (display error message and "continue" to restart loop,
 					//									 or display ncurses window informing player the
 					//									 the easier of the two gameModes will be used, and
 					//									 to press any key to continue.)
-					
+
 					// (Optional - if display window is used to inform player easier game mode will be used) send message to cubeRunnerServer once character has been input
 					// (Optional - if display window is used to inform player easier game mode will be used) receive message back that the other player has also confirmed message (game can start)
-				
+
+				//connect to server
+				int socketFD = initSocket(host, port);
+
 				//For Time Display
 				int seconds, minutes, hours;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
-				
+
 				//Pseudocode variables... change as desired
 				int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[10];
-				
+
 				while (1) {
-						
+
 						/**** RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
 						// RECEIVE (10 bytes) into earlyTerm
 						// (Optional ?) SEND Confirmation
@@ -449,9 +453,9 @@ int Game::playGame(char host[], int port, int playerNum) {
 						//	  Display ncurses sub-window informing player that other player has terminated early
 						//    break;
 						/**** END RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
-						
+
 						/**** RECEIVE DEATH FLAG ****/
-						//RECEIVE int_1			
+						//RECEIVE int_1
 						//If int_1 == 1:			//Death happened
 						//	  RECEIVE int_2
 						//	  If int_2 == 1:		//Game Over
@@ -465,33 +469,33 @@ int Game::playGame(char host[], int port, int playerNum) {
 						//Else:
 						//	  // (Optional ?) SEND: confirmation			//No Death
 						/**** RECEIVE DEATH FLAG ****/
-						
+
 						/**** RECEIVE CUBE DATA ****/
 						// RECEIVE int_1, int_2, int_3		//cube position x, y, and life count?
 						// cube->setPosX(int_1); cube->setPosY(int_2); cube->setNumLives(int_3);
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE CUBE DATA ****/
-						
+
 						/**** RECEIVE GAME SCORE ****/
 						// RECEIVE int_1
 						// cube->setScore(int_1);
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE GAME SCORE ****/
-						
+
 						//Now we tear down the entire world, to then rebuild... (Really Hoping we can get away with this performance-wise)
 						//(Need to do this before we receive new world indicator in case world gets deleted)
-						
+
 						//Delete all Obstacles
 						for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 							it != world->getObstacles().begin(); it++) {
 								delete *it;
 						}
-							
+
 						/**** RECEIVE NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
 						//RECEIVE int_1			//isNewWorld flag
-						//If int_1 == 1:		//If world transition has occurred, or first loop iteration	  
+						//If int_1 == 1:		//If world transition has occurred, or first loop iteration
 							  delete world;
-							  // (Optional ?) SEND: confirmation		
+							  // (Optional ?) SEND: confirmation
 						//	  RECEIVE int_2:	//World type
 							  	  if(int_2 == 1) {
 									  world = new Water();
@@ -506,18 +510,18 @@ int Game::playGame(char host[], int port, int playerNum) {
 									  /* transitionAnimation("Space.txt"); */
 								  //}
 								  // (Optional ?) SEND: confirmation		//Probably not optional, need to wait for world transition animation
-						
+
 						//Else If int == 0:		//If no world transition, we need to clear these containers
 							world->getObstacles().clear();
 							world->getObsCoords().clear();
 							world->getMiniCubes().clear();
 							// (Optional ?) SEND: confirmation
 						/**** END RECEIVE NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
-						
+
 						/**** RECEIVE ONSCREEN OBSTACLES  ****/
 						//RECEIEVE int_1		//number of (onscreen) Obstacles
 						// (Optional ?) SEND: confirmation
-						
+
 						//Loop to rebuild Obstacles
 						for(int i = 0; i < int_1; i++) {
 							//RECEIVE int_2, int_3, int_4, int_5, int_6		// type of Obs, posX, posY, gt, gts(not strictly necessary, but used as convenience)
@@ -545,35 +549,35 @@ int Game::playGame(char host[], int port, int playerNum) {
 								world->getObstacles().push_back(new Comet(int_3, int_4, int_5, int_6));
 							else if(int_2 == 12)
 								world->getObstacles().push_back(new Spaceship(int_3, int_4, int_5, int_6));	 */
-							
+
 							// (Optional ?) SEND: confirmation
 						}
 						/**** END RECEIVE ONSCREEN OBSTACLES  ****/
-						
+
 						/**** RECEIVE MINICUBES  ****/
 						//RECEIEVE int_1		//number of miniCubes
-						// (Optional ?) SEND: confirmation	
+						// (Optional ?) SEND: confirmation
 						for(int i = 0; i < int_1; i++) {
 							//RECEIVE int_2, int_3			//miniCube x & y
 							world->getMiniCubes().insert(make_pair(int_2, int_3));
 							// (Optional ?) SEND: confirmation
 						}
 						/**** END RECEIVE MINICUBES  ****/
-						
+
 						world->renderWorld();
 						//cube->paint();
-						
+
 						/**** RECEIVE TIME  ****/
 						//RECEIVE int_1 into hours
 						// (Optional ?) SEND: confirmation
-						
+
 						//RECEIVE int_1 into minutes
 						// (Optional ?) SEND: confirmation
-						
+
 						//RECEIVE int_1 into seconds
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE TIME  ****/
-						
+
 						//Time display
 						timeDisplay.clear();
 						if(hours < 10)
@@ -588,11 +592,11 @@ int Game::playGame(char host[], int port, int playerNum) {
 							timeDisplay << "0" << seconds;
 						else
 							timeDisplay << seconds;
-						
+
 						//Life count display
 						livesDisplay.clear();
 						livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
-						
+
 						//Score display
 						scoreDisplay.clear();
 						scoreDisplay << "Score: " << cube->getCubeScore();

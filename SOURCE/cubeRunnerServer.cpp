@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 		int player1, player2 = -1;
 
 		//initialize server and accept connections
-		initServer(portNum, player1, player2);
+		initServer(portNum, &player1, &player2);
 
 		Game game = Game(gmP1 < gmP2 ? gpM1 : gpM2, true);		//2nd argument == true for isTwoPlayer
 																//Use easiest of two specified game modes,
