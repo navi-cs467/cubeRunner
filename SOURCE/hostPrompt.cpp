@@ -12,9 +12,9 @@
 //gameplay, via a ncurses sub-window object that is returned. Prints
 //an error window/message and returns to previous menu if a network
 //connection can not be established with a Cube Runner server.
-WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3, 
-						WINDOW **subscrnGraphic, int *currMenu, 
-						bool *connected, char *host, int *port) {
+WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
+						WINDOW **subscrnGraphic, int *currMenu,
+						bool *connected, char *host, char *port) {
 	//Replace Game Menu header with hostname/port prompt
 	attron(COLOR_PAIR(WHITE_BLACK));
 	mvaddstr(startingRowMenu3 - 2, startingColMenu3, networkPrompt.c_str());
@@ -27,10 +27,12 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 	move(startingRowMenu3 + 1, startingColMenu3 + menu3Items[0].length());
 	curs_set(1);
 	echo();
-	refresh();	
-	
-	
-	char portStr[6]; int i = 0, j = 0, ch;
+	refresh();
+
+
+	// char portStr[6];
+	int i = 0, j = 0, ch;
+
 	//Get hostname or IP address
 	do{
 		ch = getch();
@@ -49,21 +51,21 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 		return NULL;
 	}
 	host[i] = '\0';
-	
+
 	//Move cursor down
 	move(startingRowMenu3 + 2, startingColMenu3 + menu3Items[1].length());
 	refresh();
-	
+
 	//Get port number
 	i = 0;
 	do{
-		
+
 		//** Should probably use wgetnstr here instead... **
 		//** Coming Soon **
-		
+
 		ch = getch();
 		if(ch == KEY_BACKSPACE && i > 0) i--;
-		else if(i < 5) portStr[i++] = ch;
+		else if(i < 5) port[i++] = ch;
 		if(i == 5) noecho();
 		else echo();
 	}
@@ -78,18 +80,18 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 		werase(subscrnMenu); wrefresh(subscrnMenu); delwin(subscrnMenu);
 		return NULL;
 	}
-	portStr[i] = '\0';
-	
-	//Convert port string 
-	istringstream istr(portStr); istr >> *port;
-	curs_set(0);
-	noecho();
-	refresh();
-	
+	port[i] = '\0';
+
+	// //Convert port string
+	// istringstream istr(portStr); istr >> *port;
+	// curs_set(0);
+	// noecho();
+	// refresh();
+
 	//if connection established...
 	//*connected = true;
-	
+
 	//else print error window... then return NULL
-	
+
 	return subscrnMenu;
 }

@@ -38,26 +38,26 @@ const char* menu1[] = {"1 Player",
 					   "2 Player",
 					   "High Scores",
 					   "Exit"};
-				  
+
 const char* menu2[] = {"Easy",
 					   "Normal",
 					   "Hard",
 					   "Back"};
-					   
+
 const char* menu3[] = {"Hostname or IP Address: ",
 						"Port Number: ",
 						"",
 						"   *Press End or Esc To Go Back*"};
 
-//Convert c_strings arrays to string vector						
+//Convert c_strings arrays to string vector
 vector<string> loadMenuVec(const char** menu, int length) {
 	vector<string> retVec;
-	for(int i = 0; i < length; i++) 
+	for(int i = 0; i < length; i++)
 		retVec.push_back(menu[i]);
 	return retVec;
 }
 
-//Store menu c_str arrays as vectors of strings	
+//Store menu c_str arrays as vectors of strings
 const vector<string> menu1Items = loadMenuVec(menu1, MENU1_LENGTH);
 const vector<string> menu2Items = loadMenuVec(menu2, MENU2_LENGTH);
 const vector<string> menu3Items = loadMenuVec(menu3, MENU3_LENGTH);
@@ -66,7 +66,7 @@ const vector<string> menu3Items = loadMenuVec(menu3, MENU3_LENGTH);
 const string networkPrompt = "Please enter a Hostname or IP Address "
 							 "and port number to connect to a Cube Runner "
 							 "multiplayer server";
-						  
+
 /*************************** END GLOBALS *****************************/
 
 int main(void)
@@ -79,82 +79,83 @@ int main(void)
 	keypad(stdscr, TRUE);	//Enables use of arrow keys (among other things)
     noecho();  //Don't echo keystrokes
     cbreak();  //Keyboard input valid immediately, not after hit Enter
-	
+
 	//Exit if terminal does not support color
 	/* if (has_colors() == FALSE) {
     endwin();
     printf("Your terminal does not support color\n");
     exit(1);
 	} */
-	
+
 	initColors();	//Initialize color indexes
-	
+
 	//Make sure users window is at least
 	//MIN_WIN_WIDTH x MIN_WIN_HEIGHT (see constants.hpp)
 	//(Instructs user to resize window then exits with
 	//key press if minimum window dimensions are not met.)
 	validateWinSize();
-	
+
 	srand(time(NULL));	//Seed random number generator with system time
-    
+
     //Run transitionAnimation animation
     transitionAnimation("GRAPHICS/cubeRunner.txt");
-	
+
 	while(1) {
-		
+
 		//Set number of omp threads for menu
-		omp_set_num_threads(3); 
-		
+		omp_set_num_threads(3);
+
 		clear();  // curses clear-screen call
-	
+
 		//Paint screen black
 		attron(COLOR_PAIR(BLACK_BLACK));
 		for (int y = 0; y < LINES; y++) {
 			mvhline(y, 0, ' ', COLS);
 		}
 		refresh();
-		
+
 		//Paint initial cube graphic
 		WINDOW* subscrnGraphic = paintCubeGraphic(NULL, "../GRAPHICS/menuCubeRight1_1.txt");
-		
+
 		//Setup subscreen for menu outer border
-		int startingCol = (COLS - MM_GRAPHIC_WIDTH)/2 + 
-						  (MM_GRAPHIC_WIDTH - MM_WIDTH) / 2, 
-			startingRow = ((LINES - MM_GRAPHIC_HEIGHT)/4) + 
+		int startingCol = (COLS - MM_GRAPHIC_WIDTH)/2 +
+						  (MM_GRAPHIC_WIDTH - MM_WIDTH) / 2,
+			startingRow = ((LINES - MM_GRAPHIC_HEIGHT)/4) +
 						   MM_GRAPHIC_HEIGHT + 5;		//Menu starts 5 lines below the graphic
 		WINDOW *subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);
 		wattron(subscrnMenuBorder, COLOR_PAIR(WHITE_BLACK));
-		box(subscrnMenuBorder, '|', '_'); 
+		box(subscrnMenuBorder, '|', '_');
 		wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 		wrefresh(subscrnMenuBorder);
-		
+
 		//Print Game Menu header
 		attron(COLOR_PAIR(WHITE_BLACK));
 		mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
 		refresh();
-		
+
 		//Print menu 1 with random starting line color
 		int startingLineColor = rand() % 6 + 1, lineColors[MAX_MENU_ITEMS];
 		WINDOW *subscrnMenu1 = printMenu(menu2Items, startingLineColor, lineColors,
 											MENU1_LENGTH, MM_WIDTH);
-		
+
 		//Declare menu 2 and 3 (for future use)
 		WINDOW *subscrnMenu2, *subscrnMenu3;
-		
+
 		//Initialize menu 3 starting position variables
-		int startingColMenu3 = startingCol + 
+		int startingColMenu3 = startingCol +
 			(MM_WIDTH - networkPrompt.length() - 2)/2;
 		int startingRowMenu3 = startingRow + 1;
-		
+
 		//Start highlighting at line 1
 		highlight(subscrnMenu1, 1, lineColors[0], startingLineColor,
 					menu1Items, MENU1_LENGTH, MM_WIDTH);
-		
+
 		//Variables needed for menu and game
-		int cursorPos = 1, currMenu = 1, playerCount = 1, gameMode, port = -1;
-		bool gameOn = false, connected = false; 
-		char host[256]; 
-		
+		int cursorPos = 1, currMenu = 1, playerCount = 1, gameMode = -1;
+		bool gameOn = false, connected = false;
+		char host[256];
+		char port[256];
+
 		//Setup multi-threaded block, with three threads as described below...
 		#pragma omp parallel sections shared(cursorPos, currMenu, \
 											 playerCount, gameMode, \
@@ -166,12 +167,12 @@ int main(void)
 			//once every second.
 			#pragma omp section
 			{
-				int graphicIterator = cursorPos, seedColor = rand() % 6 + 1, 
+				int graphicIterator = cursorPos, seedColor = rand() % 6 + 1,
 					prevCurPos = cursorPos;
 				bool toggled = true;
-				double time = omp_get_wtime(); 
-				while(!gameOn) { 
-					usleep(100 * 1000);			
+				double time = omp_get_wtime();
+				while(!gameOn) {
+					usleep(100 * 1000);
 					if(time + 1 < omp_get_wtime()) {
 						time = omp_get_wtime();
 						graphicIterator++;
@@ -185,42 +186,42 @@ int main(void)
 						else toggled = false;
 					}
 					if(currMenu == 1 && cursorPos == 1) {
-						if(graphicIterator == 0) paintGraphic(subscrnGraphic, 
+						if(graphicIterator == 0) paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft1_1.txt", seedColor, toggled);
-						else if(graphicIterator == 1) paintGraphic(subscrnGraphic, 
+						else if(graphicIterator == 1) paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeRight1_1.txt", seedColor, toggled);
-						else if(graphicIterator == 2) paintGraphic(subscrnGraphic, 
+						else if(graphicIterator == 2) paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft2_1.txt", seedColor, toggled);
-						else paintGraphic(subscrnGraphic, 
+						else paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeRight2_1.text", seedColor, toggled);
 					}
 					else if(currMenu == 1 && cursorPos == 2) {
-						if(graphicIterator == 0) paintGraphic(subscrnGraphic, 
+						if(graphicIterator == 0) paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft1_2.txt", seedColor, toggled);
-						else if(graphicIterator == 1) paintGraphic(subscrnGraphic, 
+						else if(graphicIterator == 1) paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeRight1_2.txt", seedColor, toggled);
-						else if(graphicIterator == 2) paintGraphic(subscrnGraphic, 
+						else if(graphicIterator == 2) paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft2_2.txt", seedColor, toggled);
-						else paintGraphic(subscrnGraphic, 
+						else paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeRight2_2.text", seedColor, toggled);
 					}
 					else if(currMenu == 1 && cursorPos == 3) {
 						paintGraphic(subscrnGraphic, "GRAPHICS/highScore.txt", seedColor, toggled);
 					}
-					else if(currMenu == 1 && cursorPos == 4) 
+					else if(currMenu == 1 && cursorPos == 4)
 						if(toggled == true)
-						paintGraphic(subscrnGraphic, 
+						paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft1_1.txt", seedColor, toggled);
 				}
 			}
-			
+
 			//This section (thread) handles the cube animation for menu 2,
 			//which moves one of two graphics (depending on player count)
 			//across the screen from left-to-right, the speed of which
 			//depends on the mode highlighted (faster = more difficult).
-			#pragma omp section 
+			#pragma omp section
 			{
-				double time1 = omp_get_wtime(); 
+				double time1 = omp_get_wtime();
 				int colOffset = 0;
 				while(!gameOn) {
 					usleep(25 * 1000);
@@ -229,11 +230,11 @@ int main(void)
 						if(cursorPos == 1 && time1 + 0.25 < omp_get_wtime()) {
 							time1 = omp_get_wtime();
 							if(playerCount == 1)
-								subscrnGraphic = 
+								subscrnGraphic =
 									paintCubeGraphic(subscrnGraphic,
 										"GRAPHICS/menuCubeRight1_1.txt", colOffset);
 							else
-								subscrnGraphic = 
+								subscrnGraphic =
 									paintCubeGraphic(subscrnGraphic,
 										"GRAPHICS/menuCubeRight1_2.txt", colOffset);
 							wrefresh(subscrnGraphic);
@@ -242,11 +243,11 @@ int main(void)
 						else if(cursorPos == 2 && time1 + 0.1 < omp_get_wtime()) {
 							time1 = omp_get_wtime();
 							if(playerCount == 1)
-								subscrnGraphic = 
+								subscrnGraphic =
 									paintCubeGraphic(subscrnGraphic,
 										"GRAPHICS/menuCubeRight1_1.txt", colOffset);
 							else
-								subscrnGraphic = 
+								subscrnGraphic =
 									paintCubeGraphic(subscrnGraphic,
 										"GRAPHICS/menuCubeRight1_2.txt", colOffset);
 							wrefresh(subscrnGraphic);
@@ -255,11 +256,11 @@ int main(void)
 						else if(cursorPos == 3 && time1 + 0.05 < omp_get_wtime()) {
 							time1 = omp_get_wtime();
 							if(playerCount == 1)
-								subscrnGraphic = 
+								subscrnGraphic =
 									paintCubeGraphic(subscrnGraphic,
 										"GRAPHICS/menuCubeRight1_1.txt", colOffset);
 							else
-								subscrnGraphic = 
+								subscrnGraphic =
 									paintCubeGraphic(subscrnGraphic,
 										"GRAPHICS/menuCubeRight1_2.txt", colOffset);
 							wrefresh(subscrnGraphic);
@@ -270,7 +271,7 @@ int main(void)
 					}
 				}
 			}
-			
+
 			//This section (thread) handles user input, including network
 			//specifics (i.e. hostname and port number of Cube Runner server)
 			//for multi-player functionality.
@@ -281,25 +282,25 @@ int main(void)
 					if(c == KEY_DOWN || c == 'k') {
 						if(cursorPos != EXIT && currMenu == 1) {
 							cursorPos++;
-							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1], 
+							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 						}
 						else if(cursorPos != EXIT && currMenu == 2) {
 							cursorPos++;
-							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1], 
+							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
 								startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
 						}
 						if(currMenu == 1 && cursorPos == TWO_PLAYER) playerCount = 2;
 					}
-					else if(c == KEY_UP || c == 'i') {  
+					else if(c == KEY_UP || c == 'i') {
 						if(cursorPos != ONE_PLAYER && currMenu == 1) {
 							cursorPos--;
-							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1], 
+							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 						}
 						else if(cursorPos != EASY && currMenu == 2) {
 							cursorPos--;
-							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1], 
+							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
 								startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
 						}
 						if(currMenu == 1 && cursorPos == ONE_PLAYER) playerCount = 1;
@@ -308,10 +309,10 @@ int main(void)
 					else if(c == KEY_ENTER || c == 10 || c == 13) {
 						if(currMenu == 1 && (cursorPos == ONE_PLAYER || cursorPos == TWO_PLAYER)) {
 							delwin(subscrnMenu1);
-							subscrnMenu2 = printMenu(menu2Items, 
+							subscrnMenu2 = printMenu(menu2Items,
 								startingLineColor, NULL, MENU2_LENGTH, MM_WIDTH);
 							cursorPos = NORMAL;
-							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1], 
+							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
 								startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
 							currMenu = 2;
 						}
@@ -325,7 +326,7 @@ int main(void)
 							endwin();
 							exit(0);
 						}
-						
+
 						//Easy game...
 						else if(currMenu == 2 && cursorPos == EASY && playerCount == 1) {
 							gameOn = true;
@@ -333,31 +334,31 @@ int main(void)
 						}
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == EASY && playerCount == 2) {
-							delwin(subscrnMenu2); 
+							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
-							subscrnMenu3 = 
-								hostPrompt(startingColMenu3, startingRowMenu3, 
-									&subscrnGraphic, &currMenu, &connected, host, &port);
-							
+							subscrnMenu3 =
+								hostPrompt(startingColMenu3, startingRowMenu3,
+									&subscrnGraphic, &currMenu, &connected, host, port);
+
 							//Return from network prompt if a connection is not established
 							if(!connected) {
 								//Clear and delete host prompt menu
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
-								
+
 								//Reinstate outer menu border
-								box(subscrnMenuBorder, '|', '_'); 
+								box(subscrnMenuBorder, '|', '_');
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
-								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1], 
+								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
 									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
-								
+
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
 								mvhline(startingRow - 1, 0, ' ', COLS);
 								attron(COLOR_PAIR(WHITE_BLACK));
 								mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
 								refresh();
-								
+
 								//Restore menu variable
 								currMenu = 2;
 							}
@@ -366,7 +367,7 @@ int main(void)
 								gameMode = EASY;
 							}
 						}
-						
+
 						//Normal game...
 						else if(currMenu == 2 && cursorPos == NORMAL && playerCount == 1) {
 							gameOn = true;
@@ -374,29 +375,29 @@ int main(void)
 						}
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == NORMAL && playerCount == 2) {
-							delwin(subscrnMenu2); 
+							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
-							subscrnMenu3 = 
-								hostPrompt(startingColMenu3, startingRowMenu3, 
-									&subscrnGraphic, &currMenu, &connected, host, &port);
+							subscrnMenu3 =
+								hostPrompt(startingColMenu3, startingRowMenu3,
+									&subscrnGraphic, &currMenu, &connected, host, port);
 							if(!connected) {
 								//Clear and delete host prompt menu
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
-								
+
 								//Reinstate outer menu border
-								box(subscrnMenuBorder, '|', '_'); 
+								box(subscrnMenuBorder, '|', '_');
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
-								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1], 
+								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
 									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
-								
+
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
 								mvhline(startingRow - 1, 0, ' ', COLS);
 								attron(COLOR_PAIR(WHITE_BLACK));
 								mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
 								refresh();
-								
+
 								//Restore menu variable
 								currMenu = 2;
 							}
@@ -405,7 +406,7 @@ int main(void)
 								gameMode = NORMAL;
 							}
 						}
-						
+
 						//Hard game...
 						else if(currMenu == 2 && cursorPos == HARD && playerCount == 1) {
 							gameOn = true;
@@ -413,29 +414,29 @@ int main(void)
 						}
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == HARD && playerCount == 2) {
-							delwin(subscrnMenu2); 
+							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
-							subscrnMenu3 = 
-								hostPrompt(startingColMenu3, startingRowMenu3, 
-									&subscrnGraphic, &currMenu, &connected, host, &port);
+							subscrnMenu3 =
+								hostPrompt(startingColMenu3, startingRowMenu3,
+									&subscrnGraphic, &currMenu, &connected, host, port);
 							if(!connected) {
 								//Clear and delete host prompt menu
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
-								
+
 								//Reinstate outer menu border
-								box(subscrnMenuBorder, '|', '_'); 
+								box(subscrnMenuBorder, '|', '_');
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
-								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1], 
+								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
 									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
-								
+
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
 								mvhline(startingRow - 1, 0, ' ', COLS);
 								attron(COLOR_PAIR(WHITE_BLACK));
 								mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
 								refresh();
-								
+
 								//Restore menu variable
 								currMenu = 2;
 							}
@@ -444,7 +445,7 @@ int main(void)
 								gameMode = HARD;
 							}
 						}
-						
+
 						//Exit
 						else if(currMenu == 2 && cursorPos == BACK) {
 							delwin(subscrnMenu2);
@@ -454,7 +455,7 @@ int main(void)
 												"GRAPHICS/menuCubeRight1_1.txt");
 							if(playerCount == 1) cursorPos = ONE_PLAYER;
 							else cursorPos = TWO_PLAYER;
-							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1], 
+							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 							currMenu = 1;
 						}
@@ -462,15 +463,15 @@ int main(void)
 				}
 			}
 		}
-		
+
 		//int score = startGame(mode, playerCount, host, port);
 		Game game = Game(gameMode, false);
 		game.playGame();
 		gameOn = false;
-	}		
+	}
 	return 0;
 	endwin();
-}   
+}
 
 // References
 // http://heather.cs.ucdavis.edu/~matloff/UnixAndC/CLanguage/Curses.pdf

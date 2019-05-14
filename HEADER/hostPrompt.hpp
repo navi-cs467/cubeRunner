@@ -18,8 +18,8 @@
 extern const string networkPrompt;
 extern const vector<string>menu3Items;
 
-WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3, 
-						WINDOW **subscrnGraphic, int *currMenu, 
-						bool *connected, char *host, int *port);
-						
+WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
+						WINDOW **subscrnGraphic, int *currMenu,
+						bool *connected, char *host, char *port);
+
 #endif /* hostPrompt_hpp */

@@ -2,19 +2,21 @@
  References: CS 372 & CS 344 Programming Assignments, https://beej.us/guide/bgnet/
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <sys/ioctl.h>
-#include <arpa/inet.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <omp.h>
+#include "../HEADER/server.hpp"
+
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <unistd.h>
+// #include <string.h>
+// #include <sys/types.h>
+// #include <sys/socket.h>
+// #include <netinet/in.h>
+// #include <netdb.h>
+// #include <sys/ioctl.h>
+// #include <arpa/inet.h>
+// #include <sys/stat.h>
+// #include <sys/time.h>
+// #include <omp.h>
 
 /*
 	Function uses getaddrinfo to return a addrinfo* struct, which
@@ -89,49 +91,27 @@ void sendMessage(int socketFD, char* buffer)
 	while (checkSend > 0);  // Loop forever until send buffer for this socket is empty
 }
 
-/*
-	Receive messages from client
-*/
-void receiveMessage(int socketFD)
+void receiveMessage(int socketFD, char* buffer)
 {
-
-	// buffer to hold messages received from the client
-	char messageReceived[2048];
-	memset(messageReceived, '\0', sizeof(messageReceived));
-
 	int len_received, bytes_received;
-	len_received = sizeof(messageReceived);
+	len_received = sizeof(buffer);
+	bytes_received = recv(socketFD, buffer, len_received, 0);
 
-	bytes_received = recv(socketFD, messageReceived, len_received, 0);
-
-	// check for error
+	//check for error
 	if (bytes_received == -1)
 	{
-		fprintf(stderr,"Error receiving from socket\n");
-		exit(1);
+		fprintf(stderr,"Error receving from socket\n");
+		exit(0);
 	}
 
-	// otherwise, print the message
-	printf("Received from client: %s\n", messageReceived);
-}
-
-/*
-	Uses the already created socket to start a connection to the client over that
-	socket, returns 0 on success and 1 otherwise
-*/
-int startConnection(int socketFD, struct addrinfo *servinfo)
-{
-	// connect to socket, from Beej's Guide
-	int connectStatus = connect(socketFD, servinfo->ai_addr, servinfo->ai_addrlen);
-
-	// check for connection error, exit if error occurs
-	if (connectStatus < 0)
+	// server closed the connection so client is terminated
+	else if (bytes_received == 0)
 	{
-		fprintf(stderr,"Error connecting to client data connection\n");
-		return 1;
+		fprintf(stderr,"Server has closed the connection\n");
+		close(socketFD);
+		endwin();
+		exit(0);
 	}
-
-	return 0;
 }
 
 /*
@@ -146,108 +126,86 @@ void bindSocket(int socketFD, struct addrinfo *servinfo)
 // start the game with two clients, determining which connections have input on sockets to read from
 // for now we start chat, wait for client input and then send a confirmation message
 // loops until SIGINT *** will adjust this later
-void starGameMultiPlayer(int firstClient, int secondClient)
-{
-	while(1)
-	{
-		struct timeval tv;
-		fd_set readfds;
+// start game with connection to server, loops until SIGINT for now
+	// void startGame(int socketFD)
+	// {
+	// 		//create two threads, one for sending data to server and one for receiving
+	// 		//we do this so that we will still receive server data despite the blocking of getch
+	// 		omp_set_num_threads(2);
+	//
+	// 		#pragma omp parallel sections
+	// 		{
+	// 			// get user input to send to server
+	// 		 #pragma omp section
+	//      {
+	// 			 while(1)
+	// 			 {
+	// 					//buffers for messages for client to server
+	// 	 			  char userInput[2048];
+	//
+	// 	 			  memset(userInput, '\0', sizeof(userInput));
+	//
+	// 	 		 		// Get input from the user using getch to avoid the user needing to press enter
+	// 					int ch = getch();
+	//
+	// 					sprintf(userInput, "%c", ch);;
+	//
+	// 	 		 		sendMessage(socketFD, userInput);
+	// 			 }
+	//      }
+	//
+	// 		 //receving data from server periodically on different thread
+	// 		 #pragma omp section
+	//      {
+	// 			while(1)
+	// 			{
+	// 				// buffer to hold messages received from the server
+	// 				char messageReceived[2048];
+	// 				memset(messageReceived, '\0', sizeof(messageReceived));
+	//
+	// 				//receive data from server, if there is any
+	// 			 	receiveMessage(socketFD, messageReceived);
+	//
+	// 				//print out for testing purposes
+	// 				printw("%s", messageReceived);
+	// 				refresh();
+	//
+	// 				//create another function to parse server data (game metrics) ***
+	// 			}
+	//      }
+	// 	}
+	// }
 
-		// adding 2.5s timer for testing, will shorten this later as needed for game to run smoothly ***
-		tv.tv_sec = 2;
-    tv.tv_usec = 500000;
-
-		// clear the set ahead of time
-		FD_ZERO(&readfds);
-
-		// add descriptors to the set
-		FD_SET(firstClient, &readfds);
-		FD_SET(secondClient, &readfds);
-
-		//buffers for messages sent from client
-		char clientMsg1[1024];
-		memset(clientMsg1, '\0', sizeof(clientMsg1));
-
-		//buffers for messages sent from client
-		char clientMsg2[1024];
-		memset(clientMsg2, '\0', sizeof(clientMsg2));
-
-		int n = secondClient + 1;
-
-		int status = select(n, &readfds, NULL, NULL, &tv);
-
-		if (status == -1)
-		{
-    	printf("error: select"); // error occurred in select()
-		}
-		else if (status == 0)
-		{
-    	//no data
-		}
-		else
-		{
-			char confirm[100] = "Server: I have received your message\n";
-
-	    // one or both of the descriptors have data, so we check both
-	    if (FD_ISSET(firstClient, &readfds))
-			{
-	        recv(firstClient, clientMsg1, sizeof clientMsg1, 0);
-					// otherwise, print the message
-					printf("Received from client 1: %s\n", clientMsg1);
-	    }
-
-	    if (FD_ISSET(secondClient, &readfds))
-			{
-	        recv(secondClient, clientMsg2, sizeof clientMsg2, 0);
-					printf("Received from client 2: %s\n", clientMsg2);
-	    }
-		}
-
-		//periodically send data to clients, this will be replaced with game data
-		//send data in two different threads
-		char data[100] = "Server: Sending data periodically to client\n";
-
-		//Set number of omp threads
-		omp_set_num_threads(2);
-
-		#pragma omp parallel sections
-		{
-		 #pragma omp section
-     {
-			 sendMessage(firstClient, data);
-     }
-		 #pragma omp section
-     {
-			 sendMessage(secondClient, data);
-     }
-	 	}
-	}
-}
 
 /*
  Accepts new connections, accepting 1 new connection for single player and 2 for multiplayer
 */
-void acceptConnections(int socketFD, char* p)
+void acceptConnections(int socketFD, int* firstClient, int* secondClient)
 {
 	// Beej's guide accepting connections from clients
-	int firstClient, secondClient;
 	struct sockaddr_storage client_addr;
 	socklen_t addr_size;
 
-	printf("\nListening for new connections...\n");
-
 	// accept incomming connection from first client
 	addr_size = sizeof client_addr;
-	firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
+	*firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
 
-	printf("Connected to first client...\n");
+	//send confirmation that client 1 is connected
+	char confirm1[1] = "0";
+	char confirm2[1] = "1";
+
+	sendMessage(*firstClient, confirm1);
 
 	// accept incomming connection from second client
 	addr_size = sizeof client_addr;
-	secondClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
-	printf("Connected to second client...\n");
+	*secondClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
 
-	starGameMultiPlayer(firstClient, secondClient);
+	//send confirmation to both client 1 & 2 that both players are connected
+	sendMessage(*firstClient, confirm2);
+	sendMessage(*secondClient, confirm2);
+
+	//will add game mode checks later ***
+
 }
 
 
@@ -255,7 +213,7 @@ void acceptConnections(int socketFD, char* p)
     starts server, binds the initial socket for listening on and
     then calls acceptConnections to accept new connections to the server
 */
-void initServer(char* portNum)
+void initServer(char* portNum, int* firstClient, int* secondClient)
 {
 	struct addrinfo *servinfo = getServerInfo(portNum);
 
@@ -272,7 +230,7 @@ void initServer(char* portNum)
 	listen(socketFD, 10);
 
 	// accepting new connections
-	acceptConnections(socketFD, portNum);
+	acceptConnections(socketFD, firstClient, secondClient);
 
 	// free servinfo linked list
 	freeaddrinfo(servinfo);

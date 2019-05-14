@@ -4,7 +4,7 @@
 ** Team: NAVI
 ** Date: 4/25/2019
 ** Description: Header file for Game class. The Game class is the
-** 				maintainer and executer of the game state and 
+** 				maintainer and executer of the game state and
 **				progression.
 ********************************************************************/
 
@@ -18,6 +18,9 @@ class World;
 //#include "include.hpp"
 #include "constants.hpp"
 
+//client network functions
+#include "client.hpp"
+
 class Game {
 	private:
 		Cube *cube;
@@ -26,7 +29,7 @@ class Game {
 		int score;
 		double time;
 		int gameMode;			//(1) is Hard, (2) is Normal, (3) is Easy
-		
+
 
 	public:
 		Game(int gameMode, bool isTwoPlayer);
