@@ -280,10 +280,10 @@ int Game::playGame(char host[], int port, int playerNum) {
 									//Remove coords from obsCoords and nonWSObsCoords
 									for(int i = 0; i < (*it)->getGTS(); i++) 
 										for(int j = 0; j < (*it)->getLongestGS(); j++) {
-											if(world->getObsCoords().find
+											/* if(world->getObsCoords().find
 													(make_pair((*it)->getPosX() + i,
 																   (*it)->getPosY() + j)) !=
-																	world->getObsCoords().end())
+																	world->getObsCoords().end()) */
 												world->getObsCoords().erase
 													(world->getObsCoords().
 														find(make_pair((*it)->getPosX() + i,
