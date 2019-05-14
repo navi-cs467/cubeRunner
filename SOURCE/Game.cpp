@@ -284,10 +284,14 @@ int Game::playGame(char host[], int port, int playerNum) {
 												(world->getObsCoords().
 													find(make_pair((*it)->getPosX() + i,
 																   (*it)->getPosY() + j)));
-											world->getNonWSObsCoords().erase
-												(world->getNonWSObsCoords().
-													find(make_pair((*it)->getPosX() + i,
-																   (*it)->getPosY() + j)));
+											if(world->getNonWSObsCoords().find
+													(make_pair((*it)->getPosX() + i,
+																   (*it)->getPosY() + j)) !=
+																	world->getNonWSObsCoords().end())
+												world->getNonWSObsCoords().erase
+													(world->getNonWSObsCoords().
+														find(make_pair((*it)->getPosX() + i,
+																	   (*it)->getPosY() + j)));
 										}
 									//Free memory
 									delete *it;
