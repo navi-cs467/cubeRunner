@@ -412,7 +412,12 @@ void Cube::drawCube(void){
 
 }
 
-void Cube::drawCubeDeath(void){
+void Cube::drawCubeDeath(int *userInput){
+	
+	attron(COLOR_PAIR(YELLOW_BLACK));
+	mvaddstr(LINES - 1, 15, "Death! (Press Enter to Continue)");
+	refresh();
+	
 	int i = 0, j = 0, k = 0;
 
 	start_color();			
@@ -430,12 +435,12 @@ void Cube::drawCubeDeath(void){
 		mvaddch((row+4),i,'@');
 	}
 	refresh();
-	usleep(500000);	
+	for(int i = 0; *userInput != 10 && i < 500000 / 100; i++)
+		usleep(50);	
 
 	attroff(COLOR_PAIR(1));
 	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
 	attron(COLOR_PAIR(2));
-
 
 	//Death Part 2 - larger ring around token
 	for(i = (row - 2); i <= (row + 5); ++i){ //draw left/right sides
@@ -447,7 +452,8 @@ void Cube::drawCubeDeath(void){
 		mvaddch((row+5),i,'@');
 	}
 	refresh();
-	usleep(450000);
+	for(int i = 0; *userInput != 10 && i < 450000 / 100; i++)
+		usleep(50);
 
 	attroff(COLOR_PAIR(2));
 	init_pair(3, COLOR_GREEN, COLOR_BLACK);
@@ -464,7 +470,8 @@ void Cube::drawCubeDeath(void){
 		mvaddch((row+6),(i-1),'@');
 	}
 	refresh();
-	usleep(400000);
+	for(int i = 0; *userInput != 10 && i < 400000 / 100; i++)
+		usleep(50);
 
 	attroff(COLOR_PAIR(3));
 	init_pair(4, COLOR_BLUE, COLOR_BLACK);
@@ -481,7 +488,8 @@ void Cube::drawCubeDeath(void){
 		mvaddch((row+7),(i-1),'@');
 	}
 	refresh();
-	usleep(350000);
+	for(int i = 0; *userInput != 10 && i < 350000 / 100; i++)
+		usleep(50);
 
 	attroff(COLOR_PAIR(4));
 	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
@@ -497,7 +505,8 @@ void Cube::drawCubeDeath(void){
 		mvaddch((row+8),(i-1),'@');
 	}
 	refresh();
-	usleep(300000);
+	for(int i = 0; *userInput != 10 && i < 300000 / 100; i++)
+		usleep(50);
 
 	attroff(COLOR_PAIR(5));
 	init_pair(6, COLOR_CYAN, COLOR_BLACK);
@@ -513,7 +522,8 @@ void Cube::drawCubeDeath(void){
 		mvaddch((row+9),(i-1),'@');
 	}
 	refresh();
-	usleep(300000);
+	for(int i = 0; *userInput != 10 && i < 300000 / 100; i++)
+		usleep(50);
 
 	attroff(COLOR_PAIR(6));
 	init_pair(7, COLOR_WHITE, COLOR_BLACK);
@@ -527,7 +537,8 @@ void Cube::drawCubeDeath(void){
 			}
 		}
 		refresh();
-		usleep(500000);
+		for(int i = 0; *userInput != 10 && i < 500000 / 100; i++)
+			usleep(50);
 
 		//Token Flash Part 2 - appear
 		for(i = row; i < (row + 4); ++i){
@@ -536,10 +547,19 @@ void Cube::drawCubeDeath(void){
 			}
 		}
 		refresh();
-		usleep(500000);
+		for(int i = 0; *userInput != 10 && i < 500000 / 100; i++)
+			usleep(50);
 	}
 
 	attroff(COLOR_PAIR(7));
+	
+	//Block here until user presses Enter key
+	while(*userInput != 10){}
+	
+	//Clear Enter key prompt
+	attron(COLOR_PAIR(BLACK_BLACK));
+	mvaddstr(LINES - 1, 15, "                                ");
+	refresh();
 }
 
 void Cube::checkCubeCollision(World *world){

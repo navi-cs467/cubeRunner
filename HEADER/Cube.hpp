@@ -59,7 +59,7 @@ class Cube{
 		int getCubeCurrWorld(void){return currWorld;}  				//Return Cube's World
 		void setCubeCurrWorld(int newWorld){currWorld = newWorld;}  //Set Cube's World
 		void drawCube(void); 										//Draw token on console - ncurses
-		void drawCubeDeath(void); 									//Explosion Animation
+		void drawCubeDeath(int *userInput); 									//Explosion Animation
 		bool getCubeIsDead(void){return isDead;} 					//Return Token's isDead Status
 		int getCubeScore(void){return score;} 						//Return Token's current score
 		int getCubeTransitionScore(void){return transitionScore;}	//Return Cube's transitionScore

@@ -23,55 +23,6 @@ void World::updateObsCoords(Obstacle *ob) {
 									   ob->getPosY() + j));
 		}
 	}
-	
-	/* if(typeid(*ob) == typeid(Seaweed)) {
-		for(int i = 0; i < ob->getGTS(); i++) {
-			for(int j = 0; j < ob->getLongestGS(); j++) {
-				obsCoords.insert(make_pair(ob->getPosX() + i,
-										   ob->getPosY() + j));
-				if(j < Seaweed::getGraphicLines()[ob->getGT()][i].length() &&
-				   Seaweed::getGraphicLines()[ob->getGT()][i][j] != ' ')
-						nonWSObsCoords.insert(make_pair(ob->getPosX() + i,
-										   ob->getPosY() + j));
-			}
-		}
-	}
-	if(typeid(*ob) == typeid(Coral)) {
-		for(int i = 0; i < ob->getGTS(); i++) {
-			for(int j = 0; j < ob->getLongestGS(); j++) {
-				obsCoords.insert(make_pair(ob->getPosX() + i,
-										   ob->getPosY() + j));
-				if(j < Coral::getGraphicLines()[ob->getGT()][i].length() &&
-				   Coral::getGraphicLines()[ob->getGT()][i][j] != ' ')
-						nonWSObsCoords.insert(make_pair(ob->getPosX() + i,
-										   ob->getPosY() + j));
-			}
-		}
-	}
-	if(typeid(*ob) == typeid(Shark)) {
-		for(int i = 0; i < ob->getGTS(); i++) {
-			for(int j = 0; j < ob->getLongestGS(); j++) {
-				obsCoords.insert(make_pair(ob->getPosX() + i,
-										   ob->getPosY() + j));
-				if(j < Shark::getGraphicLines()[ob->getGT()][i].length() &&
-				   Shark::getGraphicLines()[ob->getGT()][i][j] != ' ')
-						nonWSObsCoords.insert(make_pair(ob->getPosX() + i,
-										   ob->getPosY() + j));
-			}
-		}
-	}
-	if(typeid(*ob) == typeid(Octopus)) {
-		for(int i = 0; i < ob->getGTS(); i++) {
-			for(int j = 0; j < ob->getLongestGS(); j++) {
-				obsCoords.insert(make_pair(ob->getPosX() + i,
-										   ob->getPosY() + j));
-				if(j < Octopus::getGraphicLines()[ob->getGT()][i].length() &&
-				   Octopus::getGraphicLines()[ob->getGT()][i][j] != ' ')
-						nonWSObsCoords.insert(make_pair(ob->getPosX() + i,
-										   ob->getPosY() + j));
-			}
-		}
-	} */
 }
 
 void World::initMiniCubes(int numMiniCubes, 

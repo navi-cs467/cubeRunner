@@ -87,32 +87,6 @@ void Obstacle::setGT(int newGraphic) {
 	for(int i = 0; i < gts; i++)
 		if(getGraphicLines()[gt][i].size() > longestGS)
 			longestGS = getGraphicLines()[gt][i].size();
-	
-	
-	/* if(typeid(*this) == typeid(Seaweed)) {
-		gts = Seaweed::getGraphicLines()[gt].size();
-		for(int i = 0; i < gts; i++)
-			if(Seaweed::getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Seaweed::getGraphicLines()[gt][i].size();
-	}
-	else if(typeid(*this) == typeid(Coral)) {
-		gts = Coral::getGraphicLines()[gt].size();
-		for(int i = 0; i < gts; i++)
-			if(Coral::getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Coral::getGraphicLines()[gt][i].size();
-	}
-	else if(typeid(*this) == typeid(Shark)) {
-		gts = Shark::getGraphicLines()[gt].size();
-		for(int i = 0; i < gts; i++)
-			if(Shark::getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Shark::getGraphicLines()[gt][i].size();
-	}
-	else if(typeid(*this) == typeid(Octopus)) {
-		gts = Octopus::getGraphicLines()[gt].size();
-		for(int i = 0; i < gts; i++)
-			if(Octopus::getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Octopus::getGraphicLines()[gt][i].size();
-	} */
 }
 
 void Obstacle::move(World* world) {

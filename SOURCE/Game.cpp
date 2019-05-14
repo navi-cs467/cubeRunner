@@ -30,7 +30,7 @@ int Game::playGame(char host[], char port[], int playerNum) {
 	int userInput = 0;
 
 	//Set number of omp threads
-	omp_set_num_threads(2);
+	omp_set_num_threads(4);
 
 	//Lock needed so position cannot be changed
 	//in such rapid succession that some positions
@@ -53,7 +53,7 @@ int Game::playGame(char host[], char port[], int playerNum) {
 									  userInput != 'Q') {
 
 				//Input is ignored (by this thread) while death sequence processes
-				if(!deathFlag) userInput = getch();
+				userInput = getch();
 
 				//Single Player
 				if(!isTwoPlayer && !deathFlag) {
@@ -273,7 +273,7 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						//Render Cube
 						attron(COLOR_PAIR(cube->getColor()));
 						cube->drawCube();
-						if(deathFlag) cube->drawCubeDeath();
+						if(deathFlag) cube->drawCubeDeath(&userInput);
 
 						//Death animation if death occurred
 						if(deathFlag) { //move(5,5);printw("%d", 1 ? deathFlag : 0); refresh(); getch();
@@ -577,7 +577,7 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						attron(COLOR_PAIR(cube->getColor()));
 						cube->drawCube();
 						if(deathFlag) {
-							cube->drawCubeDeath();
+							cube->drawCubeDeath(&userInput);
 							deathFlag = false;
 						}
 
