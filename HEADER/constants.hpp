@@ -9,7 +9,7 @@
 #ifndef constants_hpp
 #define constants_hpp
 
-//Menu-Related
+/*** Menu-Related ***/
 #define MIN_WIN_HEIGHT 32					
 #define MIN_WIN_WIDTH 135					
 #define INTRO_HEIGHT 28
@@ -32,8 +32,9 @@
 #define NORMAL 2
 #define HARD 3
 #define BACK 4
+/*** End Menu-Related ***/
 
-//Game-Related
+/*** Game-Related ***/
 #define REFRESH_RATE 0.001
 #define OBS_COUNT_HARD 25
 #define OBS_COUNT_MED 15
@@ -43,5 +44,25 @@
 #define MAX_MOVE_COUNTER 25
 #define MIN_MOVE_COUNTER 5
 #define TRANSITION_SCORE_INTERVAL 500
+
+//"Rates" are scan intervals, 
+//so as the following three constants decrease, 
+//their  respective rates increase
+#define SCROLL_RATE_HARD 0.35		
+#define SCROLL_RATE_NORMAL 0.75
+#define SCROLL_RATE_EASY 1.5
+
+//Scroll "rate" is divided by this constant
+//to yield move "rate". As this constant
+//increases, move rate (i.e. the scan interval
+//interval between calls to move()) increases.
+#define MOVE_RATE_DIVISOR 6.
+
+//"Rate" at which the rate intervals described
+//above decrease as the game progresses.
+//As this value decreases, the rate at which
+//move and scroll speeds increases.
+#define SCROLL_MOVE_DECREASE_RATE 0.9
+/*** End Game-Related ***/
 
 #endif /* constants_hpp */

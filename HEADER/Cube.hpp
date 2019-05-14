@@ -19,14 +19,19 @@
 #include "Direction.hpp"
 #include "World.hpp"
 
+#define CUBE_CHARS_WIDTH 4
+#define CUBE_CHARS_HEIGHT 4
+#define CUBE_COORDS_WIDTH 2
+#define CUBE_COORDS_HEIGHT 16
+
 
 class Cube{
 	private:
 		int col, row;
 		int currWorld;
-		char cubeChars[4][4];
-		int cubeCoords[16][2];	 //row, col	
-		void updateCubeTokenPositionHelper(int, int, int, int);
+		char cubeChars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH];
+		int cubeCoords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];	 //row, col	
+		void updateCubePositionHelper(int, int, int, int);
 		int updateCubeCharsAndCoords(int, int, int, int, int, int);
 		bool isDead; //0 = alive, 1 = dead
 		int score; //points total
@@ -42,20 +47,26 @@ class Cube{
 		void cubeInitWorld2(void);
 		void cubeInitWorld3(void);
 		void cubeReset(World *world);
-		void updateCubeTokenPosition(bool, bool, bool, bool);
-		int getCubePositionCol(void){return col;}  //Return Cube's Current Column
-		int getCubePositionRow(void){return row;}  //Return Cube's Current Row
-		int (*getCubeTokenCoords(void))[2]{return cubeCoords;}	//Return Cube's coordinates
-		int getCubeCurrWorld(void){return currWorld;}  //Return Cube's World
+		void updateCubePosition(bool, bool, bool, bool);
+		int getCubePositionCol(void){return col;}  					//Return Cube's Current Column
+		void setCubePositionCol(int col){this->col = col;}  				//Set Cube's Current Column (multiplayer only)
+		int getCubePositionRow(void){return row;}  					//Return Cube's Current Row
+		void setCubePositionRow(int row){this->row = row;}  				//Set Cube's Current Row (multiplayer only)
+		char (*getCubeChars(void))[4]{return cubeChars;}				//Return's Cube's characters
+		void loadCubeChars(char **chars);							//Load Cube's characters (multiplayer only)
+		int (*getCubeCoords(void))[2]{return cubeCoords;}			//Return Cube's coordinates
+		void loadCubeCoords(int **coords);							//Return Cube's coordinates
+		int getCubeCurrWorld(void){return currWorld;}  				//Return Cube's World
 		void setCubeCurrWorld(int newWorld){currWorld = newWorld;}  //Set Cube's World
-		void drawCube(void); //Draw token on console - ncurses
-		void drawCubeDeath(void); //Explosion Animation
-		bool getCubeIsDead(void){return isDead;} //Return Token's isDead Status
-		int getCubeScore(void){return score;} //Return Token's current score
+		void drawCube(void); 										//Draw token on console - ncurses
+		void drawCubeDeath(void); 									//Explosion Animation
+		bool getCubeIsDead(void){return isDead;} 					//Return Token's isDead Status
+		int getCubeScore(void){return score;} 						//Return Token's current score
 		int getCubeTransitionScore(void){return transitionScore;}	//Return Cube's transitionScore
 		void resetCubeTransitionScore(void){transitionScore = 0;}	//Reset Cube's transitionScore
-		void checkCubeCollision(World *world); //Check for collision with minicubes and obstacles (updates score and isDead status)
+		void checkCubeCollision(World *world); 						//Check for collision with minicubes and obstacles (updates score and isDead status)
 		int getCubeLives(void){return lives;}
+		void setCubeLives(int lives){this->lives = lives;} 			//(multiplayer only)
 		int getColor(void){return color;}
 		Direction getCubeDirection(void){return curDir;}
 		void setCubeDirection(Direction newDir) {curDir = newDir;}

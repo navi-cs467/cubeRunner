@@ -94,18 +94,15 @@ int main(int argc, char* argv[]) {
 					//Or if data is being sent (Ensures players see every move they input)
 					omp_set_lock(&lock1);
 					
-					if(userInput == KEY_UP && cube.getPosX() > 0) {
-						cube.decPosX();
-						cube.setDirection(up);		
+					if((userInput1 == KEY_UP || userInput1 == '8' || userInput1 == 'w') &&
+							&& cube->getCubeCoords()[0][0] > 0) {
+						cube->updateCubePosition(0, 0, 0, 1);
+						cube->setCubeDirection(up);		
 					}
-					else if(userInput == KEY_DOWN && cube.getPosX() < world->getBottomRow()) {
-						cube.incPosX();
-						cube.setDirection(down);	
-					}
-										
-					deathFlag = cube.checkDeath();	//checkDeath should "cube.setLives(cube.getLives() - 1)" if player token hits Obstacle - Returns "true" if death has occurred
-					cube.checkScore();				//checkScore should increase score by number of miniCubes contacted for this move.
-													//Should also "consume miniCubes contacted, i.e. remove them from screen (i.e. erase them from set<pair<int,int>> world->miniCubes)
+					else if((userInput1 == KEY_DOWN || userInput1 == '2' || userInput1 == 's') && 
+								cube->getCubeCoords()[15][0] < world->getBottomRow()) {
+						cube->updateCubePosition(0, 0, 1, 0);
+						cube->setCubeDirection(down);
 					
 					renderedLastMv1 = false;
 					omp_unset_lock(&lock1);
@@ -129,18 +126,17 @@ int main(int argc, char* argv[]) {
 					//Will block here if other player input thread is doing the same thing to the same data
 					//Or if data is being sent (Ensures players see every move they input)
 					omp_set_lock(&lock1);
-					if(userInput == KEY_RIGHT && cube.getPosY() < COLS) {
-						cube.incPosY();
-						cube.setDirection(right);	//May need further synchronization here, if it problematic for both player threads to attempt updating this value at the same time
-					}
-					else if(userInput == KEY_LEFT && cube.getPosY() > 0) {
-						cube.decPosY();
-						cube.setDirection(left);	//May need further synchronization here, if it problematic for both player threads to attempt updating this value at the same time
-					}
 					
-					deathFlag = cube.checkDeath();	//checkDeath should "cube.setLives(cube.getLives() - 1)" if player token hits Obstacle - Returns "true" if death has occurred
-					cube.checkScore();				//checkScore should increase score by number of miniCubes contacted for this move.
-													//Should also "consume miniCubes contacted, i.e. remove them from screen (i.e. erase them from set<pair<int,int>> world->miniCubes)
+					if((userInput2 == KEY_RIGHT || userInput2 == '6' || userInput2 == 'd') && 
+								cube->getCubeCoords()[15][1] < COLS) {
+						cube->updateCubePosition(1, 0, 0, 0);
+						cube->setCubeDirection(right);
+					}
+					else if((userInput2 == KEY_LEFT || userInput2 == '4' || userInput2 == 'a') &&
+							cube->getCubeCoords()[0][1] > 0) {
+						cube->updateCubePosition(0, 1, 0, 0);
+						cube->setCubeDirection(left);
+					}
 					
 					renderedLastMv2 = false;
 					omp_unset_lock(&lock1);
@@ -154,15 +150,15 @@ int main(int argc, char* argv[]) {
 				//based on game difficulty (gameMode)
 				double scrollRate, moveRate;
 				if(gameMode == HARD) {
-					scrollRate = 0.35;
+					scrollRate = SCROLL_RATE_HARD;
 				}
 				else if(gameMode == NORMAL) {
-					scrollRate = 0.75;
+					scrollRate = SCROLL_RATE_NORMAL;
 				}
 				else {
-					scrollRate = 1.5;
+					scrollRate = SCROLL_RATE EASY;
 				}
-				moveRate = scrollRate / 4.;
+				moveRate = scrollRate / SCROLL_RATE_DIVISOR;
 				
 				//Timer Variables
 				double lastScrollTime = omp_get_wtime(),
@@ -218,7 +214,7 @@ int main(int argc, char* argv[]) {
 						
 						// World transition if cube->transitionCount 
 						//reaches TRANSITION_SCORE_INTERVAL
-						if(cube->getTransitionCount() >= TRANSITION_SCORE_INTERVAL) {
+						if(cube->getTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
 							
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -227,30 +223,42 @@ int main(int argc, char* argv[]) {
 							}
 							
 							//Create new world
-							if(typeid(*world) == typeid(Water))
+							if(typeid(*world) == typeid(Water)) {
 								world = new Land(gameMode, isTwoPlayer);
-							else if(typeid(*world) == typeid(Land))
+								newWorldType = 1;
+							}
+							else if(typeid(*world) == typeid(Land)) {
 								world = new Space(gameMode, isTwoPlayer);
-							else if(typeid(*world) == typeid(Space))
+								newWorldType = 2;
+							}
+							else if(typeid(*world) == typeid(Space)) {
 								world = new Water(gameMode, isTwoPlayer);
+								newWorldType = 3;
+							}
 							
-							//If score is less than 3000, increase scroll and move time intervals by 10%
+							isNewWorldFlag = true;
+							
+							//If score is less than 3000, increase scroll and move time intervals by a constant
 							//(This is the point at which all three worlds have been cycled 3 times each,
 							// and the speeds are capped.)
-							scrollRate *= 0.9;
-							moveRate *= 0.9;
+							scrollRate *= SCROLL_MOVE_DECREASE_RATE;
+							moveRate *= SCROLL_MOVE_DECREASE_RATE;
 							
 							//Reset cubes position to left-middle starting point
 							cube->reset();
 							
 							//Reset transitionCount
-							cube->setTransitionCount() = 0;
+							cube->resetTransitionCount(0);
 						}
 							
 						// ** COMMS WITH CLIENTS **
 						
 						omp_set_lock(&lock1);	//Block here if updating cube parameters via playerInputs,
 												//then lock input threads from updating until finished
+						
+						//Check for death
+						cube->checkCubeCollision(world);	
+						deathFlag = cube->getCubeIsDead();
 						
 						/**** SEND DEATH FLAG ****/
 						// SEND Connection1: deathFlag
@@ -286,18 +294,22 @@ int main(int argc, char* argv[]) {
 						/**** END SEND DEATH FLAG ****/
 						
 						/**** SEND CUBE DATA ****/
-						// SEND connection1: cube->getPosX(), cube->getPosY(), cube->numLives
+						// SEND connection1: cube->getCubeCoords()[array], cube->getCubeChars()[array], \
+											 cube->getCubeLives, cube->getCubePositionRow() \
+											 cube->getCubePositionCol()
 						// (Optional ?) RECEIVE connection1: confirmation
 						
-						// SEND connection2: cube->getPosX(), cube->getPosY(), cube->numLives
+						// SEND connection2: cube->getCubeCoords()[array], cube->getCubeChars()[array], \
+											 cube->getCubeLives, cube->getCubePositionRow() \
+											 cube->getCubePositionCol()
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND CUBE DATA ****/
 						
 						/**** SEND GAME SCORE ****/
-						// SEND connection1: score
+						// SEND connection1: cube->getCubeScore()
 						// (Optional ?) RECEIVE connection1: confirmation
 						
-						// SEND connection2: score
+						// SEND connection2: cube->getCubeScore()
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND GAME SCORE ****/
 						
@@ -314,6 +326,9 @@ int main(int argc, char* argv[]) {
 						//	  SEND connection2: newWorldType
 						// (Optional ?) RECEIVE connection2: confirmation	//Probably not optional, need to wait for world transition animation
 						/**** END SEND NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
+						
+						//Reset isNewWorldFlag if necessary
+						if(isNewWorldFlag) isNewWorldFlag = false;
 						
 						/**** SEND ONSCREEN OBSTACLES  ****/
 						list<Obstacle*>::iterator itObs; 
@@ -418,13 +433,13 @@ int main(int argc, char* argv[]) {
 						/**** END SEND ONSCREEN OBSTACLES  ****/
 						
 						/**** SEND MINICUBES  ****/
-						set<pair<int, int>>::iterator miniCubes;
+						set<pair<int, int>>::iterator itMiniCubes;
 						
 						// SEND connection1: world->getMiniCubes().size();
 						// (Optional ?) RECEIVE connection1: confirmation
-						for(miniCubes = world->getMiniCubes().begin(); 
-							itObsCoords < world->getMiniCubes().end();
-							itObsCoords++) {
+						for(itMiniCubes = world->getMiniCubes().begin(); 
+							itMiniCubes < world->getMiniCubes().end();
+							itMiniCubes++) {
 								//SEND connection1: miniCubes->first,
 								//					miniCubes->second
 								
@@ -433,9 +448,9 @@ int main(int argc, char* argv[]) {
 						
 						// SEND connection2: world->getMiniCubes().size();
 						// (Optional ?) RECEIVE connection2: confirmation
-						for(itObsCoords = world->getObstacles().begin(); 
-							itObsCoords < world->getObstacles().end();
-							itObsCoords++) {
+						for(itMiniCubes = world->getObstacles().begin(); 
+							itMiniCubes < world->getObstacles().end();
+							itMiniCubes++) {
 								//SEND connection2: miniCubes->first,
 								//					miniCubes->second
 								

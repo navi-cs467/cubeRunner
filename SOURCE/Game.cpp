@@ -57,46 +57,46 @@ int Game::playGame(char host[], int port, int playerNum) {
 				
 				//Single Player
 				if(!isTwoPlayer && !deathFlag) {	
-					if((userInput == KEY_UP || userInput == '8')
-							&& cube->getCubeTokenCoords()[0][0] > 0) {
-						cube->updateCubeTokenPosition(0, 0, 0, 1);
+					if((userInput == KEY_UP || userInput == '8' || userInput == 'w')
+							&& cube->getCubeCoords()[0][0] > 0) {
+						cube->updateCubePosition(0, 0, 0, 1);
 						cube->setCubeDirection(up);
 					}
-					else if((userInput == KEY_DOWN || userInput == '2') && 
-								cube->getCubeTokenCoords()[15][0] < world->getBottomRow()) {
-						cube->updateCubeTokenPosition(0, 0, 1, 0);
+					else if((userInput == KEY_DOWN || userInput == '2' || userInput == 's') && 
+								cube->getCubeCoords()[15][0] < world->getBottomRow()) {
+						cube->updateCubePosition(0, 0, 1, 0);
 						cube->setCubeDirection(down);
 					}
-					else if((userInput == KEY_RIGHT || userInput == '6') && 
-								cube->getCubeTokenCoords()[15][1] < COLS) {
-						cube->updateCubeTokenPosition(1, 0, 0, 0);
+					else if((userInput == KEY_RIGHT || userInput == '6' || userInput == 'd') && 
+								cube->getCubeCoords()[15][1] < COLS) {
+						cube->updateCubePosition(1, 0, 0, 0);
 						cube->setCubeDirection(right);
 					}
-					else if((userInput == KEY_LEFT || userInput == '4') &&
-							cube->getCubeTokenCoords()[0][1] > 0) {
-						cube->updateCubeTokenPosition(0, 1, 0, 0);
+					else if((userInput == KEY_LEFT || userInput == '4' || userInput == 'a') &&
+							cube->getCubeCoords()[0][1] > 0) {
+						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(left);
 					}
-					else if(userInput == 7 && cube->getCubeTokenCoords()[0][0] > 0 &&
-											  cube->getCubeTokenCoords()[0][1] > 0) {
-						cube->updateCubeTokenPosition(0, 1, 0, 0);
+					else if(userInput == 7 && cube->getCubeCoords()[0][0] > 0 &&
+											  cube->getCubeCoords()[0][1] > 0) {
+						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(left_up);
 					}
 					else if(userInput == 1 && 
-							cube->getCubeTokenCoords()[15][0] < world->getBottomRow() && 
-							cube->getCubeTokenCoords()[0][1] > 0) {
-						cube->updateCubeTokenPosition(0, 1, 0, 0);
+							cube->getCubeCoords()[15][0] < world->getBottomRow() && 
+							cube->getCubeCoords()[0][1] > 0) {
+						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(left_down);
 					}
-					else if(userInput == 9 && cube->getCubeTokenCoords()[0][0] > 0 &&
-											  cube->getCubeTokenCoords()[15][1] < COLS) {
-						cube->updateCubeTokenPosition(0, 1, 0, 0);
+					else if(userInput == 9 && cube->getCubeCoords()[0][0] > 0 &&
+											  cube->getCubeCoords()[15][1] < COLS) {
+						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(right_up);
 					}
 					else if(userInput == 3 && 
-							cube->getCubeTokenCoords()[15][0] < world->getBottomRow() &&
-							cube->getCubeTokenCoords()[15][1] < COLS) {
-						cube->updateCubeTokenPosition(0, 1, 0, 0);
+							cube->getCubeCoords()[15][0] < world->getBottomRow() &&
+							cube->getCubeCoords()[15][1] < COLS) {
+						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(right);
 					}														
 					
@@ -162,15 +162,15 @@ int Game::playGame(char host[], int port, int playerNum) {
 				//based on game difficulty (gameMode)
 				double scrollRate, moveRate;
 				if(gameMode == HARD) {
-					scrollRate = 0.35;
+					scrollRate = SCROLL_RATE_HARD;
 				}
 				else if(gameMode == NORMAL) {
-					scrollRate = 0.75;
+					scrollRate = SCROLL_RATE_NORMAL;
 				}
 				else {
-					scrollRate = 1.5;
+					scrollRate = SCROLL_RATE_EASY;
 				}
-				moveRate = scrollRate / 4.;
+				moveRate = scrollRate / MOVE_RATE_DIVISOR;
 				
 				//Timer variables
 				double lastScrollTime = omp_get_wtime(),
@@ -226,7 +226,7 @@ int Game::playGame(char host[], int port, int playerNum) {
 						
 						// World transition if cube->transitionCount 
 						//reaches TRANSITION_SCORE_INTERVAL
-						/* if(cube->getTransitionCount() >= TRANSITION_SCORE_INTERVAL) {
+						/* if(cube->getTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
 							
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -247,24 +247,27 @@ int Game::playGame(char host[], int port, int playerNum) {
 							else if(typeid(*world) == typeid(Space))
 								world = new Water(gameMode, isTwoPlayer);
 							
-							//If score is less than 3000, increase scroll and move time intervals by 10%
+							//If score is less than 3000, increase scroll and move time intervals by a constant
 							//(This is the point at which all three worlds have been cycled 3 times each,
 							// and the speeds are capped.)
-							//scrollRate *= 0.9;
-							//moveRate *= 0.9;
+							//scrollRate *= SCROLL_MOVE_DECREASE_RATE;
+							//moveRate *= SCROLL_MOVE_DECREASE_RATE;
 							
 							//Reset cubes position to left-middle starting point
 							cube->reset();
 							
 							//Reset transitionCount
-							cube->setTransitionCount() = 0;
+							cube->resetTransitionScore();
 						} */
 						
 						//Check for death
 						cube->checkCubeCollision(world);	
 						deathFlag = cube->getCubeIsDead();	
 						
+						//Render World
 						world->renderWorld();
+						
+						//Render Cube
 						attron(COLOR_PAIR(cube->getColor()));
 						cube->drawCube();
 						if(deathFlag) cube->drawCubeDeath();
@@ -459,16 +462,18 @@ int Game::playGame(char host[], int port, int playerNum) {
 						//	  	  /* animationTransition("GRAPHICS/gameOver.txt"); */
 						//		  break
 						//	  Else If int_2 == 0	//Death But No Game Over
-						//		  /* animationTransition("GRAPHICS/death.txt"); */
-						//		  //deathFlag = false;
+						//		  //deathFlag = true;
 						//	      // (Optional ?) SEND: confirmation		//Probably not optional, server needs to wait for death animation
 						//Else:
 						//	  // (Optional ?) SEND: confirmation			//No Death
 						/**** RECEIVE DEATH FLAG ****/
 						
 						/**** RECEIVE CUBE DATA ****/
-						// RECEIVE int_1, int_2, int_3		//cube position x, y, and life count?
-						// cube->setPosX(int_1); cube->setPosY(int_2); cube->setNumLives(int_3);
+						// RECEIVE char coords[CUBE_COORDS_HEGHT][CUBE_COORDS_WIDTH], \	//cube coords
+						//		   char chars[CUBE_CHARS_HEGHT][CUBE_CHARS_WIDTH], \	//cube chars
+						//		   int_3, int_5, int_6									//cube lives, row, col	
+						// cube->loadCubeCoords(coords); cube->loadCubeChars(chars); cube->setLives(int_3);
+						// cube->setCubePositionRow(int_5); cube->setCubePositionCol(int_6);
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE CUBE DATA ****/
 						
@@ -509,7 +514,6 @@ int Game::playGame(char host[], int port, int playerNum) {
 						
 						//Else If int == 0:		//If no world transition, we need to clear these containers
 							world->getObstacles().clear();
-							world->getObsCoords().clear();
 							world->getMiniCubes().clear();
 							// (Optional ?) SEND: confirmation
 						/**** END RECEIVE NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
@@ -560,8 +564,16 @@ int Game::playGame(char host[], int port, int playerNum) {
 						}
 						/**** END RECEIVE MINICUBES  ****/
 						
+						//Render World
 						world->renderWorld();
-						//cube->paint();
+						
+						//Render Cube
+						attron(COLOR_PAIR(cube->getColor()));
+						cube->drawCube();
+						if(deathFlag) {
+							cube->drawCubeDeath();
+							deathFlag = false;
+						}
 						
 						/**** RECEIVE TIME  ****/
 						//RECEIVE int_1 into hours

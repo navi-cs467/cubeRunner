@@ -179,8 +179,23 @@ void Cube::cubeReset(World *world){
 	col = cubeCoords[0][1];
 }
 
+void Cube::loadCubeChars(char **chars){
+	//Load cubeChars with new values (clientside multiplayer only)
+	for(int i = 0; i < CUBE_CHARS_HEIGHT; i++) 
+		for(int j = 0; j < CUBE_CHARS_WIDTH; j++)
+			cubeChars[i][j] = chars[i][j];
+}
+
+void Cube::loadCubeCoords(int **coords){
+	//Load cubeChars with new values (clientside multiplayer only)
+	for(int i = 0; i < CUBE_COORDS_HEIGHT; i++) 
+		for(int j = 0; j < CUBE_COORDS_WIDTH; j++)
+			cubeCoords[i][j] = coords[i][j];
+}
+		
+
 //Update the cube token position based on input by the user(s)
-void Cube::updateCubeTokenPosition(bool colInc, bool colDec, bool rowInc, bool rowDec){
+void Cube::updateCubePosition(bool colInc, bool colDec, bool rowInc, bool rowDec){
 	int colIncInt = 0, colDecInt = 0, rowIncInt = 0, rowDecInt = 0;
 	
 	if(colInc == 1){
@@ -222,10 +237,10 @@ void Cube::updateCubeTokenPosition(bool colInc, bool colDec, bool rowInc, bool r
 		curDir = right_down;
 	}
 
-	updateCubeTokenPositionHelper(colIncInt, colDecInt, rowIncInt, rowDecInt);
+	updateCubePositionHelper(colIncInt, colDecInt, rowIncInt, rowDecInt);
 }
 
-void Cube::updateCubeTokenPositionHelper(int colInc, int colDec, int rowInc, int rowDec){
+void Cube::updateCubePositionHelper(int colInc, int colDec, int rowInc, int rowDec){
 
 	int colPrev = 0, rowPrev = 0;
 
@@ -596,34 +611,34 @@ void Cube::checkCubeCollision(World *world){
 
     //Update token position depending on user input
     if(userInput[0] == '4'){
-      cubeA.Cube::updateCubeTokenPosition(0, 1, 0, 0);
+      cubeA.Cube::updateCubePosition(0, 1, 0, 0);
     }
     else if(userInput[0] == '6'){
-      cubeA.Cube::updateCubeTokenPosition(1, 0, 0, 0);
+      cubeA.Cube::updateCubePosition(1, 0, 0, 0);
     }
     else if(userInput[0] == '8'){
-      cubeA.Cube::updateCubeTokenPosition(0, 0, 0, 1);
+      cubeA.Cube::updateCubePosition(0, 0, 0, 1);
     }
     else if(userInput[0] == '2'){
-      cubeA.Cube::updateCubeTokenPosition(0, 0, 1, 0);
+      cubeA.Cube::updateCubePosition(0, 0, 1, 0);
     }
     else if(userInput[0] == '7'){
-      cubeA.Cube::updateCubeTokenPosition(0, 1, 0, 1);
+      cubeA.Cube::updateCubePosition(0, 1, 0, 1);
     }
     else if(userInput[0] == '1'){
-      cubeA.Cube::updateCubeTokenPosition(0, 1, 1, 0);
+      cubeA.Cube::updateCubePosition(0, 1, 1, 0);
     }
     else if(userInput[0] == '9'){
-      cubeA.Cube::updateCubeTokenPosition(1, 0, 0, 1);
+      cubeA.Cube::updateCubePosition(1, 0, 0, 1);
     }
     else if(userInput[0] == '3'){
-      cubeA.Cube::updateCubeTokenPosition(1, 0, 1, 0);
+      cubeA.Cube::updateCubePosition(1, 0, 1, 0);
     }
     else if(userInput[0] == 'd'){
       cubeA.Cube::drawCubeDeath();
     }
     else{
-      cubeA.Cube::updateCubeTokenPosition(0, 0, 0, 0);
+      cubeA.Cube::updateCubePosition(0, 0, 0, 0);
     }
 
     clear();
