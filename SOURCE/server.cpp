@@ -201,6 +201,7 @@ void acceptConnections(int socketFD, int* firstClient, int* secondClient)
 	*secondClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
 
 	//send confirmation to both client 1 & 2 that both players are connected
+	sendMessage(*firstClient, confirm2);
 	sendMessage(*secondClient, confirm2);
 
 	//will add game mode checks later ***
