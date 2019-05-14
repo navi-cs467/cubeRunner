@@ -14,7 +14,7 @@ Shark::Shark(World *world, Direction offScreen,
 	isStationary = false;
 	//curDirection = left;
 	//sameDirectionMoveCount = 0;
-	createObstacle(world, graphicLines, offScreen, specificGraphic);
+	createObstacle(world, offScreen, specificGraphic);
 	
 	//Update size of graphic type array 
 	//and length of longest graphic wstring
@@ -27,7 +27,11 @@ Shark::Shark(World *world, Direction offScreen,
 	//Update World's obsCoords with new graphic position
 	world->updateObsCoords(this);
 	
-	_graphicLines = Shark::initializeVectorGraphics();
+	graphicLines = Shark::initializeVectorGraphics();
+}
+
+Shark::getGraphicLines() {
+	return Shark::_getGraphicLines();
 }
 
 vector<vector<wstring>> Shark::initializeVectorGraphics () {
@@ -60,3 +64,4 @@ int Shark::color = WHITE_BLUE;
 // https://ubuntuforums.org/showthread.php?t=836043
 // https://stackoverflow.com/questions/17663186/initializing-a-two-dimensional-stdvector
 // https://stackoverflow.com/questions/1115854/how-to-resolve-error-bad-index-fatal-index-file-corrupt-when-using-git
+// https://stackoverflow.com/questions/56120664/converting-typeid-to-namespace-for-static-member-access-c?noredirect=1#comment98874550_56120664

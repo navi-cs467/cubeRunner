@@ -27,7 +27,6 @@ class Obstacle {
 		int posY;
 		bool isStationary;
 		void createObstacle(World *world, 
-							vector<vector<wstring>> graphicLines, 
 							Direction offScreenDirection = none,
 							int specificGraphic = -1);
 		int gt;				//Short for "graphic type"
@@ -38,7 +37,7 @@ class Obstacle {
 							//the same direction if possible for
 							//a random number of moves [between 5 - 25,
 							//see Obstacle.cpp - move(World* world)]
-		vector<vector<wstring>> _graphicLines;
+		vector<vector<wstring>> graphicLines;
 
 	public:
 		Obstacle(int posX, int posY, int gt, int gts) :
@@ -57,7 +56,7 @@ class Obstacle {
 		void setLongestGS(int length) {longestGS = length;}
 		virtual Direction getDirection() {return none;}
 		virtual void move(World* world);
-		vector<vector<wstring>> _getGraphicLines() {return _graphicLines;}
+		virtual vector<vector<wstring>> getGraphicLines() = 0;
 		
 		//Renders class abstract, since there is no
 		//candidate for a pure virtual function that
@@ -74,3 +73,4 @@ class Obstacle {
 // https://www.geeksforgeeks.org/virtual-destructor/
 // http://www.cplusplus.com/reference/string/wstring/
 // https://stackoverflow.com/questions/402283/stdwstring-vs-stdstring
+// https://stackoverflow.com/questions/56120664/converting-typeid-to-namespace-for-static-member-access-c

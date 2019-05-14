@@ -166,6 +166,25 @@ void Water::renderWorld() {
 					printw("%lc", tmpWChArr[0]);
 				}
 		}
+		
+		if(typeid(**it) == typeid(Seaweed)) {
+			attron(COLOR_PAIR(Seaweed::getColor()));
+			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
+				i + xCoord <= bottomRow; i++)
+				for(int j = 0;
+					j < Seaweed::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j + yCoord + yOffset < COLS; j++) {
+					
+					//Continue if character is off-screen
+					if(j - yOffset < 0) continue;
+					
+					tmpWChArr[0] = Seaweed::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					
+					//output to screen
+					move(i + xCoord + xOffset, j + yCoord);
+					printw("%lc", tmpWChArr[0]);
+				}
+		}
 				
 		if(typeid(**it) == typeid(Coral)) {
 			int nextColor = Coral::getColorSeed();
@@ -225,11 +244,6 @@ void Water::renderWorld() {
 				for(int j = 0; 
 					j < Octopus::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
-					/* Game::setBoard(i + xCoord + xOffset, 
-								   j + yCoord + yOffset,
-								   Octopus::getGraphicLines()[(*it)->getGT()][i][j]); */
-					/* obsCoords.insert(make_pair(i + xCoord + xOffset, 
-											   j + yCoord + yOffset)); */
 					if(j - yOffset < 0) continue;
 					tmpWChArr[0] = Octopus::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					//output to screen

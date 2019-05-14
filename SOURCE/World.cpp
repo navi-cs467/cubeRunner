@@ -13,18 +13,18 @@
 
 void World::updateObsCoords(Obstacle *ob) {
 	
-	/* for(int i = 0; i < ob->getGTS(); i++) {
+	for(int i = 0; i < ob->getGTS(); i++) {
 		for(int j = 0; j < ob->getLongestGS(); j++) {
 			obsCoords.insert(make_pair(ob->getPosX() + i,
 									   ob->getPosY() + j));
-			if(j < (typeid(*ob)::getGraphicLines()[ob->getGT()][i].length()) &&
-			   (typeid(*ob))::getGraphicLines()[ob->getGT()][i][j]) != ' ')
+			if(j < ob->getGraphicLines()[ob->getGT()][i].length()) &&
+			   (ob->getGraphicLines()[ob->getGT()][i][j]) != ' ')
 					nonWSObsCoords.insert(make_pair(ob->getPosX() + i,
 									   ob->getPosY() + j));
 		}
-	} */
+	}
 	
-	if(typeid(*ob) == typeid(Seaweed)) {
+	/* if(typeid(*ob) == typeid(Seaweed)) {
 		for(int i = 0; i < ob->getGTS(); i++) {
 			for(int j = 0; j < ob->getLongestGS(); j++) {
 				obsCoords.insert(make_pair(ob->getPosX() + i,
@@ -71,7 +71,7 @@ void World::updateObsCoords(Obstacle *ob) {
 										   ob->getPosY() + j));
 			}
 		}
-	}
+	} */
 }
 
 void World::initMiniCubes(int numMiniCubes, 
