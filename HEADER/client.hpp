@@ -11,10 +11,10 @@
 
 #include "include.hpp"
 int initSocket(char* hostname, char* portNum);
-void sendMessage(int socketFD, char* buffer);
-void receiveMessage(int socketFD, char* buffer);
+void sendMessage_C(int socketFD, char* buffer);
+void receiveMessage_C(int socketFD, char* buffer);
 void startConnection(int socketFD, struct addrinfo *servinfo);
-int createSocket(struct addrinfo *servinfo);
-struct addrinfo* getServerInfo(char* hostname, char* portNum);
+int createSocket_C(struct addrinfo *servinfo);
+struct addrinfo* getServerInfo_C(char* hostname, char* portNum);
 
 #endif
