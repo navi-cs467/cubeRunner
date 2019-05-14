@@ -15,7 +15,7 @@
 	the list pointed to by servinfo such as the desired address family (AF_INET)
 	and the desired address socktype (SOCK_STREAM)
 */
-struct addrinfo* getServerInfo(char* hostname, char* portNum)
+struct addrinfo* getServerInfo_C(char* hostname, char* portNum)
 {
 	// from Beej's guide, get addrees info to fill addrinfo struct
 	int status;
@@ -42,7 +42,7 @@ struct addrinfo* getServerInfo(char* hostname, char* portNum)
 	that was called in the getServerInfo function, returns the file descriptor (int)
 	for the socket
 */
-int createSocket(struct addrinfo *servinfo)
+int createSocket_C(struct addrinfo *servinfo)
 {
 	int socketFD;
 
@@ -80,7 +80,7 @@ void startConnection(int socketFD, struct addrinfo *servinfo)
 	Receives messages sent from sever over the socket, if the value of recv is 0
 	the server has closed the connection and the program exits
 */
-void receiveMessage(int socketFD, char* buffer)
+void receiveMessage_C(int socketFD, char* buffer)
 {
 	int len_received, bytes_received;
 	len_received = sizeof(buffer);
@@ -107,7 +107,7 @@ void receiveMessage(int socketFD, char* buffer)
 Loops until all data is sent to the server, making sure the complete message is
 sent over the socket
 */
-void sendMessage(int socketFD, char* buffer)
+void sendMessage_C(int socketFD, char* buffer)
 {
 	// adapted from cs 344 lectures, make sure all the data is sent over the socket
 	// Send message to client
@@ -126,10 +126,10 @@ void sendMessage(int socketFD, char* buffer)
 // initialize the socket for client to connect to server
 int initSocket(char* hostname, char* portNum)
 {
-	struct addrinfo *servinfo = getServerInfo(hostname, portNum);
+	struct addrinfo *servinfo = getServerInfo_C(hostname, portNum);
 
 	// create socket to communicate with server
-	int socketFD = createSocket(servinfo);
+	int socketFD = createSocket_C(servinfo);
 
 	// start connection to server
 	startConnection(socketFD, servinfo);

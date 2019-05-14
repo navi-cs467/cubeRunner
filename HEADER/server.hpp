@@ -14,10 +14,9 @@
 void initServer(char* portNum, int* firstClient, int* secondClient);
 void acceptConnections(int socketFD, int* firstClient, int* secondClient);
 void bindSocket(int socketFD, struct addrinfo *servinfo);
-int startConnection(int socketFD, struct addrinfo *servinfo);
-void receiveMessage(int socketFD, char* buffer);
-void sendMessage(int socketFD, char* buffer);
-int createSocket(struct addrinfo *servinfo);
-struct addrinfo* getServerInfo(char* portNum);
+void receiveMessage_S(int socketFD, char* buffer);
+void sendMessage_S(int socketFD, char* buffer);
+int createSocket_S(struct addrinfo *servinfo);
+struct addrinfo* getServerInfo_S(char* portNum);
 
 #endif

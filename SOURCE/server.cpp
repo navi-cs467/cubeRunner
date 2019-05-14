@@ -25,7 +25,7 @@
 	the list pointed to by servinfo such as the desired address family (AF_INET)
 	and the desired address socktype (SOCK_STREAM)
 */
-struct addrinfo* getServerInfo(char* portNum)
+struct addrinfo* getServerInfo_S(char* portNum)
 {
 	// adpated from Beej's guide, get address info to fill addrinfo struct
 	int status;
@@ -75,7 +75,7 @@ int createSocket(struct addrinfo *servinfo)
  Loops until all data is sent to the client, making sure the complete message is
  sent over the socket
 */
-void sendMessage(int socketFD, char* buffer)
+void sendMessage_S(int socketFD, char* buffer)
 {
 	// adapted from cs 344 lectures, make sure all the data is sent over the socket
 	// Send message to client
@@ -91,7 +91,7 @@ void sendMessage(int socketFD, char* buffer)
 	while (checkSend > 0);  // Loop forever until send buffer for this socket is empty
 }
 
-void receiveMessage(int socketFD, char* buffer)
+void receiveMessage_S(int socketFD, char* buffer)
 {
 	int len_received, bytes_received;
 	len_received = sizeof(buffer);
@@ -191,18 +191,18 @@ void acceptConnections(int socketFD, int* firstClient, int* secondClient)
 	*firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
 
 	//send confirmation that client 1 is connected
-	char confirm1[1] = "0";
-	char confirm2[1] = "1";
+	char confirm1[2] = "0";
+	char confirm2[2] = "1";
 
-	sendMessage(*firstClient, confirm1);
+	sendMessage_S(*firstClient, confirm1);
 
 	// accept incomming connection from second client
 	addr_size = sizeof client_addr;
 	*secondClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
 
 	//send confirmation to both client 1 & 2 that both players are connected
-	sendMessage(*firstClient, confirm2);
-	sendMessage(*secondClient, confirm2);
+	sendMessage_S(*firstClient, confirm2);
+	sendMessage_S(*secondClient, confirm2);
 
 	//will add game mode checks later ***
 
@@ -215,7 +215,7 @@ void acceptConnections(int socketFD, int* firstClient, int* secondClient)
 */
 void initServer(char* portNum, int* firstClient, int* secondClient)
 {
-	struct addrinfo *servinfo = getServerInfo(portNum);
+	struct addrinfo *servinfo = getServerInfo_S(portNum);
 
 	// create socket to communicate with client
 	int socketFD = createSocket(servinfo);
