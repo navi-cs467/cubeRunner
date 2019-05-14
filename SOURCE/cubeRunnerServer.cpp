@@ -59,9 +59,6 @@ int main(int argc, char* argv[]) {
 		//receive port number to start server on
 		char* portNum = argv[1];
 
-		char gmP1[1];
-		char gmP2[1];
-
 		//hold player socket FDs
 		int player1, player2 = -1;
 
