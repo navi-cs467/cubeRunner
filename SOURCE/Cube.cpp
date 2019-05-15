@@ -560,6 +560,11 @@ void Cube::drawCubeDeath(int *userInput){
 	attron(COLOR_PAIR(BLACK_BLACK));
 	mvaddstr(LINES - 1, 15, "                                ");
 	refresh();
+	
+	//Reset userInput so a death animation will occur again
+	//with no additional input (i.e. when the player scrolls
+	//into an object after resetting but does not move beforehand).
+	*userInput = 0;
 }
 
 void Cube::checkCubeCollision(World *world){
