@@ -62,8 +62,53 @@ int main(int argc, char* argv[]) {
 		//hold player socket FDs
 		int player1, player2 = -1;
 
+		//confirmation flag
+		char confirm[2] = "0";
+
 		//initialize server and accept connections
+		//also send confirmation messages to players when they are connected
 		initServer(portNum, &player1, &player2);
+
+		//confirm both players are connected and check game modes
+		sendMessage_S(player1, confirm);
+
+		//receive game mode from player1
+		char gm1Str[2];
+		receiveMessage_S(player1, gm1Str);
+
+
+		//receive game mode from player2
+		char gm2Str[2];
+		receiveMessage_S(player2, gm2Str);
+
+		int gmP1 = atoi(gm1Str);
+		int gmP2 = atoi(gm2Str);
+
+		if (gmP1 == gmP2)
+		{
+			//send indicator to players
+			memset(confirm, '\0', sizeof confirm);
+			sprintf(confirm, "%d", 1);
+			sendMessage_S(player1, confirm);
+			sendMessage_S(player2, confirm);
+		}
+
+		char message[256];
+		memset(message, '\0', sizeof message);
+
+		if (gmP1 != gmP2)
+		{
+			//send indicator to players
+			//send indicator to players
+			memset(confirm, '\0', sizeof confirm);
+			sprintf(confirm, "%d", 2);
+			sendMessage_S(player1, confirm);
+			sendMessage_S(player2, confirm);
+
+			//receive confirmation back from each player
+			//leaving out for now, might add later
+
+		}
 
 		Game game = Game(gmP1 < gmP2 ? gpM1 : gpM2, true);		//2nd argument == true for isTwoPlayer
 																//Use easiest of two specified game modes,
@@ -104,17 +149,17 @@ int main(int argc, char* argv[]) {
 					//Will block here if other player input thread is doing the same thing
 					//Or if data is being sent (Ensures players see every move they input)
 					omp_set_lock(&lock1);
-					
+
 					if((userInput1 == KEY_UP || userInput1 == '8' || userInput1 == 'w') &&
 							&& cube->getCubeCoords()[0][0] > 0) {
 						cube->updateCubePosition(0, 0, 0, 1);
-						cube->setCubeDirection(up);		
+						cube->setCubeDirection(up);
 					}
-					else if((userInput1 == KEY_DOWN || userInput1 == '2' || userInput1 == 's') && 
+					else if((userInput1 == KEY_DOWN || userInput1 == '2' || userInput1 == 's') &&
 								cube->getCubeCoords()[15][0] < world->getBottomRow()) {
 						cube->updateCubePosition(0, 0, 1, 0);
 						cube->setCubeDirection(down);
-					
+
 					renderedLastMv1 = false;
 					omp_unset_lock(&lock1);
 				}
@@ -137,8 +182,8 @@ int main(int argc, char* argv[]) {
 					//Will block here if other player input thread is doing the same thing to the same data
 					//Or if data is being sent (Ensures players see every move they input)
 					omp_set_lock(&lock1);
-					
-					if((userInput2 == KEY_RIGHT || userInput2 == '6' || userInput2 == 'd') && 
+
+					if((userInput2 == KEY_RIGHT || userInput2 == '6' || userInput2 == 'd') &&
 								cube->getCubeCoords()[15][1] < COLS) {
 						cube->updateCubePosition(1, 0, 0, 0);
 						cube->setCubeDirection(right);
@@ -148,7 +193,7 @@ int main(int argc, char* argv[]) {
 						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(left);
 					}
-					
+
 					renderedLastMv2 = false;
 					omp_unset_lock(&lock1);
 				}
@@ -171,7 +216,7 @@ int main(int argc, char* argv[]) {
 				}
 
 				moveRate = scrollRate / SCROLL_RATE_DIVISOR;
-				
+
 				//Timer Variables
 				double lastScrollTime = omp_get_wtime(),
 					   lastMoveTime = omp_get_wtime(),
@@ -193,10 +238,12 @@ int main(int argc, char* argv[]) {
 					if(userInput1 == 'q') {
 						//SEND Connection1 score
 						//CLOSE CONNECTION1
+						close(player1);
 						//SEND Connection2 "ET"		//Early Termination
 						//(Optional ?) RECEIVE confirmation Connection2
 						//SEND Connection2 score
 						//CLOSE CONNECTION2
+						close(player2);
 						break;
 					}
 					//Otherwise report no early termination to other player
@@ -228,7 +275,7 @@ int main(int argc, char* argv[]) {
 						//reaches TRANSITION_SCORE_INTERVAL
 
 						if(cube->getTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
-							
+
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 							it != world->getObstacles().begin(); it++) {
@@ -248,15 +295,15 @@ int main(int argc, char* argv[]) {
 								world = new Water(gameMode, isTwoPlayer);
 								newWorldType = 3;
 							}
-							
+
 							isNewWorldFlag = true;
-							
+
 							//If score is less than 3000, increase scroll and move time intervals by a constant
 							//(This is the point at which all three worlds have been cycled 3 times each,
 							// and the speeds are capped.)
 							scrollRate *= SCROLL_MOVE_DECREASE_RATE;
 							moveRate *= SCROLL_MOVE_DECREASE_RATE;
-							
+
 							//Reset cubes position to left-middle starting point
 							cube->reset();
 
@@ -268,11 +315,11 @@ int main(int argc, char* argv[]) {
 
 						omp_set_lock(&lock1);	//Block here if updating cube parameters via playerInputs,
 												//then lock input threads from updating until finished
-						
+
 						//Check for death
-						cube->checkCubeCollision(world);	
+						cube->checkCubeCollision(world);
 						deathFlag = cube->getCubeIsDead();
-						
+
 						/**** SEND DEATH FLAG ****/
 						// SEND Connection1: deathFlag
 						if(deathFlag) {
@@ -311,7 +358,7 @@ int main(int argc, char* argv[]) {
 											 cube->getCubeLives, cube->getCubePositionRow() \
 											 cube->getCubePositionCol()
 						// (Optional ?) RECEIVE connection1: confirmation
-						
+
 						// SEND connection2: cube->getCubeCoords()[array], cube->getCubeChars()[array], \
 											 cube->getCubeLives, cube->getCubePositionRow() \
 											 cube->getCubePositionCol()
@@ -321,7 +368,7 @@ int main(int argc, char* argv[]) {
 						/**** SEND GAME SCORE ****/
 						// SEND connection1: cube->getCubeScore()
 						// (Optional ?) RECEIVE connection1: confirmation
-						
+
 						// SEND connection2: cube->getCubeScore()
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND GAME SCORE ****/
@@ -339,10 +386,10 @@ int main(int argc, char* argv[]) {
 						//	  SEND connection2: newWorldType
 						// (Optional ?) RECEIVE connection2: confirmation	//Probably not optional, need to wait for world transition animation
 						/**** END SEND NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
-						
+
 						//Reset isNewWorldFlag if necessary
 						if(isNewWorldFlag) isNewWorldFlag = false;
-						
+
 						/**** SEND ONSCREEN OBSTACLES  ****/
 						list<Obstacle*>::iterator itObs;
 
@@ -447,10 +494,10 @@ int main(int argc, char* argv[]) {
 
 						/**** SEND MINICUBES  ****/
 						set<pair<int, int>>::iterator itMiniCubes;
-						
+
 						// SEND connection1: world->getMiniCubes().size();
 						// (Optional ?) RECEIVE connection1: confirmation
-						for(itMiniCubes = world->getMiniCubes().begin(); 
+						for(itMiniCubes = world->getMiniCubes().begin();
 							itMiniCubes < world->getMiniCubes().end();
 							itMiniCubes++) {
 								//SEND connection1: miniCubes->first,
@@ -461,7 +508,7 @@ int main(int argc, char* argv[]) {
 
 						// SEND connection2: world->getMiniCubes().size();
 						// (Optional ?) RECEIVE connection2: confirmation
-						for(itMiniCubes = world->getObstacles().begin(); 
+						for(itMiniCubes = world->getObstacles().begin();
 							itMiniCubes < world->getObstacles().end();
 							itMiniCubes++) {
 								//SEND connection2: miniCubes->first,

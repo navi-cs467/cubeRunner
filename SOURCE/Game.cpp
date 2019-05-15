@@ -41,8 +41,9 @@ int Game::playGame(char host[], char port[], int playerNum) {
 	//omp_init_lock(&lock1);
 
 	bool deathFlag = false;
+	bool isConnected = false;
 
-	#pragma omp parallel sections shared(userInput, deathFlag)
+	#pragma omp parallel sections shared(userInput, deathFlag, isConnected)
 	{
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
@@ -107,7 +108,7 @@ int Game::playGame(char host[], char port[], int playerNum) {
 				//	  	server can handle, the "extra commands" go unprocessed,
 				//		since the code below blocks at "RECEIVE confirmation",
 				//		then the input buffer is flushed
-				else if (!deathFlag) {
+				else if (!deathFlag && isConnected) {
 					if(playerNum == 1) {
 						if(userInput == KEY_UP) {
 							// SEND: KEY_UP
@@ -441,6 +442,40 @@ int Game::playGame(char host[], char port[], int playerNum) {
 				//connect to server
 				int socketFD = initSocket(host, port);
 
+				//hold server connection confirmation
+				char message[256];
+				memset(message, '\0', sizeof message);
+
+				//send chosen game mode
+				char gM[2];
+				sprintf(gM, "%d", gameMode);
+				sendMessage_C(socketFD, gM);
+
+				//receive message, either 0 or if gameMode matches
+				receiveMessage_C(socketFD, message);
+
+				//check for other player
+				//if we received 0, we are connected but other player isn't
+				//so we check for next confirmation
+				if (strcmp(message,"0") == 0)
+				{
+					//check for other player and gamemode match
+					memset(message, '\0', sizeof message);
+					receiveMessage_C(socketFD, message);
+				}
+
+				//at this point, message holds gameMode result
+				//gamemodes don't match
+				if (strcmp(message,"2") == 0)
+				{
+					//display error message of some kind
+					//maybe send acknowledgment if necessary
+					//easiest game mode used automatically
+				}
+
+				//set isConnected to TRUE
+				isConnected = TRUE;
+
 				//For Time Display
 				int seconds, minutes, hours;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
@@ -458,6 +493,8 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						//	  Display ncurses sub-window informing player that other player has terminated early
 						//    break;
 						/**** END RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
+
+						
 
 						/**** RECEIVE DEATH FLAG ****/
 						//RECEIVE int_1
