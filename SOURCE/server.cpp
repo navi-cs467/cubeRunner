@@ -189,7 +189,7 @@ void acceptConnections(int socketFD, int* firstClient, int* secondClient)
 	// accept incomming connection from first client
 	addr_size = sizeof client_addr;
 	*firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
-]
+
 	// accept incomming connection from second client
 	addr_size = sizeof client_addr;
 	*secondClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
