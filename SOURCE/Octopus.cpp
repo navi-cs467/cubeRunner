@@ -15,7 +15,7 @@ Octopus::Octopus(World *world, Direction offScreen,
 	//curDirection = left;
 	//sameDirectionMoveCount = 0;
 	color = rand() % 4 + 31;
-	createObstacle(world, graphicLines, offScreen, specificGraphic);
+	createObstacle(world, offScreen, specificGraphic);
 	
 	//Update size of graphic type array 
 	//and length of longest graphic string
@@ -27,8 +27,6 @@ Octopus::Octopus(World *world, Direction offScreen,
 		
 	//Update World's obsCoords with new graphic position
 	world->updateObsCoords(this);
-	
-	_graphicLines = Octopus::initializeVectorGraphics();
 }
 
 vector<vector<wstring>> Octopus::initializeVectorGraphics () {
@@ -49,6 +47,10 @@ vector<vector<wstring>> Octopus::initializeVectorGraphics () {
 								   L"//// \\\\\\\\"}};
 								  
 	return tmpV;
+}
+
+vector<vector<wstring>> Octopus::getGraphicLines() {
+	return Octopus::_getGraphicLines();
 }
 
 vector<vector<wstring>> Octopus::graphicLines = 

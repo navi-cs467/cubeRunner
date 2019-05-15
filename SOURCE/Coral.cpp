@@ -12,7 +12,7 @@ Coral::Coral(World *world, Direction offScreen,
 			 int specificGraphic) : Obstacle() {
 	
 	isStationary = true;
-	createObstacle(world, graphicLines, offScreen, specificGraphic);
+	createObstacle(world, offScreen, specificGraphic);
 	
 	//Update size of graphic type array 
 	//and length of longest graphic string
@@ -24,8 +24,6 @@ Coral::Coral(World *world, Direction offScreen,
 		
 	//Update World's obsCoords with new graphic position
 	world->updateObsCoords(this);
-	
-	_graphicLines = Coral::initializeVectorGraphics();
 }
 
 vector<vector<wstring>> Coral::initializeVectorGraphics () {
@@ -46,6 +44,10 @@ vector<vector<wstring>> Coral::initializeVectorGraphics () {
 								   L"          \\"}};
 								  
 	return tmpV;
+}
+
+vector<vector<wstring>> Coral::getGraphicLines() {
+	return Coral::_getGraphicLines();
 }
 
 vector<vector<wstring>> Coral::graphicLines = 

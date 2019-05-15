@@ -26,9 +26,10 @@ class Seaweed : public Obstacle {
 			Obstacle(posX, posY, gt, gts) {}				//Constructor for client
 		Seaweed(World *world, Direction offScreen = none, 
 				int specificGraphic = -1);					//Constructor for server and 1-player
-		static vector<vector<wstring>> getGraphicLines() {return graphicLines;}
+		static vector<vector<wstring>> _getGraphicLines() {return graphicLines;}
 		static int getColor() {return color;}
 		static vector<vector<wstring>> initializeVectorGraphics();
+		virtual vector<vector<wstring>> getGraphicLines() override;
 		virtual ~Seaweed() {}
 		
 };

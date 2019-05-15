@@ -153,13 +153,13 @@ void Water::renderWorld() {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++)
 				for(int j = 0;
-					j < Seaweed::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Seaweed::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					
 					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
 					
-					tmpWChArr[0] = Seaweed::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Seaweed::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
 					//output to screen
 					move(i + xCoord + xOffset, j + yCoord);
@@ -173,13 +173,13 @@ void Water::renderWorld() {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Coral::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Coral::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 
 					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
 					
-					tmpWChArr[0] = Coral::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Coral::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
 					//To address a strange background color issue
 					//with partially off-screen right - Coral Only
@@ -201,13 +201,13 @@ void Water::renderWorld() {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Shark::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Shark::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					
 					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
 					
-					tmpWChArr[0] = Shark::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Shark::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
 					//output to screen
 					attron(COLOR_PAIR(color));
@@ -223,15 +223,10 @@ void Water::renderWorld() {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Octopus::getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Octopus::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
-					/* Game::setBoard(i + xCoord + xOffset, 
-								   j + yCoord + yOffset,
-								   Octopus::getGraphicLines()[(*it)->getGT()][i][j]); */
-					/* obsCoords.insert(make_pair(i + xCoord + xOffset, 
-											   j + yCoord + yOffset)); */
 					if(j - yOffset < 0) continue;
-					tmpWChArr[0] = Octopus::getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Octopus::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					//output to screen
 					attron(COLOR_PAIR(color));
 					move(i + xCoord + xOffset, j + yCoord);

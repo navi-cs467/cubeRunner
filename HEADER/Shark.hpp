@@ -28,11 +28,12 @@ class Shark : public Obstacle {
 			Obstacle(posX, posY, gt, gts) {}			//Constructor for client
 		Shark(World *world, Direction offScreen = none,
 			  int specificGraphic = -1);				//Constructor for server and 1-player
-		static vector<vector<wstring>> getGraphicLines() {return graphicLines;}
+		static vector<vector<wstring>> _getGraphicLines() {return graphicLines;}
 		static int getColor() {return color;}
 		static vector<vector<wstring>> initializeVectorGraphics();
 		//Direction getDirection() {return curDirection;}
 		//void setDirection(Direction newDirection) {curDirection = newDirection;}
+		virtual vector<vector<wstring>> getGraphicLines() override;
 		virtual ~Shark() {}
 		
 };

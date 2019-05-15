@@ -26,9 +26,10 @@ class Coral : public Obstacle {
 			Obstacle(posX, posY, gt, gts) {}			//Constructor for client	
 		Coral(World *world, Direction offScreen = none, 
 			int specificGraphic = -1);					//Constructor for server and 1-player
-		static vector<vector<wstring>> getGraphicLines() {return graphicLines;}
+		static vector<vector<wstring>> _getGraphicLines() {return graphicLines;}
 		static int getColorSeed() {return colorSeed;}
 		static vector<vector<wstring>> initializeVectorGraphics();
+		virtual vector<vector<wstring>> getGraphicLines() override;
 		virtual ~Coral() {}
 		
 };
