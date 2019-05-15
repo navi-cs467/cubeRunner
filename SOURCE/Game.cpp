@@ -30,7 +30,7 @@ int Game::playGame(char host[], char port[], int playerNum) {
 	int userInput = 0;
 
 	//Set number of omp threads
-	omp_set_num_threads(4);
+	omp_set_num_threads(2);
 
 	//Lock needed so position cannot be changed
 	//in such rapid succession that some positions
