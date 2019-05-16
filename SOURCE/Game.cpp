@@ -324,6 +324,41 @@ int Game::playGame(char host[], char port[], int playerNum) {
 
 						//Reset death flag
 						deathFlag = false;
+						
+						string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
+						
+						//Render Time display
+						timeDisplay.clear();
+						if(hours < 10)
+							timeDisplay << "Time: " << "0" << hours << ":";
+						else
+							timeDisplay << "Time: " << hours << ":";
+						if(minutes < 10)
+							timeDisplay << "0" << minutes << ":";
+						else
+							timeDisplay << minutes << ":";
+						if(seconds < 10)
+							timeDisplay << "0" << seconds;
+						else
+							timeDisplay << seconds;
+
+						//Render Life count display
+						livesDisplay.clear();
+						livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
+						/* if(gameMode == EASY) livesDisplay << "Lives: " << 5;
+						else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
+						else if(gameMode == HARD) livesDisplay << "Lives: " << 3; */
+
+						//Render Score display
+						scoreDisplay.clear();
+						scoreDisplay << "Score: " << cube->getCubeScore();
+						output = string(timeDisplay.str().c_str())  + "   " +
+								 string(scoreDisplay.str().c_str()) + "   " +
+								 string(livesDisplay.str().c_str());
+						attron(COLOR_PAIR(YELLOW_BLACK));
+						mvhline(LINES - 1, 0, ' ', COLS);
+						mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
+						refresh();
 
 					}
 
@@ -352,12 +387,12 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						world->moveObs();
 					}
 
-					//Render time, life count, and score display every second
+					//Update time, life count, and score display every second
 					if(!startTimeLogged) {
 						statsTime = startTime = static_cast<int>(omp_get_wtime());
 						startTimeLogged = true;
 					}
-					string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
+					
 					if(statsTime < static_cast<int>(omp_get_wtime())) {
 						statsTime = static_cast<int>(omp_get_wtime());
 						seconds++;
@@ -369,39 +404,6 @@ int Game::playGame(char host[], char port[], int playerNum) {
 							minutes = 0;
 							hours++;
 						}
-
-						//Time display
-						timeDisplay.clear();
-						if(hours < 10)
-							timeDisplay << "Time: " << "0" << hours << ":";
-						else
-							timeDisplay << "Time: " << hours << ":";
-						if(minutes < 10)
-							timeDisplay << "0" << minutes << ":";
-						else
-							timeDisplay << minutes << ":";
-						if(seconds < 10)
-							timeDisplay << "0" << seconds;
-						else
-							timeDisplay << seconds;
-
-						//Life count display
-						livesDisplay.clear();
-						livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
-						/* if(gameMode == EASY) livesDisplay << "Lives: " << 5;
-						else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
-						else if(gameMode == HARD) livesDisplay << "Lives: " << 3; */
-
-						//Score display
-						scoreDisplay.clear();
-						scoreDisplay << "Score: " << cube->getCubeScore();
-						output = string(timeDisplay.str().c_str())  + "   " +
-								 string(scoreDisplay.str().c_str()) + "   " +
-								 string(livesDisplay.str().c_str());
-						attron(COLOR_PAIR(YELLOW_BLACK));
-						mvhline(LINES - 1, 0, ' ', COLS);
-						mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
-						refresh();
 					}
 				}
 			}
