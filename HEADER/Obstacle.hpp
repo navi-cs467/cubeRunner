@@ -38,6 +38,7 @@ class Obstacle {
 							//a random number of moves [between 5 - 25,
 							//see Obstacle.cpp - move(World* world)]
 		vector<vector<wstring>> graphicLines;
+		set<pair<int, int>> nonWSObsCoords;
 
 	public:
 		Obstacle(int posX, int posY, int gt, int gts) :
@@ -58,11 +59,11 @@ class Obstacle {
 		virtual void move(World* world);
 		virtual vector<vector<wstring>> getGraphicLines() = 0;
 		
-		//Renders class abstract, since there is no
-		//candidate for a pure virtual function that
-		//is used by derived classes. (Also ensures
-		//memory is managed properly when deleting
-		//derived class objects via base class pointers.)
+		//Used by Cube to detect Obstacle collision
+		set<pair<int, int>>& getNonWSObsCoords() {return nonWSObsCoords;}
+		
+		//Ensures memory is managed properly when deleting
+		//derived class objects via base class pointers.
 		virtual ~Obstacle() {}
 };
 

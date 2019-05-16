@@ -24,7 +24,8 @@ Shark::Shark(World *world, Direction offScreen,
 		if(Shark::getGraphicLines()[gt][i].size() > longestGS)
 			longestGS = Shark::getGraphicLines()[gt][i].size();
 	
-	//Update World's obsCoords with new graphic position
+	//Update World's obsCoords and this Obstacle's
+	//nonWSObsCoords with new graphic position
 	world->updateObsCoords(this);
 }
 

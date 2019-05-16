@@ -274,53 +274,26 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						//Render Cube
 						attron(COLOR_PAIR(cube->getColor()));
 						cube->drawCube();
-						if(deathFlag) cube->drawCubeDeath(&userInput);
-
 						//Death animation if death occurred
-						if(deathFlag) { //move(5,5);printw("%d", 1 ? deathFlag : 0); refresh(); getch();
-
-							//Remove Obstacles in first 10 columns so player can be
-							//reset in "safety zone"
-							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
-								it != world->getObstacles().end(); it++) {
-								if((*it)->getPosY() <= 10) {
-									//Remove coords from obsCoords and nonWSObsCoords
-									for(int i = 0; i < (*it)->getGTS(); i++)
-										for(int j = 0; j < (*it)->getLongestGS(); j++) {
-											if(world->getObsCoords().find
-													(make_pair((*it)->getPosX() + i,
-																   (*it)->getPosY() + j)) !=
-																	world->getObsCoords().end())
-												world->getObsCoords().erase
-													(world->getObsCoords().
-														find(make_pair((*it)->getPosX() + i,
-																	   (*it)->getPosY() + j)));
-											if(world->getNonWSObsCoords().find
-													(make_pair((*it)->getPosX() + i,
-																   (*it)->getPosY() + j)) !=
-																	world->getNonWSObsCoords().end())
-												world->getNonWSObsCoords().erase
-													(world->getNonWSObsCoords().
-														find(make_pair((*it)->getPosX() + i,
-																	   (*it)->getPosY() + j)));
-										}
-									//Free memory
-									delete *it;
-
-									//Remove pointer
-									world->getObstacles().erase(it--);
-								}
-							}
-						}
-
-						//Game Over animation if game over occurred
+						if(deathFlag) cube->drawCubeDeath(&userInput);
+						
+						//Game Over animation and break if game over occurred
 						/* if(cube->getCubeLives() == 0) {
 							transitionAnimation("gameOver.txt");
+							//Delete all Obstacles
+							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
+							it != world->getObstacles().begin(); it++) {
+								delete *it;
+							}
+							//Delete cube
+							delete cube;
+							//Delete world
+							delete world;
 							break;
 						} */
-
-						//Reset Cube
-						if(deathFlag) cube->cubeReset(world);
+						
+						//Reset player if death occurred (but no game over)
+						if(deathFlag) world->resetPlayer(cube);
 
 						//Reset death flag
 						deathFlag = false;
@@ -484,7 +457,7 @@ int Game::playGame(char host[], char port[], int playerNum) {
 
 				//Pseudocode variables... change as desired
 				int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[10];
-
+				
 				while (1) {
 
 						/**** RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
@@ -496,8 +469,6 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						//    break;
 						/**** END RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
 
-						
-
 						/**** RECEIVE DEATH FLAG ****/
 						//RECEIVE int_1
 						//If int_1 == 1:			//Death happened
@@ -505,7 +476,16 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						//	  If int_2 == 1:		//Game Over
 						//		  CLOSE connection
 						//	  	  /* animationTransition("GRAPHICS/gameOver.txt"); */
-						//		  break
+						//		  //Delete all Obstacles
+						//			for(list<Obstacle*>::iterator it = world->getObstacles().begin();
+						//				it != world->getObstacles().begin(); it++) {
+						//				delete *it;
+						//			}
+						//			//Delete world
+						//			delete world;
+						//			//Delete cube
+						//			delete cube;
+						//		 	break
 						//	  Else If int_2 == 0	//Death But No Game Over
 						//		  //deathFlag = true;
 						//	      // (Optional ?) SEND: confirmation		//Probably not optional, server needs to wait for death animation

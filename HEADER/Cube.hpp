@@ -18,6 +18,7 @@
 #include "using.hpp"
 #include "Direction.hpp"
 #include "World.hpp"
+#include "Water.hpp"
 
 #define CUBE_CHARS_WIDTH 4
 #define CUBE_CHARS_HEIGHT 4
@@ -28,7 +29,8 @@
 class Cube{
 	private:
 		int col, row;
-		int currWorld;
+		//int currWorld;
+		World *currWorld;
 		char cubeChars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH];
 		int cubeCoords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];	 //row, col	
 		void updateCubePositionHelper(int, int, int, int);
@@ -39,13 +41,15 @@ class Cube{
 		int lives;
 		int color;
 		Direction curDir;
+		static const int cubeHeight = 4;
+		static const int cubeWidth = 4;
 		
     public:
 		Cube(){}
 		Cube(World *world, int lives);
-		void cubeInitWorld1(void);
-		void cubeInitWorld2(void);
-		void cubeInitWorld3(void);
+		//void cubeInitWorld1(void);
+		//void cubeInitWorld2(void);
+		//void cubeInitWorld3(void);
 		void cubeReset(World *world);
 		void updateCubePosition(bool, bool, bool, bool);
 		int getCubePositionCol(void){return col;}  					//Return Cube's Current Column
@@ -56,9 +60,10 @@ class Cube{
 		void loadCubeChars(char **chars);							//Load Cube's characters (multiplayer only)
 		int (*getCubeCoords(void))[2]{return cubeCoords;}			//Return Cube's coordinates
 		void loadCubeCoords(int **coords);							//Return Cube's coordinates
-		int getCubeCurrWorld(void){return currWorld;}  				//Return Cube's World
-		void setCubeCurrWorld(int newWorld){currWorld = newWorld;}  //Set Cube's World
-		void drawCube(void); 										//Draw token on console - ncurses
+		//int getCubeCurrWorld(void){return currWorld;}  				//Return Cube's World
+		World* getCubeCurrWorld(void){return currWorld;} 
+		void setCubeCurrWorld(World *newWorld){currWorld = newWorld;}  //Set Cube's World
+		void drawCube(void); 										   //Draw token on console - ncurses
 		void drawCubeDeath(int *userInput); 									//Explosion Animation
 		bool getCubeIsDead(void){return isDead;} 					//Return Token's isDead Status
 		int getCubeScore(void){return score;} 						//Return Token's current score
@@ -71,6 +76,7 @@ class Cube{
 		Direction getCubeDirection(void){return curDir;}
 		void setCubeDirection(Direction newDir) {curDir = newDir;}
 };
+
 
 
 

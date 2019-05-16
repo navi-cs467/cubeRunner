@@ -13,7 +13,9 @@
 #define World_hpp
 
 class Game;
+class Cube;
 //#include "Game.hpp"
+//#include "Cube.hpp"
 #include "Obstacle.hpp"
 #include "Seaweed.hpp"
 #include "Coral.hpp"
@@ -24,8 +26,7 @@ class Game;
 class World {
 	protected:
 		list<Obstacle*> obstacles;
-		set<pair<int, int>> miniCubes, obsCoords, 
-									   nonWSObsCoords;		//"Non-Whitespace" ObsCoords
+		set<pair<int, int>> miniCubes, obsCoords; 
 		int gameMode;
 		int bottomRow;
 		bool isTwoPlayer;
@@ -45,6 +46,7 @@ class World {
 		virtual void loadOSMCs() = 0;	//Load offscreen miniCubes (for scrolling)
 		int getBottomRow() const {return bottomRow;}
 		void moveObs();
+		void resetPlayer(Cube *cube);
 		
 		//Method to access
 		list<Obstacle*>& getObstacles() {return obstacles;}
@@ -54,9 +56,6 @@ class World {
 		//top of an existing obstacle or minicube.
 		set<pair<int, int>>& getObsCoords() {return obsCoords;}
 		set<pair<int, int>>& getMiniCubes() {return miniCubes;}
-		
-		//Used by Cube to detect Obstacle collision
-		set<pair<int, int>>& getNonWSObsCoords() {return nonWSObsCoords;}
 		
 		virtual ~World() {}
 		

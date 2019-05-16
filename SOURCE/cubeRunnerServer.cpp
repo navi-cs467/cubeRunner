@@ -282,16 +282,19 @@ int main(int argc, char* argv[]) {
 								delete *it;
 							}
 
-							//Create new world
+							//Delete and create new world
 							if(typeid(*world) == typeid(Water)) {
+								delete world;
 								world = new Land(gameMode, isTwoPlayer);
 								newWorldType = 1;
 							}
 							else if(typeid(*world) == typeid(Land)) {
+								delete world;
 								world = new Space(gameMode, isTwoPlayer);
 								newWorldType = 2;
 							}
 							else if(typeid(*world) == typeid(Space)) {
+								delete world;
 								world = new Water(gameMode, isTwoPlayer);
 								newWorldType = 3;
 							}
@@ -341,9 +344,20 @@ int main(int argc, char* argv[]) {
 							if(cube->getCubeLives() == 0) {
 						//		SEND Connection2: 1		//Game over, no need for confirmation
 						//		CLOSE Connection2
+								//Delete all Obstacles
+								for(list<Obstacle*>::iterator it = world->getObstacles().begin();
+									it != world->getObstacles().begin(); it++) {
+									delete *it;
+								}
+								//Delete cube
+								delete cube;
+								//Delete world
+								delete world;
 								break;
 							}
 							else {
+								//Reset player position
+								world->resetPlayer(cube);
 						//		SEND Connection2: 0		//Death but no game over
 						//	 	(Optional ?) RECEIVE connection2: confirmation		//Probably not optional, need to wait for death animation
 							}

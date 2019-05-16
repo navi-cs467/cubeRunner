@@ -24,10 +24,11 @@
 
 
 //Default Initialization
-Cube::Cube(World *world, int lives) : lives(lives) {
+Cube::Cube(World *world, int lives) : 
+	currWorld(world), lives(lives) {
 	col = 0;
 	row = 0;
-	currWorld = 1;
+	//currWorld = 1;
 	isDead = 0;
 	score = 0;
 	color = WHITE_BLACK;
@@ -90,7 +91,7 @@ Cube::Cube(World *world, int lives) : lives(lives) {
 
 }
 
-//Initialize for World 1
+/* //Initialize for World 1
 void Cube::cubeInitWorld1(void){
 	col = 10;
 	row = 10;
@@ -115,7 +116,7 @@ void Cube::cubeInitWorld3(void){
 	currWorld = 3;
 	score = 0;
 	isDead = 0;
-}
+} */
 
 void Cube::cubeReset(World *world){
 	col = 0;
@@ -248,24 +249,24 @@ void Cube::updateCubePositionHelper(int colInc, int colDec, int rowInc, int rowD
 	//position as directed by the user(s). If the user(s) is not 
 	//providing input for an col/row direction or if both a positive col/row
 	//and negative col/row
-	if(currWorld == 1){
+	if(typeid(*currWorld) == typeid(Water)){
 		colPrev = col;
 		rowPrev = row;
 		col = col + colInc - colDec;
 		row = row + rowInc - rowDec;
 	}
-	else if(currWorld == 2){
+	/* else if(typeid(*currWorld) == typeid(Land)){
 		colPrev = col;
 		rowPrev = row;
 		col = col + colInc - colDec;
 		row = row + rowInc - rowDec;
 	}
-	else if(currWorld == 3){
+	else if(typeid(*currWorld) == typeid(Space)){
 		colPrev = col;
 		rowPrev = row;
 		col = col + colInc - colDec;
 		row = row + rowInc - rowDec;
-	}
+	} */
 
 	Cube::updateCubeCharsAndCoords(colPrev, col, rowPrev, row,1,1);
 }
@@ -566,17 +567,18 @@ void Cube::drawCubeDeath(int *userInput){
 }
 
 void Cube::checkCubeCollision(World *world){
-	int i = 0;
-	set<pair<int,int> >::iterator setIterator;
+	
+	list<Obstacle*>::iterator obs;
+	set<pair<int,int> >::iterator mcs, nonWSObs;
 	
 	//Check MiniCube Collisions
-	for(setIterator=world->getMiniCubes().begin(); 
-		setIterator!=world->getMiniCubes().end(); 
-		++setIterator){
-		for(i = 0; i < 16; ++i){
-			if((setIterator->first == cubeCoords[i][0]) && (setIterator->second == cubeCoords[i][1])){ //token collision with minicube
+	for(mcs = world->getMiniCubes().begin(); 
+		mcs != world->getMiniCubes().end(); 
+		++mcs){
+		for(int i = 0; i < 16; ++i){
+			if((mcs->first == cubeCoords[i][0]) && (mcs->second == cubeCoords[i][1])){ //token collision with minicube
 				//delete minicube entry
-				world->getMiniCubes().erase(setIterator);
+				world->getMiniCubes().erase(mcs);
 				//increment score
 				score += 10;
 				//mvaddstr(39,0,"SCORE INC");
@@ -585,20 +587,31 @@ void Cube::checkCubeCollision(World *world){
 	}	
 
 	//Check Obstacle Collisions
-	for(setIterator=world->getNonWSObsCoords().begin(); 
-		setIterator!=world->getNonWSObsCoords().end(); 
-		++setIterator){
-		for(i = 0; i < 16; ++i){
-			if((setIterator->first == cubeCoords[i][0]) && (setIterator->second == cubeCoords[i][1])){ //token collision with Obstacle
-				//set isDead status to true (1)
-				isDead = 1;
-				lives--;
-				//mvaddstr(39,0,"DEAD");
+	for(obs = world->getObstacles().begin();
+		obs != world->getObstacles().end(); obs++) {
+		
+		//Short-circuit this Obstacle check if possible
+		if((*obs)->getPosX() > row + cubeHeight || 
+		   (*obs)->getPosX() + (*obs)->getGTS() - 1 < row ||
+		   (*obs)->getPosY() > col + cubeWidth ||
+		   (*obs)->getPosY() + (*obs)->getGTS() - 1 < col) 
+			continue;
+		
+		for(nonWSObs = (*obs)->getNonWSObsCoords().begin(); 
+			nonWSObs != (*obs)->getNonWSObsCoords().end(); 
+			++nonWSObs){
+			for(int i = 0; i < 16; ++i){
+				if((nonWSObs->first == cubeCoords[i][0]) && 
+				(nonWSObs->second == cubeCoords[i][1])){ //token collision with Obstacle
+					//set isDead status to true (1)
+					isDead = 1;
+					lives--;
+					//mvaddstr(39,0,"DEAD");
 
+				}
 			}
 		}
 	}
-
 }
 
 

@@ -25,7 +25,8 @@ Octopus::Octopus(World *world, Direction offScreen,
 		if(Octopus::getGraphicLines()[gt][i].size() > longestGS)
 			longestGS = Octopus::getGraphicLines()[gt][i].size();
 		
-	//Update World's obsCoords with new graphic position
+	//Update World's obsCoords and this Obstacle's
+	//nonWSObsCoords with new graphic position
 	world->updateObsCoords(this);
 }
 

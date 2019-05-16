@@ -122,6 +122,7 @@ void Obstacle::move(World* world) {
 	//is removed.
 	bool moveCleared = true;
 	set<pair<int,int>>::iterator itObs, itCubes;
+	set<pair<int,int>> newNonWSObsCoords;
 	for(int i = 0; i < NUM_DIRECTIONS; i++, moveCleared = true) {
 		if(mvDir == left) { 
 			for(int j = 0; j < gts; j++) {
@@ -136,26 +137,27 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
-				//Update obsCoords and nonWSObsCoords
+				//Erase affected obsCoords
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY + longestGS - 1));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX + j, posY + longestGS - 1));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
+				//Update Obstacle position
 				posY--;
+				//Insert new obsCoords
 				for(int j = 0; j < gts; j++) { 
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY));
-					if(getGraphicLines()[gt][j][0] != ' ')
-						world->getNonWSObsCoords().
-						insert(make_pair(posX + j, posY));
 				}
-				
+				//Update Obstacle's nonWSObsCoords	
+				for(set<pair<int, int>>::iterator it = nonWSObsCoords.begin();
+					it != nonWSObsCoords.end(); it++) {
+						newNonWSObsCoords.insert(make_pair(it->first, it->second - 1));
+				}
+				swap(nonWSObsCoords, newNonWSObsCoords);
+				//Update mvCounter				
 				if(lastMV == left) mvCounter--;
 				else {
 					lastMV = left;
@@ -163,6 +165,7 @@ void Obstacle::move(World* world) {
 							  MIN_MOVE_COUNTER + 1) +
 							  MIN_MOVE_COUNTER;
 				}
+				//"Consume" miniCubes now in obsCoords
 				for(int j = 0; j < gts; j++) {
 					itCubes = world->getMiniCubes().
 						find(make_pair(posX + j, posY));
@@ -204,45 +207,35 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
-				//Update obsCoords and nonWSObsCoords
+				//Erase affected obsCoords
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY + longestGS - 1));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX + j, posY + longestGS - 1));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				for(int j = 0; j < longestGS - 1; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX, posY + j));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX, posY + j));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				posX++; posY--;
 				for(int j = 0; j < gts; j++) {
 					world->getObsCoords().
-						insert(make_pair(posX + j, posY));
-					if(getGraphicLines()[gt][j][0] != ' ')
-						world->getNonWSObsCoords().
 						insert(make_pair(posX + j, posY));
 					
 				}
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX + gts - 1, posY + j));
-					if(j < getGraphicLines()[gt][gts-1].length() && 
-					   getGraphicLines()[gt][gts-1][j] != ' ')
-						  world->getNonWSObsCoords().
-						  insert(make_pair(posX + gts - 1, posY + j));
 				}
-				
+				//Update Obstacle's nonWSObsCoords	
+				for(set<pair<int, int>>::iterator it = nonWSObsCoords.begin();
+					it != nonWSObsCoords.end(); it++) {
+						newNonWSObsCoords.insert(make_pair(it->first + 1, it->second - 1));
+				}
+				swap(nonWSObsCoords, newNonWSObsCoords);
 				if(lastMV == left_down) mvCounter--;
 				else {
 					lastMV = left_down;
@@ -287,27 +280,24 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
-				//Update obsCoords and nonWSObsCoords
+				//Erase affected obsCoords
 				for(int j = 0; j < longestGS; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX, posY + j));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX, posY + j));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				posX++;
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX + gts - 1, posY + j));
-					if(j < getGraphicLines()[gt][gts-1].length() && 
-					   getGraphicLines()[gt][gts-1][j] != ' ')
-						  world->getNonWSObsCoords().
-						  insert(make_pair(posX + gts - 1, posY + j));
 				}
-				
+				//Update Obstacle's nonWSObsCoords	
+				for(set<pair<int, int>>::iterator it = nonWSObsCoords.begin();
+					it != nonWSObsCoords.end(); it++) {
+						newNonWSObsCoords.insert(make_pair(it->first + 1, it->second));
+				}
+				swap(nonWSObsCoords, newNonWSObsCoords);
 				if(lastMV == down) mvCounter--;
 				else {
 					lastMV = down;
@@ -355,44 +345,34 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
-				//Update obsCoords and nonWSObsCoords
+				//Erase affected obsCoords
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX + j, posY));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				for(int j = 1; j < longestGS; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX, posY + j));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX, posY + j));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				posX++; posY++;
 				for(int j = 0; j < gts; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY + longestGS - 1));
-					if(getGraphicLines()[gt][j].length() == longestGS &&
-					   getGraphicLines()[gt][j][longestGS-1] != ' ')
-						  world->getNonWSObsCoords().
-						  insert(make_pair(posX + j, posY + longestGS - 1));
 				}
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX + gts - 1, posY + j));
-					if(j < getGraphicLines()[gt][gts-1].length() && 
-					   getGraphicLines()[gt][gts-1][j] != ' ')
-						  world->getNonWSObsCoords().
-						  insert(make_pair(posX + gts - 1, posY + j));
 				}
+				//Update Obstacle's nonWSObsCoords	
+				for(set<pair<int, int>>::iterator it = nonWSObsCoords.begin();
+					it != nonWSObsCoords.end(); it++) {
+						newNonWSObsCoords.insert(make_pair(it->first + 1, it->second + 1));
+				}
+				swap(nonWSObsCoords, newNonWSObsCoords);
 				
 				if(lastMV == right_down) mvCounter--;
 				else {
@@ -432,27 +412,24 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
-				//Update obsCoords and nonWSObsCoords
+				//Erase affected obsCoords
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX + j, posY));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				posY++;
 				for(int j = 0; j < gts; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY + longestGS - 1));
-					if(getGraphicLines()[gt][j].length() == longestGS &&
-					   getGraphicLines()[gt][j][longestGS-1] != ' ')
-						  world->getNonWSObsCoords().
-						  insert(make_pair(posX + j, posY + longestGS - 1));
 				}
-				
+				//Update Obstacle's nonWSObsCoords	
+				for(set<pair<int, int>>::iterator it = nonWSObsCoords.begin();
+					it != nonWSObsCoords.end(); it++) {
+						newNonWSObsCoords.insert(make_pair(it->first, it->second + 1));
+				}
+				swap(nonWSObsCoords, newNonWSObsCoords);
 				if(lastMV == right) mvCounter--;
 				else {
 					lastMV = right;
@@ -495,45 +472,34 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
-				//Update obsCoords and nonWSObsCoords
+				//Erase affected obsCoords
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX + j, posY));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				for(int j = 1; j < longestGS; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + gts - 1, posY + j));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX + gts - 1, posY + j));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				posX--; posY++;
 				for(int j = 0; j < gts; j++) { 
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY + longestGS - 1));
-					if(getGraphicLines()[gt][j].length() == longestGS &&
-					   getGraphicLines()[gt][j][longestGS-1] != ' ')
-						  world->getNonWSObsCoords().
-						  insert(make_pair(posX + j, posY + longestGS - 1));
 				}
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX, posY + j));
-					if(j < getGraphicLines()[gt][0].length() && 
-					   getGraphicLines()[gt][0][j] != ' ')
-						  world->getNonWSObsCoords().
-						  insert(make_pair(posX, posY + j));
 				}
-				
+				//Update Obstacle's nonWSObsCoords	
+				for(set<pair<int, int>>::iterator it = nonWSObsCoords.begin();
+					it != nonWSObsCoords.end(); it++) {
+						newNonWSObsCoords.insert(make_pair(it->first - 1, it->second + 1));
+				}
+				swap(nonWSObsCoords, newNonWSObsCoords);
 				if(lastMV == right_up) mvCounter--;
 				else {
 					lastMV = right_up;
@@ -572,27 +538,24 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
-				//Update obsCoords and nonWSObsCoords
+				//Erase affected obsCoords
 				for(int j = 0; j < longestGS; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + gts - 1, posY + j));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX + gts - 1, posY + j));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				posX--;
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX, posY + j));
-					if(j < getGraphicLines()[gt][0].length() && 
-					   getGraphicLines()[gt][0][j] != ' ')
-						  world->getNonWSObsCoords().
-						  insert(make_pair(posX, posY + j));
 				}
-				
+				//Update Obstacle's nonWSObsCoords	
+				for(set<pair<int, int>>::iterator it = nonWSObsCoords.begin();
+					it != nonWSObsCoords.end(); it++) {
+						newNonWSObsCoords.insert(make_pair(it->first - 1, it->second));
+				}
+				swap(nonWSObsCoords, newNonWSObsCoords);
 				if(lastMV == up) mvCounter--;
 				else {
 					lastMV = up;
@@ -634,44 +597,34 @@ void Obstacle::move(World* world) {
 				}
 			}
 			if(moveCleared) {
-				//Update obsCoords and nonWSObsCoords
+				//Erase affected obsCoords
 				for(int j = 0; j < gts; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + j, posY + longestGS - 1));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX + j, posY + longestGS - 1));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				for(int j = 0; j < longestGS - 1; j++) {
 					itObs = world->getObsCoords().
 						find(make_pair(posX + gts - 1, posY + j));
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
-					itObs = world->getNonWSObsCoords().
-						find(make_pair(posX + gts - 1, posY + j));
-					if(itObs != world->getNonWSObsCoords().end())
-						world->getNonWSObsCoords().erase(itObs);
 				}
 				posX--; posY--;
 				for(int j = 0; j < gts; j++) { 
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY));
-					if(getGraphicLines()[gt][j][0] != ' ')
-						world->getNonWSObsCoords().
-						insert(make_pair(posX + j, posY));
 				}
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX, posY + j));
-					if(j < getGraphicLines()[gt][0].length() && 
-					   getGraphicLines()[gt][0][j] != ' ')
-						  world->getNonWSObsCoords().
-						  insert(make_pair(posX, posY + j));
 				}
-				
+				//Update Obstacle's nonWSObsCoords	
+				for(set<pair<int, int>>::iterator it = nonWSObsCoords.begin();
+					it != nonWSObsCoords.end(); it++) {
+						newNonWSObsCoords.insert(make_pair(it->first - 1, it->second - 1));
+				}
+				swap(nonWSObsCoords, newNonWSObsCoords);
 				if(lastMV == left_up) mvCounter--;
 				else {
 					lastMV = left_up;

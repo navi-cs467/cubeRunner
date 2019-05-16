@@ -10,6 +10,7 @@
 ********************************************************************/
 
 #include "../HEADER/World.hpp"
+#include "../HEADER/Cube.hpp"
 
 void World::updateObsCoords(Obstacle *ob) {
 	
@@ -19,7 +20,7 @@ void World::updateObsCoords(Obstacle *ob) {
 									   ob->getPosY() + j));
 			if(j < ob->getGraphicLines()[ob->getGT()][i].length() &&
 			   (ob->getGraphicLines()[ob->getGT()][i][j]) != ' ')
-					nonWSObsCoords.insert(make_pair(ob->getPosX() + i,
+					ob->getNonWSObsCoords().insert(make_pair(ob->getPosX() + i,
 									   ob->getPosY() + j));
 		}
 	}
@@ -66,6 +67,42 @@ void World::moveObs() {
 		it != obstacles.end(); it++) 
 			if(!(*it)->getIsStationary())
 				(*it)->move(this);
+}
+
+void World::resetPlayer(Cube *cube) {
+	//Remove Obstacles in first 10 columns so player can be
+	//reset in "safety zone"
+	for(list<Obstacle*>::iterator it = obstacles.begin();
+		it != obstacles.end(); it++) {
+		if((*it)->getPosY() <= 10) {
+			//Remove coords from obsCoords and nonWSObsCoords
+			for(int i = 0; i < (*it)->getGTS(); i++)
+				for(int j = 0; j < (*it)->getLongestGS(); j++) {
+					if(getObsCoords().find
+							(make_pair((*it)->getPosX() + i,
+										   (*it)->getPosY() + j)) !=
+											getObsCoords().end())
+						getObsCoords().erase
+							(getObsCoords().
+								find(make_pair((*it)->getPosX() + i,
+											   (*it)->getPosY() + j)));
+					if((*it)->getNonWSObsCoords().find
+							(make_pair((*it)->getPosX() + i,
+										   (*it)->getPosY() + j)) !=
+											(*it)->getNonWSObsCoords().end())
+						(*it)->getNonWSObsCoords().erase
+							((*it)->getNonWSObsCoords().
+								find(make_pair((*it)->getPosX() + i,
+											   (*it)->getPosY() + j)));
+				}
+			//Free memory
+			delete *it;
+
+			//Remove pointer
+			obstacles.erase(it--);
+		}
+	}
+	cube->cubeReset(this);
 }
 
 // References

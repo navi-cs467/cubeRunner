@@ -22,7 +22,8 @@ Seaweed::Seaweed(World *world, Direction offScreen,
 		if(Seaweed::getGraphicLines()[gt][i].size() > longestGS)
 			longestGS = Seaweed::getGraphicLines()[gt][i].size();
 		
-	//Update World's obsCoords and nonWSObsCoords with new graphic position
+	//Update World's obsCoords and this Obstacle's
+	//nonWSObsCoords with new graphic position
 	world->updateObsCoords(this);
 }
 
