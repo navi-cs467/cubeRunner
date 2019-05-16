@@ -33,8 +33,8 @@ int Game::playGame(char host[], char port[], int playerNum) {
 	omp_set_num_threads(2);
 
 	//Lock needed so position cannot be changed
-	//in such rapid succession that some positions
-	//are not checked for death condition.
+	//in such rapid succession that screen rendering
+	//cannot keep up.
 	omp_lock_t userInputLock;
 
 	//Initialize lock

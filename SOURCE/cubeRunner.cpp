@@ -155,7 +155,7 @@ int main(void)
 		bool gameOn = false, connected = false;
 		char host[256];
 		char port[256];
-
+		
 		//Setup multi-threaded block, with three threads as described below...
 		#pragma omp parallel sections shared(cursorPos, currMenu, \
 											 playerCount, gameMode, \
@@ -193,7 +193,7 @@ int main(void)
 						else if(graphicIterator == 2) paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft2_1.txt", seedColor, toggled);
 						else paintGraphic(subscrnGraphic,
-							"GRAPHICS/menuCubeRight2_1.text", seedColor, toggled);
+							"GRAPHICS/menuCubeRight2_1.txt", seedColor, toggled);
 					}
 					else if(currMenu == 1 && cursorPos == 2) {
 						if(graphicIterator == 0) paintGraphic(subscrnGraphic,

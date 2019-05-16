@@ -317,7 +317,7 @@ int main(int argc, char* argv[]) {
 						// ** COMMS WITH CLIENTS **
 
 						omp_set_lock(&lock1);	//Block here if updating cube parameters via playerInputs,
-												//then lock input threads from updating until finished
+												//then lock out input threads from updating until finished
 
 						//Check for death
 						cube->checkCubeCollision(world);
