@@ -179,12 +179,12 @@ int main(void)
 						if(graphicIterator == 4) graphicIterator = 0;
 						seedColor++;
 						if(seedColor == 7) seedColor = 1;
-						if(prevCurPos != cursorPos) {
-							toggled = true;
-							prevCurPos = cursorPos;
-						}
-						else toggled = false;
 					}
+					if(prevCurPos != cursorPos) {
+						toggled = true;
+						prevCurPos = cursorPos;
+					}
+					else toggled = false;
 					if(currMenu == 1 && cursorPos == 1) {
 						if(graphicIterator == 0) paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft1_1.txt", seedColor, toggled);
@@ -203,7 +203,7 @@ int main(void)
 						else if(graphicIterator == 2) paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft2_2.txt", seedColor, toggled);
 						else paintGraphic(subscrnGraphic,
-							"GRAPHICS/menuCubeRight2_2.text", seedColor, toggled);
+							"GRAPHICS/menuCubeRight2_2.txt", seedColor, toggled);
 					}
 					else if(currMenu == 1 && cursorPos == 3) {
 						paintGraphic(subscrnGraphic, "GRAPHICS/highScore.txt", seedColor, toggled);

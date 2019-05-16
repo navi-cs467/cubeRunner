@@ -11,19 +11,21 @@
 //Paints graphic contained in file named fileName. Graphic should be
 //MM_GRAPHIC_WIDTH x MM_GRAPHIC_HEIGHT for proper positioning on the
 //screen. (Set MM_GRAPHIC_WIDTH & MM_GRAPHIC_HEIGHT in constants.hpp.)
+
+//Note: the 'toggled' parameter is no longer used but has been
+//left in place in case it may be needed later. All function calls
+//still pass an argument for toggled.
 void paintGraphic(WINDOW *subscrn, const char* fileName, 
 					int seedColor, bool toggled, int offset) {
 	
 	loadGraphic(fileName);
 	
-	if(toggled) {
-		//Clear contents of sub-window
-		//wattron(subscrn, COLOR_PAIR(BLACK_BLACK));
-		//for (int y = 0; y < MM_GRAPHIC_HEIGHT; y++)
-		//	mvwhline(subscrn, y, 0, ' ', MM_GRAPHIC_WIDTH);
-		werase(subscrn);
-		wrefresh(subscrn);
-	}
+	//Clear contents of sub-window
+	wattron(subscrn, COLOR_PAIR(BLACK_BLACK));
+	for (int y = 0; y < MM_GRAPHIC_HEIGHT; y++)
+		mvwhline(subscrn, y, 0, ' ', MM_GRAPHIC_WIDTH);
+	werase(subscrn);
+	wrefresh(subscrn);
 	
 	//Paint the rows to the screen
     int color, row;
