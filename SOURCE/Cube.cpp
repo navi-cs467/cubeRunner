@@ -424,6 +424,8 @@ void Cube::drawCubeDeath(int *userInput){
 	init_pair(1, COLOR_RED, COLOR_BLACK);
 	attron(COLOR_PAIR(1));
 
+	//So animation isn't skipped if last user input is enter
+	*userInput = 0;
 
 	//Death Part 1 - small ring around token
 	for(i = (row - 1); i <= (row + 4); ++i){ //draw left/right sides
@@ -561,10 +563,6 @@ void Cube::drawCubeDeath(int *userInput){
 	mvaddstr(LINES - 1, 15, "                                ");
 	refresh();
 	
-	//Reset userInput so a death animation will occur again
-	//with no additional input (i.e. when the player scrolls
-	//into an object after resetting but does not move beforehand).
-	*userInput = 0;
 }
 
 void Cube::checkCubeCollision(World *world){
