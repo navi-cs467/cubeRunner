@@ -35,10 +35,10 @@ int Game::playGame(char host[], char port[], int playerNum) {
 	//Lock needed so position cannot be changed
 	//in such rapid succession that some positions
 	//are not checked for death condition.
-	//omp_lock_t lock1;
+	omp_lock_t userInputLock;
 
 	//Initialize lock
-	//omp_init_lock(&lock1);
+	omp_init_lock(&userInputLock);
 
 	bool deathFlag = false;
 	bool isConnected = false;
@@ -53,11 +53,15 @@ int Game::playGame(char host[], char port[], int playerNum) {
 									  userInput != 'q' &&
 									  userInput != 'Q') {
 
-				//Input is ignored (by this thread) while death sequence processes
+				
 				userInput = getch();
-
+				
 				//Single Player
 				if(!isTwoPlayer && !deathFlag) {
+					
+					//Block the move update if render is in progress
+					omp_set_lock(&userInputLock);
+					
 					if((userInput == KEY_UP || userInput == '8' || userInput == 'w')
 							&& cube->getCubeCoords()[0][0] > 0) {
 						cube->updateCubePosition(0, 0, 0, 1);
@@ -100,6 +104,9 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(right);
 					}
+					
+					//Unlock the lock after movement update
+					omp_unset_lock(&userInputLock);
 
 				}
 
@@ -223,10 +230,13 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						userInput != KEY_END &&
 						userInput != 'q' &&
 						userInput != 'Q') {
-
+					
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();
-
+						
+						//Movement updates must wait until current render completes
+						omp_set_lock(&userInputLock);
+						
 						// World transition if cube->transitionCount
 						//reaches TRANSITION_SCORE_INTERVAL
 
@@ -267,7 +277,7 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						//Check for death
 						cube->checkCubeCollision(world);
 						deathFlag = cube->getCubeIsDead();
-
+						
 						//Render World
 						world->renderWorld();
 
@@ -275,7 +285,13 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						attron(COLOR_PAIR(cube->getColor()));
 						cube->drawCube();
 						//Death animation if death occurred
-						if(deathFlag) cube->drawCubeDeath(&userInput);
+						if(deathFlag) {
+							//Allow user to confirm death
+							omp_unset_lock(&userInputLock);
+							cube->drawCubeDeath(&userInput);
+							//Relock userInputLock
+							omp_set_lock(&userInputLock);
+						}
 						
 						//Game Over animation and break if game over occurred
 						/* if(cube->getCubeLives() == 0) {
@@ -332,6 +348,9 @@ int Game::playGame(char host[], char port[], int playerNum) {
 						mvhline(LINES - 1, 0, ' ', COLS);
 						mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
 						refresh();
+						
+						//Pending movement update can now be processed
+						omp_unset_lock(&userInputLock);
 
 					}
 
