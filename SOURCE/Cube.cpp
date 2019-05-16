@@ -580,15 +580,15 @@ void Cube::checkCubeCollision(World *world){
 				//delete minicube entry
 				world->getMiniCubes().erase(mcs);
 				//increment score
-				score += 10;
-				//mvaddstr(39,0,"SCORE INC");
-			}
+				score += 10;			}
 		}
 	}	
 
+	bool obCollisionDetected = false;
 	//Check Obstacle Collisions
 	for(obs = world->getObstacles().begin();
-		obs != world->getObstacles().end(); obs++) {
+		obs != world->getObstacles().end() &&
+		!obCollisionDetected; obs++) {
 		
 		//Short-circuit this Obstacle check if possible
 		if((*obs)->getPosX() > row + cubeHeight || 
@@ -598,16 +598,17 @@ void Cube::checkCubeCollision(World *world){
 			continue;
 		
 		for(nonWSObs = (*obs)->getNonWSObsCoords().begin(); 
-			nonWSObs != (*obs)->getNonWSObsCoords().end(); 
+			nonWSObs != (*obs)->getNonWSObsCoords().end() &&
+			!obCollisionDetected; 
 			++nonWSObs){
-			for(int i = 0; i < 16; ++i){
+			for(int i = 0; i < cubeWidth * cubeHeight && 
+					!obCollisionDetected; ++i){
 				if((nonWSObs->first == cubeCoords[i][0]) && 
 				(nonWSObs->second == cubeCoords[i][1])){ //token collision with Obstacle
 					//set isDead status to true (1)
 					isDead = 1;
 					lives--;
-					//mvaddstr(39,0,"DEAD");
-
+					obCollisionDetected = true;
 				}
 			}
 		}
