@@ -116,6 +116,9 @@ int Game::playGame(char host[], char port[], int playerNum) {
 				//		since the code below blocks at "RECEIVE confirmation",
 				//		then the input buffer is flushed
 				else if (!deathFlag && isConnected) {
+					char messageToSend[256];
+					char confirm[256];
+
 					if(playerNum == 1) {
 						if(userInput == KEY_UP) {
 							// SEND: KEY_UP
@@ -128,9 +131,9 @@ int Game::playGame(char host[], char port[], int playerNum) {
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
-						else if(userInput == 27 |
-								userInput == KEY_END |
-								userInput == 'q' |
+						else if(userInput == 27 ||
+								userInput == KEY_END ||
+								userInput == 'q' ||
 								userInput == 'Q') {
 							// SEND: q
 							// RECEIVE score into score (as in, into this->score)
