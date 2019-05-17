@@ -604,7 +604,7 @@ int Game::playGame(char host[], char port[]) {
 								deathFlag = true;
 
 								//send confirmation to server
-								sprintf(sendConfirm, "%d", 1)
+								sprintf(sendConfirm, "%d", 1);
 								sendMessage_C(socketFD, sendConfirm);
 							}
 						}
