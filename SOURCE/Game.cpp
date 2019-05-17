@@ -539,7 +539,7 @@ int Game::playGame(char host[], char port[]) {
 						//	  Display ncurses sub-window informing player that other player has terminated early
 						//    break;
 
-						if (earlyTerm == "ET")
+						if (strcmp(earlyTerm, "ET") == 0)
 						{
 
 						}
