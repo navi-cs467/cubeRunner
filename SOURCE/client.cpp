@@ -119,7 +119,7 @@ int initSocket(char* hostname, char* portNum)
 	int socketFD = createSocket_C(servinfo);
 
 	// start connection to server
-	int connectStatus = tartConnection(socketFD, servinfo);
+	int connectStatus = startConnection(socketFD, servinfo);
 
 	//if socket couldn't be created, return the negative value
 	if (socketFD < 0)
@@ -133,7 +133,7 @@ int initSocket(char* hostname, char* portNum)
 		return connectStatus;
 	}
 
-	//otherwise, return the valid connected socket 
+	//otherwise, return the valid connected socket
 	return socketFD;
 }
 
