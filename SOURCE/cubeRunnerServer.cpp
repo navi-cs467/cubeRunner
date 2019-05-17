@@ -137,12 +137,25 @@ int main(int argc, char* argv[]) {
 			{
 				//Variable for user 1 input
 				int userInput1;
+				memset(confirm, '\0', sizeof(confirm));
+				char messageToReceive[256];
+				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
 				while (userInput1 != 'q') {
 
 					// Blocks here waiting for input
+
 					// RECEIVE int_1 into userInput1 from connection1;
+					receiveMessage_S(player1, messageToReceive);
+					//convert to int
+					userInput1 = atoi(messageToReceive);
+
+					//reset char array
+					memset(messageToReceive, '\0', sizeof(messageToReceive));
+
 					// (Optional ?) SEND Confirmation Connection1
+					sprintf(confirm, "%d", 1);
+					sendMessage_S(player1, confirm);
 
 					while(renderedLastMv1 == false){}
 
@@ -170,12 +183,26 @@ int main(int argc, char* argv[]) {
 			{
 				//Variable for user 2 input
 				int userInput2;
+				char confirm[256];
+				memset(confirm, '\0', sizeof(confirm));
+				char messageToReceive[256];
+				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
 				while (userInput2 != 'q') {
 
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput2 from connection2;
+					receiveMessage_S(player2, messageToReceive);
+					//convert to int
+					userInput2 = atoi(messageToReceive);
+
+					//reset char array
+					memset(messageToReceive, '\0', sizeof(messageToReceive));
+
 					// (Optional ?) SEND: Confirmation Connection2
+					sprintf(confirm, "%d", 1);
+
+					sendMessage_S(player2, confirm);
 
 					while(renderedLastMv2 == false){}
 
@@ -231,17 +258,29 @@ int main(int argc, char* argv[]) {
 
 				//Main game engine loop
 				while (1) {
-
+					char messageToSend[256];
+					memset(messageToSend, '\0', sizeof messageToSend);
 					/**** SEND EARLY TERMINATION STATUS ****/
 					//If either user quits, report back early termination to other player,
 					//and score to both, then break
 					if(userInput1 == 'q') {
 						//SEND Connection1 score
+						sprintf(messageToSend, "%d", score);
+						sendMessage_S(player1, messageToSend);
+
 						//CLOSE CONNECTION1
 						close(player1);
+
 						//SEND Connection2 "ET"		//Early Termination
+						memset(messageToSend, '\0', sizeof messageToSend);
+						strcat(messageToSend, "ET");
+						sendMessage_S(player2, messageToSend);
 						//(Optional ?) RECEIVE confirmation Connection2
 						//SEND Connection2 score
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", score);
+						sendMessage_S(player2, messageToSend);
+
 						//CLOSE CONNECTION2
 						close(player2);
 						break;
@@ -249,16 +288,20 @@ int main(int argc, char* argv[]) {
 					//Otherwise report no early termination to other player
 					else {
 						//SEND Connection 2 "NT"	//No Early Termination
+						strcat(messageToSend, "NT");
+						sendMessage_S(player2, messageToSend);
 						//(Optional ?) RECEIVE Confirmation Connection2
 					}
 
 					if(userInput2 == 'q') {
 						//SEND Connection2 score
 						//CLOSE CONNECTION2
+						close(player2);
 						//SEND Connection1 "ET"		//Early Termination
 						//(Optional ?) RECEIVE confirmation Connection1
 						//SEND Connection1 score
 						//CLOSE CONNECTION1
+						close(player1);
 						break;
 					}
 					//Otherwise report no early termination to other player

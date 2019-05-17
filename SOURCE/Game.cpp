@@ -25,7 +25,7 @@ Game::Game(int gameMode, bool isTwoPlayer) :
 
 }
 
-int Game::playGame(char host[], char port[], int playerNum) {
+int Game::playGame(char host[], char port[]) {
 
 	int userInput = 0;
 
@@ -42,8 +42,11 @@ int Game::playGame(char host[], char port[], int playerNum) {
 
 	bool deathFlag = false;
 	bool isConnected = false;
+	int playerNum = 1;
+	int socketFD = -1;
+	bool hasTerminated = false;
 
-	#pragma omp parallel sections shared(userInput, deathFlag, isConnected)
+	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, playerNum, socketFD, hasTerminated)
 	{
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
@@ -51,7 +54,7 @@ int Game::playGame(char host[], char port[], int playerNum) {
 			while ( /* cube->getCubeLives() > 0 && */  userInput != 27 &&
 									  userInput != KEY_END &&
 									  userInput != 'q' &&
-									  userInput != 'Q') {
+									  userInput != 'Q' && !hasTerminated) {
 
 
 				userInput = getch();
@@ -115,19 +118,64 @@ int Game::playGame(char host[], char port[], int playerNum) {
 				//	  	server can handle, the "extra commands" go unprocessed,
 				//		since the code below blocks at "RECEIVE confirmation",
 				//		then the input buffer is flushed
-				else if (!deathFlag && isConnected) {
+				else if (!deathFlag && isConnected && !hasTerminated) {
 					char messageToSend[256];
+					memset(messageToSend, '\0', sizeof(messageToSend));
 					char confirm[256];
+					memset(confirm, '\0', sizeof(confirm));
 
 					if(playerNum == 1) {
 						if(userInput == KEY_UP) {
 							// SEND: KEY_UP
-
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(socketFD, messageToSend);
 							// RECEIEVE confirmation
+							receiveMessage_C(socketFD, confirm);
+
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
 						else if(userInput == KEY_DOWN) {
-							// SEND: KEY_UP
+							// SEND: KEY_DOWN
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(socketFD, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(socketFD, confirm);
+							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
+						}
+						else if(userInput == 27 ||
+								userInput == KEY_END ||
+								userInput == 'q' ||
+								userInput == 'Q') {
+							// SEND: q
+							userInput = 'q';
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(socketFD, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(socketFD, confirm);
+							// RECEIVE score into score (as in, into this->score)
+							memset(confirm, '\0', sizeof(confirm));
+
+							receiveMessage_C(socketFD, confirm);
+							setScore(atoi(confirm));
+							// CLOSE CONNECTION
+							close(socketFD);
+
+							hasTerminated = true;
+							break;
+						}
+					}
+					else {
+						if(userInput == KEY_LEFT) {
+							// SEND: KEY_LEFT
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(socketFD, messageToSend);
+							// RECEIEVE confirmation
+							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
+						}
+						else if(userInput == KEY_RIGHT) {
+							// SEND: KEY_RIGHT
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(socketFD, messageToSend);
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
@@ -136,28 +184,23 @@ int Game::playGame(char host[], char port[], int playerNum) {
 								userInput == 'q' ||
 								userInput == 'Q') {
 							// SEND: q
-							// RECEIVE score into score (as in, into this->score)
-							// CLOSE CONNECTION
-						}
-					}
-					else {
-						if(userInput == KEY_LEFT) {
-							// SEND: KEY_LEFT
+							userInput = 'q';
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(socketFD, messageToSend);
 							// RECEIEVE confirmation
-							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
-						}
-						else if(userInput == KEY_RIGHT) {
-							// SEND: KEY_RIGHT
-							// RECEIEVE confirmation
-							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
-						}
-						else if(userInput != 27 &&
-								userInput != KEY_END &&
-								userInput != 'q' &&
-								userInput != 'Q') {
-							// SEND: q
+							receiveMessage_C(socketFD, confirm);
 							// RECEIVE score into score (as in, into this->score)
+							memset(confirm, '\0', sizeof(confirm));
+
+							receiveMessage_C(socketFD, confirm);
+							setScore(atoi(confirm));
+
 							// CLOSE CONNECTION
+							close(socketFD);
+
+							//set the FLAG
+							hasTerminated = true;
+							break;
 						}
 					}
 				}
@@ -437,8 +480,8 @@ int Game::playGame(char host[], char port[], int playerNum) {
 					// (Optional - if display window is used to inform player easier game mode will be used) receive message back that the other player has also confirmed message (game can start)
 
 				//connect to server
-				int socketFD = initSocket(host, port);
-
+				socketFD = initSocket(host, port);
+				playerNum = 2;
 				//hold server connection confirmation
 				char message[256];
 				memset(message, '\0', sizeof message);
@@ -459,6 +502,9 @@ int Game::playGame(char host[], char port[], int playerNum) {
 					//check for other player and gamemode match
 					memset(message, '\0', sizeof message);
 					receiveMessage_C(socketFD, message);
+
+					//if we got to this point, player is player 1 so change the value
+					playerNum = 1;
 				}
 
 				//at this point, message holds gameMode result
@@ -480,15 +526,28 @@ int Game::playGame(char host[], char port[], int playerNum) {
 				//Pseudocode variables... change as desired
 				int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[10];
 
-				while (1) {
+				while (!hasTerminated) {
 
 						/**** RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
 						// RECEIVE (10 bytes) into earlyTerm
+						receiveMessage_C(socketFD, earlyTerm);
+
 						// (Optional ?) SEND Confirmation
 						// If earlyTerm == "ET"
 						// 	  RECEIVE score
+						//
 						//	  Display ncurses sub-window informing player that other player has terminated early
 						//    break;
+
+						if (earlyTerm == "ET")
+						{
+
+						}
+
+						//reset earlyTerm
+						memset(earlyTerm, '\0', sizeof earlyTerm);
+
+
 						/**** END RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
 
 						/**** RECEIVE DEATH FLAG ****/

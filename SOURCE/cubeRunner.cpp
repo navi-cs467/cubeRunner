@@ -70,7 +70,7 @@ const string networkPrompt = "Please enter a Hostname or IP Address "
 /*************************** END GLOBALS *****************************/
 
 int main(void)
-{  
+{
 	setlocale(LC_ALL, "");		//Trying to print unicode square '\u25A0'...
 
 	//Window setup, next 3 lines are curses library calls, a standard
@@ -155,7 +155,7 @@ int main(void)
 		bool gameOn = false, connected = false;
 		char host[256];
 		char port[256];
-		
+
 		//Setup multi-threaded block, with three threads as described below...
 		#pragma omp parallel sections shared(cursorPos, currMenu, \
 											 playerCount, gameMode, \
@@ -465,6 +465,7 @@ int main(void)
 		}
 
 		//int score = startGame(mode, playerCount, host, port);
+		//check player count and call with true to for multiplayer 
 		Game game = Game(gameMode, false);
 		game.playGame();
 		gameOn = false;
