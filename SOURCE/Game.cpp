@@ -25,7 +25,7 @@ Game::Game(int gameMode, bool isTwoPlayer) :
 
 }
 
-int Game::playGame(char host[], char port[], int playerNum) {
+int Game::playGame(char host[], char port[]) {
 
 	int userInput = 0;
 
@@ -119,7 +119,8 @@ int Game::playGame(char host[], char port[], int playerNum) {
 					char messageToSend[256];
 					char confirm[256];
 
-					if(playerNum == 1) {
+					//if(playerNum == 1) {
+					if(1) {
 						if(userInput == KEY_UP) {
 							// SEND: KEY_UP
 
