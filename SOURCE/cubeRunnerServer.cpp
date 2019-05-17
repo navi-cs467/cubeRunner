@@ -299,7 +299,13 @@ int main(int argc, char* argv[]) {
 						close(player2);
 						//SEND Connection1 "ET"		//Early Termination
 						//(Optional ?) RECEIVE confirmation Connection1
+						memset(messageToSend, '\0', sizeof messageToSend);
+						strcat(messageToSend, "ET");
+						sendMessage_S(player1, messageToSend);
 						//SEND Connection1 score
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", score);
+						sendMessage_S(player2, messageToSend);
 						//CLOSE CONNECTION1
 						close(player1);
 						break;
@@ -307,6 +313,8 @@ int main(int argc, char* argv[]) {
 					//Otherwise report no early termination to other player
 					else {
 						//SEND Connection 1 "NT"	//No Early Termination
+						strcat(messageToSend, "NT");
+						sendMessage_S(player1, messageToSend);
 						//(Optional ?) RECEIVE Confirmation Connection1
 					}
 					/**** END SEND EARLY TERMINATION STATUS ****/
@@ -645,8 +653,11 @@ int main(int argc, char* argv[]) {
 		}
 
 	}
-	return 0;
+
+ }
+ 	return 0;
 }
+
 
 // References
 // http://heather.cs.ucdavis.edu/~matloff/UnixAndC/CLanguage/Curses.pdf
