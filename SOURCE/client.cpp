@@ -49,31 +49,18 @@ int createSocket_C(struct addrinfo *servinfo)
 	// feed results of getaddrinfo to socket as explained in Beej's guide and returns socket descriptor
 	socketFD = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
 
-	//check for errors
-	if (socketFD < 0)
-	{
-		fprintf(stderr,"CLIENT: Error opening socket");
-		exit(0);
-	}
-
 	return socketFD;
 }
 
 /*
   Uses the already created socket to start a connection to the server over that socket
 */
-void startConnection(int socketFD, struct addrinfo *servinfo)
+int startConnection(int socketFD, struct addrinfo *servinfo)
 {
 	// connect to socket, from Beej's Guide
 	int connectStatus = connect(socketFD, servinfo->ai_addr, servinfo->ai_addrlen);
-	printf("Connecting to server...\n");
 
-	// check for connection error, exit if error occurs
-	if (connectStatus < 0)
-	{
-		fprintf(stderr,"Error connecting to server\n");
-		exit(0);
-	}
+	return connectStatus;
 }
 
 /*
@@ -132,8 +119,21 @@ int initSocket(char* hostname, char* portNum)
 	int socketFD = createSocket_C(servinfo);
 
 	// start connection to server
-	startConnection(socketFD, servinfo);
+	int connectStatus = tartConnection(socketFD, servinfo);
 
+	//if socket couldn't be created, return the negative value
+	if (socketFD < 0)
+	{
+		return socketFD;
+	}
+
+	//if socket couldn't connect, return the negative value
+	if (connectStatus < 0)
+	{
+		return connectStatus;
+	}
+
+	//otherwise, return the valid connected socket 
 	return socketFD;
 }
 
