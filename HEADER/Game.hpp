@@ -36,7 +36,7 @@ class Game {
 		int getScore() {return score;}
 		int getGameMode() {return gameMode;}
 		void setScore(int score) {this->score = score;}
-		int playGame(char host[] = NULL, char port[] = NULL, int playerNum = 1);
+		int playGame(char host[] = NULL, char port[] = NULL);
 };
 
 #endif /* Game_hpp */
