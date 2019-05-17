@@ -524,12 +524,19 @@ int Game::playGame(char host[], char port[]) {
 				int seconds, minutes, hours;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
-				//Pseudocode variables... change as desired
-				int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[10];
-
 				while (!hasTerminated) {
 
+						//Pseudocode variables... change as desired
+						int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[10];
+						char scoreStr[256]; char gameData[256]; char sendConfirm[10];
+
+						memset(earlyTerm, '\0', sizeof earlyTerm);
+						memset(scoreStr, '\0', sizeof scoreStr);
+						memset(gameData, '\0', sizeof gameData);
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+
 						/**** RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
+
 						// RECEIVE (10 bytes) into earlyTerm
 						receiveMessage_C(socketFD, earlyTerm);
 
@@ -540,37 +547,67 @@ int Game::playGame(char host[], char port[]) {
 						//	  Display ncurses sub-window informing player that other player has terminated early
 						//    break;
 
+						//other client has terminated the connection
 						if (strcmp(earlyTerm, "ET") == 0)
 						{
+							// display message to user here ***
 
+							//receive score
+							receiveMessage_C(socketFD, scoreStr);
+							setScore(atoi(scoreStr));
+
+							// close connection
+							close(socketFD);
+
+							break;
 						}
-
-						//reset earlyTerm
-						memset(earlyTerm, '\0', sizeof earlyTerm);
-
 
 						/**** END RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
 
 						/**** RECEIVE DEATH FLAG ****/
 						//RECEIVE int_1
-						//If int_1 == 1:			//Death happened
-						//	  RECEIVE int_2
-						//	  If int_2 == 1:		//Game Over
-						//		  CLOSE connection
+						receiveMessage_C(socketFD, gameData);
+						int_1 = atoi(gameData);
+						//If int_1 == 1:		//Death happened
+						if (int_1 == 1)
+						{
+							//	  RECEIVE int_2
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+							int_2 = atoi(gameData);
+
+							//	  If int_2 == 1:		//Game Over
+							if (int_2 == 1)
+							{
+						      //CLOSE connection
+									close(socketFD);
 						//	  	  /* animationTransition("GRAPHICS/gameOver.txt"); */
-						//		  //Delete all Obstacles
-						//			for(list<Obstacle*>::iterator it = world->getObstacles().begin();
-						//				it != world->getObstacles().begin(); it++) {
-						//				delete *it;
-						//			}
-						//			//Delete world
-						//			delete world;
-						//			//Delete cube
-						//			delete cube;
-						//		 	break
-						//	  Else If int_2 == 0	//Death But No Game Over
-						//		  //deathFlag = true;
-						//	      // (Optional ?) SEND: confirmation		//Probably not optional, server needs to wait for death animation
+						      //Delete all Obstacles
+									for(list<Obstacle*>::iterator it = world->getObstacles().begin();
+										it != world->getObstacles().begin(); it++) {
+										delete *it;
+									}
+									//Delete world
+									delete world;
+									//Delete cube
+									delete cube;
+								 	break;
+							}
+
+							//	  Else If int_2 == 0	//Death But No Game Over
+							//		  //deathFlag = true;
+							//	      // (Optional ?) SEND: confirmation		//Probably not optional, server needs to wait for death animation
+
+							else if (int_2 == 0)
+							{
+								//reset deathFlag
+								deathFlag = true;
+
+								//send confirmation to server
+								sprintf(sendConfirm, "%d", 1)
+								sendMessage_C(socketFD, sendConfirm);
+							}
+						}
 						//Else:
 						//	  // (Optional ?) SEND: confirmation			//No Death
 						/**** RECEIVE DEATH FLAG ****/

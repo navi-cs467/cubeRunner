@@ -258,8 +258,9 @@ int main(int argc, char* argv[]) {
 
 				//Main game engine loop
 				while (1) {
-					char messageToSend[256];
-					memset(messageToSend, '\0', sizeof messageToSend);
+					char messageToSend[256]; char clientConfirm[10];
+					memset(clientConfirm, '\0', sizeof clientConfirm);
+					memset(clientConfirm, '\0', sizeof clientConfirm);
 					/**** SEND EARLY TERMINATION STATUS ****/
 					//If either user quits, report back early termination to other player,
 					//and score to both, then break
@@ -376,24 +377,42 @@ int main(int argc, char* argv[]) {
 
 						/**** SEND DEATH FLAG ****/
 						// SEND Connection1: deathFlag
-						if(deathFlag) {
-							if(cube->getCubeLives() == 0) {
-						//		SEND Connection1: 1		//Game over, no need for confirmation
-						//		CLOSE Connection1
-							}
-							else {
-						//		SEND Connection1: 0			//Death but no game over
-						//		(Optional ?) RECEIVE connection1: confirmation		//Probably not optional, need to wait for death animation
-							}
+						// if(deathFlag) {
+						//
+						// 	if(cube->getCubeLives() == 0) {
+						// //		SEND Connection1: 1		//Game over, no need for confirmation
+						// //		CLOSE Connection1
+						// 	}
+						// 	else {
+						// //		SEND Connection1: 0			//Death but no game over
+						// //		(Optional ?) RECEIVE connection1: confirmation		//Probably not optional, need to wait for death animation
+						// 	}
+						// }
+						// else {
+						// //	(Optional ?) RECEIVE connection1: confirmation		//No Death
+						// }
+
+						//reset variable
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", 0);
+
+						if(deathFlag)
+						{
+							memset(messageToSend, '\0', sizeof messageToSend);
+							sprintf(messageToSend, "%d", 1);
 						}
-						else {
-						//	(Optional ?) RECEIVE connection1: confirmation		//No Death
-						}
+
+						//send to both connections
+						sendMessage_S(player1, messageToSend);
+						sendMessage_S(player2, messageToSend);
 
 						// SEND Connection2: deathFlag
 						if(deathFlag) {
 							if(cube->getCubeLives() == 0) {
 						//		SEND Connection2: 1		//Game over, no need for confirmation
+							//send to both connections
+								sendMessage_S(player1, messageToSend);
+								sendMessage_S(player2, messageToSend);
 						//		CLOSE Connection2
 								//Delete all Obstacles
 								for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -410,7 +429,15 @@ int main(int argc, char* argv[]) {
 								//Reset player position
 								world->resetPlayer(cube);
 						//		SEND Connection2: 0		//Death but no game over
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 0);
+								sendMessage_S(player1, messageToSend);
+								sendMessage_S(player2, messageToSend);
+
 						//	 	(Optional ?) RECEIVE connection2: confirmation		//Probably not optional, need to wait for death animation
+								receiveMessage_C(player1, clientConfirm);
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_C(player2, clientConfirm);
 							}
 						}
 						else {
@@ -420,13 +447,47 @@ int main(int argc, char* argv[]) {
 
 						/**** SEND CUBE DATA ****/
 						// SEND connection1: cube->getCubeCoords()[array], cube->getCubeChars()[array], \
-											 cube->getCubeLives, cube->getCubePositionRow() \
-											 cube->getCubePositionCol()
+											 // cube->getCubeLives, cube->getCubePositionRow() \
+											 // cube->getCubePositionCol()
+
+						char** cubeCharsArray = cube->getCubeChars();
+
+
+						char cubeCharsBuff[256]; char cubeCharBuff[2];
+
+						memset(cubeCharsBuff, '\0', sizeof cubeCharsBuff);
+
+						//send each array by concatenating characters onto buffer
+						int i = 0; int j = 0;
+						for (i ; i < CUBE_CHARS_HEIGHT; i++)
+						{
+							for (j; j < CUBE_CHARS_WIDTH; j++)
+							{
+								memset(cubeCharBuff, '\0', sizeof cubeCharsBuff);
+								sprintf(cubeCharBuff, "%c", cubeCharsArray[i][j]);
+
+								if (i != CUBE_CHARS_HEIGHT && j != CUBE_CHARS_WIDTH)
+								{
+									strcat(cubeCharsBuff, cubeCharBuff);
+									strcat(cubeCharsBuff, ",");
+								}
+
+								else
+								{
+									strcat(cubeCharsBuff, cubeCharBuff);
+								}
+							}
+						}
+
+						//send the whole buffer to both clients
+						sendMessage_S(player1, cubeCharsBuff);
+						sendMessage_S(player2, cubeCharsBuff);
+
 						// (Optional ?) RECEIVE connection1: confirmation
 
 						// SEND connection2: cube->getCubeCoords()[array], cube->getCubeChars()[array], \
-											 cube->getCubeLives, cube->getCubePositionRow() \
-											 cube->getCubePositionCol()
+											 // cube->getCubeLives, cube->getCubePositionRow() \
+											 // cube->getCubePositionCol()
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND CUBE DATA ****/
 
