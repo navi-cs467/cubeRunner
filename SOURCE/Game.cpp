@@ -621,7 +621,7 @@ int Game::playGame(char host[], char port[]) {
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
 						int_3 = atoi(gameData);
-						cube->setLives(int_3);
+						cube->setCubeLives(int_3);
 
 						//receive row
 						memset(gameData, '\0', sizeof gameData);
