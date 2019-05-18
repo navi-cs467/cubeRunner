@@ -504,6 +504,11 @@ int main(int argc, char* argv[]) {
 
 						/**** SEND GAME SCORE ****/
 						// SEND connection1: cube->getCubeScore()
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", cube->getCubeScore());
+						sendMessage_S(player1, messageToSend);
+						sendMessage_S(player2, messageToSend);
+
 						// (Optional ?) RECEIVE connection1: confirmation
 
 						// SEND connection2: cube->getCubeScore()
@@ -511,8 +516,42 @@ int main(int argc, char* argv[]) {
 						/**** END SEND GAME SCORE ****/
 
 						/**** SEND NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
+
 						// SEND connection1: isNewWorldFlag
 						// (Optional ?) RECEIVE connection1: confirmation
+
+						if (isNewWorldFlag)
+						{
+							//send flag to both clients
+							memset(messageToSend, '\0', sizeof messageToSend);
+							sprintf(messageToSend, "%d", 1);
+							sendMessage_S(player1, messageToSend);
+							sendMessage_S(player2, messageToSend);
+
+							//send new world type to clients
+							memset(messageToSend, '\0', sizeof messageToSend);
+							sprintf(messageToSend, "%d", newWorldType);
+							sendMessage_S(player1, messageToSend);
+							sendMessage_S(player2, messageToSend);
+
+							//receive confirmation back from both clients
+							memset(clientConfirm, '\0', sizeof clientConfirm);
+							receiveMessage_S(player1, clientConfirm);
+
+							memset(clientConfirm, '\0', sizeof clientConfirm);
+							receiveMessage_S(player2, clientConfirm);
+						}
+
+						else
+						{
+							//let both clients know there is no new world
+							memset(messageToSend, '\0', sizeof messageToSend);
+							sprintf(messageToSend, "%d", 0);
+							sendMessage_S(player1, messageToSend);
+							sendMessage_S(player2, messageToSend);
+						}
+
+
 						// If isNewWorldFlag == true:
 						//	  SEND connection1: newWorldType
 						// (Optional ?) RECEIVE connection1: confirmation	//Probably not optional, need to wait for world transition animation

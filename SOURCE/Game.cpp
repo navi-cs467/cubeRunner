@@ -157,7 +157,7 @@ int Game::playGame(char host[], char port[]) {
 							memset(confirm, '\0', sizeof(confirm));
 
 							receiveMessage_C(socketFD, confirm);
-							setScore(atoi(confirm));
+							cube->setCubeScore(atoi(confirm));
 							// CLOSE CONNECTION
 							close(socketFD);
 
@@ -194,7 +194,7 @@ int Game::playGame(char host[], char port[]) {
 							memset(confirm, '\0', sizeof(confirm));
 
 							receiveMessage_C(socketFD, confirm);
-							setScore(atoi(confirm));
+							cube->setCubeScore(atoi(confirm));
 
 							// CLOSE CONNECTION
 							close(socketFD);
@@ -554,7 +554,7 @@ int Game::playGame(char host[], char port[]) {
 
 							//receive score
 							receiveMessage_C(socketFD, scoreStr);
-							setScore(atoi(scoreStr));
+							cube->setCubeScore(atoi(scoreStr));
 
 							// close connection
 							close(socketFD);
@@ -685,8 +685,13 @@ int Game::playGame(char host[], char port[]) {
 
 						/**** RECEIVE GAME SCORE ****/
 						// RECEIVE int_1
-						// cube->setScore(int_1);
+						// cube->setCubeScore(int_1);
 						// (Optional ?) SEND: confirmation
+
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+						cube->setCubeScore(atoi(gameData));
+
 						/**** END RECEIVE GAME SCORE ****/
 
 						//Now we tear down the entire world, to then rebuild... (Really Hoping we can get away with this performance-wise)
@@ -700,33 +705,66 @@ int Game::playGame(char host[], char port[]) {
 
 						/**** RECEIVE NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
 						//RECEIVE int_1			//isNewWorld flag
-						//If int_1 == 1:		//If world transition has occurred, or first loop iteration
-							  delete world;
-							  // (Optional ?) SEND: confirmation
-						//	  RECEIVE int_2:	//World type
-							  	  if(int_2 == 1) {
-									  world = new Water();
-									  /* transitionAnimation("Water.txt"); */
-								  }
-								  //else if(int_2 == 2) {
-								  //  world = new Land();
-									  /* transitionAnimation("Land.txt"); */
-								  //}
-								  //else {
-								  //  world = new Space();
-									  /* transitionAnimation("Space.txt"); */
-								  //}
-								  // (Optional ?) SEND: confirmation		//Probably not optional, need to wait for world transition animation
 
-						//Else If int == 0:		//If no world transition, we need to clear these containers
-							world->getObstacles().clear();
-							world->getMiniCubes().clear();
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+
+						int_1 = atoi(gameData);
+
+						//If int_1 == 1:		//If world transition has occurred, or first loop iteration
+						if (int_1 == 1)
+						{
+							delete world;
 							// (Optional ?) SEND: confirmation
+					//	  RECEIVE int_2:	//World type
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+
+							int_2 = atoi(gameData);
+
+							if(int_2 == 1)
+							{
+								world = new Water();
+								/* transitionAnimation("Water.txt"); */
+							}
+
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
+
+									// if (int_2 == 2)
+									// {
+									// 	world = new Land();
+									/* transitionAnimation("Land.txt"); */
+									// }
+									//
+									// else
+									// {
+									// 	world = new Space();
+									/* transitionAnimation("Space.txt"); */
+									// }
+
+							// (Optional ?) SEND: confirmation		//Probably not optional, need to wait for world transition animation
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+						  sendMessage_C(socketFD, gameData);
+
+						}
+
+						else if (int_1 == 0)
+						{
+							//Else If int == 0:		//If no world transition, we need to clear these containers
+								world->getObstacles().clear();
+								world->getMiniCubes().clear();
+								// (Optional ?) SEND: confirmation
+						}
+
 						/**** END RECEIVE NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
 
 						/**** RECEIVE ONSCREEN OBSTACLES  ****/
 						//RECEIEVE int_1		//number of (onscreen) Obstacles
 						// (Optional ?) SEND: confirmation
+
 
 						//Loop to rebuild Obstacles
 						for(int i = 0; i < int_1; i++) {
@@ -825,7 +863,8 @@ int Game::playGame(char host[], char port[]) {
 			}
 		}
 	}
-	return score;
+
+	return cube->getCubeScore();
 }
 
 

@@ -71,8 +71,9 @@ class Cube{
 		void resetCubeTransitionScore(void){transitionScore = 0;}	//Reset Cube's transitionScore
 		void checkCubeCollision(World *world); 						//Check for collision with minicubes and obstacles (updates score and isDead status)
 		int getCubeLives(void){return lives;}
-		void setCubeLives(int lives){this->lives = lives;} 			//(multiplayer only)
+		void setCubeLives(int lives){this->lives = lives;}		//(multiplayer only)
 		int getColor(void){return color;}
+		void setCubeScore(int score){this->score = score;}
 		Direction getCubeDirection(void){return curDir;}
 		void setCubeDirection(Direction newDir) {curDir = newDir;}
 };
