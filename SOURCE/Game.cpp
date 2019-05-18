@@ -729,7 +729,7 @@ int Game::playGame(char host[], char port[]) {
 						// (Optional ?) SEND: confirmation
 
 						//Loop to rebuild Obstacles
-						for(i = 0; i < int_1; i++) {
+						for(int i = 0; i < int_1; i++) {
 							//RECEIVE int_2, int_3, int_4, int_5, int_6		// type of Obs, posX, posY, gt, gts(not strictly necessary, but used as convenience)
 							if(int_2 == 1)
 								world->getObstacles().push_back(new Seaweed(int_3, int_4, int_5, int_6));
