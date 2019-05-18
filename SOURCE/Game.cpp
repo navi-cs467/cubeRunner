@@ -620,19 +620,19 @@ int Game::playGame(char host[], char port[]) {
 						//receive lives
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
-						int_3 = atoi(gameData);
+						int lives = atoi(gameData);
 						cube->setCubeLives(int_3);
 
 						//receive row
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
-						int_4 = atoi(gameData);
+						int row = atoi(gameData);
 						cube->setCubePositionRow(int_4);
 
 						//receive col
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
-						int_4 = atoi(gameData);
+						int col = atoi(gameData);
 						cube->setCubePositionRow(int_4);
 
 						int cubeCoordsArray[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];
