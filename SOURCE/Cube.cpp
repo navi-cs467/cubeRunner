@@ -234,7 +234,7 @@ void Cube::updateCubePosition(bool colInc, bool colDec, bool rowInc, bool rowDec
 	else if(colInc == 1 && colDec == 0 && rowInc == 0 && rowDec == 1 ){
 		curDir = right_up;
 	}
-	else if(colInc == 1 && colDec == 0 && rowInc == 1 && rowDec == 1 ){
+	else if(colInc == 1 && colDec == 0 && rowInc == 1 && rowDec == 0 ){
 		curDir = right_down;
 	}
 
@@ -290,7 +290,7 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 
 	//New Direction = UP
 	else if((colChange == 0) && (rowChange < 0)){
-		for(i = 0; i < 16; ++i){
+		for(i = 0; i < cubeHeight * cubeWidth; ++i){
 			cubeCoords[i][0] = cubeCoords[i][0] - rowDistance;
 		}
 		cubeChars[1][1] = 'O';
@@ -301,7 +301,7 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 
 	//New Direction = UP RIGHT
 	else if((colChange > 0) && (rowChange < 0)){
-		for(i = 0; i < 16; ++i){
+		for(i = 0; i < cubeHeight * cubeWidth; ++i){
 			cubeCoords[i][0] = cubeCoords[i][0] - rowDistance;
 			cubeCoords[i][1] = cubeCoords[i][1] + colDistance;
 		}
@@ -314,7 +314,7 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 	//New Direction = RIGHT
 	//else if((colChange > 0) && (rowChange == 0)){ dir = right; }  // #4
 	else if((colChange > 0) && (rowChange == 0)){
-		for(i = 0; i < 16; ++i){
+		for(i = 0; i < cubeHeight * cubeWidth; ++i){
 			cubeCoords[i][1] = cubeCoords[i][1] + colDistance;
 		}
 		cubeChars[1][1] = ' ';
@@ -325,7 +325,7 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 
 	//New Direction = DOWN RIGHT
 	else if((colChange > 0) && (rowChange > 0)){
-		for(i = 0; i < 16; ++i){
+		for(i = 0; i < cubeHeight * cubeWidth; ++i){
 			cubeCoords[i][0] = cubeCoords[i][0] + rowDistance;
 			cubeCoords[i][1] = cubeCoords[i][1] + colDistance;
 		}
@@ -337,7 +337,7 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 
 	//New Direction = DOWN
 	else if((colChange == 0) && (rowChange > 0)){
-		for(i = 0; i < 16; ++i){
+		for(i = 0; i < cubeHeight * cubeWidth; ++i){
 			cubeCoords[i][0] = cubeCoords[i][0] + rowDistance;
 		}
 		cubeChars[1][1] = ' ';
@@ -348,7 +348,7 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 
 	//New Direction = DOWN LEFT
 	else if((colChange < 0) && (rowChange > 0)){
-		for(i = 0; i < 16; ++i){
+		for(i = 0; i < cubeHeight * cubeWidth; ++i){
 			cubeCoords[i][0] = cubeCoords[i][0] + rowDistance;
 			cubeCoords[i][1] = cubeCoords[i][1] - colDistance;
 		}
@@ -360,7 +360,7 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 
 	//New Direction = LEFT
 	else if((colChange < 0) && (rowChange == 0)){
-		for(i = 0; i < 16; ++i){
+		for(i = 0; i < cubeHeight * cubeWidth; ++i){
 			cubeCoords[i][1] = cubeCoords[i][1] - colDistance;
 		}
 		cubeChars[1][1] = 'O';
@@ -371,7 +371,7 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 
 	//New Direction = UP LEFT
 	else if((colChange < 0) && (rowChange < 0)){
-		for(i = 0; i < 16; ++i){
+		for(i = 0; i < cubeHeight * cubeWidth; ++i){
 			cubeCoords[i][0] = cubeCoords[i][0] - rowDistance;
 			cubeCoords[i][1] = cubeCoords[i][1] - colDistance;
 		}
@@ -575,7 +575,7 @@ void Cube::checkCubeCollision(World *world){
 	for(mcs = world->getMiniCubes().begin();
 		mcs != world->getMiniCubes().end();
 		++mcs){
-		for(int i = 0; i < 16; ++i){
+		for(int i = 0; i < cubeHeight * cubeWidth; ++i){
 			if((mcs->first == cubeCoords[i][0]) && (mcs->second == cubeCoords[i][1])){ //token collision with minicube
 				//delete minicube entry
 				world->getMiniCubes().erase(mcs);
@@ -591,10 +591,10 @@ void Cube::checkCubeCollision(World *world){
 		!obCollisionDetected; obs++) {
 
 		//Short-circuit this Obstacle check if possible
-		if((*obs)->getPosX() > row + cubeHeight ||
+		if((*obs)->getPosX() > row + cubeHeight - 1 ||
 		   (*obs)->getPosX() + (*obs)->getGTS() - 1 < row ||
-		   (*obs)->getPosY() > col + cubeWidth ||
-		   (*obs)->getPosY() + (*obs)->getGTS() - 1 < col)
+		   (*obs)->getPosY() > col + cubeWidth - 1 ||
+		   (*obs)->getPosY() + (*obs)->getLongestGS() - 1 < col)
 			continue;
 
 		for(nonWSObs = (*obs)->getNonWSObsCoords().begin();

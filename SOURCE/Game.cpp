@@ -87,25 +87,25 @@ int Game::playGame(char host[], char port[]) {
 					}
 					else if(userInput == 7 && cube->getCubeCoords()[0][0] > 0 &&
 											  cube->getCubeCoords()[0][1] > 0) {
-						cube->updateCubePosition(0, 1, 0, 0);
+						cube->updateCubePosition(0, 1, 0, 1);
 						cube->setCubeDirection(left_up);
 					}
 					else if(userInput == 1 &&
 							cube->getCubeCoords()[15][0] < world->getBottomRow() &&
 							cube->getCubeCoords()[0][1] > 0) {
-						cube->updateCubePosition(0, 1, 0, 0);
+						cube->updateCubePosition(0, 1, 1, 0);
 						cube->setCubeDirection(left_down);
 					}
 					else if(userInput == 9 && cube->getCubeCoords()[0][0] > 0 &&
 											  cube->getCubeCoords()[15][1] < COLS) {
-						cube->updateCubePosition(0, 1, 0, 0);
+						cube->updateCubePosition(1, 0, 0, 1);
 						cube->setCubeDirection(right_up);
 					}
 					else if(userInput == 3 &&
 							cube->getCubeCoords()[15][0] < world->getBottomRow() &&
 							cube->getCubeCoords()[15][1] < COLS) {
-						cube->updateCubePosition(0, 1, 0, 0);
-						cube->setCubeDirection(right);
+						cube->updateCubePosition(1, 0, 1, 0);
+						cube->setCubeDirection(right_down);
 					}
 
 					//Unlock the lock after movement update
