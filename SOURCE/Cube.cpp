@@ -187,7 +187,7 @@ void Cube::loadCubeChars(char **chars){
 			cubeChars[i][j] = chars[i][j];
 }
 
-void Cube::loadCubeCoords(int coords[][]){
+void Cube::loadCubeCoords(int **coords){
 	//Load cubeChars with new values (clientside multiplayer only)
 	for(int i = 0; i < CUBE_COORDS_HEIGHT; i++)
 		for(int j = 0; j < CUBE_COORDS_WIDTH; j++)

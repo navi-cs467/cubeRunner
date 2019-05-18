@@ -57,9 +57,9 @@ class Cube{
 		int getCubePositionRow(void){return row;}  					//Return Cube's Current Row
 		void setCubePositionRow(int row){this->row = row;}  				//Set Cube's Current Row (multiplayer only)
 		char (*getCubeChars(void))[4]{return cubeChars;}				//Return's Cube's characters
-		void loadCubeChars(char chars[][]);							//Load Cube's characters (multiplayer only)
+		void loadCubeChars(char **chars);							//Load Cube's characters (multiplayer only)
 		int (*getCubeCoords(void))[2]{return cubeCoords;}			//Return Cube's coordinates
-		void loadCubeCoords(int coords[][]);							//Return Cube's coordinates
+		void loadCubeCoords(int **coords);							//Return Cube's coordinates
 		//int getCubeCurrWorld(void){return currWorld;}  				//Return Cube's World
 		World* getCubeCurrWorld(void){return currWorld;}
 		void setCubeCurrWorld(World *newWorld){currWorld = newWorld;}  //Set Cube's World
