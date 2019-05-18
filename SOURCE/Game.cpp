@@ -157,7 +157,7 @@ int Game::playGame(char host[], char port[]) {
 							memset(confirm, '\0', sizeof(confirm));
 
 							receiveMessage_C(socketFD, confirm);
-							cube->setScore(atoi(confirm));
+							setScore(atoi(confirm));
 							// CLOSE CONNECTION
 							close(socketFD);
 
@@ -194,7 +194,7 @@ int Game::playGame(char host[], char port[]) {
 							memset(confirm, '\0', sizeof(confirm));
 
 							receiveMessage_C(socketFD, confirm);
-							cube->setScore(atoi(confirm));
+							setScore(atoi(confirm));
 
 							// CLOSE CONNECTION
 							close(socketFD);
@@ -554,7 +554,7 @@ int Game::playGame(char host[], char port[]) {
 
 							//receive score
 							receiveMessage_C(socketFD, scoreStr);
-							cube->setScore(atoi(scoreStr));
+							setScore(atoi(scoreStr));
 
 							// close connection
 							close(socketFD);
