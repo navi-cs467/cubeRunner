@@ -591,10 +591,10 @@ void Cube::checkCubeCollision(World *world){
 		!obCollisionDetected; obs++) {
 
 		//Short-circuit this Obstacle check if possible
-		if((*obs)->getPosX() > row + cubeHeight ||
+		if((*obs)->getPosX() > row + cubeHeight - 1 ||
 		   (*obs)->getPosX() + (*obs)->getGTS() - 1 < row ||
-		   (*obs)->getPosY() > col + cubeWidth ||
-		   (*obs)->getPosY() + (*obs)->getGTS() - 1 < col)
+		   (*obs)->getPosY() > col + cubeWidth - 1 ||
+		   (*obs)->getPosY() + (*obs)->getLongestGS() - 1 < col)
 			continue;
 
 		for(nonWSObs = (*obs)->getNonWSObsCoords().begin();
