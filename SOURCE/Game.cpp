@@ -745,9 +745,6 @@ int Game::playGame(char host[], char port[]) {
 									// }
 
 							// (Optional ?) SEND: confirmation		//Probably not optional, need to wait for world transition animation
-							memset(sendConfirm, '\0', sizeof sendConfirm);
-							sprintf(sendConfirm, "%d", 1);
-						  sendMessage_C(socketFD, gameData);
 
 						}
 
