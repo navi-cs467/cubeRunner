@@ -435,9 +435,9 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player2, messageToSend);
 
 						//	 	(Optional ?) RECEIVE connection2: confirmation		//Probably not optional, need to wait for death animation
-								receiveMessage_C(player1, clientConfirm);
+								receiveMessage_S(player1, clientConfirm);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
-								receiveMessage_C(player2, clientConfirm);
+								receiveMessage_S(player2, clientConfirm);
 							}
 						}
 						else {
@@ -450,32 +450,43 @@ int main(int argc, char* argv[]) {
 											 // cube->getCubeLives, cube->getCubePositionRow() \
 											 // cube->getCubePositionCol()
 
+						//send lives to clients
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", cube->getCubeLives());
+						sendMessage_S(player1, messageToSend);
+						sendMessage_S(player2, messageToSend);
+
+						//send row to clients
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", cube->getCubePositionRow());
+						sendMessage_S(player1, messageToSend);
+						sendMessage_S(player2, messageToSend);
+
+						//send col to clients
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", cube->getCubePositionCol());
+						sendMessage_S(player1, messageToSend);
+						sendMessage_S(player2, messageToSend);
+
+						//send cubeChars
 						char** cubeCharsArray = cube->getCubeChars();
 
-
+						//buffers for character array
 						char cubeCharsBuff[256]; char cubeCharBuff[2];
 
 						memset(cubeCharsBuff, '\0', sizeof cubeCharsBuff);
 
-						//send each array by concatenating characters onto buffer
+						//send array by concatenating characters onto buffer
 						int i = 0; int j = 0;
-						for (i ; i < CUBE_CHARS_HEIGHT; i++)
+						for (i; i < CUBE_CHARS_HEIGHT; i++)
 						{
 							for (j; j < CUBE_CHARS_WIDTH; j++)
 							{
 								memset(cubeCharBuff, '\0', sizeof cubeCharsBuff);
+
+								//create strings from characters in array
 								sprintf(cubeCharBuff, "%c", cubeCharsArray[i][j]);
-
-								if (i != CUBE_CHARS_HEIGHT && j != CUBE_CHARS_WIDTH)
-								{
-									strcat(cubeCharsBuff, cubeCharBuff);
-									strcat(cubeCharsBuff, ",");
-								}
-
-								else
-								{
-									strcat(cubeCharsBuff, cubeCharBuff);
-								}
+								strcat(cubeCharsBuff, cubeCharBuff);
 							}
 						}
 

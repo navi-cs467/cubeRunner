@@ -157,7 +157,7 @@ int Game::playGame(char host[], char port[]) {
 							memset(confirm, '\0', sizeof(confirm));
 
 							receiveMessage_C(socketFD, confirm);
-							setScore(atoi(confirm));
+							cube->setScore(atoi(confirm));
 							// CLOSE CONNECTION
 							close(socketFD);
 
@@ -194,7 +194,7 @@ int Game::playGame(char host[], char port[]) {
 							memset(confirm, '\0', sizeof(confirm));
 
 							receiveMessage_C(socketFD, confirm);
-							setScore(atoi(confirm));
+							cube->setScore(atoi(confirm));
 
 							// CLOSE CONNECTION
 							close(socketFD);
@@ -554,7 +554,7 @@ int Game::playGame(char host[], char port[]) {
 
 							//receive score
 							receiveMessage_C(socketFD, scoreStr);
-							setScore(atoi(scoreStr));
+							cube->setScore(atoi(scoreStr));
 
 							// close connection
 							close(socketFD);
@@ -615,7 +615,69 @@ int Game::playGame(char host[], char port[]) {
 						/**** RECEIVE CUBE DATA ****/
 						// RECEIVE char coords[CUBE_COORDS_HEGHT][CUBE_COORDS_WIDTH], \	//cube coords
 						//		   char chars[CUBE_CHARS_HEGHT][CUBE_CHARS_WIDTH], \	//cube chars
-						//		   int_3, int_5, int_6									//cube lives, row, col
+						//		   int_3, int_4, int_5									//cube lives, row, col
+
+						//receive lives
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+						int_3 = atoi(gameData);
+						cube->setLives(int_3);
+
+						//receive row
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+						int_4 = atoi(gameData);
+						cube->setCubePositionRow(int_4);
+
+						//receive col
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+						int_4 = atoi(gameData);
+						cube->setCubePositionRow(int_4);
+
+						int cubeCoordsArray[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];
+
+						//calculate cube coords from row and col received from server
+						for(int i = 0, lineInc = 0, colInc = 0; i < CUBE_COORDS_HEIGHT * CUBE_COORDS_WIDTH / 2; i++)
+						{
+						   for(int j = 0; j < 2; j++)
+							 {
+							    if( j % 2 == 0)
+									{
+							       if(i != 0 && i % CUBE_COORDS_WIDTH == 0) lineInc++;
+							       cubeCoordsArray[i][j] = row + lineInc;
+							    }
+	     						else
+									{
+										cubeCoordsArray[i][j] = col + colInc++;
+									}
+
+               }
+						 }
+
+						// set the cube coords
+						cube->loadCubeCoords(cubeCoordsArray);
+
+						//receive string of cube chars
+						char cubeCharsArray[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH];
+
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+
+						//iterate through string, placing characters where they belong in the array
+						int k = 0;
+
+						for (i; i < CUBE_CHARS_HEIGHT; i++)
+						{
+							for (j; j < CUBE_CHARS_WIDTH; j++)
+							{
+								cubeCharsArray[i][j] = gameData[k++];
+							}
+						}
+
+						//load cube chars
+						cube->loadCubeChars(cubeCharsArray);
+
 						// cube->loadCubeCoords(coords); cube->loadCubeChars(chars); cube->setLives(int_3);
 						// cube->setCubePositionRow(int_5); cube->setCubePositionCol(int_6);
 						// (Optional ?) SEND: confirmation
@@ -667,7 +729,7 @@ int Game::playGame(char host[], char port[]) {
 						// (Optional ?) SEND: confirmation
 
 						//Loop to rebuild Obstacles
-						for(int i = 0; i < int_1; i++) {
+						for(i = 0; i < int_1; i++) {
 							//RECEIVE int_2, int_3, int_4, int_5, int_6		// type of Obs, posX, posY, gt, gts(not strictly necessary, but used as convenience)
 							if(int_2 == 1)
 								world->getObstacles().push_back(new Seaweed(int_3, int_4, int_5, int_6));
