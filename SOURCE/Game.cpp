@@ -667,9 +667,9 @@ int Game::playGame(char host[], char port[]) {
 						//iterate through string, placing characters where they belong in the array
 						int k = 0;
 
-						for (i; i < CUBE_CHARS_HEIGHT; i++)
+						for (int i = 0; i < CUBE_CHARS_HEIGHT; i++)
 						{
-							for (j; j < CUBE_CHARS_WIDTH; j++)
+							for (int j = 0; j < CUBE_CHARS_WIDTH; j++)
 							{
 								cubeCharsArray[i][j] = gameData[k++];
 							}
