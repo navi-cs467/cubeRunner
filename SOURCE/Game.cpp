@@ -104,8 +104,8 @@ int Game::playGame(char host[], char port[]) {
 					else if(userInput == 3 &&
 							cube->getCubeCoords()[15][0] < world->getBottomRow() &&
 							cube->getCubeCoords()[15][1] < COLS) {
-						cube->updateCubePosition(1, 0, 1, 1);
-						cube->setCubeDirection(right);
+						cube->updateCubePosition(1, 0, 1, 0);
+						cube->setCubeDirection(right_down);
 					}
 
 					//Unlock the lock after movement update
