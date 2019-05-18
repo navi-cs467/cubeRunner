@@ -24,7 +24,7 @@
 
 
 //Default Initialization
-Cube::Cube(World *world, int lives) : 
+Cube::Cube(World *world, int lives) :
 	currWorld(world), lives(lives) {
 	col = 0;
 	row = 0;
@@ -32,7 +32,7 @@ Cube::Cube(World *world, int lives) :
 	isDead = 0;
 	score = 0;
 	color = WHITE_BLACK;
-	
+
 	cubeChars[0][0] = '#';
 	cubeChars[0][1] = '#';
 	cubeChars[0][2] = '#';
@@ -49,7 +49,7 @@ Cube::Cube(World *world, int lives) :
 	cubeChars[3][1] = '#';
 	cubeChars[3][2] = '#';
 	cubeChars[3][3] = '#';
-	
+
 	cubeCoords[0][0] = (LINES - (LINES - world->getBottomRow())) / 2;
 	cubeCoords[0][1] = 2;
 	cubeCoords[1][0] = (LINES - (LINES - world->getBottomRow())) / 2;
@@ -82,9 +82,9 @@ Cube::Cube(World *world, int lives) :
 	cubeCoords[14][1] = 4;
 	cubeCoords[15][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 3;
 	cubeCoords[15][1] = 5;
-	
+
 	curDir = right;
-	
+
 	//Update row and col
 	row = cubeCoords[0][0];
 	col = cubeCoords[0][1];
@@ -122,7 +122,7 @@ void Cube::cubeReset(World *world){
 	col = 0;
 	row = 0;
 	isDead = 0;
-	
+
 	cubeChars[0][0] = '#';
 	cubeChars[0][1] = '#';
 	cubeChars[0][2] = '#';
@@ -172,9 +172,9 @@ void Cube::cubeReset(World *world){
 	cubeCoords[14][1] = 4;
 	cubeCoords[15][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 3;
 	cubeCoords[15][1] = 5;
-	
+
 	curDir = right;
-	
+
 	//Update row and col
 	row = cubeCoords[0][0];
 	col = cubeCoords[0][1];
@@ -182,23 +182,23 @@ void Cube::cubeReset(World *world){
 
 void Cube::loadCubeChars(char **chars){
 	//Load cubeChars with new values (clientside multiplayer only)
-	for(int i = 0; i < CUBE_CHARS_HEIGHT; i++) 
+	for(int i = 0; i < CUBE_CHARS_HEIGHT; i++)
 		for(int j = 0; j < CUBE_CHARS_WIDTH; j++)
 			cubeChars[i][j] = chars[i][j];
 }
 
-void Cube::loadCubeCoords(int **coords){
+void Cube::loadCubeCoords(int coords[][]){
 	//Load cubeChars with new values (clientside multiplayer only)
-	for(int i = 0; i < CUBE_COORDS_HEIGHT; i++) 
+	for(int i = 0; i < CUBE_COORDS_HEIGHT; i++)
 		for(int j = 0; j < CUBE_COORDS_WIDTH; j++)
 			cubeCoords[i][j] = coords[i][j];
 }
-		
+
 
 //Update the cube token position based on input by the user(s)
 void Cube::updateCubePosition(bool colInc, bool colDec, bool rowInc, bool rowDec){
 	int colIncInt = 0, colDecInt = 0, rowIncInt = 0, rowDecInt = 0;
-	
+
 	if(colInc == 1){
 		colIncInt = 1;
 	}
@@ -211,7 +211,7 @@ void Cube::updateCubePosition(bool colInc, bool colDec, bool rowInc, bool rowDec
 	if(rowDec == 1){
 		rowDecInt = 1;
 	}
-	
+
 	//Update curDir member
 	if(colInc == 0 && colDec == 1 && rowInc == 0 && rowDec == 0 ){
 		curDir = right;
@@ -246,7 +246,7 @@ void Cube::updateCubePositionHelper(int colInc, int colDec, int rowInc, int rowD
 	int colPrev = 0, rowPrev = 0;
 
 	//In World 1 (Water), the token will move one unit in the col/row
-	//position as directed by the user(s). If the user(s) is not 
+	//position as directed by the user(s). If the user(s) is not
 	//providing input for an col/row direction or if both a positive col/row
 	//and negative col/row
 	if(typeid(*currWorld) == typeid(Water)){
@@ -324,7 +324,7 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 	}
 
 	//New Direction = DOWN RIGHT
-	else if((colChange > 0) && (rowChange > 0)){		
+	else if((colChange > 0) && (rowChange > 0)){
 		for(i = 0; i < 16; ++i){
 			cubeCoords[i][0] = cubeCoords[i][0] + rowDistance;
 			cubeCoords[i][1] = cubeCoords[i][1] + colDistance;
@@ -383,11 +383,11 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 
 	//Error
 	else{ return 1; }
-	
+
 	//Update row and col
 	row = cubeCoords[0][0];
 	col = cubeCoords[0][1];
-	
+
 	return 0;
 }
 
@@ -414,14 +414,14 @@ void Cube::drawCube(void){
 }
 
 void Cube::drawCubeDeath(int *userInput){
-	
+
 	attron(COLOR_PAIR(YELLOW_BLACK));
 	mvaddstr(LINES - 1, 15, "Death! (Press Enter to Continue)");
 	refresh();
-	
+
 	int i = 0, j = 0, k = 0;
 
-	start_color();			
+	start_color();
 	init_pair(1, COLOR_RED, COLOR_BLACK);
 	attron(COLOR_PAIR(1));
 
@@ -439,7 +439,7 @@ void Cube::drawCubeDeath(int *userInput){
 	}
 	refresh();
 	for(int i = 0; *userInput != 10 && i < 500000 / 100; i++)
-		usleep(50);	
+		usleep(50);
 
 	attroff(COLOR_PAIR(1));
 	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
@@ -536,7 +536,7 @@ void Cube::drawCubeDeath(int *userInput){
 		//Token Flash Part 1 - blank
 		for(i = row; i < (row + 4); ++i){
 			for(j = col; j < (col + 4); ++j){
-				mvaddch(i,j,' '); 
+				mvaddch(i,j,' ');
 			}
 		}
 		refresh();
@@ -546,7 +546,7 @@ void Cube::drawCubeDeath(int *userInput){
 		//Token Flash Part 2 - appear
 		for(i = row; i < (row + 4); ++i){
 			for(j = col; j < (col + 4); ++j){
-				mvaddch(i,j,'X'); 
+				mvaddch(i,j,'X');
 			}
 		}
 		refresh();
@@ -555,25 +555,25 @@ void Cube::drawCubeDeath(int *userInput){
 	}
 
 	attroff(COLOR_PAIR(7));
-	
+
 	//Block here until user presses Enter key
 	while(*userInput != 10){}
-	
+
 	//Clear Enter key prompt
 	attron(COLOR_PAIR(BLACK_BLACK));
 	mvaddstr(LINES - 1, 15, "                                ");
 	refresh();
-	
+
 }
 
 void Cube::checkCubeCollision(World *world){
-	
+
 	list<Obstacle*>::iterator obs;
 	set<pair<int,int> >::iterator mcs, nonWSObs;
-	
+
 	//Check MiniCube Collisions
-	for(mcs = world->getMiniCubes().begin(); 
-		mcs != world->getMiniCubes().end(); 
+	for(mcs = world->getMiniCubes().begin();
+		mcs != world->getMiniCubes().end();
 		++mcs){
 		for(int i = 0; i < 16; ++i){
 			if((mcs->first == cubeCoords[i][0]) && (mcs->second == cubeCoords[i][1])){ //token collision with minicube
@@ -582,28 +582,28 @@ void Cube::checkCubeCollision(World *world){
 				//increment score
 				score += 10;			}
 		}
-	}	
+	}
 
 	bool obCollisionDetected = false;
 	//Check Obstacle Collisions
 	for(obs = world->getObstacles().begin();
 		obs != world->getObstacles().end() &&
 		!obCollisionDetected; obs++) {
-		
+
 		//Short-circuit this Obstacle check if possible
-		if((*obs)->getPosX() > row + cubeHeight || 
+		if((*obs)->getPosX() > row + cubeHeight ||
 		   (*obs)->getPosX() + (*obs)->getGTS() - 1 < row ||
 		   (*obs)->getPosY() > col + cubeWidth ||
-		   (*obs)->getPosY() + (*obs)->getGTS() - 1 < col) 
+		   (*obs)->getPosY() + (*obs)->getGTS() - 1 < col)
 			continue;
-		
-		for(nonWSObs = (*obs)->getNonWSObsCoords().begin(); 
+
+		for(nonWSObs = (*obs)->getNonWSObsCoords().begin();
 			nonWSObs != (*obs)->getNonWSObsCoords().end() &&
-			!obCollisionDetected; 
+			!obCollisionDetected;
 			++nonWSObs){
-			for(int i = 0; i < cubeWidth * cubeHeight && 
+			for(int i = 0; i < cubeWidth * cubeHeight &&
 					!obCollisionDetected; ++i){
-				if((nonWSObs->first == cubeCoords[i][0]) && 
+				if((nonWSObs->first == cubeCoords[i][0]) &&
 				(nonWSObs->second == cubeCoords[i][1])){ //token collision with Obstacle
 					//set isDead status to true (1)
 					isDead = 1;
@@ -687,7 +687,7 @@ void Cube::checkCubeCollision(World *world){
 
   }
 
-  
+
 
   getch(); //Wait for user input
   endwin(); //End Curses

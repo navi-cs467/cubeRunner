@@ -32,7 +32,7 @@ class Cube{
 		//int currWorld;
 		World *currWorld;
 		char cubeChars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH];
-		int cubeCoords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];	 //row, col	
+		int cubeCoords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];	 //row, col
 		void updateCubePositionHelper(int, int, int, int);
 		int updateCubeCharsAndCoords(int, int, int, int, int, int);
 		bool isDead; //0 = alive, 1 = dead
@@ -43,7 +43,7 @@ class Cube{
 		Direction curDir;
 		static const int cubeHeight = 4;
 		static const int cubeWidth = 4;
-		
+
     public:
 		Cube(){}
 		Cube(World *world, int lives);
@@ -57,11 +57,11 @@ class Cube{
 		int getCubePositionRow(void){return row;}  					//Return Cube's Current Row
 		void setCubePositionRow(int row){this->row = row;}  				//Set Cube's Current Row (multiplayer only)
 		char (*getCubeChars(void))[4]{return cubeChars;}				//Return's Cube's characters
-		void loadCubeChars(char **chars);							//Load Cube's characters (multiplayer only)
+		void loadCubeChars(char chars[][]);							//Load Cube's characters (multiplayer only)
 		int (*getCubeCoords(void))[2]{return cubeCoords;}			//Return Cube's coordinates
-		void loadCubeCoords(int **coords);							//Return Cube's coordinates
+		void loadCubeCoords(int coords[][]);							//Return Cube's coordinates
 		//int getCubeCurrWorld(void){return currWorld;}  				//Return Cube's World
-		World* getCubeCurrWorld(void){return currWorld;} 
+		World* getCubeCurrWorld(void){return currWorld;}
 		void setCubeCurrWorld(World *newWorld){currWorld = newWorld;}  //Set Cube's World
 		void drawCube(void); 										   //Draw token on console - ncurses
 		void drawCubeDeath(int *userInput); 									//Explosion Animation
