@@ -180,14 +180,14 @@ void Cube::cubeReset(World *world){
 	col = cubeCoords[0][1];
 }
 
-void Cube::loadCubeChars(char **chars){
+void Cube::loadCubeChars(char chars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH]){
 	//Load cubeChars with new values (clientside multiplayer only)
 	for(int i = 0; i < CUBE_CHARS_HEIGHT; i++)
 		for(int j = 0; j < CUBE_CHARS_WIDTH; j++)
 			cubeChars[i][j] = chars[i][j];
 }
 
-void Cube::loadCubeCoords(int **coords){
+void Cube::loadCubeCoords(int coords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH]){
 	//Load cubeChars with new values (clientside multiplayer only)
 	for(int i = 0; i < CUBE_COORDS_HEIGHT; i++)
 		for(int j = 0; j < CUBE_COORDS_WIDTH; j++)
