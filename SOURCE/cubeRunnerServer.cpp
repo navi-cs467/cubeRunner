@@ -475,8 +475,6 @@ int main(int argc, char* argv[]) {
 						//send cubeChars
 						char** cubeCharsArray = (char**) cube->getCubeChars();
 
-						cubeCharsArray[]
-
 						//buffers for character array
 						char cubeCharsBuff[256]; char cubeCharBuff[2];
 
@@ -488,7 +486,7 @@ int main(int argc, char* argv[]) {
 						{
 							for (j; j < CUBE_CHARS_WIDTH; j++)
 							{
-								memset(cubeCharBuff, '\0', sizeof cubeCharsBuff);
+								memset(cubeCharBuff, '\0', sizeof cubeCharBuff);
 
 								//create strings from characters in array
 								sprintf(cubeCharBuff, "%c", cubeCharsArray[i][j]);
