@@ -473,9 +473,9 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player2, messageToSend);
 
 						//send cubeChars
-						char* cubeCharsArray[CUBE_CHARS_WIDTH];
+						char** cubeCharsArray = (char**) cube->getCubeChars();
 
-						cubeCharsArray = cube->getCubeChars();
+						cubeCharsArray[]
 
 						//buffers for character array
 						char cubeCharsBuff[256]; char cubeCharBuff[2];
