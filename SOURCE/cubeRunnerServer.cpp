@@ -130,15 +130,15 @@ int main(int argc, char* argv[]) {
 		//(so cube doesn't appear to "skip" around)
 		//if input is coming in too fast
 		bool renderedLastMv1 = true, renderedLastMv2 = true, deathFlag = false;
-
+		int userInput1, userInput2;
 		#pragma omp parallel sections shared(deathFlag, lock1, \
-											 renderedLastMv1, renderedLastMv2)
+											 renderedLastMv1, renderedLastMv2, userInput1, userInput2)
 		{
 			//Thread (1) for updating userInput1 and cube position
 			#pragma omp section
 			{
 				//Variable for user 1 input
-				int userInput1;
+				char confirm[256];
 				memset(confirm, '\0', sizeof(confirm));
 				char messageToReceive[256];
 				memset(messageToReceive, '\0', sizeof(messageToReceive));
@@ -165,11 +165,12 @@ int main(int argc, char* argv[]) {
 					//Or if data is being sent (Ensures players see every move they input)
 					omp_set_lock(&lock1);
 
-					if((userInput1 == KEY_UP || userInput1 == '8' || userInput1 == 'w') &&
-							&& cube->getCubeCoords()[0][0] > 0)) {
+					if((userInput1 == KEY_UP || userInput1 == '8' || userInput1 == 'w')
+							&& cube->getCubeCoords()[0][0] > 0){
 						cube->updateCubePosition(0, 0, 0, 1);
 						cube->setCubeDirection(up);
 					}
+
 					else if((userInput1 == KEY_DOWN || userInput1 == '2' || userInput1 == 's') &&
 								cube->getCubeCoords()[15][0] < world->getBottomRow()) {
 						cube->updateCubePosition(0, 0, 1, 0);
@@ -184,7 +185,6 @@ int main(int argc, char* argv[]) {
 			#pragma omp section
 			{
 				//Variable for user 2 input
-				int userInput2;
 				char confirm[256];
 				memset(confirm, '\0', sizeof(confirm));
 				char messageToReceive[256];
@@ -234,6 +234,8 @@ int main(int argc, char* argv[]) {
 				//Establish scrollRate & moveRate,
 				//based on game difficulty (gameMode)
 				double scrollRate, moveRate;
+				int gameMode = game.getGameMode();
+
 				if(gameMode == HARD) {
 					scrollRate = SCROLL_RATE_HARD;
 				}
@@ -241,10 +243,10 @@ int main(int argc, char* argv[]) {
 					scrollRate = SCROLL_RATE_NORMAL;
 				}
 				else {
-					scrollRate = SCROLL_RATE EASY;
+					scrollRate = SCROLL_RATE_EASY;
 				}
 
-				moveRate = scrollRate / SCROLL_RATE_DIVISOR;
+				moveRate = scrollRate / MOVE_RATE_DIVISOR;
 
 				//Timer Variables
 				double lastScrollTime = omp_get_wtime(),
@@ -268,7 +270,7 @@ int main(int argc, char* argv[]) {
 					//and score to both, then break
 					if(userInput1 == 'q') {
 						//SEND Connection1 score
-						sprintf(messageToSend, "%d", score);
+						sprintf(messageToSend, "%d", cube->getCubeScore());
 						sendMessage_S(player1, messageToSend);
 
 						//CLOSE CONNECTION1
@@ -281,7 +283,7 @@ int main(int argc, char* argv[]) {
 						//(Optional ?) RECEIVE confirmation Connection2
 						//SEND Connection2 score
 						memset(messageToSend, '\0', sizeof messageToSend);
-						sprintf(messageToSend, "%d", score);
+						sprintf(messageToSend, "%d", cube->getCubeScore());
 						sendMessage_S(player2, messageToSend);
 
 						//CLOSE CONNECTION2
@@ -307,7 +309,7 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player1, messageToSend);
 						//SEND Connection1 score
 						memset(messageToSend, '\0', sizeof messageToSend);
-						sprintf(messageToSend, "%d", score);
+						sprintf(messageToSend, "%d", cube->getCubeScore());
 						sendMessage_S(player2, messageToSend);
 						//CLOSE CONNECTION1
 						close(player1);
@@ -328,7 +330,7 @@ int main(int argc, char* argv[]) {
 						// World transition if cube->transitionCount
 						//reaches TRANSITION_SCORE_INTERVAL
 
-						if(cube->getTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
+						if(cube->getCubeTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
 
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
