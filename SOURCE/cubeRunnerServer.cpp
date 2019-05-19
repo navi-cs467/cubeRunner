@@ -870,11 +870,15 @@ int main(int argc, char* argv[]) {
 						/**** SEND MINICUBES  ****/
 						set<pair<int, int>>::iterator itMiniCubes;
 
+						set<pair<int, int>>& miniCubes = world->getMiniCubes();
+
 						// SEND connection1: world->getMiniCubes().size();
 						// (Optional ?) RECEIVE connection1: confirmation
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", world->getMiniCubes().size());
 						sendMessage_S(player1, messageToSend);
+
+
 
 
 						for(itMiniCubes = world->getMiniCubes().begin();
