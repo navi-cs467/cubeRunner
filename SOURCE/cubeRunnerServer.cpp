@@ -338,22 +338,22 @@ int main(int argc, char* argv[]) {
 								delete *it;
 							}
 
-							//Delete and create new world
-							if(typeid(*world) == typeid(Water)) {
-								delete world;
-								world = new Land(gameMode, isTwoPlayer);
-								newWorldType = 1;
-							}
-							else if(typeid(*world) == typeid(Land)) {
-								delete world;
-								world = new Space(gameMode, isTwoPlayer);
-								newWorldType = 2;
-							}
-							else if(typeid(*world) == typeid(Space)) {
-								delete world;
-								world = new Water(gameMode, isTwoPlayer);
-								newWorldType = 3;
-							}
+							// //Delete and create new world
+							// if(typeid(*world) == typeid(Water)) {
+							// 	delete world;
+							// 	world = new Land(gameMode, isTwoPlayer);
+							// 	newWorldType = 1;
+							// }
+							// else if(typeid(*world) == typeid(Land)) {
+							// 	delete world;
+							// 	world = new Space(gameMode, isTwoPlayer);
+							// 	newWorldType = 2;
+							// }
+							// else if(typeid(*world) == typeid(Space)) {
+							// 	delete world;
+							// 	world = new Water(gameMode, isTwoPlayer);
+							// 	newWorldType = 3;
+							// }
 
 							isNewWorldFlag = true;
 
@@ -473,7 +473,7 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player2, messageToSend);
 
 						//send cubeChars
-						char** cubeCharsArray = cube->getCubeChars();
+						char cubeCharsArray[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH] = cube->getCubeChars();
 
 						//buffers for character array
 						char cubeCharsBuff[256]; char cubeCharBuff[2];
