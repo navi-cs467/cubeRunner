@@ -473,7 +473,7 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player2, messageToSend);
 
 						//send cubeChars
-						char cubeCharsArray[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH];
+						char* cubeCharsArray[CUBE_CHARS_WIDTH];
 
 						cubeCharsArray = cube->getCubeChars();
 
