@@ -178,6 +178,7 @@ int main(int argc, char* argv[]) {
 
 					renderedLastMv1 = false;
 					omp_unset_lock(&lock1);
+					}
 				}
 			}
 
@@ -450,8 +451,8 @@ int main(int argc, char* argv[]) {
 						/**** END SEND DEATH FLAG ****/
 
 						/**** SEND CUBE DATA ****/
-						// SEND connection1: cube->getCubeCoords()[array], cube->getCubeChars()[array], \
-											 // cube->getCubeLives, cube->getCubePositionRow() \
+						// SEND connection1: cube->getCubeCoords()[array], cube->getCubeChars()[array], 
+											 // cube->getCubeLives, cube->getCubePositionRow() 
 											 // cube->getCubePositionCol()
 
 						//send lives to clients
@@ -481,10 +482,9 @@ int main(int argc, char* argv[]) {
 						memset(cubeCharsBuff, '\0', sizeof cubeCharsBuff);
 
 						//send array by concatenating characters onto buffer
-						int i = 0; int j = 0;
-						for (i; i < CUBE_CHARS_HEIGHT; i++)
+						for (int i = 0; i < CUBE_CHARS_HEIGHT; i++)
 						{
-							for (j; j < CUBE_CHARS_WIDTH; j++)
+							for (int j = 0; j < CUBE_CHARS_WIDTH; j++)
 							{
 								memset(cubeCharBuff, '\0', sizeof cubeCharBuff);
 
@@ -500,8 +500,8 @@ int main(int argc, char* argv[]) {
 
 						// (Optional ?) RECEIVE connection1: confirmation
 
-						// SEND connection2: cube->getCubeCoords()[array], cube->getCubeChars()[array], \
-											 // cube->getCubeLives, cube->getCubePositionRow() \
+						// SEND connection2: cube->getCubeCoords()[array], cube->getCubeChars()[array], 
+											 // cube->getCubeLives, cube->getCubePositionRow() 
 											 // cube->getCubePositionCol()
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND CUBE DATA ****/
@@ -576,12 +576,12 @@ int main(int argc, char* argv[]) {
 						//Count how many Obstacles are on screen
 						int onScreenCount = 0;
 						for(itObs = world->getObstacles().begin();
-							itObs < world->getObstacles().end();
+							itObs != world->getObstacles().end();
 							itObs++) {
-								if(((*it)->getPosY() + (*it)->getLongestGS() > 0) &&
-								   ((*it)->getPosY() < COLS) &&
-								   ((*it)->getPosX() + (*it)->getGTS() > 0) &&
-								   ((*it)->getPosY() < world->getBottomRow()))
+								if(((*itObs)->getPosY() >= 0) &&
+								   ((*itObs)->getPosY() < COLS) &&
+								   ((*itObs)->getPosX() >= 0) &&
+								   ((*itObs)->getPosX() <= world->getBottomRow()))
 									onScreenCount++;
 						}
 
@@ -594,13 +594,13 @@ int main(int argc, char* argv[]) {
 
 						// loop through obstacles
 						for(itObs = world->getObstacles().begin();
-							itObs < world->getObstacles().end();
+							itObs != world->getObstacles().end();
 							itObs++) {
-								if(((*it)->getPosY() + (*it)->getLongestGS() > 0) &&
-								   ((*it)->getPosY() < COLS) &&
-								   ((*it)->getPosX() + (*it)->getGTS() > 0) &&
-								   ((*it)->getPosY() < world->getBottomRow())) {
-								if(typeid(**it) == typeid(Seaweed))
+								if(((*itObs)->getPosY() >= 0) &&
+								   ((*itObs)->getPosY() < COLS) &&
+								   ((*itObs)->getPosX() >= 0) &&
+								   ((*itObs)->getPosX() <= world->getBottomRow())) {
+								if(typeid(**itObs) == typeid(Seaweed))
 								{
 									// SEND connection1: 1
 									memset(messageToSend, '\0', sizeof messageToSend);
@@ -608,7 +608,7 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player1, messageToSend);
 								}
 
-								else if(typeid(**it) == typeid(Coral))
+								else if(typeid(**itObs) == typeid(Coral))
 								{
 									// SEND connection1: 2
 									memset(messageToSend, '\0', sizeof messageToSend);
@@ -616,7 +616,7 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player1, messageToSend);
 								}
 
-								else if(typeid(**it) == typeid(Shark))
+								else if(typeid(**itObs) == typeid(Shark))
 								{
 									// SEND connection1: 3
 									memset(messageToSend, '\0', sizeof messageToSend);
@@ -624,7 +624,7 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player1, messageToSend);
 								}
 
-								else if(typeid(**it) == typeid(Octopus))
+								else if(typeid(**itObs) == typeid(Octopus))
 								{
 									// SEND connection1: 4
 									memset(messageToSend, '\0', sizeof messageToSend);
@@ -632,7 +632,7 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player1, messageToSend);
 								}
 
-								/* else if(typeid(**it) == typeid(Tree))
+								/* else if(typeid(**itObs) == typeid(Tree))
 								// SEND connection1: 5
 								{
 								// SEND connection1: 5
@@ -640,7 +640,7 @@ int main(int argc, char* argv[]) {
 								sprintf(messageToSend, "%d", 5);
 								sendMessage_S(player1, messageToSend);
 							}
-								else if(typeid(**it) == typeid(Rock))
+								else if(typeid(**itObs) == typeid(Rock))
 								{
 								// SEND connection1: 6
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -648,7 +648,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 							}
 								=
-								else if(typeid(**it) == typeid(Bird))
+								else if(typeid(**itObs) == typeid(Bird))
 								{
 								// SEND connection1: 7
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -656,7 +656,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 							}
 
-								else if(typeid(**it) == typeid(Bat))
+								else if(typeid(**itObs) == typeid(Bat))
 								{
 								// SEND connection1: 8
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -664,7 +664,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 							}
 						9
-								else if(typeid(**it) == typeid(Asteroid))
+								else if(typeid(**itObs) == typeid(Asteroid))
 								{
 								// SEND connection1: 9
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -672,7 +672,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 							}
 
-								else if(typeid(**it) == typeid(Planet))
+								else if(typeid(**itObs) == typeid(Planet))
 								{
 								// SEND connection1: 10
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -680,7 +680,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 							}
 
-								else if(typeid(**it) == typeid(Comet))
+								else if(typeid(**itObs) == typeid(Comet))
 								{
 								// SEND connection1: 11
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -688,7 +688,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 							}
 
-								else if(typeid(**it) == typeid(Spaceship))
+								else if(typeid(**itObs) == typeid(Spaceship))
 								{
 								// SEND connection1: 12
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -697,29 +697,29 @@ int main(int argc, char* argv[]) {
 							}
 								*/
 
-								// SEND connection1: (*it)->getPosX(),
-								//					 (*it)->getPosY(),
-								//					 (*it)->getGT(),
-								//					 (*it)->getGTS()
+								// SEND connection1: (*itObs)->getPosX(),
+								//					 (*itObs)->getPosY(),
+								//					 (*itObs)->getGT(),
+								//					 (*itObs)->getGTS()
 
 								//posX
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", (*it)->getPosX());
+								sprintf(messageToSend, "%d", (*itObs)->getPosX());
 								sendMessage_S(player1, messageToSend);
 
 								// posY
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", (*it)->getPosY());
+								sprintf(messageToSend, "%d", (*itObs)->getPosY());
 								sendMessage_S(player1, messageToSend);
 
 								// gt
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", (*it)->getGT());
+								sprintf(messageToSend, "%d", (*itObs)->getGT());
 								sendMessage_S(player1, messageToSend);
 
 								// gts
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", (*it)->getGTS());
+								sprintf(messageToSend, "%d", (*itObs)->getGTS());
 								sendMessage_S(player1, messageToSend);
 
 								// (Optional ?) RECEIVE connection1: confirmation
@@ -734,13 +734,13 @@ int main(int argc, char* argv[]) {
 
 						// loop through obstacles
 						for(itObs = world->getObstacles().begin();
-							itObs < world->getObstacles().end();
+							itObs != world->getObstacles().end();
 							itObs++) {
-								if(((*it)->getPosY() + (*it)->getLongestGS() > 0) &&
-								   ((*it)->getPosY() < COLS) &&
-								   ((*it)->getPosX() + (*it)->getGTS() > 0) &&
-								   ((*it)->getPosY() < world->getBottomRow())) {
-								if(typeid(**it) == typeid(Seaweed))
+								if(((*itObs)->getPosY() >= 0) &&
+								   ((*itObs)->getPosY() < COLS) &&
+								   ((*itObs)->getPosX() >= 0) &&
+								   ((*itObs)->getPosX() <= world->getBottomRow())) {
+								if(typeid(**itObs) == typeid(Seaweed))
 								{
 									// SEND connection2: 1
 									memset(messageToSend, '\0', sizeof messageToSend);
@@ -748,7 +748,7 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player2, messageToSend);
 								}
 
-								else if(typeid(**it) == typeid(Coral))
+								else if(typeid(**itObs) == typeid(Coral))
 								{
 									// SEND connection2: 2
 									memset(messageToSend, '\0', sizeof messageToSend);
@@ -756,7 +756,7 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player2, messageToSend);
 								}
 
-								else if(typeid(**it) == typeid(Shark))
+								else if(typeid(**itObs) == typeid(Shark))
 								{
 									// SEND connection2: 3
 									memset(messageToSend, '\0', sizeof messageToSend);
@@ -764,7 +764,7 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player2, messageToSend);
 								}
 
-								else if(typeid(**it) == typeid(Octopus))
+								else if(typeid(**itObs) == typeid(Octopus))
 								{
 									// SEND connection2: 4
 									memset(messageToSend, '\0', sizeof messageToSend);
@@ -772,7 +772,7 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player2, messageToSend);
 								}
 
-								/* else if(typeid(**it) == typeid(Tree))
+								/* else if(typeid(**itObs) == typeid(Tree))
 								// SEND connection2: 5
 								{
 								// SEND connection2: 5
@@ -780,7 +780,7 @@ int main(int argc, char* argv[]) {
 								sprintf(messageToSend, "%d", 5);
 								sendMessage_S(player2, messageToSend);
 							}
-								else if(typeid(**it) == typeid(Rock))
+								else if(typeid(**itObs) == typeid(Rock))
 								{
 								// SEND connection2: 6
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -788,7 +788,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player2, messageToSend);
 							}
 								=
-								else if(typeid(**it) == typeid(Bird))
+								else if(typeid(**itObs) == typeid(Bird))
 								{
 								// SEND connection2: 7
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -796,7 +796,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player2, messageToSend);
 							}
 
-								else if(typeid(**it) == typeid(Bat))
+								else if(typeid(**itObs) == typeid(Bat))
 								{
 								// SEND connection2: 8
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -804,7 +804,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player2, messageToSend);
 							}
 						9
-								else if(typeid(**it) == typeid(Asteroid))
+								else if(typeid(**itObs) == typeid(Asteroid))
 								{
 								// SEND connection2: 9
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -812,7 +812,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player2, messageToSend);
 							}
 
-								else if(typeid(**it) == typeid(Planet))
+								else if(typeid(**itObs) == typeid(Planet))
 								{
 								// SEND connection2: 10
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -820,7 +820,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player2, messageToSend);
 							}
 
-								else if(typeid(**it) == typeid(Comet))
+								else if(typeid(**itObs) == typeid(Comet))
 								{
 								// SEND connection2: 11
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -828,7 +828,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player2, messageToSend);
 							}
 
-								else if(typeid(**it) == typeid(Spaceship))
+								else if(typeid(**itObs) == typeid(Spaceship))
 								{
 								// SEND connection2: 12
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -837,29 +837,29 @@ int main(int argc, char* argv[]) {
 							}
 								*/
 
-								// SEND connection2: (*it)->getPosX(),
-								//					 (*it)->getPosY(),
-								//					 (*it)->getGT(),
-								//					 (*it)->getGTS()
+								// SEND connection2: (*itObs)->getPosX(),
+								//					 (*itObs)->getPosY(),
+								//					 (*itObs)->getGT(),
+								//					 (*itObs)->getGTS()
 
 								//posX
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", (*it)->getPosX());
+								sprintf(messageToSend, "%d", (*itObs)->getPosX());
 								sendMessage_S(player2, messageToSend);
 
 								// posY
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", (*it)->getPosY());
+								sprintf(messageToSend, "%d", (*itObs)->getPosY());
 								sendMessage_S(player2, messageToSend);
 
 								// gt
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", (*it)->getGT());
+								sprintf(messageToSend, "%d", (*itObs)->getGT());
 								sendMessage_S(player2, messageToSend);
 
 								// gts
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", (*it)->getGTS());
+								sprintf(messageToSend, "%d", (*itObs)->getGTS());
 								sendMessage_S(player2, messageToSend);
 
 								// (Optional ?) RECEIVE connection2: confirmation
@@ -873,24 +873,24 @@ int main(int argc, char* argv[]) {
 						// SEND connection1: world->getMiniCubes().size();
 						// (Optional ?) RECEIVE connection1: confirmation
 						memset(messageToSend, '\0', sizeof messageToSend);
-						sprintf(messageToSend, "%d", world->getMiniCubes().size());
+						sprintf(messageToSend, "%ld", world->getMiniCubes().size());
 						sendMessage_S(player1, messageToSend);
 
 
 
 
 						for(itMiniCubes = world->getMiniCubes().begin();
-							itMiniCubes < world->getMiniCubes().end();
+							itMiniCubes != world->getMiniCubes().end();
 							itMiniCubes++) {
 								//SEND connection1: miniCubes->first,
 								//					miniCubes->second
 
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", miniCubes->first);
+								sprintf(messageToSend, "%d", itMiniCubes->first);
 								sendMessage_S(player1, messageToSend);
 
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", miniCubes->second);
+								sprintf(messageToSend, "%d", itMiniCubes->second);
 								sendMessage_S(player1, messageToSend);
 
 								// (Optional ?) RECEIVE connection1: confirmation
@@ -898,21 +898,21 @@ int main(int argc, char* argv[]) {
 
 						// SEND connection2: world->getMiniCubes().size();
 						memset(messageToSend, '\0', sizeof messageToSend);
-						sprintf(messageToSend, "%d", world->getMiniCubes().size());
+						sprintf(messageToSend, "%ld", world->getMiniCubes().size());
 						sendMessage_S(player2, messageToSend);
 
 						// (Optional ?) RECEIVE connection2: confirmation
-						for(itMiniCubes = world->getObstacles().begin();
-							itMiniCubes < world->getObstacles().end();
+						for(itMiniCubes = world->getMiniCubes().begin();
+							itMiniCubes != world->getMiniCubes().end();
 							itMiniCubes++) {
 								//SEND connection2: miniCubes->first,
 								//					miniCubes->second
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", miniCubes->first);
+								sprintf(messageToSend, "%d", itMiniCubes->first);
 								sendMessage_S(player2, messageToSend);
 
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", miniCubes->second);
+								sprintf(messageToSend, "%d", itMiniCubes->second);
 								sendMessage_S(player2, messageToSend);
 
 								// (Optional ?) RECEIVE connection2: confirmation
@@ -1013,9 +1013,7 @@ int main(int argc, char* argv[]) {
 		}
 
 	}
-
- }
- 	return 0;
+	return 0;
 }
 
 

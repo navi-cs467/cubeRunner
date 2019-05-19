@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ ! -d "OBJECT_SERVER" ]; then
+	mkdir -p OBJECT_SERVER
+fi
