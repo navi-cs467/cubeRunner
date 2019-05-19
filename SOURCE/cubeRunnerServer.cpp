@@ -596,11 +596,11 @@ int main(int argc, char* argv[]) {
 						for(itObs = world->getObstacles().begin();
 							itObs < world->getObstacles().end();
 							itObs++) {
-								if(((*itObs)->getPosY() + (*it)->getLongestGS() > 0) &&
-								   ((*itObs)->getPosY() < COLS) &&
-								   ((*itObs)->getPosX() + (*it)->getGTS() > 0) &&
-								   ((*itObs)->getPosY() < world->getBottomRow())) {
-								if(typeid(**itObs) == typeid(Seaweed))
+								if(((*it)->getPosY() + (*it)->getLongestGS() > 0) &&
+								   ((*it)->getPosY() < COLS) &&
+								   ((*it)->getPosX() + (*it)->getGTS() > 0) &&
+								   ((*it)->getPosY() < world->getBottomRow())) {
+								if(typeid(**it) == typeid(Seaweed))
 								{
 									// SEND connection1: 1
 									memset(messageToSend, '\0', sizeof messageToSend);
@@ -736,11 +736,11 @@ int main(int argc, char* argv[]) {
 						for(itObs = world->getObstacles().begin();
 							itObs < world->getObstacles().end();
 							itObs++) {
-								if(((*itObs)->getPosY() + (*it)->getLongestGS() > 0) &&
-								   ((*itObs)->getPosY() < COLS) &&
-								   ((*itObs)->getPosX() + (*it)->getGTS() > 0) &&
-								   ((*itObs)->getPosY() < world->getBottomRow())) {
-								if(typeid(**itObs) == typeid(Seaweed))
+								if(((*it)->getPosY() + (*it)->getLongestGS() > 0) &&
+								   ((*it)->getPosY() < COLS) &&
+								   ((*it)->getPosX() + (*it)->getGTS() > 0) &&
+								   ((*it)->getPosY() < world->getBottomRow())) {
+								if(typeid(**it) == typeid(Seaweed))
 								{
 									// SEND connection2: 1
 									memset(messageToSend, '\0', sizeof messageToSend);
