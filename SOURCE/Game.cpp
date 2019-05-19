@@ -728,10 +728,6 @@ int Game::playGame(char host[], char port[]) {
 								/* transitionAnimation("Water.txt"); */
 							}
 
-							memset(sendConfirm, '\0', sizeof sendConfirm);
-							sprintf(sendConfirm, "%d", 1);
-							sendMessage_C(socketFD, sendConfirm);
-
 									// if (int_2 == 2)
 									// {
 									// 	world = new Land();
@@ -745,6 +741,10 @@ int Game::playGame(char host[], char port[]) {
 									// }
 
 							// (Optional ?) SEND: confirmation		//Probably not optional, need to wait for world transition animation
+
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
 
 						}
 
@@ -760,12 +760,37 @@ int Game::playGame(char host[], char port[]) {
 
 						/**** RECEIVE ONSCREEN OBSTACLES  ****/
 						//RECEIEVE int_1		//number of (onscreen) Obstacles
+
 						// (Optional ?) SEND: confirmation
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
 
+						int_1 = atoi(gameData);
 
-						//Loop to rebuild Obstacles
+						// loop to rebuild Obstacles
 						for(int i = 0; i < int_1; i++) {
 							//RECEIVE int_2, int_3, int_4, int_5, int_6		// type of Obs, posX, posY, gt, gts(not strictly necessary, but used as convenience)
+
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+							int_2 = atoi(gameData);
+
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+							int_3 = atoi(gameData);
+
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+							int_4 = atoi(gameData);
+
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+							int_5 = atoi(gameData);
+
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+							int_6 = atoi(gameData);
+
 							if(int_2 == 1)
 								world->getObstacles().push_back(new Seaweed(int_3, int_4, int_5, int_6));
 							else if(int_2 == 2)
@@ -797,9 +822,25 @@ int Game::playGame(char host[], char port[]) {
 
 						/**** RECEIVE MINICUBES  ****/
 						//RECEIEVE int_1		//number of miniCubes
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+
+						int_1 = atoi(gameData);
+
 						// (Optional ?) SEND: confirmation
 						for(int i = 0; i < int_1; i++) {
 							//RECEIVE int_2, int_3			//miniCube x & y
+
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+
+							int_2 = atoi(gameData);
+
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+
+							int_3 = atoi(gameData);
+
 							world->getMiniCubes().insert(make_pair(int_2, int_3));
 							// (Optional ?) SEND: confirmation
 						}
@@ -818,12 +859,24 @@ int Game::playGame(char host[], char port[]) {
 
 						/**** RECEIVE TIME  ****/
 						//RECEIVE int_1 into hours
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+
+						hours = atoi(gameData);
 						// (Optional ?) SEND: confirmation
 
 						//RECEIVE int_1 into minutes
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+
+						minutes = atoi(gameData);
 						// (Optional ?) SEND: confirmation
 
 						//RECEIVE int_1 into seconds
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+
+						seconds = atoi(gameData);
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE TIME  ****/
 

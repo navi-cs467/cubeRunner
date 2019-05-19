@@ -582,7 +582,13 @@ int main(int argc, char* argv[]) {
 						}
 
 						// SEND connection1: onScreenCount;
+						// send total number of obstacles
 						// (Optional ?) RECEIVE connection1: confirmation
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", onScreenCount);
+						sendMessage_S(player1, messageToSend);
+
+						// loop through obstacles
 						for(itObs = world->getObstacles().begin();
 							itObs < world->getObstacles().end();
 							itObs++) {
@@ -591,34 +597,126 @@ int main(int argc, char* argv[]) {
 								   ((*it)->getPosX() + (*it)->getGTS() > 0) &&
 								   ((*it)->getPosY() < world->getBottomRow())) {
 								if(typeid(**it) == typeid(Seaweed))
-								// SEND connection1: 1
+								{
+									// SEND connection1: 1
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 1);
+									sendMessage_S(player1, messageToSend);
+								}
+
 								else if(typeid(**it) == typeid(Coral))
-								// SEND connection1: 2
+								{
+									// SEND connection1: 2
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 2);
+									sendMessage_S(player1, messageToSend);
+								}
+
 								else if(typeid(**it) == typeid(Shark))
-								// SEND connection1: 3
+								{
+									// SEND connection1: 3
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 3);
+									sendMessage_S(player1, messageToSend);
+								}
+
 								else if(typeid(**it) == typeid(Octopus))
-								// SEND connection1: 4
+								{
+									// SEND connection1: 4
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 4);
+									sendMessage_S(player1, messageToSend);
+								}
+
 								/* else if(typeid(**it) == typeid(Tree))
 								// SEND connection1: 5
+								{
+								// SEND connection1: 5
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 5);
+								sendMessage_S(player1, messageToSend);
+							}
 								else if(typeid(**it) == typeid(Rock))
+								{
 								// SEND connection1: 6
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 6);
+								sendMessage_S(player1, messageToSend);
+							}
+								=
 								else if(typeid(**it) == typeid(Bird))
+								{
 								// SEND connection1: 7
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 7);
+								sendMessage_S(player1, messageToSend);
+							}
+
 								else if(typeid(**it) == typeid(Bat))
+								{
 								// SEND connection1: 8
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 8);
+								sendMessage_S(player1, messageToSend);
+							}
+						9
 								else if(typeid(**it) == typeid(Asteroid))
+								{
 								// SEND connection1: 9
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 9);
+								sendMessage_S(player1, messageToSend);
+							}
+
 								else if(typeid(**it) == typeid(Planet))
+								{
 								// SEND connection1: 10
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 10);
+								sendMessage_S(player1, messageToSend);
+							}
+
 								else if(typeid(**it) == typeid(Comet))
+								{
 								// SEND connection1: 11
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 11);
+								sendMessage_S(player1, messageToSend);
+							}
+
 								else if(typeid(**it) == typeid(Spaceship))
-								// SEND connection1: 12 */
+								{
+								// SEND connection1: 12
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 12);
+								sendMessage_S(player1, messageToSend);
+							}
+								*/
 
 								// SEND connection1: (*it)->getPosX(),
 								//					 (*it)->getPosY(),
 								//					 (*it)->getGT(),
 								//					 (*it)->getGTS()
+
+								//posX
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", (*it)->getPosX());
+								sendMessage_S(player1, messageToSend);
+
+								// posY
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", (*it)->getPosY());
+								sendMessage_S(player1, messageToSend);
+
+								// gt
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", (*it)->getGT());
+								sendMessage_S(player1, messageToSend);
+
+								// gts
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", (*it)->getGTS());
+								sendMessage_S(player1, messageToSend);
 
 								// (Optional ?) RECEIVE connection1: confirmation
 							}
@@ -626,6 +724,11 @@ int main(int argc, char* argv[]) {
 
 						// SEND connection2: world->getObstacles().size();
 						// (Optional ?) RECEIVE connection1: confirmation
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", onScreenCount);
+						sendMessage_S(player2, messageToSend);
+
+						// loop through obstacles
 						for(itObs = world->getObstacles().begin();
 							itObs < world->getObstacles().end();
 							itObs++) {
@@ -633,38 +736,130 @@ int main(int argc, char* argv[]) {
 								   ((*it)->getPosY() < COLS) &&
 								   ((*it)->getPosX() + (*it)->getGTS() > 0) &&
 								   ((*it)->getPosY() < world->getBottomRow())) {
-										if(typeid(**it) == typeid(Seaweed))
-										// SEND connection2: 1
-										else if(typeid(**it) == typeid(Coral))
-										// SEND connection2: 2
-										else if(typeid(**it) == typeid(Shark))
-										// SEND connection2: 3
-										else if(typeid(**it) == typeid(Octopus))
-										// SEND connection2: 4
-										/* else if(typeid(**it) == typeid(Tree))
-										// SEND connection2: 5
-										else if(typeid(**it) == typeid(Rock))
-										// SEND connection2: 6
-										else if(typeid(**it) == typeid(Bird))
-										// SEND connection2: 7
-										else if(typeid(**it) == typeid(Bat))
-										// SEND connection2: 8
-										else if(typeid(**it) == typeid(Asteroid))
-										// SEND connection2: 9
-										else if(typeid(**it) == typeid(Planet))
-										// SEND connection2: 10
-										else if(typeid(**it) == typeid(Comet))
-										// SEND connection2: 11
-										else if(typeid(**it) == typeid(Spaceship))
-										// SEND connection2: 12 */
+								if(typeid(**it) == typeid(Seaweed))
+								{
+									// SEND connection2: 1
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 1);
+									sendMessage_S(player2, messageToSend);
+								}
 
-										// SEND connection2: (*it)->getPosX(),
-										//					 (*it)->getPosY(),
-										//					 (*it)->getGT(),
-										//					 (*it)->getGTS()
+								else if(typeid(**it) == typeid(Coral))
+								{
+									// SEND connection2: 2
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 2);
+									sendMessage_S(player2, messageToSend);
+								}
 
-										// (Optional ?) RECEIVE connection2: confirmation
-							  }
+								else if(typeid(**it) == typeid(Shark))
+								{
+									// SEND connection2: 3
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 3);
+									sendMessage_S(player2, messageToSend);
+								}
+
+								else if(typeid(**it) == typeid(Octopus))
+								{
+									// SEND connection2: 4
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 4);
+									sendMessage_S(player2, messageToSend);
+								}
+
+								/* else if(typeid(**it) == typeid(Tree))
+								// SEND connection2: 5
+								{
+								// SEND connection2: 5
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 5);
+								sendMessage_S(player2, messageToSend);
+							}
+								else if(typeid(**it) == typeid(Rock))
+								{
+								// SEND connection2: 6
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 6);
+								sendMessage_S(player2, messageToSend);
+							}
+								=
+								else if(typeid(**it) == typeid(Bird))
+								{
+								// SEND connection2: 7
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 7);
+								sendMessage_S(player2, messageToSend);
+							}
+
+								else if(typeid(**it) == typeid(Bat))
+								{
+								// SEND connection2: 8
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 8);
+								sendMessage_S(player2, messageToSend);
+							}
+						9
+								else if(typeid(**it) == typeid(Asteroid))
+								{
+								// SEND connection2: 9
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 9);
+								sendMessage_S(player2, messageToSend);
+							}
+
+								else if(typeid(**it) == typeid(Planet))
+								{
+								// SEND connection2: 10
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 10);
+								sendMessage_S(player2, messageToSend);
+							}
+
+								else if(typeid(**it) == typeid(Comet))
+								{
+								// SEND connection2: 11
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 11);
+								sendMessage_S(player2, messageToSend);
+							}
+
+								else if(typeid(**it) == typeid(Spaceship))
+								{
+								// SEND connection2: 12
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 12);
+								sendMessage_S(player2, messageToSend);
+							}
+								*/
+
+								// SEND connection2: (*it)->getPosX(),
+								//					 (*it)->getPosY(),
+								//					 (*it)->getGT(),
+								//					 (*it)->getGTS()
+
+								//posX
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", (*it)->getPosX());
+								sendMessage_S(player2, messageToSend);
+
+								// posY
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", (*it)->getPosY());
+								sendMessage_S(player2, messageToSend);
+
+								// gt
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", (*it)->getGT());
+								sendMessage_S(player2, messageToSend);
+
+								// gts
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", (*it)->getGTS());
+								sendMessage_S(player2, messageToSend);
+
+								// (Optional ?) RECEIVE connection2: confirmation
+							}
 						}
 						/**** END SEND ONSCREEN OBSTACLES  ****/
 
@@ -673,22 +868,46 @@ int main(int argc, char* argv[]) {
 
 						// SEND connection1: world->getMiniCubes().size();
 						// (Optional ?) RECEIVE connection1: confirmation
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", world->getMiniCubes().size());
+						sendMessage_S(player1, messageToSend);
+
+
 						for(itMiniCubes = world->getMiniCubes().begin();
 							itMiniCubes < world->getMiniCubes().end();
 							itMiniCubes++) {
 								//SEND connection1: miniCubes->first,
 								//					miniCubes->second
 
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", miniCubes->first);
+								sendMessage_S(player1, messageToSend);
+
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", miniCubes->second);
+								sendMessage_S(player1, messageToSend);
+
 								// (Optional ?) RECEIVE connection1: confirmation
 						}
 
 						// SEND connection2: world->getMiniCubes().size();
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", world->getMiniCubes().size());
+						sendMessage_S(player2, messageToSend);
+
 						// (Optional ?) RECEIVE connection2: confirmation
 						for(itMiniCubes = world->getObstacles().begin();
 							itMiniCubes < world->getObstacles().end();
 							itMiniCubes++) {
 								//SEND connection2: miniCubes->first,
 								//					miniCubes->second
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", miniCubes->first);
+								sendMessage_S(player2, messageToSend);
+
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", miniCubes->second);
+								sendMessage_S(player2, messageToSend);
 
 								// (Optional ?) RECEIVE connection2: confirmation
 						}
@@ -696,17 +915,41 @@ int main(int argc, char* argv[]) {
 
 						/**** SEND TIME INFO  ****/
 						//SEND connection1: hours
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", hours);
+						sendMessage_S(player1, messageToSend);
+
 						// (Optional ?) RECEIVE connection1: confirmation
 						//SEND connection1: minutes
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", minutes);
+						sendMessage_S(player1, messageToSend);
+
 						// (Optional ?) RECEIVE connection1: confirmation
 						//SEND connection1: seconds
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", seconds);
+						sendMessage_S(player1, messageToSend);
+
 						// (Optional ?) RECEIVE connection1: confirmation
 
 						//SEND connection2: hours
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", hours);
+						sendMessage_S(player1, messageToSend);
 						// (Optional ?) RECEIVE connection1: confirmation
+
 						//SEND connection2: minutes
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", minutes);
+						sendMessage_S(player1, messageToSend);
 						// (Optional ?) RECEIVE connection2: confirmation
+
 						//SEND connection2: seconds
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", seconds);
+						sendMessage_S(player1, messageToSend);
+
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND TIME INFO  ****/
 
