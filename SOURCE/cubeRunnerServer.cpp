@@ -364,10 +364,10 @@ int main(int argc, char* argv[]) {
 							moveRate *= SCROLL_MOVE_DECREASE_RATE;
 
 							//Reset cubes position to left-middle starting point
-							cube->cubeReset();
+							cube->cubeReset(world);
 
 							//Reset transitionCount
-							cube->resetCubeTransitionScore(0);
+							cube->resetCubeTransitionScore();
 						}
 
 						// ** COMMS WITH CLIENTS **
@@ -473,7 +473,7 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player2, messageToSend);
 
 						//send cubeChars
-						char* cubeCharsArray[CUBE_CHARS_WIDTH] = cube->getCubeChars();
+						char** cubeCharsArray = cube->getCubeChars();
 
 						//buffers for character array
 						char cubeCharsBuff[256]; char cubeCharBuff[2];
