@@ -110,9 +110,11 @@ int main(int argc, char* argv[]) {
 
 		}
 
-		Game game = Game(gmP1 < gmP2 ? gpM1 : gpM2, true);		//2nd argument == true for isTwoPlayer
+		Game game = Game(gmP1 < gmP2 ? gmP1 : gmP2, true);		//2nd argument == true for isTwoPlayer
 																//Use easiest of two specified game modes,
 																//if not the same
+		Cube* cube = game.getCube();
+		World* world = game.getWorld();
 
 		//Set number of omp threads		//2 for user inputs, 1 for game engine
 		omp_set_num_threads(3);
@@ -164,7 +166,7 @@ int main(int argc, char* argv[]) {
 					omp_set_lock(&lock1);
 
 					if((userInput1 == KEY_UP || userInput1 == '8' || userInput1 == 'w') &&
-							&& cube->getCubeCoords()[0][0] > 0) {
+							&& cube->getCubeCoords()[0][0] > 0)) {
 						cube->updateCubePosition(0, 0, 0, 1);
 						cube->setCubeDirection(up);
 					}

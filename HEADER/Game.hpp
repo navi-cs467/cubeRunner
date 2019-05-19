@@ -36,6 +36,8 @@ class Game {
 		int getScore() {return score;}
 		int getGameMode() {return gameMode;}
 		void setScore(int score) {this->score = score;}
+		Cube* getCube(){return cube;}
+		World* getWorld(){return world;}
 		int playGame(char host[] = NULL, char port[] = NULL);
 };
 
