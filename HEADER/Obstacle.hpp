@@ -38,7 +38,8 @@ class Obstacle {
 							//a random number of moves [between 5 - 25,
 							//see Obstacle.cpp - move(World* world)]
 		vector<vector<wstring>> graphicLines;
-		set<pair<int, int>> nonWSObsCoords;
+		set<pair<int, int>> nonWSObsCoords, holes;
+		int hits, maxHits, mvsSinceLastHit;
 
 	public:
 		Obstacle(int posX, int posY, int gt, int gts) :
@@ -61,6 +62,16 @@ class Obstacle {
 		
 		//Used by Cube to detect Obstacle collision
 		set<pair<int, int>>& getNonWSObsCoords() {return nonWSObsCoords;}
+		
+		//Used for displaying "hits" from Cube shots
+		set<pair<int, int>>& getHoles() {return holes;}
+		
+		//Used to clear Obstacle if Cube hits exceed naxHits
+		int getMaxHits() {return maxHits;}
+		int getHits() {return hits;}
+		void incHits() {hits++;}
+		int getMvsSinceLastHit() {return mvsSinceLastHit;}
+		void resetMvsSinceLastHit() {mvsSinceLastHit = 0;}
 		
 		//Ensures memory is managed properly when deleting
 		//derived class objects via base class pointers.

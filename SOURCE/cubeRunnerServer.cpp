@@ -170,15 +170,17 @@ int main(int argc, char* argv[]) {
 						cube->updateCubePosition(0, 0, 0, 1);
 						cube->setCubeDirection(up);
 					}
-
 					else if((userInput1 == KEY_DOWN || userInput1 == '2' || userInput1 == 's') &&
 								cube->getCubeCoords()[15][0] < world->getBottomRow()) {
 						cube->updateCubePosition(0, 0, 1, 0);
 						cube->setCubeDirection(down);
-
+					}
+					else if(userInput2 == 32) {
+						cube->fireShot();
+					}
+					
 					renderedLastMv1 = false;
 					omp_unset_lock(&lock1);
-					}
 				}
 			}
 
@@ -222,6 +224,9 @@ int main(int argc, char* argv[]) {
 							cube->getCubeCoords()[0][1] > 0) {
 						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(left);
+					}
+					else if(userInput2 == 32) {
+						cube->fireShot();
 					}
 
 					renderedLastMv2 = false;
@@ -446,6 +451,8 @@ int main(int argc, char* argv[]) {
 							}
 						}
 						else {
+							//No deathFlag, process cubeShot
+							cube->processShot();
 						//	(Optional ?) RECEIVE connection1: confirmation			//No Death
 						}
 						/**** END SEND DEATH FLAG ****/
@@ -453,7 +460,7 @@ int main(int argc, char* argv[]) {
 						/**** SEND CUBE DATA ****/
 						// SEND connection1: cube->getCubeCoords()[array], cube->getCubeChars()[array], 
 											 // cube->getCubeLives, cube->getCubePositionRow() 
-											 // cube->getCubePositionCol()
+											 // cube->getCubePositionCol(), cube->getShotCoords()
 
 						//send lives to clients
 						memset(messageToSend, '\0', sizeof messageToSend);
@@ -493,6 +500,9 @@ int main(int argc, char* argv[]) {
 								strcat(cubeCharsBuff, cubeCharBuff);
 							}
 						}
+						
+						//ADD cube->shotCoords HERE TO cubeCharsBuff,
+						//GET WITH cube->getShotCoords()...
 
 						//send the whole buffer to both clients
 						sendMessage_S(player1, cubeCharsBuff);

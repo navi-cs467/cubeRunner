@@ -17,7 +17,7 @@ Game::Game(int gameMode, bool isTwoPlayer) :
 
 		if(!isTwoPlayer) world = new Water(gameMode, isTwoPlayer);
 
-		else world = new Water();		//"Blank" world if running as client
+		else world = new Water(isTwoPlayer);		//"Blank" world if running as client
 
 		if(gameMode == EASY) cube = new Cube(world, 5);
 		else if(gameMode == NORMAL) cube = new Cube(world, 4);
@@ -146,6 +146,13 @@ int Game::playGame(char host[], char port[]) {
 							receiveMessage_C(socketFD, confirm);
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
+						else if(userInput == 32) {
+							// SEND: 32 (SPACE_BAR - For cube->fireShot())
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(socketFD, messageToSend);
+							// RECEIEVE confirmation
+							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
+						}
 						else if(userInput == 27 ||
 								userInput == KEY_END ||
 								userInput == 'q' ||
@@ -178,6 +185,13 @@ int Game::playGame(char host[], char port[]) {
 						}
 						else if(userInput == KEY_RIGHT) {
 							// SEND: KEY_RIGHT
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(socketFD, messageToSend);
+							// RECEIEVE confirmation
+							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
+						}
+						else if(userInput == 32) {
+							// SEND: 32 (SPACE_BAR - For cube->fireShot())
 							sprintf(messageToSend, "%d", userInput);
 							sendMessage_C(socketFD, messageToSend);
 							// RECEIEVE confirmation
@@ -638,6 +652,7 @@ int Game::playGame(char host[], char port[]) {
 						// RECEIVE char coords[CUBE_COORDS_HEGHT][CUBE_COORDS_WIDTH], \	//cube coords
 						//		   char chars[CUBE_CHARS_HEGHT][CUBE_CHARS_WIDTH], \	//cube chars
 						//		   int_3, int_4, int_5									//cube lives, row, col
+						//		   int_6, int_7											//cube shotCoordX, cube shotCoordY
 
 						//receive lives
 						memset(gameData, '\0', sizeof gameData);
@@ -655,7 +670,7 @@ int Game::playGame(char host[], char port[]) {
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
 						int col = atoi(gameData);
-						cube->setCubePositionRow(col);
+						cube->setCubePositionCol(col);
 
 						int cubeCoordsArray[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];
 
@@ -699,6 +714,9 @@ int Game::playGame(char host[], char port[]) {
 
 						//load cube chars
 						cube->loadCubeChars(cubeCharsArray);
+						
+						//RECEIVE CUBE SHOT COORDS...
+						//LOAD CUBE SHOT COORDS (USE cube->setShotCoords(x, y)...
 
 						// cube->loadCubeCoords(coords); cube->loadCubeChars(chars); cube->setLives(int_3);
 						// cube->setCubePositionRow(int_5); cube->setCubePositionCol(int_6);
@@ -746,19 +764,19 @@ int Game::playGame(char host[], char port[]) {
 
 							if(int_2 == 1)
 							{
-								world = new Water();
+								world = new Water(isTwoPlayer);
 								/* transitionAnimation("Water.txt"); */
 							}
 
 									// if (int_2 == 2)
 									// {
-									// 	world = new Land();
+									// 	world = new Land(isTwoPlayer);
 									/* transitionAnimation("Land.txt"); */
 									// }
 									//
 									// else
 									// {
-									// 	world = new Space();
+									// 	world = new Space(isTwoPlayer);
 									/* transitionAnimation("Space.txt"); */
 									// }
 

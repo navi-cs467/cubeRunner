@@ -32,7 +32,7 @@ class World {
 		bool isTwoPlayer;
 		
 	public:
-		World() {}
+		World(bool isTwoPlayer) : isTwoPlayer(isTwoPlayer) {}
 		World(int gameMode, bool isTwoPlayer) :
 			gameMode(gameMode), isTwoPlayer(isTwoPlayer) {}
 		void updateObsCoords(Obstacle *ob);
@@ -47,6 +47,8 @@ class World {
 		int getBottomRow() const {return bottomRow;}
 		void moveObs();
 		void resetPlayer(Cube *cube);
+		int getGameMode() {return gameMode;}
+		bool getIsTwoPlayer() {return isTwoPlayer;}
 		
 		//Method to access
 		list<Obstacle*>& getObstacles() {return obstacles;}

@@ -27,6 +27,15 @@ Shark::Shark(World *world, Direction offScreen,
 	//Update World's obsCoords and this Obstacle's
 	//nonWSObsCoords with new graphic position
 	world->updateObsCoords(this);
+	
+	//Initialize maxHits based on gameMode
+	if(world->getGameMode() == EASY) maxHits = 3;
+	else if(world->getGameMode() == NORMAL) maxHits = 4;
+	else maxHits = 5;
+	
+	//Initialize hits ands mvsSinceLastHit
+	hits = 0;
+	mvsSinceLastHit = 0;
 }
 
 vector<vector<wstring>> Shark::getGraphicLines() {

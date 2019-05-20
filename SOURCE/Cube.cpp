@@ -32,6 +32,10 @@ Cube::Cube(World *world, int lives) :
 	isDead = 0;
 	score = 0;
 	color = WHITE_BLACK;
+	
+	if(typeid(*currWorld) == typeid(Water))
+		//shotColor = rand() % 5 + 30;
+		shotColor = RED_BLUE;
 
 	cubeChars[0][0] = '#';
 	cubeChars[0][1] = '#';
@@ -420,6 +424,8 @@ void Cube::drawCube(void){
 	mvaddch(cubeCoords[14][0],cubeCoords[14][1],cubeChars[3][2]);
 	mvaddch(cubeCoords[15][0],cubeCoords[15][1],cubeChars[3][3]);
 
+	if(currWorld->getIsTwoPlayer()) printShot();
+	
 	refresh();
 
 }
@@ -652,9 +658,6 @@ void Cube::fireShot() {
 		}			
 		
 		shotOff = true;
-		if(typeid(*currWorld) == typeid(Water))
-			//shotColor = rand() % 5 + 30;
-			shotColor = RED_BLUE;
 	}
 }
 
@@ -711,10 +714,32 @@ void Cube::processShot() {
 				++nonWSObsIt){
 				if(nonWSObsIt->first == shotCoords.first &&
 				   nonWSObsIt->second == shotCoords.second) {
-					   //(*obsIt)->getHoles().insert
-						//	(make_pair(nonWSObsIt->first, nonWSObsIt->second);
+					   //Add the hole if stationary
+					   if((*obsIt)->getIsStationary() == true) {
+						   (*obsIt)->getHoles().insert
+								(make_pair(nonWSObsIt->first, nonWSObsIt->second));
+						   //Remove the nonWS ob coord
+						   (*obsIt)->getNonWSObsCoords().erase(nonWSObsIt);
+					   }
+					   //Track hits if non-stationary
+					   else {
+							//Increment Obstacle's hit counter 
+							(*obsIt)->incHits();
+							(*obsIt)->resetMvsSinceLastHit();
+					   
+						   //If Obstacle has reached maxHits, delete it and
+						   //increment score based on Obstacle's maxHits
+						   if((*obsIt)->getMaxHits() == (*obsIt)->getHits()) {
+								score += (*obsIt)->getMaxHits() * 10;
+								delete *obsIt;
+								currWorld->getObstacles().erase(obsIt);
+						   }
+					   }
+					   
 					   shotOff = false;
 					   shotCoords.first = -1; shotCoords.second = -1;
+					   
+					   
 				}
 			}
 		}
@@ -725,12 +750,16 @@ void Cube::processShot() {
 		   shotCoords.first <= currWorld->getBottomRow() &&
 		   shotCoords.second > 0 &&
 		   shotCoords.second < COLS) {
-			   attron(COLOR_PAIR(shotColor));
-			   if(shotDir == up || shotDir == down)
-				   mvaddstr(shotCoords.first, shotCoords.second, "|");
-			   else
-				   mvaddstr(shotCoords.first, shotCoords.second, "_");
-			   refresh();
+			   if(!currWorld->getIsTwoPlayer()) {
+				   attron(COLOR_PAIR(shotColor));
+				   if(shotDir == up || shotDir == down)
+					   //mvaddstr(shotCoords.first, shotCoords.second, "|");
+					   mvaddstr(shotCoords.first, shotCoords.second, "■");
+				   else
+					   //mvaddstr(shotCoords.first, shotCoords.second, "_");
+					   mvaddstr(shotCoords.first, shotCoords.second, "■");
+				   refresh();
+			   }
 		}
 		//If shot goes offscreen, reset shot
 		else {
@@ -738,6 +767,13 @@ void Cube::processShot() {
 			shotCoords.first = -1; shotCoords.second = -1;
 		}
 	}
+}
+
+//Multiplayer Client Only
+void Cube::printShot() {
+	attron(COLOR_PAIR(shotColor));
+	mvaddstr(shotCoords.first, shotCoords.second, "■");
+	//refresh();
 }
 
 /* int main () {

@@ -14,7 +14,7 @@ Octopus::Octopus(World *world, Direction offScreen,
 	isStationary = false;
 	//curDirection = left;
 	//sameDirectionMoveCount = 0;
-	color = rand() % 4 + 31;
+	color = rand() % 3 + 32;
 	createObstacle(world, offScreen, specificGraphic);
 	
 	//Update size of graphic type array 
@@ -28,6 +28,15 @@ Octopus::Octopus(World *world, Direction offScreen,
 	//Update World's obsCoords and this Obstacle's
 	//nonWSObsCoords with new graphic position
 	world->updateObsCoords(this);
+	
+	//Initialize maxHits based on gameMode
+	if(world->getGameMode() == EASY) maxHits = 2;
+	else if(world->getGameMode() == NORMAL) maxHits = 3;
+	else maxHits = 4;
+	
+	//Initialize hits and mvsSinceLastHit
+	hits = 0;
+	mvsSinceLastHit = 0;
 }
 
 vector<vector<wstring>> Octopus::initializeVectorGraphics () {

@@ -87,6 +87,34 @@ void Obstacle::setGT(int newGraphic) {
 	for(int i = 0; i < gts; i++)
 		if(getGraphicLines()[gt][i].size() > longestGS)
 			longestGS = getGraphicLines()[gt][i].size();
+	
+	/* //Update (invert) Obstacle's holes
+	set<pair<int, int>> tmpHoles;
+	//if(lastMV != up || lastMV != down) {
+	if(1) {
+		for(int i = 0; i < gts; i++) {
+			for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
+				if(holes.find(make_pair(posX + i, posY + j)) != holes.end()) {
+					tmpHoles.insert
+						(make_pair(posX + i, 
+							posY + this->getGraphicLines()[gt][i].length() - j - 1));
+				}
+			}
+		}
+		swap(holes, tmpHoles);
+	}
+	else {
+		for(int i = 0; i < gts; i++) {
+			for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
+				if(holes.find(make_pair(posX + i, posY + j)) != holes.end()) {
+					tmpHoles.insert
+						(make_pair(posX + this->getGraphicLines()[gt][i].length() - i - 1, 
+							posY + j));
+				}
+			}
+		}
+		swap(holes, tmpHoles);
+	} */
 }
 
 void Obstacle::move(World* world) {
@@ -122,7 +150,7 @@ void Obstacle::move(World* world) {
 	//is removed.
 	bool moveCleared = true;
 	set<pair<int,int>>::iterator itObs, itCubes;
-	set<pair<int,int>> newNonWSObsCoords;
+	set<pair<int,int>> newNonWSObsCoords, newHoles;
 	for(int i = 0; i < NUM_DIRECTIONS; i++, moveCleared = true) {
 		if(mvDir == left) { 
 			for(int j = 0; j < gts; j++) {
@@ -160,6 +188,13 @@ void Obstacle::move(World* world) {
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
+				/* //Update Obstacle's holes
+				for(set<pair<int, int>>::iterator holesIt = holes.begin(); 
+					holesIt != holes.end(); holesIt++) {
+						newHoles.insert
+							(make_pair(holesIt->first, holesIt->second - 1));
+				} */
+				swap(holes, newHoles);
 				//Update mvCounter				
 				if(lastMV == left) mvCounter--;
 				else {
@@ -242,6 +277,13 @@ void Obstacle::move(World* world) {
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
+				/* //Update Obstacle's holes
+				for(set<pair<int, int>>::iterator holesIt = holes.begin(); 
+					holesIt != holes.end(); holesIt++) {
+						newHoles.insert
+							(make_pair(holesIt->first + 1, holesIt->second - 1));
+				}
+				swap(holes, newHoles); */
 				//Update move counter and/or direction
 				if(lastMV == left_down) mvCounter--;
 				else {
@@ -307,6 +349,13 @@ void Obstacle::move(World* world) {
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
+				/* //Update Obstacle's holes
+				for(set<pair<int, int>>::iterator holesIt = holes.begin(); 
+					holesIt != holes.end(); holesIt++) {
+						newHoles.insert
+							(make_pair(holesIt->first + 1, holesIt->second));
+				}
+				swap(holes, newHoles); */
 				//Update move counter and/or direction
 				if(lastMV == down) mvCounter--;
 				else {
@@ -388,6 +437,13 @@ void Obstacle::move(World* world) {
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
+				/* //Update Obstacle's holes
+				for(set<pair<int, int>>::iterator holesIt = holes.begin(); 
+					holesIt != holes.end(); holesIt++) {
+						newHoles.insert
+							(make_pair(holesIt->first + 1, holesIt->second + 1));
+				}
+				swap(holes, newHoles); */
 				//Update move counter and/or direction
 				if(lastMV == right_down) mvCounter--;
 				else {
@@ -449,6 +505,13 @@ void Obstacle::move(World* world) {
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
+				/* //Update Obstacle's holes
+				for(set<pair<int, int>>::iterator holesIt = holes.begin(); 
+					holesIt != holes.end(); holesIt++) {
+						newHoles.insert
+							(make_pair(holesIt->first, holesIt->second + 1));
+				}
+				swap(holes, newHoles); */
 				//Update move counter and/or direction
 				if(lastMV == right) mvCounter--;
 				else {
@@ -524,6 +587,13 @@ void Obstacle::move(World* world) {
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
+				/* //Update Obstacle's holes
+				for(set<pair<int, int>>::iterator holesIt = holes.begin(); 
+					holesIt != holes.end(); holesIt++) {
+						newHoles.insert
+							(make_pair(holesIt->first - 1, holesIt->second + 1));
+				}
+				swap(holes, newHoles); */
 				//Update move counter and/or direction
 				if(lastMV == right_up) mvCounter--;
 				else {
@@ -583,6 +653,13 @@ void Obstacle::move(World* world) {
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
+				/* //Update Obstacle's holes
+				for(set<pair<int, int>>::iterator holesIt = holes.begin(); 
+					holesIt != holes.end(); holesIt++) {
+						newHoles.insert
+							(make_pair(holesIt->first - 1, holesIt->second));
+				}
+				swap(holes, newHoles); */
 				//Update move counter and/or direction
 				if(lastMV == up) mvCounter--;
 				else {
@@ -658,6 +735,13 @@ void Obstacle::move(World* world) {
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
+				/* //Update Obstacle's holes
+				for(set<pair<int, int>>::iterator holesIt = holes.begin(); 
+					holesIt != holes.end(); holesIt++) {
+						newHoles.insert
+							(make_pair(holesIt->first - 1, holesIt->second - 1));
+				}
+				swap(holes, newHoles); */
 				//Update move counter and/or direction
 				if(lastMV == left_up) mvCounter--;
 				else {
@@ -684,6 +768,15 @@ void Obstacle::move(World* world) {
 				break;
 			}
 		}
+	}
+	if(moveCleared && hits > 0) {
+		mvsSinceLastHit++;
+		if(world->getGameMode() == EASY && mvsSinceLastHit == 60)
+			hits--;
+		else if(world->getGameMode() == NORMAL && mvsSinceLastHit == 40)
+			hits--;
+		else if(world->getGameMode() == HARD && mvsSinceLastHit == 20)
+			hits--;
 	}
 }
 	

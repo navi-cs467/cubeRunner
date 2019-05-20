@@ -149,7 +149,6 @@ void Water::renderWorld() {
 		wchar_t tmpWChArr[2]; tmpWChArr[1] = '\0';
 		
 		if(typeid(**it) == typeid(Seaweed)) {
-			attron(COLOR_PAIR(Seaweed::getColor()));
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++)
 				for(int j = 0;
@@ -163,7 +162,16 @@ void Water::renderWorld() {
 					
 					//output to screen
 					move(i + xCoord + xOffset, j + yCoord);
-					printw("%lc", tmpWChArr[0]);
+					if((*it)->getHoles().
+						find(make_pair(i + xCoord + xOffset, j + yCoord)) == 
+							(*it)->getHoles().end()) {
+								attron(COLOR_PAIR(Seaweed::getColor()));
+								printw("%lc", tmpWChArr[0]);
+					}
+					else {
+						attron(COLOR_PAIR(BLUE_BLUE));
+						printw("%lc", " ");
+					}
 				}
 		}
 				
@@ -187,9 +195,16 @@ void Water::renderWorld() {
 					mvaddstr(i + xCoord + xOffset, j + yCoord, " ");
 					
 					//output to screen
-					attron(COLOR_PAIR(nextColor++));
 					move(i + xCoord + xOffset, j + yCoord);
-					printw("%lc", tmpWChArr[0]);
+					if((*it)->getHoles().find(make_pair(i + xCoord + xOffset, j + yCoord)) == 
+					   (*it)->getHoles().end()) {
+						attron(COLOR_PAIR(nextColor++));
+						printw("%lc", tmpWChArr[0]);
+					}
+					else {
+						attron(COLOR_PAIR(BLUE_BLUE));
+						printw("%lc", " ");
+					}
 					if(nextColor == 35) nextColor = 30;
 				}
 		}
@@ -197,6 +212,12 @@ void Water::renderWorld() {
 		if(typeid(**it) == typeid(Shark)) {
 			int color = Shark::getColor();
 			attron(A_BOLD);
+			if((*it)->getHits()) {
+				attron(COLOR_PAIR(RED_BLUE));
+			}
+			else {
+				attron(COLOR_PAIR(color));
+			}
 			
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
@@ -209,16 +230,32 @@ void Water::renderWorld() {
 					
 					tmpWChArr[0] = Shark::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
+					//Print remaining hits counter in first whitespace available
+					//if Obstacle->hits > 0
+					if((*it)->getHits() && i == 0 && j == 0 && 
+						xOffset == 0 && yOffset == 0) {
+						move(i + xCoord + xOffset, j + yCoord);
+						attron(COLOR_PAIR(WHITE_BLUE));
+						printw("%lc", (*it)->getMaxHits() - (*it)->getHits() + '0');
+						attron(COLOR_PAIR(RED_BLUE));
+					}
 					//output to screen
-					attron(COLOR_PAIR(color));
-					move(i + xCoord + xOffset, j + yCoord);
-					printw("%lc", tmpWChArr[0]);
+					else {
+						move(i + xCoord + xOffset, j + yCoord);
+						printw("%lc", tmpWChArr[0]);
+					}
 				}
 		}
 
 		if(typeid(**it) == typeid(Octopus)) {
 			int color = static_cast<Octopus *>(*it)->getColor();
 			attron(A_BOLD);
+			if((*it)->getHits()) {
+				attron(COLOR_PAIR(RED_BLUE));
+			}
+			else {
+				attron(COLOR_PAIR(color));
+			}
 			
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
@@ -227,10 +264,21 @@ void Water::renderWorld() {
 					j + yCoord + yOffset < COLS; j++) {
 					if(j - yOffset < 0) continue;
 					tmpWChArr[0] = Octopus::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					
+					//Print remaining hits counter in first whitespace available
+					//if Obstacle->hits > 0
+					if((*it)->getHits() && i == 0 && j == 0 &&
+						xOffset == 0 && yOffset == 0) {
+						move(i + xCoord + xOffset, j + yCoord);
+						attron(COLOR_PAIR(WHITE_BLUE));
+						printw("%lc", (*it)->getMaxHits() - (*it)->getHits() + '0');
+						attron(COLOR_PAIR(RED_BLUE));
+					}
 					//output to screen
-					attron(COLOR_PAIR(color));
-					move(i + xCoord + xOffset, j + yCoord);
-					printw("%lc", tmpWChArr[0]);
+					else {
+						move(i + xCoord + xOffset, j + yCoord);
+						printw("%lc", tmpWChArr[0]);
+					}					
 				}
 		}
 	}
@@ -306,6 +354,22 @@ void Water::scroll_() {
 		newNonWSObsCoords.clear();
 	}
 	
+	//Temporary set of pairs used to update holes values via swap
+	set<pair<int, int>> newHoles;	
+	for(list<Obstacle*>::iterator it = obstacles.begin();
+			it != obstacles.end(); it++) { 	
+		for(set<pair<int, int>>::iterator itHoles = 
+				(*it)->getHoles().begin();
+				itHoles != (*it)->getHoles().end(); 
+				itHoles++) {
+					newHoles.
+						insert(make_pair(itHoles->first, 
+							itHoles->second - 1));
+		}
+		swap((*it)->getHoles(), newHoles);
+		newHoles.clear();
+	}
+	
 	//Temporary set of pairs used to update miniCubes values via swap
 	set<pair<int, int>> newMinCubes;
 	for(set<pair<int, int>>::iterator it = miniCubes.begin();
@@ -321,3 +385,4 @@ void Water::scroll_() {
 
 // References
 // https://stackoverflow.com/questions/35162938/cannot-correctly-print-extended-ascii-characters-in-ncurses
+// https://stackoverflow.com/questions/2279379/how-to-convert-integer-to-char-in-c 
