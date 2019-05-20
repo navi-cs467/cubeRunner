@@ -107,6 +107,9 @@ int Game::playGame(char host[], char port[]) {
 						cube->updateCubePosition(1, 0, 1, 0);
 						cube->setCubeDirection(right_down);
 					}
+					else if(userInput == 32) {
+						cube->fireShot();
+					}
 
 					//Unlock the lock after movement update
 					omp_unset_lock(&userInputLock);
@@ -233,7 +236,8 @@ int Game::playGame(char host[], char port[]) {
 				double lastScrollTime = omp_get_wtime(),
 					   lastMoveTime = omp_get_wtime(),
 					   lastRefreshTime = omp_get_wtime(),
-					   lastNewObsTime = omp_get_wtime();
+					   lastNewObsTime = omp_get_wtime(),
+					   lastShotTime = omp_get_wtime();
 				int statsTime, startTime, scrollCount = 0,
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
@@ -329,7 +333,6 @@ int Game::playGame(char host[], char port[]) {
 						world->renderWorld();
 
 						//Render Cube
-						attron(COLOR_PAIR(cube->getColor()));
 						cube->drawCube();
 						//Death animation if death occurred
 						if(deathFlag) {
@@ -357,6 +360,9 @@ int Game::playGame(char host[], char port[]) {
 
 						//Reset player if death occurred (but no game over)
 						if(deathFlag) world->resetPlayer(cube);
+						
+						else cube->processShot();
+						
 
 						//Reset death flag
 						deathFlag = false;
@@ -424,6 +430,22 @@ int Game::playGame(char host[], char port[]) {
 					if(omp_get_wtime() - lastMoveTime > moveRate) {
 						lastMoveTime = omp_get_wtime();
 						world->moveObs();
+					}
+					
+					//Shot moves 4 times as fast as Obstacles move if
+					//moving horizontally, and 2 times as fast as Obstacles
+					//move if moving vertically.
+					if((cube->getShotDir() == up || cube->getShotDir() == down) &&
+						omp_get_wtime() - lastShotTime > moveRate / 2) {
+							lastShotTime = omp_get_wtime();
+							cube->moveShot();
+					}
+						
+					else if(cube->getShotDir() != up && 
+							cube->getShotDir() != down &&
+							omp_get_wtime() - lastShotTime > moveRate / 4) {	
+						lastShotTime = omp_get_wtime();
+						cube->moveShot();
 					}
 
 					//Update time, life count, and score display every second

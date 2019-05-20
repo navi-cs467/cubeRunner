@@ -85,9 +85,13 @@ Cube::Cube(World *world, int lives) :
 
 	curDir = right;
 
-	//Update row and col
+	//Initialize row and col
 	row = cubeCoords[0][0];
 	col = cubeCoords[0][1];
+	
+	//Initialize shotOff and shotCoords
+	shotOff = false;
+	shotCoords.first = -1; shotCoords.second = -1;
 
 }
 
@@ -178,6 +182,10 @@ void Cube::cubeReset(World *world){
 	//Update row and col
 	row = cubeCoords[0][0];
 	col = cubeCoords[0][1];
+	
+	//Initialize shotOff and shotCoords
+	shotOff = false;
+	shotCoords.first = -1; shotCoords.second = -1;
 }
 
 void Cube::loadCubeChars(char chars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH]){
@@ -392,6 +400,9 @@ int Cube::updateCubeCharsAndCoords(int colPrev, int colCurr, int rowPrev, int ro
 }
 
 void Cube::drawCube(void){
+	
+	attron(COLOR_PAIR(color));
+	
 	mvaddch(cubeCoords[0][0],cubeCoords[0][1],cubeChars[0][0]);
 	mvaddch(cubeCoords[1][0],cubeCoords[1][1],cubeChars[0][1]);
 	mvaddch(cubeCoords[2][0],cubeCoords[2][1],cubeChars[0][2]);
@@ -568,43 +579,45 @@ void Cube::drawCubeDeath(int *userInput){
 
 void Cube::checkCubeCollision(World *world){
 
-	list<Obstacle*>::iterator obs;
-	set<pair<int,int> >::iterator mcs, nonWSObs;
+	list<Obstacle*>::iterator obsIt;
+	set<pair<int,int> >::iterator mcIt, nonWSObsIt;
 
 	//Check MiniCube Collisions
-	for(mcs = world->getMiniCubes().begin();
-		mcs != world->getMiniCubes().end();
-		++mcs){
+	for(mcIt = world->getMiniCubes().begin();
+		mcIt != world->getMiniCubes().end();
+		++mcIt){
 		for(int i = 0; i < cubeHeight * cubeWidth; ++i){
-			if((mcs->first == cubeCoords[i][0]) && (mcs->second == cubeCoords[i][1])){ //token collision with minicube
+			if((mcIt->first == cubeCoords[i][0]) && 
+			   (mcIt->second == cubeCoords[i][1])){ //token collision with minicube
 				//delete minicube entry
-				world->getMiniCubes().erase(mcs);
+				world->getMiniCubes().erase(mcIt);
 				//increment score
-				score += 10;			}
+				score += 10;			
+			}
 		}
 	}
 
 	bool obCollisionDetected = false;
 	//Check Obstacle Collisions
-	for(obs = world->getObstacles().begin();
-		obs != world->getObstacles().end() &&
-		!obCollisionDetected; obs++) {
+	for(obsIt = world->getObstacles().begin();
+		obsIt != world->getObstacles().end() &&
+		!obCollisionDetected; obsIt++) {
 
 		//Short-circuit this Obstacle check if possible
-		if((*obs)->getPosX() > row + cubeHeight - 1 ||
-		   (*obs)->getPosX() + (*obs)->getGTS() - 1 < row ||
-		   (*obs)->getPosY() > col + cubeWidth - 1 ||
-		   (*obs)->getPosY() + (*obs)->getLongestGS() - 1 < col)
+		if((*obsIt)->getPosX() > row + cubeHeight - 1 ||
+		   (*obsIt)->getPosX() + (*obsIt)->getGTS() - 1 < row ||
+		   (*obsIt)->getPosY() > col + cubeWidth - 1 ||
+		   (*obsIt)->getPosY() + (*obsIt)->getLongestGS() - 1 < col)
 			continue;
 
-		for(nonWSObs = (*obs)->getNonWSObsCoords().begin();
-			nonWSObs != (*obs)->getNonWSObsCoords().end() &&
+		for(nonWSObsIt = (*obsIt)->getNonWSObsCoords().begin();
+			nonWSObsIt != (*obsIt)->getNonWSObsCoords().end() &&
 			!obCollisionDetected;
-			++nonWSObs){
+			++nonWSObsIt){
 			for(int i = 0; i < cubeWidth * cubeHeight &&
 					!obCollisionDetected; ++i){
-				if((nonWSObs->first == cubeCoords[i][0]) &&
-				(nonWSObs->second == cubeCoords[i][1])){ //token collision with Obstacle
+				if((nonWSObsIt->first == cubeCoords[i][0]) &&
+				(nonWSObsIt->second == cubeCoords[i][1])){ //token collision with Obstacle
 					//set isDead status to true (1)
 					isDead = 1;
 					lives--;
@@ -615,6 +628,117 @@ void Cube::checkCubeCollision(World *world){
 	}
 }
 
+void Cube::fireShot() {
+	if(!shotOff) {
+		if(curDir == right || curDir == right_down || curDir == right_up) {
+			shotCoords.first = row + cubeHeight / 2 - 1;
+			shotCoords.second = col + cubeWidth - 1;
+			shotDir = right;
+		}
+		else if(curDir == left || curDir == left_down || curDir == left_up) {
+			shotCoords.first = row + cubeHeight / 2 - 1;
+			shotCoords.second = col;
+			shotDir = left;
+		}
+		else if(curDir == up) {
+			shotCoords.first = row;
+			shotCoords.second = col + cubeWidth / 2;
+			shotDir = up;
+		}
+		else {
+			shotCoords.first = row + cubeHeight - 1;
+			shotCoords.second = col + cubeWidth / 2;
+			shotDir = down;
+		}			
+		
+		shotOff = true;
+		if(typeid(*currWorld) == typeid(Water))
+			//shotColor = rand() % 5 + 30;
+			shotColor = RED_BLUE;
+	}
+}
+
+void Cube::moveShot() {
+	if(shotOff) {
+	//Move shot
+	if(shotDir == right)
+		shotCoords.second++;
+	else if(shotDir == left)
+		shotCoords.second--;
+	else if(shotDir == up)
+		shotCoords.first--;
+	else
+		shotCoords.first++;
+	}
+	//shotColor++;
+	//if(shotColor == 35) shotColor = 30;
+}
+
+void Cube::processShot() {
+	if(shotOff) {
+		//Check for hits (miniCubes or Obstacles)
+		list<Obstacle*>::iterator obsIt;
+		set<pair<int,int> >::iterator mcIt, nonWSObsIt;
+
+		//Check MiniCube hits
+		for(mcIt = currWorld->getMiniCubes().begin();
+			mcIt != currWorld->getMiniCubes().end() &&
+			shotOff;
+			++mcIt){
+			if(mcIt->first == shotCoords.first && 
+			   mcIt->second == shotCoords.second) {
+				currWorld->getMiniCubes().erase(mcIt);
+					shotOff = false;
+					shotCoords.first = -1; shotCoords.second = -1;
+			}
+		}
+
+		//Check Obstacle hits
+		for(obsIt = currWorld->getObstacles().begin();
+			obsIt != currWorld->getObstacles().end() &&
+			shotOff; obsIt++) {
+
+			//Short-circuit this Obstacle check if possible
+			if((*obsIt)->getPosX() > shotCoords.first ||
+			   (*obsIt)->getPosX() + (*obsIt)->getGTS() - 1 < shotCoords.first ||
+			   (*obsIt)->getPosY() > shotCoords.second ||
+			   (*obsIt)->getPosY() + (*obsIt)->getLongestGS() - 1 < shotCoords.second)
+				continue;
+
+			for(nonWSObsIt = (*obsIt)->getNonWSObsCoords().begin();
+				nonWSObsIt != (*obsIt)->getNonWSObsCoords().end() &&
+				shotOff;
+				++nonWSObsIt){
+				if(nonWSObsIt->first == shotCoords.first &&
+				   nonWSObsIt->second == shotCoords.second) {
+					   //(*obsIt)->getHoles().insert
+						//	(make_pair(nonWSObsIt->first, nonWSObsIt->second);
+					   shotOff = false;
+					   shotCoords.first = -1; shotCoords.second = -1;
+				}
+			}
+		}
+	}
+	//If no hit, print shot indicator at new position
+	if(shotOff) {
+		if(shotCoords.first > 0 && 
+		   shotCoords.first <= currWorld->getBottomRow() &&
+		   shotCoords.second > 0 &&
+		   shotCoords.second < COLS) {
+			   attron(COLOR_PAIR(shotColor));
+			   if(shotDir == up || shotDir == down)
+				   mvaddstr(shotCoords.first, shotCoords.second, "|");
+			   else
+				   mvaddstr(shotCoords.first, shotCoords.second, "_");
+			   refresh();
+		}
+		//If shot goes offscreen, reset shot
+		else {
+			shotOff = false;
+			shotCoords.first = -1; shotCoords.second = -1;
+		}
+	}
+}
 
 /* int main () {
   Cube cubeA;
@@ -623,10 +747,10 @@ void Cube::checkCubeCollision(World *world){
   int numMoves = 30;
 
   set<pair<int,int> > miniCubeCoords;
-  set<pair<int,int> > obsCoords;
+  set<pair<int,int> > obsItCoords;
 
   miniCubeCoords.insert(make_pair(13, 20));
-  obsCoords.insert(make_pair(20, 20));
+  obsItCoords.insert(make_pair(20, 20));
 
   cubeA.Cube::cubeInitWorld1();
 
@@ -682,7 +806,7 @@ void Cube::checkCubeCollision(World *world){
     cubeA.Cube::drawCube();
     mvaddstr(13,20,"M");
     mvaddstr(20,20,"B");
-    cubeA.Cube::checkCubeCollision(miniCubeCoords, obsCoords);
+    cubeA.Cube::checkCubeCollision(miniCubeCoords, obsItCoords);
     refresh();
 
   }

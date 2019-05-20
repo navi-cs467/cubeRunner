@@ -43,6 +43,10 @@ class Cube{
 		Direction curDir;
 		static const int cubeHeight = 4;
 		static const int cubeWidth = 4;
+		bool shotOff;
+		pair<int, int> shotCoords;
+		int shotColor;
+		Direction shotDir;
 
     public:
 		Cube(){}
@@ -76,6 +80,10 @@ class Cube{
 		void setCubeScore(int score){this->score = score;}
 		Direction getCubeDirection(void){return curDir;}
 		void setCubeDirection(Direction newDir) {curDir = newDir;}
+		void fireShot();
+		void moveShot();
+		void processShot();
+		int getShotDir() {return shotDir;}
 };
 
 
