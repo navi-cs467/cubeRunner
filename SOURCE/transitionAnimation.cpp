@@ -9,12 +9,17 @@
 #include "../HEADER/transitionAnimation.hpp"
 
 //Introduction sequence (plays when game starts)
-void transitionAnimation(const char* fileName)
+void transitionAnimation(const char* fileName, 
+						 int graphicWidth, 
+						 int graphicHeight,
+						 int backgroundColor,
+						 int startingSeedColor,
+						 int promptColor)
 { 
 	clear();  //Curses clear-screen call
 	
-	// paint screen black
-	attron(COLOR_PAIR(BLACK_BLACK));
+	// paint screen background color
+	attron(COLOR_PAIR(backgroundColor));
     for (int y = 0; y < LINES; y++) {
         mvhline(y, 0, ' ', COLS);
     }
@@ -23,10 +28,17 @@ void transitionAnimation(const char* fileName)
     //Turn on bold attribute
     attron(A_BOLD);
 	
-	int startingCol = (COLS - INTRO_WIDTH)/2, 
-		startingRow = (LINES - INTRO_HEIGHT)/2;
-	WINDOW *subscrn = newwin(INTRO_HEIGHT, INTRO_WIDTH, 
+	int startingCol = (COLS - graphicWidth)/2, 
+		startingRow = (LINES - graphicHeight)/2;
+	WINDOW *subscrn = newwin(graphicHeight, graphicWidth, 
 							 startingRow, startingCol);
+	
+	// paint subscreen background color
+	wattron(subscrn, COLOR_PAIR(backgroundColor)); wattron(subscrn, A_BOLD);
+    for (int y = 0; y < graphicHeight; y++) {
+        mvwhline(subscrn, y, 0, ' ', graphicWidth);
+    }
+	wrefresh(subscrn);
    
     //Load transitionAnimation graphic into cmdoutlinesGraphics from file
     loadGraphic(fileName);
@@ -50,10 +62,10 @@ void transitionAnimation(const char* fileName)
 		#pragma omp section
 		{
 			//Paint the rows to the screen
-			for (row = 0, color = rand() % 6 + 1; 
-					!inputInterrupt && row < INTRO_HEIGHT - 2;
+			for (row = 0, color = rand() % 6 + startingSeedColor; 
+					!inputInterrupt && row < graphicHeight - 2;
 					row++, color++) {  
-			   if(color == 7) color = 1;		//Cycle to first index when necessary
+			   if(color == startingSeedColor + 6) color = startingSeedColor;		//Cycle to first index when necessary
 			   //Change color
 			   wattron(subscrn, COLOR_PAIR(color)); 
 			   mvwaddstr(subscrn, row, 0,
@@ -66,14 +78,14 @@ void transitionAnimation(const char* fileName)
 									//using this call to the curses library
 			}
 			
-			wattron(subscrn, COLOR_PAIR(BLACK_BLACK));		//Ensures these two lines are painted 
-			mvwhline(subscrn, row, 0, ' ', INTRO_WIDTH);	//correctly before threading below
-			mvwhline(subscrn, row + 1, 0, ' ', INTRO_WIDTH);	
+			wattron(subscrn, COLOR_PAIR(backgroundColor));		//Ensures these two lines are painted 
+			mvwhline(subscrn, row, 0, ' ', graphicWidth);	//correctly before threading below
+			mvwhline(subscrn, row + 1, 0, ' ', graphicWidth);	
 				
 			if(!inputInterrupt) usleep(200 * 1000);	//Sleep for 200 milliseconds
 			
 			animationRunning = false;
-			attron(COLOR_PAIR(WHITE_BLACK));
+			//attron(COLOR_PAIR(WHITE_BLACK));
 			if(!inputInterrupt) animationCompleted = true;
 		}
 		
@@ -106,7 +118,7 @@ void transitionAnimation(const char* fileName)
 				while(!inputReceived) {
 					if(time + 0.6 < omp_get_wtime() && visible == false){
 						time = omp_get_wtime();
-						wattron(subscrn, COLOR_PAIR(RED_BLACK));
+						wattron(subscrn, COLOR_PAIR(promptColor));
 						mvwaddstr(subscrn, row + 1, 0, 
 							cmdoutlinesGraphics[row + 1].c_str());
 						wrefresh(subscrn);
@@ -114,8 +126,8 @@ void transitionAnimation(const char* fileName)
 					}
 					else if(time + 1.75 < omp_get_wtime() && visible == true){
 						time = omp_get_wtime();
-						wattron(subscrn, COLOR_PAIR(BLACK_BLACK));
-						mvwhline(subscrn, row + 1, 0, ' ', INTRO_WIDTH);
+						wattron(subscrn, COLOR_PAIR(backgroundColor));
+						mvwhline(subscrn, row + 1, 0, ' ', graphicWidth);
 						wrefresh(subscrn);
 						visible = false;
 					}

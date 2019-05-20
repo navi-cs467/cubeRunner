@@ -19,6 +19,8 @@ Game::Game(int gameMode, bool isTwoPlayer) :
 
 		else world = new Water(isTwoPlayer);		//"Blank" world if running as client
 
+		transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);	
+			
 		if(gameMode == EASY) cube = new Cube(world, 5);
 		else if(gameMode == NORMAL) cube = new Cube(world, 4);
 		else if(gameMode == HARD) cube = new Cube(world, 3);

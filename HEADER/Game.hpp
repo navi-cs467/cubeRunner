@@ -17,6 +17,7 @@ class World;
 #include "Water.hpp"
 //#include "include.hpp"
 #include "constants.hpp"
+#include "transitionAnimation.hpp"
 
 //client network functions
 #include "client.hpp"

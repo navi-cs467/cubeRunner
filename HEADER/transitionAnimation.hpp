@@ -14,6 +14,11 @@
 #include "using.hpp"
 #include "loadGraphic.hpp"
 
-void transitionAnimation(const char* fileName);
+void transitionAnimation(const char* fileName,
+						 int graphicWidth,
+						 int graphicHeight,
+						 int backgroundColor,
+						 int startingSeedColor,
+						 int promptColor);
 
 #endif /* transitionAnimation_hpp */

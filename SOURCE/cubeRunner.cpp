@@ -98,7 +98,7 @@ int main(void)
 	srand(time(NULL));	//Seed random number generator with system time
 
     //Run transitionAnimation animation
-    transitionAnimation("GRAPHICS/cubeRunner.txt");
+    transitionAnimation("GRAPHICS/cubeRunner.txt", 120, 28, BLACK_BLACK, 1, RED_BLACK);
 
 	while(1) {
 
