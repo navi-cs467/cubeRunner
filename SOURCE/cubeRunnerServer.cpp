@@ -502,7 +502,8 @@ int main(int argc, char* argv[]) {
 						}
 						
 						//ADD cube->shotCoords HERE TO cubeCharsBuff,
-						//GET WITH cube->getShotCoords()...
+						//GET x WITH cube->getShotCoords().first
+						//GET y WITH cube->getShotCoords().second...
 
 						//send the whole buffer to both clients
 						sendMessage_S(player1, cubeCharsBuff);

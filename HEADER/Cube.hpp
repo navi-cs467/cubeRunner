@@ -85,6 +85,7 @@ class Cube{
 		void processShot();
 		int getShotDir() {return shotDir;}
 		void printShot();
+		pair<int, int> getShotCoords() {return shotCoords;}
 		void setShotCoords(int x, int y) {
 			shotCoords.first = x;
 			shotCoords.second = y;
