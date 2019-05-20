@@ -258,7 +258,8 @@ int main(int argc, char* argv[]) {
 				double lastScrollTime = omp_get_wtime(),
 					   lastMoveTime = omp_get_wtime(),
 					   lastRefreshTime = omp_get_wtime(),
-					   lastNewObsTime = omp_get_wtime();
+					   lastNewObsTime = omp_get_wtime(),
+					   lastShotTime = omp_get_wtime();
 				int statsTime, startTime, scrollCount = 0,
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
@@ -996,10 +997,26 @@ int main(int argc, char* argv[]) {
 						if(scrollCount == COLS) scrollCount = 0;
 						else scrollCount++;
 					}
-
+					
+					//Move Obstacles according to moveRate
 					if(omp_get_wtime() - lastMoveTime > moveRate) {
 						lastMoveTime = omp_get_wtime();
 						world->moveObs();
+					}
+					
+					//Shot moves 4 times as fast as Obstacles move if
+					//moving horizontally, and 2 times as fast as Obstacles
+					//move if moving vertically.
+					if((cube->getShotDir() == up || cube->getShotDir() == down) &&
+						omp_get_wtime() - lastShotTime > moveRate / 2) {
+							lastShotTime = omp_get_wtime();
+							cube->moveShot();
+					}
+					else if(cube->getShotDir() != up && 
+							cube->getShotDir() != down &&
+							omp_get_wtime() - lastShotTime > moveRate / 4) {	
+						lastShotTime = omp_get_wtime();
+						cube->moveShot();
 					}
 
 					//Update time every second

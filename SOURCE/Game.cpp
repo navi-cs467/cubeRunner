@@ -454,7 +454,6 @@ int Game::playGame(char host[], char port[]) {
 							lastShotTime = omp_get_wtime();
 							cube->moveShot();
 					}
-						
 					else if(cube->getShotDir() != up && 
 							cube->getShotDir() != down &&
 							omp_get_wtime() - lastShotTime > moveRate / 4) {	
