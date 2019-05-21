@@ -517,6 +517,9 @@ int Game::playGame(char host[], char port[]) {
 
 				//connect to server
 				socketFD = initSocket(host, port);
+				
+				if(DEBUG)
+					move(5,5); printw("Connected..."); refresh();
 
 				//hold server connection confirmation
 				char message[256];
@@ -524,6 +527,9 @@ int Game::playGame(char host[], char port[]) {
 
 				//receive message, either 0 or 1 depending on player 1 or 2
 				receiveMessage_C(socketFD, message);
+				
+				if(DEBUG)
+					move(6,5); printw("Received Player Indicator..."); refresh();
 
 				//check for other player
 				//if we received 0, we are connected but other player isn't
@@ -534,10 +540,15 @@ int Game::playGame(char host[], char port[]) {
 					char gM[2];
 					sprintf(gM, "%d", gameMode);
 					sendMessage_C(socketFD, gM);
+					if(DEBUG)
+						move(7,5); printw("Sent GM Player 1...\n"); refresh();
 
 					//check for other player and gamemode match
 					memset(message, '\0', sizeof message);
 					receiveMessage_C(socketFD, message);
+					
+					if(DEBUG)
+						move(8,5); printw("Received Confirmation Other Player Now Connected & GM Match Indicator...\n"); refresh();
 
 					//if we got to this point, player is player 1 so change the value
 					playerNum = 1;
@@ -550,9 +561,15 @@ int Game::playGame(char host[], char port[]) {
 					sprintf(gM, "%d", gameMode);
 					sendMessage_C(socketFD, gM);
 					
+					if(DEBUG)	
+						move(7,5); printw("Sent GM Player 2...\n"); refresh();
+					
 					//check for gamemode match
 					memset(message, '\0', sizeof message);
 					receiveMessage_C(socketFD, message);
+					
+					if(DEBUG)
+						move(8,5); printw("Received GM Match Indicator...\n"); refresh();
 
 					//if we got to this point, player is player 2 so change the value
 					playerNum = 2;
@@ -574,6 +591,9 @@ int Game::playGame(char host[], char port[]) {
 				int seconds, minutes, hours;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
+				if(DEBUG)
+					move(9,5); printw("Starting Game Loop..."); refresh();
+				
 				while (!hasTerminated) {
 
 						//Pseudocode variables... change as desired

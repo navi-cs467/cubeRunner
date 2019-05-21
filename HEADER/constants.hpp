@@ -65,4 +65,7 @@
 #define SCROLL_MOVE_DECREASE_RATE 0.9
 /*** End Game-Related ***/
 
+/*** DEBUG ***/
+#define DEBUG 1
+
 #endif /* constants_hpp */

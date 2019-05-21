@@ -68,7 +68,10 @@ int main(int argc, char* argv[]) {
 		//initialize server and accept connections
 		//also send confirmation messages to players when they are connected
 		initServer(portNum, &player1, &player2);
-
+		
+		if(DEBUG)
+			printf("Both Connections Established...\n");
+		
 		//confirm both players are connected and check game modes
 		sendMessage_S(player1, confirm);
 
@@ -76,6 +79,9 @@ int main(int argc, char* argv[]) {
 		sprintf(confirm, "%d", 1);
 
 		sendMessage_S(player2, confirm);
+		
+		if(DEBUG)
+			printf("Both Confirmations Sent...\n");
 
 		//receive game mode from player1
 		char gm1Str[2];
@@ -84,6 +90,8 @@ int main(int argc, char* argv[]) {
 		//receive game mode from player2
 		char gm2Str[2];
 		receiveMessage_S(player2, gm2Str);
+		
+		printf("Received Both Game Modes...\n");
 
 		int gmP1 = atoi(gm1Str);
 		int gmP2 = atoi(gm2Str);
@@ -95,7 +103,11 @@ int main(int argc, char* argv[]) {
 			sprintf(confirm, "%d", 1);
 			sendMessage_S(player1, confirm);
 			sendMessage_S(player2, confirm);
+			if(DEBUG)
+				printf("Sent Game Mode Indicator (GM Match)...\n");
 		}
+		
+		printf("After sending GM Match Loop (if applicable)...\n");
 
 		char message[256];
 		memset(message, '\0', sizeof message);
@@ -108,11 +120,16 @@ int main(int argc, char* argv[]) {
 			sprintf(confirm, "%d", 2);
 			sendMessage_S(player1, confirm);
 			sendMessage_S(player2, confirm);
+			if(DEBUG)
+				printf("Sent Game Mode Indicator (GM No Match)...\n");
 
 			//receive confirmation back from each player
 			//leaving out for now, might add later
 
 		}
+		
+		if(DEBUG)
+			printf("After sending GM No Match Loop (if applicable)...\n");
 
 		Game game = Game(gmP1 < gmP2 ? gmP1 : gmP2, true, true);		//2nd argument == true for isTwoPlayer
 																		//Use easiest of two specified game modes,
@@ -135,6 +152,10 @@ int main(int argc, char* argv[]) {
 		//if input is coming in too fast
 		bool renderedLastMv1 = true, renderedLastMv2 = true, deathFlag = false;
 		int userInput1, userInput2;
+		
+		if(DEBUG)
+			printf("Instantiating Game and starting...\n"); fflush(stdout);
+		
 		#pragma omp parallel sections shared(deathFlag, lock1, \
 											 renderedLastMv1, renderedLastMv2, userInput1, userInput2)
 		{
