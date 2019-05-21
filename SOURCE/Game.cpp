@@ -517,7 +517,7 @@ int Game::playGame(char host[], char port[]) {
 
 				//connect to server
 				socketFD = initSocket(host, port);
-				
+
 				if(DEBUG)
 					move(5,5); printw("Connected..."); refresh();
 
@@ -527,7 +527,7 @@ int Game::playGame(char host[], char port[]) {
 
 				//receive message, either 0 or 1 depending on player 1 or 2
 				receiveMessage_C(socketFD, message);
-				
+
 				if(DEBUG)
 					move(6,5); printw("Received Player Indicator..."); refresh();
 
@@ -546,7 +546,7 @@ int Game::playGame(char host[], char port[]) {
 					//check for other player and gamemode match
 					memset(message, '\0', sizeof message);
 					receiveMessage_C(socketFD, message);
-					
+
 					if(DEBUG)
 						move(8,5); printw("Received Confirmation Other Player Now Connected & GM Match Indicator...\n"); refresh();
 
@@ -554,22 +554,22 @@ int Game::playGame(char host[], char port[]) {
 					playerNum = 1;
 				}
 
-				if (strcmp(message,"1") == 0)
+				if ((strcmp(message,"1") == 0) && playerNum != 1)
 				{
 					//send chosen game mode
 					char gM[2];
 					sprintf(gM, "%d", gameMode);
 					sendMessage_C(socketFD, gM);
-					
-					if(DEBUG)	
-						move(9,5); printw("Sent GM Player 2...\n"); refresh();
-					
+
+					if(DEBUG)
+						move(7,5); printw("Sent GM Player 2...\n"); refresh();
+
 					//check for gamemode match
 					memset(message, '\0', sizeof message);
 					receiveMessage_C(socketFD, message);
-					
+
 					if(DEBUG)
-						move(10,5); printw("Received GM Match Indicator...\n"); refresh();
+						move(8,5); printw("Received GM Match Indicator...\n"); refresh();
 
 					//if we got to this point, player is player 2 so change the value
 					playerNum = 2;
@@ -592,8 +592,8 @@ int Game::playGame(char host[], char port[]) {
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
 				if(DEBUG)
-					move(11,5); printw("Starting Game Loop..."); refresh();
-				
+					move(9,5); printw("Starting Game Loop..."); refresh();
+
 				while (!hasTerminated) {
 
 						//Pseudocode variables... change as desired
