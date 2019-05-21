@@ -464,11 +464,15 @@ int main(void)
 			}
 		}
 
-		Game game = Game(gameMode, isTwoPlayer);
+		Game game = Game(gameMode, isTwoPlayer);  
 		//Initial transition animation
 		//transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);	
-		if(isTwoPlayer == false) game.playGame();
-		else game.playGame(host, port);
+		if(isTwoPlayer == false) {
+			game.playGame();
+		}
+		else { 
+			game.playGame(host, port); 
+		}
 		gameOn = false;
 	}
 	return 0;
