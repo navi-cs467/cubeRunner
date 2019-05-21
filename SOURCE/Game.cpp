@@ -174,7 +174,7 @@ int Game::playGame(char host[], char port[]) {
 							break;
 						}
 					}
-					else {
+					else if(playerNum == 2){
 						if(userInput == KEY_LEFT) {
 							// SEND: KEY_LEFT
 							sprintf(messageToSend, "%d", userInput);
