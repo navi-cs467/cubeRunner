@@ -512,6 +512,8 @@ int Game::playGame(char host[], char port[]) {
 					// (Optional - if display window is used to inform player easier game mode will be used) send message to cubeRunnerServer once character has been input
 					// (Optional - if display window is used to inform player easier game mode will be used) receive message back that the other player has also confirmed message (game can start)
 
+				clear();  // curses clear-screen call	
+					
 				//connect to server
 				socketFD = initSocket(host, port);
 				playerNum = 2;

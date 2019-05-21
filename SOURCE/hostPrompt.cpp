@@ -36,7 +36,7 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 	//Get hostname or IP address
 	do{
 		ch = getch();
-		if(ch == KEY_BACKSPACE && i > 0) i--;
+		if((ch == KEY_BACKSPACE || ch == 127) && i > 0) i--;
 		else if(i < 255) host[i++] = ch;
 	}
 	while(ch != '\n' && ch != 27 && ch != KEY_END);
