@@ -850,23 +850,23 @@ int Game::playGame(char host[], char port[]) {
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
-							int_2 = atoi(gameData);
+							int_2 = atoi(gameData); //move(20, 5); printw("type: %d", int_2); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
-							int_3 = atoi(gameData);
+							int_3 = atoi(gameData); //move(21, 5); printw("x: %d", int_2); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
-							int_4 = atoi(gameData);
+							int_4 = atoi(gameData); //move(22, 5); printw("y: %d", int_2); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
-							int_5 = atoi(gameData);
+							int_5 = atoi(gameData); //move(23, 5); printw("gt: %d", int_2); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
-							int_6 = atoi(gameData);
+							int_6 = atoi(gameData); //move(24, 5); printw("gts: %d", int_2); refresh();
 
 							if(int_2 == 1)
 								world->getObstacles().push_back(new Seaweed(int_3, int_4, int_5, int_6));

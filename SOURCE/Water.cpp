@@ -33,8 +33,7 @@ Water::Water(int gameMode, bool isTwoPlayer, bool forServer) :
 
 		for(int i = 0, random = rand() % 4; 
 			i < obstacleCount; i++, random = rand() % 4) {
-				//if(random == 0) {
-				if(1) {
+				if(random == 0) {
 					obstacles.push_back(new Seaweed(this));
 					//updateObsCoords(obstacles.back());
 				}
