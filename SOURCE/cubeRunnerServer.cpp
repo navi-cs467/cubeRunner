@@ -527,7 +527,6 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player2, messageToSend);
 
 						//send cubeChars
-						char** cubeCharsArray = (char**) cube->getCubeChars();
 
 						//buffers for character array
 						char cubeCharsBuff[256]; char cubeCharBuff[2];
@@ -540,9 +539,9 @@ int main(int argc, char* argv[]) {
 							for (int j = 0; j < CUBE_CHARS_WIDTH; j++)
 							{
 								memset(cubeCharBuff, '\0', sizeof cubeCharBuff);
-
+								//move(20, 5); printw(
 								//create strings from characters in array
-								sprintf(cubeCharBuff, "%c", cubeCharsArray[i][j]);
+								sprintf(cubeCharBuff, "%c", cube->getCubeChars()[i][j]);
 								strcat(cubeCharsBuff, cubeCharBuff);
 							}
 						}

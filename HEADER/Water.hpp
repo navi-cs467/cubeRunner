@@ -22,7 +22,7 @@
 
 class Water : public World {
 	public:
-		Water(bool isTwoPlayer) : World(isTwoPlayer) {};
+		Water(bool isTwoPlayer) : World(isTwoPlayer) {bottomRow = LINES - 5;};
 		Water(int gameMode, bool isTwoPlayer, bool forServer = false);
 		virtual void renderWorld(Cube *cube);
 		//virtual void scroll_(bool newObs);

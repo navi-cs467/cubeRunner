@@ -129,7 +129,7 @@ void Water::renderWorld(Cube *cube) {
 		it != miniCubes.end(); it++) {
 			attron(COLOR_PAIR(WHITE_BLUE));
             mvaddwstr(it->first, it->second, mc); //refresh();
-		}
+	}
 	
 	//Print all Obstacles
 	for(list<Obstacle*>::iterator it = obstacles.begin();
