@@ -72,10 +72,17 @@ int main(int argc, char* argv[]) {
 		//confirm both players are connected and check game modes
 		sendMessage_S(player1, confirm);
 
+		//confirm both players are connected and check game modes
+		sendMessage_S(player1, confirm);
+
+		memset(confirm, '\0', sizeof confirm);
+		sprintf(confirm, "%d", 1);
+
+		sendMessage_S(player2, confirm);
+		
 		//receive game mode from player1
 		char gm1Str[2];
 		receiveMessage_S(player1, gm1Str);
-
 
 		//receive game mode from player2
 		char gm2Str[2];
@@ -178,7 +185,7 @@ int main(int argc, char* argv[]) {
 					else if(userInput2 == 32) {
 						cube->fireShot();
 					}
-					
+
 					renderedLastMv1 = false;
 					omp_unset_lock(&lock1);
 				}
@@ -459,8 +466,8 @@ int main(int argc, char* argv[]) {
 						/**** END SEND DEATH FLAG ****/
 
 						/**** SEND CUBE DATA ****/
-						// SEND connection1: cube->getCubeCoords()[array], cube->getCubeChars()[array], 
-											 // cube->getCubeLives, cube->getCubePositionRow() 
+						// SEND connection1: cube->getCubeCoords()[array], cube->getCubeChars()[array],
+											 // cube->getCubeLives, cube->getCubePositionRow()
 											 // cube->getCubePositionCol(), cube->getShotCoords()
 
 						//send lives to clients
@@ -501,7 +508,7 @@ int main(int argc, char* argv[]) {
 								strcat(cubeCharsBuff, cubeCharBuff);
 							}
 						}
-						
+
 						//ADD cube->shotCoords HERE TO cubeCharsBuff,
 						//GET x WITH cube->getShotCoords().first
 						//GET y WITH cube->getShotCoords().second...
@@ -512,8 +519,8 @@ int main(int argc, char* argv[]) {
 
 						// (Optional ?) RECEIVE connection1: confirmation
 
-						// SEND connection2: cube->getCubeCoords()[array], cube->getCubeChars()[array], 
-											 // cube->getCubeLives, cube->getCubePositionRow() 
+						// SEND connection2: cube->getCubeCoords()[array], cube->getCubeChars()[array],
+											 // cube->getCubeLives, cube->getCubePositionRow()
 											 // cube->getCubePositionCol()
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND CUBE DATA ****/
@@ -997,13 +1004,13 @@ int main(int argc, char* argv[]) {
 						if(scrollCount == COLS) scrollCount = 0;
 						else scrollCount++;
 					}
-					
+
 					//Move Obstacles according to moveRate
 					if(omp_get_wtime() - lastMoveTime > moveRate) {
 						lastMoveTime = omp_get_wtime();
 						world->moveObs();
 					}
-					
+
 					//Shot moves 4 times as fast as Obstacles move if
 					//moving horizontally, and 2 times as fast as Obstacles
 					//move if moving vertically.
@@ -1012,9 +1019,9 @@ int main(int argc, char* argv[]) {
 							lastShotTime = omp_get_wtime();
 							cube->moveShot();
 					}
-					else if(cube->getShotDir() != up && 
+					else if(cube->getShotDir() != up &&
 							cube->getShotDir() != down &&
-							omp_get_wtime() - lastShotTime > moveRate / 4) {	
+							omp_get_wtime() - lastShotTime > moveRate / 4) {
 						lastShotTime = omp_get_wtime();
 						cube->moveShot();
 					}

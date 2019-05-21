@@ -18,7 +18,7 @@ Game::Game(int gameMode, bool isTwoPlayer, bool isServer) :
 		if(!isTwoPlayer || isServer) world = new Water(gameMode, isTwoPlayer);
 
 		else world = new Water(isTwoPlayer);		//"Blank" world if running as client
-			
+
 		if(gameMode == EASY) cube = new Cube(world, 5);
 		else if(gameMode == NORMAL) cube = new Cube(world, 4);
 		else if(gameMode == HARD) cube = new Cube(world, 3);
@@ -374,7 +374,7 @@ int Game::playGame(char host[], char port[]) {
 
 						//Reset player if death occurred (but no game over)
 						if(deathFlag) world->resetPlayer(cube);
-						
+
 						//Reset death flag
 						deathFlag = false;
 
@@ -442,7 +442,7 @@ int Game::playGame(char host[], char port[]) {
 						lastMoveTime = omp_get_wtime();
 						world->moveObs();
 					}
-					
+
 					//Shot moves 4 times as fast as Obstacles move if
 					//moving horizontally, and 2 times as fast as Obstacles
 					//move if moving vertically.
@@ -451,9 +451,9 @@ int Game::playGame(char host[], char port[]) {
 							lastShotTime = omp_get_wtime();
 							cube->moveShot();
 					}
-					else if(cube->getShotDir() != up && 
+					else if(cube->getShotDir() != up &&
 							cube->getShotDir() != down &&
-							omp_get_wtime() - lastShotTime > moveRate / 4) {	
+							omp_get_wtime() - lastShotTime > moveRate / 4) {
 						lastShotTime = omp_get_wtime();
 						cube->moveShot();
 					}
@@ -514,33 +514,48 @@ int Game::playGame(char host[], char port[]) {
 
 				clear();  // curses clear-screen call
 				refresh();
-					
+
 				//connect to server
 				socketFD = initSocket(host, port);
-				playerNum = 2;
+
 				//hold server connection confirmation
 				char message[256];
 				memset(message, '\0', sizeof message);
 
-				//send chosen game mode
-				char gM[2];
-				sprintf(gM, "%d", gameMode);
-				sendMessage_C(socketFD, gM);
-				
-				//receive message, either 0 or if gameMode matches
+				//receive message, either 0 or 1 depending on player 1 or 2
 				receiveMessage_C(socketFD, message);
-			
+
 				//check for other player
 				//if we received 0, we are connected but other player isn't
-				//so we check for next confirmation
+				//so we check for next confirmation which should tell us if gamemodes match or not
 				if (strcmp(message,"0") == 0)
 				{
+					//send chosen game mode
+					char gM[2];
+					sprintf(gM, "%d", gameMode);
+					sendMessage_C(socketFD, gM);
+
 					//check for other player and gamemode match
 					memset(message, '\0', sizeof message);
 					receiveMessage_C(socketFD, message);
 
 					//if we got to this point, player is player 1 so change the value
 					playerNum = 1;
+				}
+
+				if (strcmp(message,"1") == 0)
+				{
+					//send chosen game mode
+					char gM[2];
+					sprintf(gM, "%d", gameMode);
+					sendMessage_C(socketFD, gM);
+					
+					//check for gamemode match
+					memset(message, '\0', sizeof message);
+					receiveMessage_C(socketFD, message);
+
+					//if we got to this point, player is player 2 so change the value
+					playerNum = 2;
 				}
 
 				//at this point, message holds gameMode result
@@ -560,7 +575,7 @@ int Game::playGame(char host[], char port[]) {
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
 				while (!hasTerminated) {
-					
+
 						//Pseudocode variables... change as desired
 						int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[10];
 						char scoreStr[256]; char gameData[256]; char sendConfirm[10];
@@ -713,7 +728,7 @@ int Game::playGame(char host[], char port[]) {
 
 						//load cube chars
 						cube->loadCubeChars(cubeCharsArray);
-						
+
 						//RECEIVE CUBE SHOT COORDS...
 						//LOAD CUBE SHOT COORDS (USE cube->setShotCoords(x, y)...
 
