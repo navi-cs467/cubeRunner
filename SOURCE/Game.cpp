@@ -562,14 +562,14 @@ int Game::playGame(char host[], char port[]) {
 					sendMessage_C(socketFD, gM);
 
 					if(DEBUG)
-						move(7,5); printw("Sent GM Player 2...\n"); refresh();
+						move(9,5); printw("Sent GM Player 2...\n"); refresh();
 
 					//check for gamemode match
 					memset(message, '\0', sizeof message);
 					receiveMessage_C(socketFD, message);
 
 					if(DEBUG)
-						move(8,5); printw("Received GM Match Indicator...\n"); refresh();
+						move(10,5); printw("Received GM Match Indicator...\n"); refresh();
 
 					//if we got to this point, player is player 2 so change the value
 					playerNum = 2;
@@ -592,7 +592,7 @@ int Game::playGame(char host[], char port[]) {
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
 				if(DEBUG)
-					move(9,5); printw("Starting Game Loop..."); refresh();
+					move(11,5); printw("Starting Game Loop..."); refresh();
 
 				while (!hasTerminated) {
 
