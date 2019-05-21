@@ -73,13 +73,13 @@ int main(int argc, char* argv[]) {
 		sendMessage_S(player1, confirm);
 
 		//confirm both players are connected and check game modes
-		sendMessage_S(player1, confirm);
+		sendMessage_S(player2, confirm);
 
 		memset(confirm, '\0', sizeof confirm);
 		sprintf(confirm, "%d", 1);
 
 		sendMessage_S(player2, confirm);
-		
+
 		//receive game mode from player1
 		char gm1Str[2];
 		receiveMessage_S(player1, gm1Str);
