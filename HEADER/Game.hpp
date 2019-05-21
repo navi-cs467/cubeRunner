@@ -33,7 +33,7 @@ class Game {
 
 
 	public:
-		Game(int gameMode, bool isTwoPlayer);
+		Game(int gameMode, bool isTwoPlayer, bool isServer = false);
 		int getScore() {return score;}
 		int getGameMode() {return gameMode;}
 		void setScore(int score) {this->score = score;}

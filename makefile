@@ -32,7 +32,7 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 #Objects (Server)
 _OBJ_SERVER = cubeRunnerServer.o server.o client.o Game.o World.o Water.o \
 			  Obstacle.o Seaweed.o Coral.o Shark.o Octopus.o Direction.o \
-			  Cube.o 
+			  Cube.o
 OBJ_SERVER = $(patsubst %,$(ODIR_SERVER)/%,$(_OBJ_SERVER))
 
 #Headers (Client/Single-Player)

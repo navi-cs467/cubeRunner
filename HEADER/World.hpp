@@ -39,7 +39,7 @@ class World {
 		//void updateMiniCubes(pair<int, int>);
 		void initMiniCubes(int numMiniCubes, 
 						   Direction offScreenDirection = none);
-		virtual void renderWorld() = 0;
+		virtual void renderWorld(Cube *cube) = 0;
 		//virtual void scroll_(bool newObs) = 0;
 		virtual void scroll_() = 0;
 		virtual void loadOSObs() = 0;	//Load offscreen Obstacles (for scrolling)

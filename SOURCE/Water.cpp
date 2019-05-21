@@ -72,7 +72,7 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 
 		refresh();
 
-		renderWorld();
+		//renderWorld();
 
 		//Last line is reserved for life count, timer, and score display
 }
@@ -109,7 +109,7 @@ void Water::loadOSMCs() {
 	initMiniCubes(NUM_MCS_EASY / gameMode, right);
 }
 
-void Water::renderWorld() {
+void Water::renderWorld(Cube *cube) {
 
 	//Paint blank background
 	attron(COLOR_PAIR(BLUE_BLUE));
@@ -282,6 +282,8 @@ void Water::renderWorld() {
 				}
 		}
 	}
+	
+	cube->processShot();
 
 	refresh();
 

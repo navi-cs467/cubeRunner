@@ -758,7 +758,7 @@ void Cube::processShot() {
 				   else
 					   //mvaddstr(shotCoords.first, shotCoords.second, "_");
 					   mvaddstr(shotCoords.first, shotCoords.second, "■");
-				   refresh();
+				   //refresh();
 			   }
 		}
 		//If shot goes offscreen, reset shot

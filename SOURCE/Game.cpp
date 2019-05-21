@@ -10,16 +10,14 @@
 
 #include "../HEADER/Game.hpp"
 
-Game::Game(int gameMode, bool isTwoPlayer) :
+Game::Game(int gameMode, bool isTwoPlayer, bool isServer) :
 	isTwoPlayer(isTwoPlayer), gameMode(gameMode) {
 
 		score = 0;
 
-		if(!isTwoPlayer) world = new Water(gameMode, isTwoPlayer);
+		if(!isTwoPlayer || isServer) world = new Water(gameMode, isTwoPlayer);
 
 		else world = new Water(isTwoPlayer);		//"Blank" world if running as client
-
-		transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);	
 			
 		if(gameMode == EASY) cube = new Cube(world, 5);
 		else if(gameMode == NORMAL) cube = new Cube(world, 4);
@@ -346,7 +344,7 @@ int Game::playGame(char host[], char port[]) {
 						deathFlag = cube->getCubeIsDead();
 
 						//Render World
-						world->renderWorld();
+						world->renderWorld(cube);
 
 						//Render Cube
 						cube->drawCube();
@@ -377,9 +375,6 @@ int Game::playGame(char host[], char port[]) {
 						//Reset player if death occurred (but no game over)
 						if(deathFlag) world->resetPlayer(cube);
 						
-						else cube->processShot();
-						
-
 						//Reset death flag
 						deathFlag = false;
 
@@ -888,7 +883,7 @@ int Game::playGame(char host[], char port[]) {
 						/**** END RECEIVE MINICUBES  ****/
 
 						//Render World
-						world->renderWorld();
+						world->renderWorld(cube);
 
 						//Render Cube
 						attron(COLOR_PAIR(cube->getColor()));

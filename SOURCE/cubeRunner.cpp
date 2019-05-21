@@ -465,6 +465,8 @@ int main(void)
 		}
 
 		Game game = Game(gameMode, isTwoPlayer);
+		//Initial transition animation
+		transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);	
 		if(isTwoPlayer == false) game.playGame();
 		else game.playGame(host, port);
 		gameOn = false;
@@ -491,3 +493,4 @@ int main(void)
 // https://stackoverflow.com/questions/2545720/error-default-argument-given-for-parameter-1
 // https://stackoverflow.com/questions/5288036/how-to-clear-ostringstream
 // https://www.gnu.org/software/guile-ncurses/manual/html_node/Getting-characters-from-the-keyboard.html
+// https://stackoverflow.com/questions/4114095/how-to-revert-a-git-repository-to-a-previous-commit

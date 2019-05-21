@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
 
 		}
 
-		Game game = Game(gmP1 < gmP2 ? gmP1 : gmP2, true);		//2nd argument == true for isTwoPlayer
+		Game game = Game(gmP1 < gmP2 ? gmP1 : gmP2, true, true);		//2nd argument == true for isTwoPlayer
 																//Use easiest of two specified game modes,
 																//if not the same
 		Cube* cube = game.getCube();
