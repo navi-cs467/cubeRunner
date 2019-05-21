@@ -72,9 +72,6 @@ int main(int argc, char* argv[]) {
 		//confirm both players are connected and check game modes
 		sendMessage_S(player1, confirm);
 
-		//confirm both players are connected and check game modes
-		sendMessage_S(player2, confirm);
-
 		memset(confirm, '\0', sizeof confirm);
 		sprintf(confirm, "%d", 1);
 
