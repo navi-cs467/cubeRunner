@@ -24,9 +24,10 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 								startingRowMenu3);
 	*subscrnGraphic = paintCubeGraphic(*subscrnGraphic, "GRAPHICS/menuCubeRight1_2.txt");
 	*currMenu = 3;
-	move(startingRowMenu3 + 1, startingColMenu3 + menu3Items[0].length());
+	int x = startingRowMenu3 + 1, y = startingColMenu3 + menu3Items[0].length();
+	move(x, y);
 	curs_set(1);
-	echo();
+	//echo();
 	refresh();
 
 
@@ -36,8 +37,18 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 	//Get hostname or IP address
 	do{
 		ch = getch();
-		if((ch == KEY_BACKSPACE || ch == 127) && i > 0) i--;
-		else if(i < 255) host[i++] = ch;
+		if((ch == KEY_BACKSPACE || ch == 127) && i > 0) {
+			i--;
+			mvaddstr(x, --y, "  ");
+			move(x, y);
+			refresh();
+		}
+		else if(i < 255 && !(ch == KEY_BACKSPACE || ch == 127)) {
+			host[i++] = ch;
+			char tmpStr[2]; tmpStr[0] = ch; tmpStr[1] = '\0';
+			mvaddstr(x, y++, tmpStr);
+			refresh();
+		}
 	}
 	while(ch != '\n' && ch != 27 && ch != KEY_END);
 	//If escape key is entered, go back to menu 2
@@ -51,23 +62,28 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 		return NULL;
 	}
 	host[i] = '\0';
-
+	
 	//Move cursor down
-	move(startingRowMenu3 + 2, startingColMenu3 + menu3Items[1].length());
+	x = startingRowMenu3 + 2; y = startingColMenu3 + menu3Items[1].length();
+	move(x, y);
 	refresh();
-
+	
 	//Get port number
 	i = 0;
 	do{
-
-		//** Should probably use wgetnstr here instead... **
-		//** Coming Soon **
-
 		ch = getch();
-		if(ch == KEY_BACKSPACE && i > 0) i--;
-		else if(i < 5) port[i++] = ch;
-		if(i == 5) noecho();
-		else echo();
+		if((ch == KEY_BACKSPACE || ch == 127) && i > 0) {
+			i--;
+			mvaddstr(x, --y, "  ");
+			move(x, y);
+			refresh();
+		}
+		else if(i < 5 && !(ch == KEY_BACKSPACE || ch == 127)) {
+			port[i++] = ch;
+			char tmpStr[2]; tmpStr[0] = ch; tmpStr[1] = '\0';
+			mvaddstr(x, y++, tmpStr);
+			refresh();
+		}
 	}
 	while(ch != '\n' && ch != 27 && ch != KEY_END);
 	//If escape key is entered, go back to menu 2
@@ -81,17 +97,6 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 		return NULL;
 	}
 	port[i] = '\0';
-
-	// //Convert port string
-	// istringstream istr(portStr); istr >> *port;
-	// curs_set(0);
-	// noecho();
-	// refresh();
-
-	//if connection established...
-	//*connected = true;
-
-	//else print error window... then return NULL
 
 	curs_set(0);
 	
