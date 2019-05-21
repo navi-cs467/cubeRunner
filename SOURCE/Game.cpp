@@ -42,7 +42,7 @@ int Game::playGame(char host[], char port[]) {
 
 	bool deathFlag = false;
 	bool isConnected = false;
-	int playerNum = 1;
+	int playerNum = 0;
 	int socketFD = -1;
 	bool hasTerminated = false;
 
@@ -127,8 +127,7 @@ int Game::playGame(char host[], char port[]) {
 					char confirm[256];
 					memset(confirm, '\0', sizeof(confirm));
 
-					//if(playerNum == 1) {
-					if(1) {
+					if(playerNum == 1) {
 						if(userInput == KEY_UP) {
 							// SEND: KEY_UP
 							sprintf(messageToSend, "%d", userInput);
@@ -175,7 +174,7 @@ int Game::playGame(char host[], char port[]) {
 							break;
 						}
 					}
-					else {
+					else if(playerNum == 2){
 						if(userInput == KEY_LEFT) {
 							// SEND: KEY_LEFT
 							sprintf(messageToSend, "%d", userInput);
