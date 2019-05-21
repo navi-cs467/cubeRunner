@@ -30,7 +30,7 @@ _OBJ = cubeRunner.o highlight.o hostPrompt.o transitionAnimation.o loadGraphic.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 #Objects (Server)
-_OBJ_SERVER = cubeRunnerServer.o server.o client.o Game.o World.o Water.o \
+_OBJ_SERVER = cubeRunnerServer.o server.o client.o World.o Water.o \
 			  Obstacle.o Seaweed.o Coral.o Shark.o Octopus.o Direction.o \
 			  Cube.o
 OBJ_SERVER = $(patsubst %,$(ODIR_SERVER)/%,$(_OBJ_SERVER))
@@ -45,9 +45,9 @@ _HDR = constants.hpp highlight.hpp hostPrompt.hpp include.hpp \
 HDR = $(patsubst %,$(IDIR)/%,$(_HDR))
 
 #Headers (Server)
-_HDR_SERVER = using.hpp initColors.hpp Game.hpp World.hpp Water.hpp Obstacle.hpp \
-	   Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp Direction.hpp Cube.hpp \
-	   server.hpp client.hpp
+_HDR_SERVER = include.hpp using.hpp initColors.hpp Game.hpp World.hpp \
+	   Water.hpp Obstacle.hpp Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp \
+	   Direction.hpp Cube.hpp server.hpp client.hpp
 HDR_SERVER = $(patsubst %,$(IDIR)/%,$(_HDR_SERVER))
 
 #Sources

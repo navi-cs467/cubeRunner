@@ -32,6 +32,11 @@
 
 /*************************** GLOBALS *********************************/
 
+int LINES = MIN_WIN_HEIGHT;
+int COLS = MIN_WIN_WIDTH;
+
+/************************** END GLOBALS ******************************/
+
 int main(int argc, char* argv[]) {
 
 	srand(time(NULL));	//Seed random number generator with system time
@@ -130,15 +135,31 @@ int main(int argc, char* argv[]) {
 		
 		if(DEBUG)
 			printf("After sending GM No Match Loop (if applicable)...\n");
+		
+		//Initialize gameMode
+		int gameMode;
+		gmP1 < gmP2 ? gameMode = gmP1 : gameMode = gmP2;			//If no match, use easiest of two modes specified
+		
+		//Initialize world
+		World *world = new Water(gameMode, true, true);
+		
+		if(DEBUG) 
+			printf("Initial World Instantiated...\n");
+		
+		//Initialize cube
+		Cube *cube;
+		if(gameMode == EASY) cube = new Cube(world, 5);
+		else if(gameMode == NORMAL) cube = new Cube(world, 4);
+		else if(gameMode == HARD) cube = new Cube(world, 3);	
 
-		Game game = Game(gmP1 < gmP2 ? gmP1 : gmP2, true, true);		//2nd argument == true for isTwoPlayer
-																		//Use easiest of two specified game modes,
-																		//if not the same
-		Cube* cube = game.getCube();
-		World* world = game.getWorld();
-
+		if(DEBUG) 
+			printf("Cube Instantiated...\n");
+		
 		//Set number of omp threads		//2 for user inputs, 1 for game engine
 		omp_set_num_threads(3);
+		
+		if(DEBUG)
+			printf("After Thread Declaration...\n");
 
 		//Lock needed so threads do not update the same
 		//data at the same time
@@ -265,7 +286,6 @@ int main(int argc, char* argv[]) {
 				//Establish scrollRate & moveRate,
 				//based on game difficulty (gameMode)
 				double scrollRate, moveRate;
-				int gameMode = game.getGameMode();
 
 				if(gameMode == HARD) {
 					scrollRate = SCROLL_RATE_HARD;
@@ -1064,7 +1084,6 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
-
 	}
 	return 0;
 }

@@ -16,8 +16,8 @@
 
 #include "../HEADER/Water.hpp"
 
-Water::Water(int gameMode, bool isTwoPlayer) :
-	World(gameMode, isTwoPlayer) {
+Water::Water(int gameMode, bool isTwoPlayer, bool forServer) :
+	World(gameMode, isTwoPlayer, forServer) {
 		//Set bottom row to LINES - 5, to allow for
 		//score, life count, and timer display +
 		//3 lines of green
@@ -33,7 +33,8 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 
 		for(int i = 0, random = rand() % 4; 
 			i < obstacleCount; i++, random = rand() % 4) {
-				if(random == 0) {
+				//if(random == 0) {
+				if(1) {
 					obstacles.push_back(new Seaweed(this));
 					//updateObsCoords(obstacles.back());
 				}
@@ -58,21 +59,23 @@ Water::Water(int gameMode, bool isTwoPlayer) :
 		loadOSObs();
 		loadOSMCs();
 
-		clear();  // curses clear-screen call
+		if(!forServer) {
+			clear();  // curses clear-screen call
 
-		//Paint all but last 4 lines of the screen blue
-		attron(COLOR_PAIR(BLUE_BLUE));
-		for (int y = 0; y <= bottomRow; y++)
-			mvhline(y, 0, ' ', COLS);
+			//Paint all but last 4 lines of the screen blue
+			attron(COLOR_PAIR(BLUE_BLUE));
+			for (int y = 0; y <= bottomRow; y++)
+				mvhline(y, 0, ' ', COLS);
 
-		//Paint LINES - 4 to LINES - 1 brown (as the "ocean floor")
-		attron(COLOR_PAIR(GREEN_GREEN));
-		for (int y = bottomRow + 1; y < LINES - 1; y++)
-			mvhline(y, 0, ' ', COLS);
+			//Paint LINES - 4 to LINES - 1 brown (as the "ocean floor")
+			attron(COLOR_PAIR(GREEN_GREEN));
+			for (int y = bottomRow + 1; y < LINES - 1; y++)
+				mvhline(y, 0, ' ', COLS);
 
-		refresh();
+			refresh();
 
-		//renderWorld();
+			//renderWorld();
+		}
 
 		//Last line is reserved for life count, timer, and score display
 }

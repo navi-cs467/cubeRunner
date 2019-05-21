@@ -30,11 +30,14 @@ class World {
 		int gameMode;
 		int bottomRow;
 		bool isTwoPlayer;
+		bool forServer;
 		
 	public:
 		World(bool isTwoPlayer) : isTwoPlayer(isTwoPlayer) {}
-		World(int gameMode, bool isTwoPlayer) :
-			gameMode(gameMode), isTwoPlayer(isTwoPlayer) {}
+		World(int gameMode, bool isTwoPlayer, bool forServer = false) :
+			gameMode(gameMode), 
+			isTwoPlayer(isTwoPlayer), 
+			forServer(forServer) {}
 		void updateObsCoords(Obstacle *ob);
 		//void updateMiniCubes(pair<int, int>);
 		void initMiniCubes(int numMiniCubes, 

@@ -12,6 +12,7 @@ Seaweed::Seaweed(World *world, Direction offScreen,
 				 int specificGraphic) : Obstacle() {
 	
 	isStationary = true;
+	
 	createObstacle(world, offScreen, specificGraphic);
 	
 	//Update size of graphic type array 

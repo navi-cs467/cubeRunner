@@ -10,12 +10,12 @@
 
 #include "../HEADER/Game.hpp"
 
-Game::Game(int gameMode, bool isTwoPlayer, bool isServer) :
+Game::Game(int gameMode, bool isTwoPlayer) :
 	isTwoPlayer(isTwoPlayer), gameMode(gameMode) {
 
 		score = 0;
 
-		if(!isTwoPlayer || isServer) world = new Water(gameMode, isTwoPlayer);
+		if(!isTwoPlayer) world = new Water(gameMode, isTwoPlayer);
 
 		else world = new Water(isTwoPlayer);		//"Blank" world if running as client
 
@@ -42,7 +42,7 @@ int Game::playGame(char host[], char port[]) {
 
 	bool deathFlag = false;
 	bool isConnected = false;
-	int playerNum = 1;
+	int playerNum = 0;
 	int socketFD = -1;
 	bool hasTerminated = false;
 
@@ -127,8 +127,7 @@ int Game::playGame(char host[], char port[]) {
 					char confirm[256];
 					memset(confirm, '\0', sizeof(confirm));
 
-					//if(playerNum == 1) {
-					if(1) {
+					if(playerNum == 1) {
 						if(userInput == KEY_UP) {
 							// SEND: KEY_UP
 							sprintf(messageToSend, "%d", userInput);
@@ -514,6 +513,10 @@ int Game::playGame(char host[], char port[]) {
 
 				clear();  // curses clear-screen call
 				refresh();
+				
+				//Set LINES and COLS to minimum values
+				LINES = MIN_WIN_HEIGHT;
+				COLS = MIN_WIN_WIDTH;
 
 				//connect to server
 				socketFD = initSocket(host, port);
