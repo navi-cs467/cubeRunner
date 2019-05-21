@@ -152,14 +152,14 @@ int main(void)
 
 		//Variables needed for menu and game
 		int cursorPos = 1, currMenu = 1, gameMode = -1;
-		bool gameOn = false, connected = false, isTwoPlayer = false;
-		char host[256];
-		char port[256];
+		bool gameOn = false, escaped = false, isTwoPlayer = false;
+		char host[256]; //memset(host, 0, sizeof(char) * 256);
+		char port[6]; //memset(port, 0, sizeof(char) * 6);
 
 		//Setup multi-threaded block, with three threads as described below...
 		#pragma omp parallel sections shared(cursorPos, currMenu, \
 											 isTwoPlayer, gameMode, \
-											 gameOn, connected, \
+											 gameOn, escaped, \
 											 subscrnGraphic)
 		{
 			//This section (thread) handles the cube animation for menu 1,
@@ -338,10 +338,10 @@ int main(void)
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
-									&subscrnGraphic, &currMenu, &connected, host, port);
+									&subscrnGraphic, &currMenu, &escaped, host, port);
 
-							//Return from network prompt if a connection is not established
-							/* if(!connected) {
+							//Return from network prompt if user escapes the menu
+							if(escaped) {
 								//Clear and delete host prompt menu
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
@@ -362,10 +362,11 @@ int main(void)
 								//Restore menu variable
 								currMenu = 2;
 							}
-							else { */ 
+							else { 
 								gameOn = true;
 								gameMode = EASY;
-							//}
+							}
+							escaped = false;
 						}
 
 						//Normal game...
@@ -379,8 +380,10 @@ int main(void)
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
-									&subscrnGraphic, &currMenu, &connected, host, port);
-							/* if(!connected) {
+									&subscrnGraphic, &currMenu, &escaped, host, port);
+							
+							//Return from network prompt if user escapes the menu
+							if(escaped) {
 								//Clear and delete host prompt menu
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
@@ -401,10 +404,11 @@ int main(void)
 								//Restore menu variable
 								currMenu = 2;
 							}
-							else { */
+							else {
 								gameOn = true;
 								gameMode = NORMAL;
-							//}
+							}
+							escaped = false;
 						}
 
 						//Hard game...
@@ -418,8 +422,10 @@ int main(void)
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
-									&subscrnGraphic, &currMenu, &connected, host, port);
-							/* if(!connected) {
+									&subscrnGraphic, &currMenu, &escaped, host, port);
+							
+							//Return from network prompt if user escapes the menu
+							if(escaped) {
 								//Clear and delete host prompt menu
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
@@ -440,10 +446,11 @@ int main(void)
 								//Restore menu variable
 								currMenu = 2;
 							} 
-							else { */
+							else {
 								gameOn = true;
 								gameMode = HARD;
-							//}
+							}
+							escaped = false;
 						}
 
 						//Exit

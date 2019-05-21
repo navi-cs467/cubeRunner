@@ -14,7 +14,7 @@
 //connection can not be established with a Cube Runner server.
 WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 						WINDOW **subscrnGraphic, int *currMenu,
-						bool *connected, char *host, char *port) {
+						bool *escaped, char *host, char *port) {
 	//Replace Game Menu header with hostname/port prompt
 	attron(COLOR_PAIR(WHITE_BLACK));
 	mvaddstr(startingRowMenu3 - 2, startingColMenu3, networkPrompt.c_str());
@@ -43,7 +43,8 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 			move(x, y);
 			refresh();
 		}
-		else if(i < 255 && !(ch == KEY_BACKSPACE || ch == 127)) {
+		else if(i < 255 && 
+				!(ch == KEY_BACKSPACE || ch == 127 || ch == '\n')) {
 			host[i++] = ch;
 			char tmpStr[2]; tmpStr[0] = ch; tmpStr[1] = '\0';
 			mvaddstr(x, y++, tmpStr);
@@ -53,7 +54,7 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 	while(ch != '\n' && ch != 27 && ch != KEY_END);
 	//If escape key is entered, go back to menu 2
 	if(ch == 27 || ch == KEY_END) {
-		*connected = false;
+		*escaped = true;
 		curs_set(0);
 		noecho();
 		refresh();
@@ -78,7 +79,8 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 			move(x, y);
 			refresh();
 		}
-		else if(i < 5 && !(ch == KEY_BACKSPACE || ch == 127)) {
+		else if(i < 5 && 
+				!(ch == KEY_BACKSPACE || ch == 127 || ch == '\n')) {
 			port[i++] = ch;
 			char tmpStr[2]; tmpStr[0] = ch; tmpStr[1] = '\0';
 			mvaddstr(x, y++, tmpStr);
@@ -88,7 +90,7 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 	while(ch != '\n' && ch != 27 && ch != KEY_END);
 	//If escape key is entered, go back to menu 2
 	if(ch == 27 || ch == KEY_END) {
-		*connected = false;
+		*escaped = true;
 		curs_set(0);
 		noecho();
 		refresh();

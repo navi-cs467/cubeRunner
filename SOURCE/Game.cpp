@@ -512,7 +512,8 @@ int Game::playGame(char host[], char port[]) {
 					// (Optional - if display window is used to inform player easier game mode will be used) send message to cubeRunnerServer once character has been input
 					// (Optional - if display window is used to inform player easier game mode will be used) receive message back that the other player has also confirmed message (game can start)
 
-				clear();  // curses clear-screen call	
+				clear();  // curses clear-screen call
+				refresh();
 					
 				//connect to server
 				socketFD = initSocket(host, port);
@@ -525,10 +526,10 @@ int Game::playGame(char host[], char port[]) {
 				char gM[2];
 				sprintf(gM, "%d", gameMode);
 				sendMessage_C(socketFD, gM);
-
+				
 				//receive message, either 0 or if gameMode matches
 				receiveMessage_C(socketFD, message);
-
+			
 				//check for other player
 				//if we received 0, we are connected but other player isn't
 				//so we check for next confirmation
@@ -559,7 +560,7 @@ int Game::playGame(char host[], char port[]) {
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
 				while (!hasTerminated) {
-
+					
 						//Pseudocode variables... change as desired
 						int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[10];
 						char scoreStr[256]; char gameData[256]; char sendConfirm[10];
