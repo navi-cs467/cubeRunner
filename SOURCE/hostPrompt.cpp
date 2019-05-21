@@ -93,5 +93,7 @@ WINDOW *hostPrompt(int startingColMenu3, int startingRowMenu3,
 
 	//else print error window... then return NULL
 
+	curs_set(0);
+	
 	return subscrnMenu;
 }

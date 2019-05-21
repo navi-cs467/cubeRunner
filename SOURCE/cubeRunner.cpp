@@ -341,7 +341,7 @@ int main(void)
 									&subscrnGraphic, &currMenu, &connected, host, port);
 
 							//Return from network prompt if a connection is not established
-							if(!connected) {
+							/* if(!connected) {
 								//Clear and delete host prompt menu
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
@@ -362,10 +362,10 @@ int main(void)
 								//Restore menu variable
 								currMenu = 2;
 							}
-							else {
+							else { */ 
 								gameOn = true;
 								gameMode = EASY;
-							}
+							//}
 						}
 
 						//Normal game...
@@ -380,7 +380,7 @@ int main(void)
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &connected, host, port);
-							if(!connected) {
+							/* if(!connected) {
 								//Clear and delete host prompt menu
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
@@ -401,10 +401,10 @@ int main(void)
 								//Restore menu variable
 								currMenu = 2;
 							}
-							else {
+							else { */
 								gameOn = true;
 								gameMode = NORMAL;
-							}
+							//}
 						}
 
 						//Hard game...
@@ -419,7 +419,7 @@ int main(void)
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &connected, host, port);
-							if(!connected) {
+							/* if(!connected) {
 								//Clear and delete host prompt menu
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
@@ -439,11 +439,11 @@ int main(void)
 
 								//Restore menu variable
 								currMenu = 2;
-							}
-							else {
+							} 
+							else { */
 								gameOn = true;
 								gameMode = HARD;
-							}
+							//}
 						}
 
 						//Exit
@@ -466,7 +466,7 @@ int main(void)
 
 		Game game = Game(gameMode, isTwoPlayer);
 		//Initial transition animation
-		transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);	
+		//transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);	
 		if(isTwoPlayer == false) game.playGame();
 		else game.playGame(host, port);
 		gameOn = false;
