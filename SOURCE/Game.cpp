@@ -612,8 +612,9 @@ int Game::playGame(char host[], char port[]) {
 
 						// RECEIVE (10 bytes) into earlyTerm
 						receiveMessage_C(socketFD, earlyTerm);
-						// sprintf(sendConfirm, "%d", 1);
-						// sendMessage_C(socketFD, sendConfirm);
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
 
 						// (Optional ?) SEND Confirmation
 						// If earlyTerm == "ET"
@@ -629,6 +630,11 @@ int Game::playGame(char host[], char port[]) {
 
 							//receive score
 							receiveMessage_C(socketFD, scoreStr);
+
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
+
 							cube->setCubeScore(atoi(scoreStr));
 
 							// close connection
@@ -642,6 +648,10 @@ int Game::playGame(char host[], char port[]) {
 						/**** RECEIVE DEATH FLAG ****/
 						//RECEIVE int_1
 						receiveMessage_C(socketFD, gameData);
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						int_1 = atoi(gameData);
 						//If int_1 == 1:		//Death happened
 						if (int_1 == 1)
@@ -649,6 +659,11 @@ int Game::playGame(char host[], char port[]) {
 							//	  RECEIVE int_2
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
+
 							int_2 = atoi(gameData);
 
 							//	  If int_2 == 1:		//Game Over
@@ -677,10 +692,6 @@ int Game::playGame(char host[], char port[]) {
 							{
 								//reset deathFlag
 								deathFlag = true;
-
-								//send confirmation to server
-								sprintf(sendConfirm, "%d", 1);
-								sendMessage_C(socketFD, sendConfirm);
 							}
 						}
 						//Else:
@@ -696,18 +707,33 @@ int Game::playGame(char host[], char port[]) {
 						//receive lives
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						int lives = atoi(gameData);
 						cube->setCubeLives(lives);
 
 						//receive row
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						int row = atoi(gameData);
 						cube->setCubePositionRow(row);
 
 						//receive col
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						int col = atoi(gameData);
 						cube->setCubePositionCol(col);
 
@@ -740,6 +766,10 @@ int Game::playGame(char host[], char port[]) {
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
 
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						//iterate through string, placing characters where they belong in the array
 						int k = 0;
 
@@ -769,6 +799,11 @@ int Game::playGame(char host[], char port[]) {
 
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						cube->setCubeScore(atoi(gameData));
 
 						/**** END RECEIVE GAME SCORE ****/
@@ -788,6 +823,10 @@ int Game::playGame(char host[], char port[]) {
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
 
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						int_1 = atoi(gameData);
 
 						//If int_1 == 1:		//If world transition has occurred, or first loop iteration
@@ -799,6 +838,10 @@ int Game::playGame(char host[], char port[]) {
 					//	  RECEIVE int_2:	//World type
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
 
 							int_2 = atoi(gameData);
 
@@ -822,9 +865,9 @@ int Game::playGame(char host[], char port[]) {
 
 							// (Optional ?) SEND: confirmation		//Probably not optional, need to wait for world transition animation
 
-							memset(sendConfirm, '\0', sizeof sendConfirm);
-							sprintf(sendConfirm, "%d", 1);
-							sendMessage_C(socketFD, sendConfirm);
+							// memset(sendConfirm, '\0', sizeof sendConfirm);
+							// sprintf(sendConfirm, "%d", 1);
+							// sendMessage_C(socketFD, sendConfirm);
 
 						}
 
@@ -845,6 +888,10 @@ int Game::playGame(char host[], char port[]) {
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
 
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						int_1 = atoi(gameData);
 
 						// loop to rebuild Obstacles
@@ -853,14 +900,29 @@ int Game::playGame(char host[], char port[]) {
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
+
 							int_2 = atoi(gameData); //move(20, 5); printw("type: %d", int_2); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
+
 							int_3 = atoi(gameData); //move(21, 5); printw("x: %d", int_3); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
+
 							int_4 = atoi(gameData); //move(22, 5); printw("y: %d", int_4); refresh();
 
 							/** Ben's Troubleshooting gt **
@@ -887,11 +949,20 @@ int Game::playGame(char host[], char port[]) {
 							memset(testStr, '\0', sizeof testStr);
 							receiveMessage_C(socketFD, testStr);
 
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
+
 							int_5 = atoi(testStr); //move(23, 5); printw("gt: %d", int_5); refresh();
 							move(23, 5); printw("gt: %d", int_5); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
+
 							int_6 = atoi(gameData); //move(24, 5); printw("gts: %d", int_6); refresh();
 							move(24, 5); printw("gts: %d", int_6); refresh();
 
@@ -947,6 +1018,10 @@ int Game::playGame(char host[], char port[]) {
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
 
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						int_1 = atoi(gameData);
 
 						// (Optional ?) SEND: confirmation
@@ -956,10 +1031,18 @@ int Game::playGame(char host[], char port[]) {
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
 
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
+
 							int_2 = atoi(gameData);
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+
+							memset(sendConfirm, '\0', sizeof sendConfirm);
+							sprintf(sendConfirm, "%d", 1);
+							sendMessage_C(socketFD, sendConfirm);
 
 							int_3 = atoi(gameData);
 
@@ -984,6 +1067,10 @@ int Game::playGame(char host[], char port[]) {
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
 
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						hours = atoi(gameData);
 						// (Optional ?) SEND: confirmation
 
@@ -991,12 +1078,20 @@ int Game::playGame(char host[], char port[]) {
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
 
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
 						minutes = atoi(gameData);
 						// (Optional ?) SEND: confirmation
 
 						//RECEIVE int_1 into seconds
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
 
 						seconds = atoi(gameData);
 						// (Optional ?) SEND: confirmation
