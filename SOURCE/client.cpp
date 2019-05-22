@@ -98,7 +98,7 @@ void sendMessage_C(int socketFD, char* buffer)
 {
 	// adapted from cs 344 lectures, make sure all the data is sent over the socket
 	// Send message to client
-	int charsWritten = send(socketFD, buffer, strlen(buffer), 0);
+	int charsWritten = send(socketFD, buffer, sizeof(buffer), 0);
 	if (charsWritten < strlen(buffer)) printf("WARNING: Not all data written to socket!\n");
 
 	int checkSend = -5;  // Holds amount of bytes remaining in send buffer
