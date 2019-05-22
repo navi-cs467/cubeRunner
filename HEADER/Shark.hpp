@@ -24,8 +24,8 @@ class Shark : public Obstacle {
 		//int sameDirectionMoveCount;
 	
 	public:
-		Shark(int posX, int posY, int gt, int gts) :
-			Obstacle(posX, posY, gt, gts) {}			//Constructor for client
+		Shark(int type, int posX, int posY, int gt, int gts, int gm) :
+			Obstacle(type, posX, posY, gt, gts, gm) {}			//Constructor for client
 		Shark(World *world, Direction offScreen = none,
 			  int specificGraphic = -1);				//Constructor for server and 1-player
 		static vector<vector<wstring>> _getGraphicLines() {return graphicLines;}

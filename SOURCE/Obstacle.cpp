@@ -13,6 +13,45 @@
 #include "../HEADER/World.hpp"
 #include "../HEADER/Water.hpp"
 
+Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts, int gm) :
+			posX(posX), posY(posY), gt(gt), gts(gts) {
+	longestGS = 0;
+	for(int i = 0; i < gts; i++) {
+		if(type == 1) {
+			if(Seaweed::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Seaweed::_getGraphicLines()[gt][i].size();
+		}
+		else if(type == 2) {
+			if(Coral::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Coral::_getGraphicLines()[gt][i].size();
+		}
+		else if(type == 3) {
+			if(Shark::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Shark::_getGraphicLines()[gt][i].size();
+			//Initialize maxHits based on gameMode
+			if(gm == EASY) maxHits = 3;
+			else if(gm == NORMAL) maxHits = 4;
+			else maxHits = 5;
+			
+			//Initialize hits ands mvsSinceLastHit
+			hits = 0;
+			mvsSinceLastHit = 0;
+		}
+		else if(type == 4) {
+			if(Octopus::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Octopus::_getGraphicLines()[gt][i].size();
+			//Initialize maxHits based on gameMode
+			if(gm == EASY) maxHits = 2;
+			else if(gm == NORMAL) maxHits = 3;
+			else maxHits = 4;
+			
+			//Initialize hits and mvsSinceLastHit
+			hits = 0;
+			mvsSinceLastHit = 0;
+		}
+	}
+}
+
 void Obstacle::createObstacle(World *world, 
 							  Direction offScreenDirection,
 							  int specificGraphic) {

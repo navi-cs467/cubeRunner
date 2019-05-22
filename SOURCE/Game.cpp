@@ -789,7 +789,8 @@ int Game::playGame(char host[], char port[]) {
 						int_1 = atoi(gameData);
 
 						//If int_1 == 1:		//If world transition has occurred, or first loop iteration
-						if (int_1 == 1)
+						//if (int_1 == 1)
+						if(0)
 						{
 							delete world;
 							// (Optional ?) SEND: confirmation
@@ -825,13 +826,13 @@ int Game::playGame(char host[], char port[]) {
 
 						}
 
-						else if (int_1 == 0)
-						{
+						//else if (int_1 == 0)
+						//{
 							//Else If int == 0:		//If no world transition, we need to clear these containers
-								world->getObstacles().clear();
-								world->getMiniCubes().clear();
+								//if(world->getObstacles().size() > 0) world->getObstacles().clear();
+								if(world->getMiniCubes().size() > 0) world->getMiniCubes().clear();
 								// (Optional ?) SEND: confirmation
-						}
+						//}
 
 						/**** END RECEIVE NEW WORLD INDICATOR AND (IF APPLICABLE) TYPE  ****/
 
@@ -846,7 +847,7 @@ int Game::playGame(char host[], char port[]) {
 
 						// loop to rebuild Obstacles
 						for(int i = 0; i < int_1; i++) {
-							//RECEIVE int_2, int_3, int_4, int_5, int_6		// type of Obs, posX, posY, gt, gts(not strictly necessary, but used as convenience)
+							//RECEIVE int_2, int_3, int_4, int_5, int_6, int_7		// type of Obs, posX, posY, gt, gts(not strictly necessary, but used as convenience), hits
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
@@ -854,44 +855,80 @@ int Game::playGame(char host[], char port[]) {
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
-							int_3 = atoi(gameData); //move(21, 5); printw("x: %d", int_2); refresh();
+							int_3 = atoi(gameData); //move(21, 5); printw("x: %d", int_3); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
-							int_4 = atoi(gameData); //move(22, 5); printw("y: %d", int_2); refresh();
-
+							int_4 = atoi(gameData); //move(22, 5); printw("y: %d", int_4); refresh();
+							
+							/** Ben's Troubleshooting gt **
+							char test[2]; test[1] = '\0';
+							memset(test, '\0', sizeof test);
+							//receiveMessage_C(socketFD, test); mvhline(23, 0, ' ', COLS); move(22, 5); printw("gt (string): %s", test); refresh();
+							int nread; char receive[1024]; receive[1023] = '\0';
+							while((nread = read(socketFD, receive, sizeof(receive)-1)) > 0) {
+									receive[nread]='\0';    // explicit null termination: updated based on comments
+									//printw("%s\n",receive); // print the current receive buffer with a newline
+									//refresh();
+									fflush(stdout);         // make sure everything makes it to the output
+									//receive[0]='\0';        // clear the buffer : I am 99% sure this is not needed now
+								} printw("%c", receive[strlen(receive) - 1]); refresh();
+							recv(socketFD, test, 1, 0); mvhline(23, 0, ' ', COLS); move(22, 5); printw("gt (string): %s", test); refresh();
+							int_5 = atoi(test); mvhline(23, 0, ' ', COLS); move(23, 5); printw("gt: %d", int_5); refresh();
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData); mvhline(23, 0, ' ', COLS); move(22, 5); printw("gt (string): %s", gameData); refresh();
+							int_5 = atoi(gameData); mvhline(23, 0, ' ', COLS); move(23, 5); printw("gt: %d", int_5); refresh();
+							sleep(50000000); */ 
+							
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
-							int_5 = atoi(gameData); //move(23, 5); printw("gt: %d", int_2); refresh();
-
+							int_5 = atoi(gameData); //move(23, 5); printw("gt: %d", int_5); refresh();
+							
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
-							int_6 = atoi(gameData); //move(24, 5); printw("gts: %d", int_2); refresh();
+							int_6 = atoi(gameData); //move(24, 5); printw("gts: %d", int_6); refresh();
+							
+							//If we are going to include shooting functionality, need Obstacle->hits
+							/* memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+							int_7 = atoi(gameData); //move(25, 5); printw("gts: %d", int_7); refresh(); */
 
-							if(int_2 == 1)
-								world->getObstacles().push_back(new Seaweed(int_3, int_4, int_5, int_6));
+							if(int_2 == 1) 
+								world->getObstacles().push_back(new Seaweed(int_2, int_3, int_4, 
+																			int_5, int_6, /* int_7, */ gameMode));
 							else if(int_2 == 2)
-								world->getObstacles().push_back(new Coral(int_3, int_4, int_5, int_6));
+								world->getObstacles().push_back(new Coral(int_2, int_3, int_4, 
+																		  int_5, int_6, /* int_7, */ gameMode));
 							else if(int_2 == 3)
-								world->getObstacles().push_back(new Shark(int_3, int_4, int_5, int_6));
+								world->getObstacles().push_back(new Shark(int_2, int_3, int_4, 
+																		  int_5, int_6, /* int_7, */ gameMode));
 							else if(int_2 == 4)
-								world->getObstacles().push_back(new Octopus(int_3, int_4, int_5, int_6));
-							/* else if(int_2 == 5)
-								world->getObstacles().push_back(new Tree(int_3, int_4, int_5, int_6));
-							else if(int_2 == 6)
-								world->getObstacles().push_back(new Rock(int_3, int_4, int_5, int_6));
-							else if(int_2 == 7)
-								world->getObstacles().push_back(new Bird(int_3, int_4, int_5, int_6));
-							else if(int_2 == 8)
-								world->getObstacles().push_back(new Bat(int_3, int_4, int_5, int_6));
-							else if(int_2 == 9)
-								world->getObstacles().push_back(new Asteroid(int_3, int_4, int_5, int_6));
-							else if(int_2 == 10)
-								world->getObstacles().push_back(new Planet(int_3, int_4, int_5, int_6));
-							else if(int_2 == 11)
-								world->getObstacles().push_back(new Comet(int_3, int_4, int_5, int_6));
-							else if(int_2 == 12)
-								world->getObstacles().push_back(new Spaceship(int_3, int_4, int_5, int_6));	 */
+								world->getObstacles().push_back(new Octopus(int_2, int_3, int_4, 
+																			int_5, int_6, /* int_7, */ gameMode));
+							// else if(int_2 == 5)
+							//	world->getObstacles().push_back(new Tree(int_2, int_3, int_4, 
+							//												int_5, int_6, /* int_7, */ gameMode));
+							//else if(int_2 == 6)
+							//	world->getObstacles().push_back(new Rock(int_2, int_3, int_4, 
+							//											 int_5, int_6, /* int_7, */ gameMode));
+							//else if(int_2 == 7)
+							//	world->getObstacles().push_back(new Bird(int_2, int_3, int_4, 
+							//											 int_5, int_6, /* int_7, */ gameMode));
+							//else if(int_2 == 8)
+							//	world->getObstacles().push_back(new Bat(int_2, int_3, int_4, 
+							//											int_5, int_6, /* int_7, */ gameMode));
+							//else if(int_2 == 9)
+							//	world->getObstacles().push_back(new Asteroid(int_2, int_3, int_4, 
+							//												 int_5, int_6, /* int_7, */ gameMode));
+							//else if(int_2 == 10)
+							//	world->getObstacles().push_back(new Planet(int_2, int_3, int_4, 
+							//											   int_5, int_6, /* int_7, */ gameMode));
+							//else if(int_2 == 11)
+							//	world->getObstacles().push_back(new Comet(int_2, int_3, int_4, 
+							//											  int_5, int_6, /* int_7, */ gameMode));
+							//else if(int_2 == 12)
+							//	world->getObstacles().push_back(new Spaceship(int_2, int_3, int_4, 
+							//												  int_5, int_6, /* int_7, */ gameMode));;	 */
 
 							// (Optional ?) SEND: confirmation
 						}

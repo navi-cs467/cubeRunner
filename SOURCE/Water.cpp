@@ -150,6 +150,8 @@ void Water::renderWorld(Cube *cube) {
 		//Temporary c-string used in call to mvaddstr below
 		wchar_t tmpWChArr[2]; tmpWChArr[1] = '\0';
 		
+		//move(50, 50); printw("Getting here..."); refresh();
+		
 		if(typeid(**it) == typeid(Seaweed)) {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++)
@@ -285,9 +287,10 @@ void Water::renderWorld(Cube *cube) {
 		}
 	}
 	
-	cube->processShot();
-
-	refresh();
+	if(!forServer) {
+		cube->processShot();
+		refresh();
+	}
 
 }
 

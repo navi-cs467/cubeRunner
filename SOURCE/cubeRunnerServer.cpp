@@ -768,11 +768,21 @@ int main(int argc, char* argv[]) {
 								sprintf(messageToSend, "%d", (*itObs)->getPosY());
 								sendMessage_S(player1, messageToSend);
 
+								/** Ben's Troubleshooting gt **
+								printf("GT Before Conversion: %d\n", (*itObs)->getGT()); 
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", (*itObs)->getGT());
+								printf("GT After Conversion: %s\n", messageToSend); 
+								//sendMessage_S(player1, messageToSend);
+								char testbuf[2] = "8";
+								send(player1, testbuf, 1, 0);
+								sleep(50000000); */
+								
 								// gt
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGT());
 								sendMessage_S(player1, messageToSend);
-
+								
 								// gts
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGTS());
@@ -781,7 +791,7 @@ int main(int argc, char* argv[]) {
 								// (Optional ?) RECEIVE connection1: confirmation
 							}
 						}
-
+						
 						// SEND connection2: world->getObstacles().size();
 						// (Optional ?) RECEIVE connection1: confirmation
 						memset(messageToSend, '\0', sizeof messageToSend);
