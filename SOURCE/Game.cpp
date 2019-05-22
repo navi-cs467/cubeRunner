@@ -612,6 +612,8 @@ int Game::playGame(char host[], char port[]) {
 
 						// RECEIVE (10 bytes) into earlyTerm
 						receiveMessage_C(socketFD, earlyTerm);
+						// sprintf(sendConfirm, "%d", 1);
+						// sendMessage_C(socketFD, sendConfirm);
 
 						// (Optional ?) SEND Confirmation
 						// If earlyTerm == "ET"

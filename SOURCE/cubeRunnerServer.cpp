@@ -316,7 +316,7 @@ int main(int argc, char* argv[]) {
 				while (1) {
 					char messageToSend[20]; char clientConfirm[20];
 					memset(clientConfirm, '\0', sizeof clientConfirm);
-					memset(clientConfirm, '\0', sizeof clientConfirm);
+					memset(messageToSend, '\0', sizeof messageToSend);
 					/**** SEND EARLY TERMINATION STATUS ****/
 					//If either user quits, report back early termination to other player,
 					//and score to both, then break
@@ -352,6 +352,8 @@ int main(int argc, char* argv[]) {
 
 					if(userInput2 == 'q') {
 						//SEND Connection2 score
+						sprintf(messageToSend, "%d", cube->getCubeScore());
+						sendMessage_S(player2, messageToSend);
 						//CLOSE CONNECTION2
 						close(player2);
 						//SEND Connection1 "ET"		//Early Termination
@@ -362,7 +364,7 @@ int main(int argc, char* argv[]) {
 						//SEND Connection1 score
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", cube->getCubeScore());
-						sendMessage_S(player2, messageToSend);
+						sendMessage_S(player1, messageToSend);
 						//CLOSE CONNECTION1
 						close(player1);
 						break;
