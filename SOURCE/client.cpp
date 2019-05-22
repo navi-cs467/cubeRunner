@@ -69,25 +69,36 @@ int startConnection(int socketFD, struct addrinfo *servinfo)
 */
 void receiveMessage_C(int socketFD, char* buffer)
 {
-	int len_received, bytes_received;
-	len_received = sizeof(buffer);
-	bytes_received = recv(socketFD, buffer, len_received, 0);
+	// int len_received, bytes_received;
+	// len_received = sizeof(buffer);
+	// bytes_received = recv(socketFD, buffer, len_received, 0);
+	//
+	// //check for error
+	// if (bytes_received == -1)
+	// {
+	// 	fprintf(stderr,"Error receving from socket\n");
+	// 	exit(0);
+	// }
+	//
+	// // server closed the connection so client is terminated
+	// else if (bytes_received == 0)
+	// {
+	// 	fprintf(stderr,"Server has closed the connection\n");
+	// 	close(socketFD);
+	// 	endwin();
+	// 	exit(0);
+	// }
 
-	//check for error
-	if (bytes_received == -1)
-	{
-		fprintf(stderr,"Error receving from socket\n");
-		exit(0);
-	}
-
-	// server closed the connection so client is terminated
-	else if (bytes_received == 0)
-	{
-		fprintf(stderr,"Server has closed the connection\n");
-		close(socketFD);
-		endwin();
-		exit(0);
-	}
+		size_t len = sizeof(buffer);
+		char *p = buffer;
+		ssize_t n;
+		while ( len > 0 && (n=recv(socketFD,p,len,0)) > 0 ) {
+		  p += n;
+		  len =- (size_t)n;
+		}
+		if ( len > 0 || n < 0 ) {
+		  // oops, something went wrong
+		}
 }
 
 /*
@@ -98,7 +109,7 @@ void sendMessage_C(int socketFD, char* buffer)
 {
 	// adapted from cs 344 lectures, make sure all the data is sent over the socket
 	// Send message to client
-	int charsWritten = send(socketFD, buffer, sizeof(buffer), 0);
+	// int charsWritten = send(socketFD, buffer, sizeof(buffer), 0);
 	// if (charsWritten < sizeof(buffer)) printf("WARNING: Not all data written to socket!\n");
 	//
 	// int checkSend = -5;  // Holds amount of bytes remaining in send buffer
@@ -108,6 +119,17 @@ void sendMessage_C(int socketFD, char* buffer)
 	// }
 	//
 	// while (checkSend > 0);  // Loop forever until send buffer for this socket is empty
+
+			size_t len = sizeof(buffer);
+			char *p = buffer;
+			ssize_t n;
+			while ( len > 0 && (n=send(socketFD,p,len,0)) > 0 ) {
+			  p += n;
+			  len =- (size_t)n;
+			}
+			if ( len > 0 || n < 0 ) {
+			  // oops, something went wrong
+			}
 }
 
 // initialize the socket for client to connect to server
