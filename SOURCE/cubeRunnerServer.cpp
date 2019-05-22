@@ -68,15 +68,15 @@ int main(int argc, char* argv[]) {
 		int player1, player2 = -1;
 
 		//confirmation flag
-		char confirm[2] = "0";
+		char confirm[20] = "0";
 
 		//initialize server and accept connections
 		//also send confirmation messages to players when they are connected
 		initServer(portNum, &player1, &player2);
-		
+
 		if(DEBUG)
 			printf("Both Connections Established...\n");
-		
+
 		//confirm both players are connected and check game modes
 		sendMessage_S(player1, confirm);
 
@@ -84,18 +84,18 @@ int main(int argc, char* argv[]) {
 		sprintf(confirm, "%d", 1);
 
 		sendMessage_S(player2, confirm);
-		
+
 		if(DEBUG)
 			printf("Both Confirmations Sent...\n");
 
 		//receive game mode from player1
-		char gm1Str[2];
+		char gm1Str[20];
 		receiveMessage_S(player1, gm1Str);
 
 		//receive game mode from player2
-		char gm2Str[2];
+		char gm2Str[20];
 		receiveMessage_S(player2, gm2Str);
-		
+
 		printf("Received Both Game Modes...\n");
 
 		int gmP1 = atoi(gm1Str);
@@ -111,10 +111,10 @@ int main(int argc, char* argv[]) {
 			if(DEBUG)
 				printf("Sent Game Mode Indicator (GM Match)...\n");
 		}
-		
+
 		printf("After sending GM Match Loop (if applicable)...\n");
 
-		char message[256];
+		char message[20];
 		memset(message, '\0', sizeof message);
 
 		if (gmP1 != gmP2)
@@ -132,32 +132,32 @@ int main(int argc, char* argv[]) {
 			//leaving out for now, might add later
 
 		}
-		
+
 		if(DEBUG)
 			printf("After sending GM No Match Loop (if applicable)...\n");
-		
+
 		//Initialize gameMode
 		int gameMode;
 		gmP1 < gmP2 ? gameMode = gmP1 : gameMode = gmP2;			//If no match, use easiest of two modes specified
-		
+
 		//Initialize world
 		World *world = new Water(gameMode, true, true);
-		
-		if(DEBUG) 
+
+		if(DEBUG)
 			printf("Initial World Instantiated...\n");
-		
+
 		//Initialize cube
 		Cube *cube;
 		if(gameMode == EASY) cube = new Cube(world, 5);
 		else if(gameMode == NORMAL) cube = new Cube(world, 4);
-		else if(gameMode == HARD) cube = new Cube(world, 3);	
+		else if(gameMode == HARD) cube = new Cube(world, 3);
 
-		if(DEBUG) 
+		if(DEBUG)
 			printf("Cube Instantiated...\n");
-		
+
 		//Set number of omp threads		//2 for user inputs, 1 for game engine
 		omp_set_num_threads(3);
-		
+
 		if(DEBUG)
 			printf("After Thread Declaration...\n");
 
@@ -173,10 +173,10 @@ int main(int argc, char* argv[]) {
 		//if input is coming in too fast
 		bool renderedLastMv1 = true, renderedLastMv2 = true, deathFlag = false;
 		int userInput1, userInput2;
-		
+
 		if(DEBUG)
 			printf("Instantiating Game and starting...\n"); fflush(stdout);
-		
+
 		#pragma omp parallel sections shared(deathFlag, lock1, \
 											 renderedLastMv1, renderedLastMv2, userInput1, userInput2)
 		{
@@ -184,9 +184,9 @@ int main(int argc, char* argv[]) {
 			#pragma omp section
 			{
 				//Variable for user 1 input
-				char confirm[256];
+				char confirm[20];
 				memset(confirm, '\0', sizeof(confirm));
-				char messageToReceive[256];
+				char messageToReceive[20];
 				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
 				while (userInput1 != 'q') {
@@ -234,9 +234,9 @@ int main(int argc, char* argv[]) {
 			#pragma omp section
 			{
 				//Variable for user 2 input
-				char confirm[256];
+				char confirm[20];
 				memset(confirm, '\0', sizeof(confirm));
-				char messageToReceive[256];
+				char messageToReceive[20];
 				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
 				while (userInput2 != 'q') {
@@ -314,7 +314,7 @@ int main(int argc, char* argv[]) {
 
 				//Main game engine loop
 				while (1) {
-					char messageToSend[256]; char clientConfirm[10];
+					char messageToSend[20]; char clientConfirm[20];
 					memset(clientConfirm, '\0', sizeof clientConfirm);
 					memset(clientConfirm, '\0', sizeof clientConfirm);
 					/**** SEND EARLY TERMINATION STATUS ****/
@@ -529,7 +529,7 @@ int main(int argc, char* argv[]) {
 						//send cubeChars
 
 						//buffers for character array
-						char cubeCharsBuff[256]; char cubeCharBuff[2];
+						char cubeCharsBuff[20]; char cubeCharBuff[2];
 
 						memset(cubeCharsBuff, '\0', sizeof cubeCharsBuff);
 
@@ -769,20 +769,20 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 
 								/** Ben's Troubleshooting gt **
-								printf("GT Before Conversion: %d\n", (*itObs)->getGT()); 
+								printf("GT Before Conversion: %d\n", (*itObs)->getGT());
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGT());
-								printf("GT After Conversion: %s\n", messageToSend); 
+								printf("GT After Conversion: %s\n", messageToSend);
 								//sendMessage_S(player1, messageToSend);
 								char testbuf[2] = "8";
 								send(player1, testbuf, 1, 0);
 								sleep(50000000); */
-								
+
 								// gt
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGT());
 								sendMessage_S(player1, messageToSend);
-								
+
 								// gts
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGTS());
@@ -791,7 +791,7 @@ int main(int argc, char* argv[]) {
 								// (Optional ?) RECEIVE connection1: confirmation
 							}
 						}
-						
+
 						// SEND connection2: world->getObstacles().size();
 						// (Optional ?) RECEIVE connection1: confirmation
 						memset(messageToSend, '\0', sizeof messageToSend);
