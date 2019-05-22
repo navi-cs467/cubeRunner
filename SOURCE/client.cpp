@@ -120,12 +120,12 @@ void sendMessage_C(int socketFD, char* buffer)
 	//
 	// while (checkSend > 0);  // Loop forever until send buffer for this socket is empty
 
-			size_t len = sizeof(buffer);
+			int len = sizeof(buffer);
 			char *p = buffer;
-			ssize_t n;
+			int n;
 			while ( len > 0 && (n=send(socketFD,p,len,0)) > 0 ) {
 			  p += n;
-			  len =- (size_t)n;
+			  len =- n;
 			}
 			if ( len > 0 || n < 0 ) {
 			  // oops, something went wrong
