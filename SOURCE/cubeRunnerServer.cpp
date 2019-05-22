@@ -778,9 +778,16 @@ int main(int argc, char* argv[]) {
 								send(player1, testbuf, 1, 0);
 								sleep(50000000); */
 
-								// gt
+								printf("GT Before Conversion: %d\n", (*itObs)->getGT());
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", 2);
+								sprintf(messageToSend, "%d", (*itObs)->getGT());
+								printf("GT After Conversion: %s\n", messageToSend);
+
+
+
+								// gt
+								// memset(messageToSend, '\0', sizeof messageToSend);
+								// sprintf(messageToSend, "%d", 2);
 								sendMessage_S(player1, messageToSend);
 
 								// gts

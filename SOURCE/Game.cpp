@@ -884,11 +884,15 @@ int Game::playGame(char host[], char port[]) {
 
 							memset(testStr, '\0', sizeof testStr);
 							receiveMessage_C(socketFD, testStr);
+
 							int_5 = atoi(testStr); //move(23, 5); printw("gt: %d", int_5); refresh();
+							move(23, 5); printw("gt: %d", int_5); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
 							int_6 = atoi(gameData); //move(24, 5); printw("gts: %d", int_6); refresh();
+							move(24, 5); printw("gts: %d", int_6); refresh();
+
 
 							//If we are going to include shooting functionality, need Obstacle->hits
 							/* memset(gameData, '\0', sizeof gameData);
