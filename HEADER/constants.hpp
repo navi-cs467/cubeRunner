@@ -43,7 +43,7 @@
 #define NUM_DIRECTIONS 8
 #define MAX_MOVE_COUNTER 25
 #define MIN_MOVE_COUNTER 5
-#define TRANSITION_SCORE_INTERVAL 500
+#define TRANSITION_SCORE_INTERVAL 10
 
 //"Rates" are scan intervals, 
 //so as the following three constants decrease, 
@@ -62,7 +62,7 @@
 //above decrease as the game progresses.
 //As this value decreases, the rate at which
 //move and scroll speeds increases.
-#define SCROLL_MOVE_DECREASE_RATE 0.9
+#define SCROLL_MOVE_UPDATE_RATE 0.9
 /*** End Game-Related ***/
 
 /*** DEBUG ***/

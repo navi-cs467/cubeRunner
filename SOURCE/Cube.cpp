@@ -598,7 +598,8 @@ void Cube::checkCubeCollision(World *world){
 				//delete minicube entry
 				world->getMiniCubes().erase(mcIt);
 				//increment score
-				score += 10;			
+				score += 10;
+				transitionScore += 10;
 			}
 		}
 	}
@@ -731,6 +732,7 @@ void Cube::processShot() {
 						   //increment score based on Obstacle's maxHits
 						   if((*obsIt)->getMaxHits() == (*obsIt)->getHits()) {
 								score += (*obsIt)->getMaxHits() * 10;
+								transitionScore += (*obsIt)->getMaxHits() * 10;
 								delete *obsIt;
 								currWorld->getObstacles().erase(obsIt);
 						   }

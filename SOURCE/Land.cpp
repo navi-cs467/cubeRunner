@@ -16,8 +16,8 @@
 
 #include "../HEADER/Land.hpp"
 
-Land::Land(int gameMode, bool isTwoPlayer) :
-	World(gameMode, isTwoPlayer) {
+Land::Land(int gameMode, bool isTwoPlayer, bool forServer) :
+	World(gameMode, isTwoPlayer, forServer) {
 		//Set bottom row to LINES - 5, to allow for
 		//score, life count, and timer display +
 		//3 lines of green
@@ -34,19 +34,19 @@ Land::Land(int gameMode, bool isTwoPlayer) :
 		for(int i = 0, random = rand() % 4; 
 			i < obstacleCount; i++, random = rand() % 4) {
 				if(random == 0) {
-					obstacles.push_back(new Seaweed(this));
+					obstacles.push_back(new Tree(this));
 					//updateObsCoords(obstacles.back());
 				}
 				else if(random == 1) {
-					obstacles.push_back(new Coral(this));
+					obstacles.push_back(new Rock(this));
 					//updateObsCoords(obstacles.back());
 				}
 				else if(random == 2) {
-					obstacles.push_back(new Shark(this));
+					obstacles.push_back(new Bird(this));
 					//updateObsCoords(obstacles.back());
 				}
 				else {
-					obstacles.push_back(new Octopus(this));
+					obstacles.push_back(new Bat(this));
 					//updateObsCoords(obstacles.back());
 				}
 		}
@@ -91,16 +91,16 @@ void Land::loadOSObs() {
 	for(int i = 0, random = rand() % 4; 
 		i < obstacleCount; i++, random = rand() % 4) {
 			if(random == 0) {
-				obstacles.push_back(new Seaweed(this, right));
+				obstacles.push_back(new Tree(this, right));
 			}
 			else if(random == 1) {
-				obstacles.push_back(new Coral(this, right));
+				obstacles.push_back(new Rock(this, right));
 			}
 			else if(random == 2) {
-				obstacles.push_back(new Shark(this, right));
+				obstacles.push_back(new Bird(this, right));
 			}
 			else {
-				obstacles.push_back(new Octopus(this, right));
+				obstacles.push_back(new Bat(this, right));
 			}
 	}
 }
@@ -112,7 +112,7 @@ void Land::loadOSMCs() {
 void Land::renderWorld(Cube *cube) {
 
 	//Paint blank background
-	attron(COLOR_PAIR(BLUE_BLUE));
+	attron(COLOR_PAIR(WHITE_WHITE));
 	for(int i = 0; i <= bottomRow; i++)
 		mvhline(i, 0, ' ', COLS);
 	attron(COLOR_PAIR(GREEN_GREEN));
@@ -124,7 +124,7 @@ void Land::renderWorld(Cube *cube) {
 	//char mc = 'c';
 	for(set<pair<int, int>>::iterator it = miniCubes.begin();
 		it != miniCubes.end(); it++) {
-			attron(COLOR_PAIR(WHITE_BLUE));
+			attron(COLOR_PAIR(GREEN_WHITE));
             mvaddwstr(it->first, it->second, mc); //refresh();
 		}
 	
@@ -148,72 +148,73 @@ void Land::renderWorld(Cube *cube) {
 		//Temporary c-string used in call to mvaddstr below
 		wchar_t tmpWChArr[2]; tmpWChArr[1] = '\0';
 		
-		if(typeid(**it) == typeid(Seaweed)) {
+		if(typeid(**it) == typeid(Tree)) {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++)
 				for(int j = 0;
-					j < Seaweed::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Tree::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					
 					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
 					
-					tmpWChArr[0] = Seaweed::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Tree::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
 					//output to screen
 					move(i + xCoord + xOffset, j + yCoord);
 					if((*it)->getHoles().
 						find(make_pair(i + xCoord + xOffset, j + yCoord)) == 
 							(*it)->getHoles().end()) {
-								attron(COLOR_PAIR(Seaweed::getColor()));
+								if(tmpWChArr[0] != '|')
+									attron(COLOR_PAIR(GREEN_WHITE));
+								else
+									attron(COLOR_PAIR(BLACK_WHITE));
 								printw("%lc", tmpWChArr[0]);
 					}
 					else {
-						attron(COLOR_PAIR(BLUE_BLUE));
+						attron(COLOR_PAIR(WHITE_WHITE));
 						printw("%lc", " ");
 					}
 				}
 		}
 				
-		if(typeid(**it) == typeid(Coral)) {
-			int nextColor = Coral::getColorSeed();
+		else if(typeid(**it) == typeid(Rock)) {
 			attron(A_BOLD);
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Coral::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Rock::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 
 					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
 					
-					tmpWChArr[0] = Coral::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Rock::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
-					//To address a strange background color issue
-					//with partially off-screen right - Coral Only
-					attron(COLOR_PAIR(BLUE_BLUE));
-					mvaddstr(i + xCoord + xOffset, j + yCoord, " ");
+					/* //To address a strange background color issue
+					//with partially off-screen right - Rock Only
+					attron(COLOR_PAIR(WHITE_WHITE));
+					mvaddstr(i + xCoord + xOffset, j + yCoord, " "); */
 					
 					//output to screen
 					move(i + xCoord + xOffset, j + yCoord);
 					if((*it)->getHoles().find(make_pair(i + xCoord + xOffset, j + yCoord)) == 
 					   (*it)->getHoles().end()) {
-						attron(COLOR_PAIR(nextColor++));
+						attron(COLOR_PAIR(BLACK_WHITE));
 						printw("%lc", tmpWChArr[0]);
 					}
 					else {
-						attron(COLOR_PAIR(BLUE_BLUE));
+						attron(COLOR_PAIR(WHITE_WHITE));
 						printw("%lc", " ");
 					}
-					if(nextColor == 35) nextColor = 30;
 				}
 		}
 				
-		if(typeid(**it) == typeid(Shark)) {
-			int color = Shark::getColor();
+		else if(typeid(**it) == typeid(Bird)) {
+			int color = static_cast<Bird *>(*it)->getColorSeed();
 			attron(A_BOLD);
 			if((*it)->getHits()) {
-				attron(COLOR_PAIR(RED_BLUE));
+				attron(COLOR_PAIR(RED_WHITE));
 			}
 			else {
 				attron(COLOR_PAIR(color));
@@ -222,55 +223,17 @@ void Land::renderWorld(Cube *cube) {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Shark::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
-					j + yCoord + yOffset < COLS; j++) {
-					
-					//Continue if character is off-screen
-					if(j - yOffset < 0) continue;
-					
-					tmpWChArr[0] = Shark::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
-					
-					//Print remaining hits counter in first whitespace available
-					//if Obstacle->hits > 0
-					if((*it)->getHits() && i == 0 && j == 0 && 
-						xOffset == 0 && yOffset == 0) {
-						move(i + xCoord + xOffset, j + yCoord);
-						attron(COLOR_PAIR(WHITE_BLUE));
-						printw("%lc", (*it)->getMaxHits() - (*it)->getHits() + '0');
-						attron(COLOR_PAIR(RED_BLUE));
-					}
-					//output to screen
-					else {
-						move(i + xCoord + xOffset, j + yCoord);
-						printw("%lc", tmpWChArr[0]);
-					}
-				}
-		}
-
-		if(typeid(**it) == typeid(Octopus)) {
-			int color = static_cast<Octopus *>(*it)->getColor();
-			attron(A_BOLD);
-			if((*it)->getHits()) {
-				attron(COLOR_PAIR(RED_BLUE));
-			}
-			else {
-				attron(COLOR_PAIR(color));
-			}
-			
-			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
-				i + xCoord <= bottomRow; i++) 
-				for(int j = 0; 
-					j < Octopus::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Bird::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					if(j - yOffset < 0) continue;
-					tmpWChArr[0] = Octopus::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Bird::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
 					//Print remaining hits counter in first whitespace available
 					//if Obstacle->hits > 0
 					if((*it)->getHits() && i == 0 && j == 0 &&
 						xOffset == 0 && yOffset == 0) {
 						move(i + xCoord + xOffset, j + yCoord);
-						attron(COLOR_PAIR(WHITE_BLUE));
+						attron(COLOR_PAIR(GREEN_WHITE));
 						printw("%lc", (*it)->getMaxHits() - (*it)->getHits() + '0');
 						attron(COLOR_PAIR(RED_BLUE));
 					}
@@ -280,13 +243,52 @@ void Land::renderWorld(Cube *cube) {
 						printw("%lc", tmpWChArr[0]);
 					}					
 				}
-		}
-	}
+			}
 	
-	cube->processShot();
+
+		else if(typeid(**it) == typeid(Bat)) {
+			int color = static_cast<Bat *>(*it)->getColor();
+			attron(A_BOLD);
+			if((*it)->getHits()) {
+				attron(COLOR_PAIR(RED_WHITE));
+			}
+			else {
+				attron(COLOR_PAIR(color));
+			}
+			
+			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
+				i + xCoord <= bottomRow; i++) 
+				for(int j = 0; 
+					j < Bat::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j + yCoord + yOffset < COLS; j++) {
+					if(j - yOffset < 0) continue;
+					tmpWChArr[0] = Bat::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					
+					//Print remaining hits counter in first whitespace available
+					//if Obstacle->hits > 0
+					if((*it)->getHits() && i == 0 && j == 0 &&
+						xOffset == 0 && yOffset == 0) {
+						move(i + xCoord + xOffset, j + yCoord);
+						attron(COLOR_PAIR(GREEN_WHITE));
+						printw("%lc", (*it)->getMaxHits() - (*it)->getHits() + '0');
+						attron(COLOR_PAIR(RED_BLUE));
+					}
+					//output to screen
+					else {
+						move(i + xCoord + xOffset, j + yCoord);
+						printw("%lc", tmpWChArr[0]);
+					}					
+				}
+			}
+		}
+
+	
+	if(!isTwoPlayer && !forServer) {
+		cube->processShot();
+		refresh();
+	}
 
 	refresh();
-
 }
 
 void Land::scroll_() {
@@ -328,7 +330,7 @@ void Land::scroll_() {
 		}
 	}
 	
-	attron(COLOR_PAIR(BLUE_BLUE));
+	attron(COLOR_PAIR(WHITE_WHITE));
 	
 	//Temporary set of pairs used to update obsCoords values via swap
 	set<pair<int, int>> newObsCoords;

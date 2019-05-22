@@ -20,5 +20,13 @@ void transitionAnimation(const char* fileName,
 						 int backgroundColor,
 						 int startingSeedColor,
 						 int promptColor);
+						 
+void transitionAnimationInsideThread(const char* fileName, 
+									 int graphicWidth, 
+									 int graphicHeight,
+									 int backgroundColor,
+									 int startingSeedColor,
+									 int promptColor,
+									 int *userInput);
 
 #endif /* transitionAnimation_hpp */

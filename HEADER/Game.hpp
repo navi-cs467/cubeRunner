@@ -15,6 +15,7 @@
 class World;
 #include "Cube.hpp"
 #include "Water.hpp"
+#include "Land.hpp"
 //#include "include.hpp"
 #include "constants.hpp"
 #include "transitionAnimation.hpp"

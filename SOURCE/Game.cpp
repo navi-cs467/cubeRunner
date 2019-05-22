@@ -304,7 +304,7 @@ int Game::playGame(char host[], char port[]) {
 						// World transition if cube->transitionCount
 						//reaches TRANSITION_SCORE_INTERVAL
 
-						/* if(cube->getTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
+						if(cube->getCubeTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
 
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -318,25 +318,31 @@ int Game::playGame(char host[], char port[]) {
 							world->getMiniCubes().clear();
 
 							//Create new world
-							if(typeid(*world) == typeid(Water))
+							if(typeid(*world) == typeid(Water)) {
 								world = new Land(gameMode, isTwoPlayer);
-							else if(typeid(*world) == typeid(Land))
-								world = new Space(gameMode, isTwoPlayer);
-							else if(typeid(*world) == typeid(Space))
+								transitionAnimationInsideThread("GRAPHICS/Land.txt", 115, 
+									16, WHITE_WHITE, 15, GREEN_WHITE, &userInput);
+							}
+							else if(typeid(*world) == typeid(Land)) {
 								world = new Water(gameMode, isTwoPlayer);
+								transitionAnimationInsideThread("GRAPHICS/Water.txt", 120, 
+									16, BLUE_BLUE, 30, WHITE_BLUE, &userInput);
+							}
+							/* else if(typeid(*world) == typeid(Space))
+								world = new Water(gameMode, isTwoPlayer); */
 
 							//If score is less than 3000, increase scroll and move time intervals by a constant
 							//(This is the point at which all three worlds have been cycled 3 times each,
 							// and the speeds are capped.)
-							//scrollRate *= SCROLL_MOVE_DECREASE_RATE;
-							//moveRate *= SCROLL_MOVE_DECREASE_RATE;
+							scrollRate *= SCROLL_MOVE_UPDATE_RATE;
+							moveRate *= SCROLL_MOVE_UPDATE_RATE;
 
 							//Reset cubes position to left-middle starting point
-							cube->reset();
+							world->resetPlayer(cube);
 
 							//Reset transitionCount
-							cube->resetTransitionScore();
-						} */
+							cube->resetCubeTransitionScore();
+						}
 
 						//Check for death
 						cube->checkCubeCollision(world);

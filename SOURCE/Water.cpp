@@ -179,7 +179,7 @@ void Water::renderWorld(Cube *cube) {
 				}
 		}
 				
-		if(typeid(**it) == typeid(Coral)) {
+		else if(typeid(**it) == typeid(Coral)) {
 			int nextColor = Coral::getColorSeed();
 			attron(A_BOLD);
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
@@ -213,7 +213,7 @@ void Water::renderWorld(Cube *cube) {
 				}
 		}
 				
-		if(typeid(**it) == typeid(Shark)) {
+		else if(typeid(**it) == typeid(Shark)) {
 			int color = Shark::getColor();
 			attron(A_BOLD);
 			if((*it)->getHits()) {
@@ -251,7 +251,7 @@ void Water::renderWorld(Cube *cube) {
 				}
 		}
 
-		if(typeid(**it) == typeid(Octopus)) {
+		else if(typeid(**it) == typeid(Octopus)) {
 			int color = static_cast<Octopus *>(*it)->getColor();
 			attron(A_BOLD);
 			if((*it)->getHits()) {
@@ -287,7 +287,7 @@ void Water::renderWorld(Cube *cube) {
 		}
 	}
 	
-	if(!forServer) {
+	if(!isTwoPlayer && !forServer) {
 		cube->processShot();
 		refresh();
 	}

@@ -22,8 +22,8 @@
 
 class Land : public World {
 	public:
-		Land(bool isTwoPlayer) : World(isTwoPlayer) {};
-		Land(int gameMode, bool isTwoPlayer);
+		Land(bool isTwoPlayer) : World(isTwoPlayer) {bottomRow = LINES - 5;};
+		Land(int gameMode, bool isTwoPlayer, bool forServer = false);
 		virtual void renderWorld(Cube *cube);
 		//virtual void scroll_(bool newObs);
 		virtual void scroll_();

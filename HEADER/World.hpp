@@ -21,6 +21,10 @@ class Cube;
 #include "Coral.hpp"
 #include "Shark.hpp"
 #include "Octopus.hpp"
+#include "Tree.hpp"
+#include "Rock.hpp"
+#include "Bird.hpp"
+#include "Bat.hpp"
 #include "using.hpp"
 
 class World {

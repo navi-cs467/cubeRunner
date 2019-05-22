@@ -412,8 +412,8 @@ int main(int argc, char* argv[]) {
 							//If score is less than 3000, increase scroll and move time intervals by a constant
 							//(This is the point at which all three worlds have been cycled 3 times each,
 							// and the speeds are capped.)
-							scrollRate *= SCROLL_MOVE_DECREASE_RATE;
-							moveRate *= SCROLL_MOVE_DECREASE_RATE;
+							scrollRate *= SCROLL_MOVE_UPDATE_RATE;
+							moveRate *= SCROLL_MOVE_UPDATE_RATE;
 
 							//Reset cubes position to left-middle starting point
 							cube->cubeReset(world);
@@ -498,7 +498,7 @@ int main(int argc, char* argv[]) {
 						}
 						else {
 							//No deathFlag, process cubeShot
-							cube->processShot();
+							//cube->processShot();
 						//	(Optional ?) RECEIVE connection1: confirmation			//No Death
 						}
 						/**** END SEND DEATH FLAG ****/
@@ -920,7 +920,7 @@ int main(int argc, char* argv[]) {
 
 								// gt
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", (*itObs)->getGT());
+								sprintf(messageToSend, "%d", 2);
 								sendMessage_S(player2, messageToSend);
 
 								// gts

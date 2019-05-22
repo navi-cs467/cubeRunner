@@ -19,6 +19,7 @@
 #include "Direction.hpp"
 #include "World.hpp"
 #include "Water.hpp"
+#include "Land.hpp"
 
 #define CUBE_CHARS_WIDTH 4
 #define CUBE_CHARS_HEIGHT 4

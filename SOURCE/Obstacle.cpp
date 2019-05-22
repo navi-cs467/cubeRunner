@@ -12,6 +12,7 @@
 #include "../HEADER/Obstacle.hpp"
 #include "../HEADER/World.hpp"
 #include "../HEADER/Water.hpp"
+#include "../HEADER/Land.hpp"
 
 Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts, int gm) :
 			posX(posX), posY(posY), gt(gt), gts(gts) {
@@ -48,6 +49,10 @@ Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts, int gm) :
 			//Initialize hits and mvsSinceLastHit
 			hits = 0;
 			mvsSinceLastHit = 0;
+		}
+		else if(type == 5) {
+			if(Tree::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Tree::_getGraphicLines()[gt][i].size();
 		}
 	}
 }
@@ -160,9 +165,9 @@ void Obstacle::move(World* world) {
 	
 	//Do not move the Obstacle if it is offscreen left or right
 	//for Water and Land Worlds
-	if((typeid(*world) == typeid(Water)) //||
-		//typeid(*world) == typeid(Land)) &&
-		&& (posY > COLS || posY < 0 - longestGS)) return;
+	if(((typeid(*world) == typeid(Water)) ||
+		typeid(*world) == typeid(Land)) &&
+		   (posY > COLS || posY < 0 - longestGS)) return;
 	
 	Direction mvDir; //int testMvDir;
 	//Randomly assign a new "seed" direction for the
