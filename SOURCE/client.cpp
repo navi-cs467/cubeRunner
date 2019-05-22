@@ -88,6 +88,17 @@ void receiveMessage_C(int socketFD, char* buffer)
 		endwin();
 		exit(0);
 	}
+
+		// int len = sizeof(buffer);
+		// char *p = buffer;
+		// int n;
+		// while ( len > 0 && (n=recv(socketFD,p,len,0)) > 0 ) {
+		//   p += n;
+		//   len =- n;
+		// }
+		// if ( len > 0 || n < 0 ) {
+		//   // oops, something went wrong
+		// }
 }
 
 /*
@@ -99,15 +110,26 @@ void sendMessage_C(int socketFD, char* buffer)
 	// adapted from cs 344 lectures, make sure all the data is sent over the socket
 	// Send message to client
 	int charsWritten = send(socketFD, buffer, sizeof(buffer), 0);
-	if (charsWritten < sizeof(buffer)) printf("WARNING: Not all data written to socket!\n");
-
-	int checkSend = -5;  // Holds amount of bytes remaining in send buffer
-	do
-	{
-		ioctl(socketFD, TIOCOUTQ, &checkSend);  // Check the send buffer for this socket
-	}
-
-	while (checkSend > 0);  // Loop forever until send buffer for this socket is empty
+	// if (charsWritten < sizeof(buffer)) printf("WARNING: Not all data written to socket!\n");
+	//
+	// int checkSend = -5;  // Holds amount of bytes remaining in send buffer
+	// do
+	// {
+	// 	ioctl(socketFD, TIOCOUTQ, &checkSend);  // Check the send buffer for this socket
+	// }
+	//
+	// while (checkSend > 0);  // Loop forever until send buffer for this socket is empty
+			//
+			// int len = sizeof(buffer);
+			// char *p = buffer;
+			// int n;
+			// while ( len > 0 && (n=send(socketFD,p,len,0)) > 0 ) {
+			//   p += n;
+			//   len =- n;
+			// }
+			// if ( len > 0 || n < 0 ) {
+			//   // oops, something went wrong
+			// }
 }
 
 // initialize the socket for client to connect to server

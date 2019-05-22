@@ -316,7 +316,7 @@ int main(int argc, char* argv[]) {
 				while (1) {
 					char messageToSend[20]; char clientConfirm[20];
 					memset(clientConfirm, '\0', sizeof clientConfirm);
-					memset(clientConfirm, '\0', sizeof clientConfirm);
+					memset(messageToSend, '\0', sizeof messageToSend);
 					/**** SEND EARLY TERMINATION STATUS ****/
 					//If either user quits, report back early termination to other player,
 					//and score to both, then break
@@ -333,10 +333,15 @@ int main(int argc, char* argv[]) {
 						strcat(messageToSend, "ET");
 						sendMessage_S(player2, messageToSend);
 						//(Optional ?) RECEIVE confirmation Connection2
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
 						//SEND Connection2 score
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", cube->getCubeScore());
 						sendMessage_S(player2, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
 
 						//CLOSE CONNECTION2
 						close(player2);
@@ -348,21 +353,34 @@ int main(int argc, char* argv[]) {
 						strcat(messageToSend, "NT");
 						sendMessage_S(player2, messageToSend);
 						//(Optional ?) RECEIVE Confirmation Connection2
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
 					}
 
 					if(userInput2 == 'q') {
 						//SEND Connection2 score
+						sprintf(messageToSend, "%d", cube->getCubeScore());
+						sendMessage_S(player2, messageToSend);
 						//CLOSE CONNECTION2
 						close(player2);
 						//SEND Connection1 "ET"		//Early Termination
 						//(Optional ?) RECEIVE confirmation Connection1
+
 						memset(messageToSend, '\0', sizeof messageToSend);
 						strcat(messageToSend, "ET");
 						sendMessage_S(player1, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
 						//SEND Connection1 score
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", cube->getCubeScore());
-						sendMessage_S(player2, messageToSend);
+						sendMessage_S(player1, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
 						//CLOSE CONNECTION1
 						close(player1);
 						break;
@@ -373,6 +391,8 @@ int main(int argc, char* argv[]) {
 						strcat(messageToSend, "NT");
 						sendMessage_S(player1, messageToSend);
 						//(Optional ?) RECEIVE Confirmation Connection1
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
 					}
 					/**** END SEND EARLY TERMINATION STATUS ****/
 
@@ -462,13 +482,28 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player1, messageToSend);
 						sendMessage_S(player2, messageToSend);
 
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
+
 						// SEND Connection2: deathFlag
 						if(deathFlag) {
 							if(cube->getCubeLives() == 0) {
 						//		SEND Connection2: 1		//Game over, no need for confirmation
 							//send to both connections
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", 1);
 								sendMessage_S(player1, messageToSend);
 								sendMessage_S(player2, messageToSend);
+
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player1, clientConfirm);
+
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player2, clientConfirm);
+
 						//		CLOSE Connection2
 								//Delete all Obstacles
 								for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -491,6 +526,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player2, messageToSend);
 
 						//	 	(Optional ?) RECEIVE connection2: confirmation		//Probably not optional, need to wait for death animation
+								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player1, clientConfirm);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player2, clientConfirm);
@@ -514,17 +550,35 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player1, messageToSend);
 						sendMessage_S(player2, messageToSend);
 
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
+
 						//send row to clients
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", cube->getCubePositionRow());
 						sendMessage_S(player1, messageToSend);
 						sendMessage_S(player2, messageToSend);
 
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
+
 						//send col to clients
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", cube->getCubePositionCol());
 						sendMessage_S(player1, messageToSend);
 						sendMessage_S(player2, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
 
 						//send cubeChars
 
@@ -554,6 +608,12 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player1, cubeCharsBuff);
 						sendMessage_S(player2, cubeCharsBuff);
 
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
+
 						// (Optional ?) RECEIVE connection1: confirmation
 
 						// SEND connection2: cube->getCubeCoords()[array], cube->getCubeChars()[array],
@@ -568,6 +628,12 @@ int main(int argc, char* argv[]) {
 						sprintf(messageToSend, "%d", cube->getCubeScore());
 						sendMessage_S(player1, messageToSend);
 						sendMessage_S(player2, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
 
 						// (Optional ?) RECEIVE connection1: confirmation
 
@@ -587,6 +653,12 @@ int main(int argc, char* argv[]) {
 							sprintf(messageToSend, "%d", 1);
 							sendMessage_S(player1, messageToSend);
 							sendMessage_S(player2, messageToSend);
+
+							memset(clientConfirm, '\0', sizeof clientConfirm);
+							receiveMessage_S(player1, clientConfirm);
+
+							memset(clientConfirm, '\0', sizeof clientConfirm);
+							receiveMessage_S(player2, clientConfirm);
 
 							//send new world type to clients
 							memset(messageToSend, '\0', sizeof messageToSend);
@@ -609,6 +681,12 @@ int main(int argc, char* argv[]) {
 							sprintf(messageToSend, "%d", 0);
 							sendMessage_S(player1, messageToSend);
 							sendMessage_S(player2, messageToSend);
+
+							memset(clientConfirm, '\0', sizeof clientConfirm);
+							receiveMessage_S(player1, clientConfirm);
+
+							memset(clientConfirm, '\0', sizeof clientConfirm);
+							receiveMessage_S(player2, clientConfirm);
 						}
 
 
@@ -648,6 +726,9 @@ int main(int argc, char* argv[]) {
 						sprintf(messageToSend, "%d", onScreenCount);
 						sendMessage_S(player1, messageToSend);
 
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
 						// loop through obstacles
 						for(itObs = world->getObstacles().begin();
 							itObs != world->getObstacles().end();
@@ -662,6 +743,9 @@ int main(int argc, char* argv[]) {
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 1);
 									sendMessage_S(player1, messageToSend);
+
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
 								}
 
 								else if(typeid(**itObs) == typeid(Coral))
@@ -670,6 +754,9 @@ int main(int argc, char* argv[]) {
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 2);
 									sendMessage_S(player1, messageToSend);
+
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
 								}
 
 								else if(typeid(**itObs) == typeid(Shark))
@@ -678,6 +765,9 @@ int main(int argc, char* argv[]) {
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 3);
 									sendMessage_S(player1, messageToSend);
+
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
 								}
 
 								else if(typeid(**itObs) == typeid(Octopus))
@@ -686,6 +776,9 @@ int main(int argc, char* argv[]) {
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 4);
 									sendMessage_S(player1, messageToSend);
+
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
 								}
 
 								/* else if(typeid(**itObs) == typeid(Tree))
@@ -763,10 +856,16 @@ int main(int argc, char* argv[]) {
 								sprintf(messageToSend, "%d", (*itObs)->getPosX());
 								sendMessage_S(player1, messageToSend);
 
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player1, clientConfirm);
+
 								// posY
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getPosY());
 								sendMessage_S(player1, messageToSend);
+
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player1, clientConfirm);
 
 								/** Ben's Troubleshooting gt **
 								printf("GT Before Conversion: %d\n", (*itObs)->getGT());
@@ -780,13 +879,19 @@ int main(int argc, char* argv[]) {
 
 								// gt
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", 2);
+								sprintf(messageToSend, "%d", (*itObs)->getGT());
 								sendMessage_S(player1, messageToSend);
+
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player1, clientConfirm);
 
 								// gts
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGTS());
 								sendMessage_S(player1, messageToSend);
+
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player1, clientConfirm);
 
 								// (Optional ?) RECEIVE connection1: confirmation
 							}
@@ -797,6 +902,9 @@ int main(int argc, char* argv[]) {
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", onScreenCount);
 						sendMessage_S(player2, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
 
 						// loop through obstacles
 						for(itObs = world->getObstacles().begin();
@@ -812,6 +920,9 @@ int main(int argc, char* argv[]) {
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 1);
 									sendMessage_S(player2, messageToSend);
+
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
 								}
 
 								else if(typeid(**itObs) == typeid(Coral))
@@ -820,6 +931,9 @@ int main(int argc, char* argv[]) {
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 2);
 									sendMessage_S(player2, messageToSend);
+
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
 								}
 
 								else if(typeid(**itObs) == typeid(Shark))
@@ -828,6 +942,9 @@ int main(int argc, char* argv[]) {
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 3);
 									sendMessage_S(player2, messageToSend);
+
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
 								}
 
 								else if(typeid(**itObs) == typeid(Octopus))
@@ -836,6 +953,9 @@ int main(int argc, char* argv[]) {
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 4);
 									sendMessage_S(player2, messageToSend);
+
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
 								}
 
 								/* else if(typeid(**itObs) == typeid(Tree))
@@ -913,20 +1033,32 @@ int main(int argc, char* argv[]) {
 								sprintf(messageToSend, "%d", (*itObs)->getPosX());
 								sendMessage_S(player2, messageToSend);
 
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player2, clientConfirm);
+
 								// posY
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getPosY());
 								sendMessage_S(player2, messageToSend);
+
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player2, clientConfirm);
 
 								// gt
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", 2);
 								sendMessage_S(player2, messageToSend);
 
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player2, clientConfirm);
+
 								// gts
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGTS());
 								sendMessage_S(player2, messageToSend);
+
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player2, clientConfirm);
 
 								// (Optional ?) RECEIVE connection2: confirmation
 							}
@@ -942,8 +1074,8 @@ int main(int argc, char* argv[]) {
 						sprintf(messageToSend, "%ld", world->getMiniCubes().size());
 						sendMessage_S(player1, messageToSend);
 
-
-
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
 
 						for(itMiniCubes = world->getMiniCubes().begin();
 							itMiniCubes != world->getMiniCubes().end();
@@ -955,9 +1087,15 @@ int main(int argc, char* argv[]) {
 								sprintf(messageToSend, "%d", itMiniCubes->first);
 								sendMessage_S(player1, messageToSend);
 
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player1, clientConfirm);
+
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", itMiniCubes->second);
 								sendMessage_S(player1, messageToSend);
+
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player1, clientConfirm);
 
 								// (Optional ?) RECEIVE connection1: confirmation
 						}
@@ -966,6 +1104,9 @@ int main(int argc, char* argv[]) {
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%ld", world->getMiniCubes().size());
 						sendMessage_S(player2, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
 
 						// (Optional ?) RECEIVE connection2: confirmation
 						for(itMiniCubes = world->getMiniCubes().begin();
@@ -977,9 +1118,15 @@ int main(int argc, char* argv[]) {
 								sprintf(messageToSend, "%d", itMiniCubes->first);
 								sendMessage_S(player2, messageToSend);
 
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player2, clientConfirm);
+
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", itMiniCubes->second);
 								sendMessage_S(player2, messageToSend);
+
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player2, clientConfirm);
 
 								// (Optional ?) RECEIVE connection2: confirmation
 						}
@@ -991,11 +1138,17 @@ int main(int argc, char* argv[]) {
 						sprintf(messageToSend, "%d", hours);
 						sendMessage_S(player1, messageToSend);
 
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
 						// (Optional ?) RECEIVE connection1: confirmation
 						//SEND connection1: minutes
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", minutes);
 						sendMessage_S(player1, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
 
 						// (Optional ?) RECEIVE connection1: confirmation
 						//SEND connection1: seconds
@@ -1003,24 +1156,36 @@ int main(int argc, char* argv[]) {
 						sprintf(messageToSend, "%d", seconds);
 						sendMessage_S(player1, messageToSend);
 
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
 						// (Optional ?) RECEIVE connection1: confirmation
 
 						//SEND connection2: hours
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", hours);
-						sendMessage_S(player1, messageToSend);
+						sendMessage_S(player2, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
 						// (Optional ?) RECEIVE connection1: confirmation
 
 						//SEND connection2: minutes
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", minutes);
-						sendMessage_S(player1, messageToSend);
+						sendMessage_S(player2, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
 						// (Optional ?) RECEIVE connection2: confirmation
 
 						//SEND connection2: seconds
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", seconds);
-						sendMessage_S(player1, messageToSend);
+						sendMessage_S(player2, messageToSend);
+
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
 
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND TIME INFO  ****/
