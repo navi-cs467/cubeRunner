@@ -780,7 +780,7 @@ int main(int argc, char* argv[]) {
 
 								// gt
 								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", (*itObs)->getGT());
+								sprintf(messageToSend, "%d", 2);
 								sendMessage_S(player1, messageToSend);
 
 								// gts
