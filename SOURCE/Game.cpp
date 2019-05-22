@@ -880,9 +880,11 @@ int Game::playGame(char host[], char port[]) {
 							int_5 = atoi(gameData); mvhline(23, 0, ' ', COLS); move(23, 5); printw("gt: %d", int_5); refresh();
 							sleep(50000000); */
 
-							memset(gameData, '\0', sizeof gameData);
-							receiveMessage_C(socketFD, gameData);
-							int_5 = atoi(gameData); //move(23, 5); printw("gt: %d", int_5); refresh();
+							char testStr[20];
+
+							memset(testStr, '\0', sizeof testStr);
+							receiveMessage_C(socketFD, testStr);
+							int_5 = atoi(testStr); //move(23, 5); printw("gt: %d", int_5); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
