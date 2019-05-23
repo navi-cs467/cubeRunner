@@ -66,6 +66,6 @@
 /*** End Game-Related ***/
 
 /*** DEBUG ***/
-#define DEBUG 1
+#define DEBUG 0
 
 #endif /* constants_hpp */

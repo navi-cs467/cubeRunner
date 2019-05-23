@@ -209,11 +209,11 @@ void acceptConnections(int socketFD, int* firstClient, int* secondClient)
 	struct sockaddr_storage client_addr;
 	socklen_t addr_size;
 
-	// accept incomming connection from first client
+	// accept incoming connection from first client
 	addr_size = sizeof client_addr;
 	*firstClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
 
-	// accept incomming connection from second client
+	// accept incoming connection from second client
 	addr_size = sizeof client_addr;
 	*secondClient = accept(socketFD, (struct sockaddr *)&client_addr, &addr_size);
 

@@ -287,8 +287,9 @@ void Water::renderWorld(Cube *cube) {
 		}
 	}
 	
-	if(!isTwoPlayer && !forServer) {
-		cube->processShot();
+	cube->processShot();
+	
+	if(!forServer) {
 		refresh();
 	}
 

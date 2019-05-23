@@ -121,7 +121,7 @@ int Game::playGame(char host[], char port[]) {
 				//	  	server can handle, the "extra commands" go unprocessed,
 				//		since the code below blocks at "RECEIVE confirmation",
 				//		then the input buffer is flushed
-				else if (!deathFlag && isConnected && !hasTerminated) {
+				/* else if (!deathFlag && isConnected && !hasTerminated) {
 					char messageToSend[20];
 					memset(messageToSend, '\0', sizeof(messageToSend));
 					char confirm[20];
@@ -220,7 +220,7 @@ int Game::playGame(char host[], char port[]) {
 							break;
 						}
 					}
-				}
+				} */
 				/***** END Client for multiplayer (SEND) *****/
 			}
 		}
@@ -650,21 +650,34 @@ int Game::playGame(char host[], char port[]) {
 						}
 
 						/**** END RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
-
+						
+						//Used for debugging only
+						int z = 13;
+						
 						/**** RECEIVE DEATH FLAG ****/
 						//RECEIVE int_1
 						receiveMessage_C(socketFD, gameData);
+						if(DEBUG) {
+							move(z++, 8); printw("RECEIVED (deathflag): %s\n", gameData); refresh();
+						}
 						memset(sendConfirm, '\0', sizeof sendConfirm);
 						sprintf(sendConfirm, "%d", 1);
 						sendMessage_C(socketFD, sendConfirm);
+						if(DEBUG) {
+							//move(z, 60); printw("SEND CONFIRM (deathflag): %s\n", sendConfirm); refresh();
+						}
 
 						int_1 = atoi(gameData);
 						//If int_1 == 1:		//Death happened
-						if (int_1 == 1)
+						//if (int_1 == 1)
+						if(0) 
 						{
 							//	  RECEIVE int_2
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+							if(DEBUG) {
+								//move(z, 60); printw("SENT CONFIRM (deathflag): %s\n", gameData); refresh();
+							}
 
 							memset(sendConfirm, '\0', sizeof sendConfirm);
 							sprintf(sendConfirm, "%d", 1);
@@ -713,10 +726,17 @@ int Game::playGame(char host[], char port[]) {
 						//receive lives
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+						if(DEBUG) {
+							move(z++, 8); printw("RECEIVED (lives): %s\n", gameData); refresh();
+						}
+						
 
 						memset(sendConfirm, '\0', sizeof sendConfirm);
 						sprintf(sendConfirm, "%d", 1);
 						sendMessage_C(socketFD, sendConfirm);
+						if(DEBUG) {
+							//move(z, 60); printw("SENT CONFIRM (lives): %s\n", sendConfirm); refresh();
+						}
 
 						int lives = atoi(gameData);
 						cube->setCubeLives(lives);
@@ -724,10 +744,16 @@ int Game::playGame(char host[], char port[]) {
 						//receive row
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+						if(DEBUG) {
+							move(z++, 8); printw("RECEIVED (row): %s\n", gameData); refresh();
+						}
 
 						memset(sendConfirm, '\0', sizeof sendConfirm);
 						sprintf(sendConfirm, "%d", 1);
 						sendMessage_C(socketFD, sendConfirm);
+						if(DEBUG) {
+							//move(z, 60); printw("SENT CONFIRM (row): %s\n", sendConfirm); refresh();
+						}
 
 						int row = atoi(gameData);
 						cube->setCubePositionRow(row);
@@ -735,10 +761,16 @@ int Game::playGame(char host[], char port[]) {
 						//receive col
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+						if(DEBUG) {
+							move(z++, 8); printw("RECEIVED (col): %s\n", gameData); refresh();
+						}
 
 						memset(sendConfirm, '\0', sizeof sendConfirm);
 						sprintf(sendConfirm, "%d", 1);
 						sendMessage_C(socketFD, sendConfirm);
+						if(DEBUG) {
+							//move(z, 60); printw("SENT CONFIRM (col): %s\n", sendConfirm); refresh();
+						}
 
 						int col = atoi(gameData);
 						cube->setCubePositionCol(col);
@@ -771,10 +803,16 @@ int Game::playGame(char host[], char port[]) {
 
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+						if(DEBUG) {
+							move(z++, 8); printw("RECEIVED (cubeChars): %s\n", gameData); refresh();
+						}
 
 						memset(sendConfirm, '\0', sizeof sendConfirm);
 						sprintf(sendConfirm, "%d", 1);
 						sendMessage_C(socketFD, sendConfirm);
+						if(DEBUG) {
+							//move(z, 60); printw("SENT CONFIRM (cubeChars): %s\n", sendConfirm); refresh();
+						}
 
 						//iterate through string, placing characters where they belong in the array
 						int k = 0;
@@ -805,10 +843,16 @@ int Game::playGame(char host[], char port[]) {
 
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+						if(DEBUG) {
+							move(z++, 8); printw("RECEIVED (score): %s\n", gameData); refresh();
+						}
 
 						memset(sendConfirm, '\0', sizeof sendConfirm);
 						sprintf(sendConfirm, "%d", 1);
 						sendMessage_C(socketFD, sendConfirm);
+						if(DEBUG) {
+							//move(z, 60); printw("SENT CONFIRM (score): %s\n", sendConfirm); refresh();
+						}
 
 						cube->setCubeScore(atoi(gameData));
 
@@ -828,10 +872,16 @@ int Game::playGame(char host[], char port[]) {
 
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+						if(DEBUG) {
+							move(z++, 8); printw("RECEIVED (new world indicator): %s\n", gameData); refresh();
+						}
 
 						memset(sendConfirm, '\0', sizeof sendConfirm);
 						sprintf(sendConfirm, "%d", 1);
 						sendMessage_C(socketFD, sendConfirm);
+						if(DEBUG) {
+							//move(z, 60); printw("SENT CONFIRM (new world indicator): %s\n", sendConfirm); refresh();
+						}
 
 						int_1 = atoi(gameData);
 
@@ -880,7 +930,7 @@ int Game::playGame(char host[], char port[]) {
 						//else if (int_1 == 0)
 						//{
 							//Else If int == 0:		//If no world transition, we need to clear these containers
-								//if(world->getObstacles().size() > 0) world->getObstacles().clear();
+								if(world->getObstacles().size() > 0) world->getObstacles().clear();
 								if(world->getMiniCubes().size() > 0) world->getMiniCubes().clear();
 								// (Optional ?) SEND: confirmation
 						//}
@@ -893,43 +943,70 @@ int Game::playGame(char host[], char port[]) {
 						// (Optional ?) SEND: confirmation
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
+						if(DEBUG) {
+							move(z++, 8); printw("RECEIVED (numObs): %s\n", gameData); refresh();
+						}
 
 						memset(sendConfirm, '\0', sizeof sendConfirm);
 						sprintf(sendConfirm, "%d", 1);
 						sendMessage_C(socketFD, sendConfirm);
+						if(DEBUG) {
+							//move(z, 60); printw("SENT CONFIRM (numObs): %s\n", sendConfirm); refresh();
+						}
 
 						int_1 = atoi(gameData);
-
+						
+						//Used only for debugging
+						int obsNum = 0;
+						
 						// loop to rebuild Obstacles
-						for(int i = 0; i < int_1; i++) {
+						for(int i = 0; i < int_1; i++, obsNum++, z = 20) {
 							//RECEIVE int_2, int_3, int_4, int_5, int_6, int_7		// type of Obs, posX, posY, gt, gts(not strictly necessary, but used as convenience), hits
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+							if(DEBUG) {
+								move(z++, 8); printw("RECEIVED (ob %d type): %s\n", obsNum, gameData); refresh();
+							}
 
 							memset(sendConfirm, '\0', sizeof sendConfirm);
 							sprintf(sendConfirm, "%d", 1);
 							sendMessage_C(socketFD, sendConfirm);
+							if(DEBUG) {
+								//move(z, 60); printw("SENT CONFIRM (ob %d type): %s\n", obsNum, sendConfirm); refresh();
+							}
 
-							int_2 = atoi(gameData); //move(20, 5); printw("type: %d", int_2); refresh();
+							int_2 = atoi(gameData); 
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+							if(DEBUG) {
+								move(z++, 8); printw("RECEIVED (ob %d posX): %s\n", obsNum, gameData); refresh();
+							}
 
 							memset(sendConfirm, '\0', sizeof sendConfirm);
 							sprintf(sendConfirm, "%d", 1);
 							sendMessage_C(socketFD, sendConfirm);
+							if(DEBUG) {
+								//move(z, 60); printw("SENT CONFIRM (ob %d posX): %s\n", obsNum, sendConfirm); refresh();
+							}
 
-							int_3 = atoi(gameData); //move(21, 5); printw("x: %d", int_3); refresh();
+							int_3 = atoi(gameData); 
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+							if(DEBUG) {
+								move(z++, 8); printw("RECEIVED (ob %d posY): %s\n", obsNum, gameData); refresh();
+							}
 
 							memset(sendConfirm, '\0', sizeof sendConfirm);
 							sprintf(sendConfirm, "%d", 1);
 							sendMessage_C(socketFD, sendConfirm);
+							if(DEBUG) {
+								//move(z, 60); printw("SENT CONFIRM (ob %d posY): %s\n", obsNum, sendConfirm); refresh();
+							}
 
-							int_4 = atoi(gameData); //move(22, 5); printw("y: %d", int_4); refresh();
+							int_4 = atoi(gameData); 
 
 							/** Ben's Troubleshooting gt **
 							char test[2]; test[1] = '\0';
@@ -952,25 +1029,35 @@ int Game::playGame(char host[], char port[]) {
 
 							char testStr[20];
 
-							memset(testStr, '\0', sizeof testStr);
-							receiveMessage_C(socketFD, testStr);
+							memset(gameData, '\0', sizeof gameData);
+							receiveMessage_C(socketFD, gameData);
+							if(DEBUG) {
+								move(z++, 8); printw("RECEIVED (ob %d gt): %s\n", obsNum, gameData); refresh();
+							}
 
 							memset(sendConfirm, '\0', sizeof sendConfirm);
 							sprintf(sendConfirm, "%d", 1);
 							sendMessage_C(socketFD, sendConfirm);
+							if(DEBUG) {
+								//move(z, 60); printw("SENT CONFIRM (ob %d gt): %s\n", obsNum, sendConfirm); refresh();
+							}
 
 							int_5 = atoi(testStr); //move(23, 5); printw("gt: %d", int_5); refresh();
-							move(23, 5); printw("gt: %d", int_5); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
+							if(DEBUG) {
+								move(z++, 8); printw("RECEIVED (ob %d gts): %s\n", obsNum, gameData); refresh();
+							}
 
 							memset(sendConfirm, '\0', sizeof sendConfirm);
 							sprintf(sendConfirm, "%d", 1);
 							sendMessage_C(socketFD, sendConfirm);
+							if(DEBUG) {
+								//move(z, 60); printw("SENT CONFIRM (ob %d gts): %s\n", obsNum, sendConfirm); refresh();
+							}
 
-							int_6 = atoi(gameData); //move(24, 5); printw("gts: %d", int_6); refresh();
-							move(24, 5); printw("gts: %d", int_6); refresh();
+							int_6 = atoi(gameData); 
 
 
 							//If we are going to include shooting functionality, need Obstacle->hits
