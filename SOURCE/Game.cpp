@@ -320,12 +320,12 @@ int Game::playGame(char host[], char port[]) {
 							//Create new world
 							if(typeid(*world) == typeid(Water)) {
 								world = new Land(gameMode, isTwoPlayer);
-								transitionAnimationInsideThread("GRAPHICS/Land.txt", 115, 
+								transitionAnimationInsideThread("GRAPHICS/Land.txt", 115,
 									16, WHITE_WHITE, 15, GREEN_WHITE, &userInput);
 							}
 							else if(typeid(*world) == typeid(Land)) {
 								world = new Water(gameMode, isTwoPlayer);
-								transitionAnimationInsideThread("GRAPHICS/Water.txt", 120, 
+								transitionAnimationInsideThread("GRAPHICS/Water.txt", 120,
 									16, BLUE_BLUE, 30, WHITE_BLUE, &userInput);
 							}
 							/* else if(typeid(*world) == typeid(Space))
@@ -546,7 +546,7 @@ int Game::playGame(char host[], char port[]) {
 				if (strcmp(message,"0") == 0)
 				{
 					//send chosen game mode
-					char gM[20];
+					char gM[40];
 					sprintf(gM, "%d", gameMode);
 					sendMessage_C(socketFD, gM);
 					if(DEBUG)
@@ -566,7 +566,7 @@ int Game::playGame(char host[], char port[]) {
 				if ((strcmp(message,"1") == 0) && playerNum != 1)
 				{
 					//send chosen game mode
-					char gM[20];
+					char gM[40];
 					sprintf(gM, "%d", gameMode);
 					sendMessage_C(socketFD, gM);
 
@@ -606,8 +606,8 @@ int Game::playGame(char host[], char port[]) {
 				while (!hasTerminated) {
 
 						//Pseudocode variables... change as desired
-						int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[20];
-						char scoreStr[20]; char gameData[20]; char sendConfirm[20];
+						int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[40];
+						char scoreStr[40]; char gameData[40]; char sendConfirm[40];
 
 						memset(earlyTerm, '\0', sizeof earlyTerm);
 						memset(scoreStr, '\0', sizeof scoreStr);
@@ -650,10 +650,10 @@ int Game::playGame(char host[], char port[]) {
 						}
 
 						/**** END RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
-						
+
 						//Used for debugging only
 						int z = 13;
-						
+
 						/**** RECEIVE DEATH FLAG ****/
 						//RECEIVE int_1
 						receiveMessage_C(socketFD, gameData);
@@ -670,7 +670,7 @@ int Game::playGame(char host[], char port[]) {
 						int_1 = atoi(gameData);
 						//If int_1 == 1:		//Death happened
 						//if (int_1 == 1)
-						if(0) 
+						if(0)
 						{
 							//	  RECEIVE int_2
 							memset(gameData, '\0', sizeof gameData);
@@ -729,7 +729,7 @@ int Game::playGame(char host[], char port[]) {
 						if(DEBUG) {
 							move(z++, 8); printw("RECEIVED (lives): %s\n", gameData); refresh();
 						}
-						
+
 
 						memset(sendConfirm, '\0', sizeof sendConfirm);
 						sprintf(sendConfirm, "%d", 1);
@@ -955,10 +955,10 @@ int Game::playGame(char host[], char port[]) {
 						}
 
 						int_1 = atoi(gameData);
-						
+
 						//Used only for debugging
 						int obsNum = 0;
-						
+
 						// loop to rebuild Obstacles
 						for(int i = 0; i < int_1; i++, obsNum++, z = 20) {
 							//RECEIVE int_2, int_3, int_4, int_5, int_6, int_7		// type of Obs, posX, posY, gt, gts(not strictly necessary, but used as convenience), hits
@@ -976,7 +976,7 @@ int Game::playGame(char host[], char port[]) {
 								//move(z, 60); printw("SENT CONFIRM (ob %d type): %s\n", obsNum, sendConfirm); refresh();
 							}
 
-							int_2 = atoi(gameData); 
+							int_2 = atoi(gameData);
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
@@ -991,7 +991,7 @@ int Game::playGame(char host[], char port[]) {
 								//move(z, 60); printw("SENT CONFIRM (ob %d posX): %s\n", obsNum, sendConfirm); refresh();
 							}
 
-							int_3 = atoi(gameData); 
+							int_3 = atoi(gameData);
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
@@ -1006,7 +1006,7 @@ int Game::playGame(char host[], char port[]) {
 								//move(z, 60); printw("SENT CONFIRM (ob %d posY): %s\n", obsNum, sendConfirm); refresh();
 							}
 
-							int_4 = atoi(gameData); 
+							int_4 = atoi(gameData);
 
 							/** Ben's Troubleshooting gt **
 							char test[2]; test[1] = '\0';
@@ -1027,7 +1027,7 @@ int Game::playGame(char host[], char port[]) {
 							int_5 = atoi(gameData); mvhline(23, 0, ' ', COLS); move(23, 5); printw("gt: %d", int_5); refresh();
 							sleep(50000000); */
 
-							char testStr[20];
+							char testStr[40];
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
@@ -1057,7 +1057,7 @@ int Game::playGame(char host[], char port[]) {
 								//move(z, 60); printw("SENT CONFIRM (ob %d gts): %s\n", obsNum, sendConfirm); refresh();
 							}
 
-							int_6 = atoi(gameData); 
+							int_6 = atoi(gameData);
 
 
 							//If we are going to include shooting functionality, need Obstacle->hits

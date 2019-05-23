@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
 		int player1, player2 = -1;
 
 		//confirmation flag
-		char confirm[20] = "0";
+		char confirm[40] = "0";
 
 		//initialize server and accept connections
 		//also send confirmation messages to players when they are connected
@@ -89,11 +89,11 @@ int main(int argc, char* argv[]) {
 			printf("Both Confirmations Sent...\n");
 
 		//receive game mode from player1
-		char gm1Str[20];
+		char gm1Str[40];
 		receiveMessage_S(player1, gm1Str);
 
 		//receive game mode from player2
-		char gm2Str[20];
+		char gm2Str[40];
 		receiveMessage_S(player2, gm2Str);
 
 		printf("Received Both Game Modes...\n");
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
 
 		printf("After sending GM Match Loop (if applicable)...\n");
 
-		char message[20];
+		char message[40];
 		memset(message, '\0', sizeof message);
 
 		if (gmP1 != gmP2)
@@ -314,7 +314,7 @@ int main(int argc, char* argv[]) {
 
 				//Main game engine loop
 				while (1) {
-					char messageToSend[20]; char clientConfirm[20];
+					char messageToSend[40]; char clientConfirm[40];
 					memset(clientConfirm, '\0', sizeof clientConfirm);
 					memset(messageToSend, '\0', sizeof messageToSend);
 					/**** SEND EARLY TERMINATION STATUS ****/
@@ -477,30 +477,30 @@ int main(int argc, char* argv[]) {
 							memset(messageToSend, '\0', sizeof messageToSend);
 							sprintf(messageToSend, "%d", 1);
 						}
-						
+
 						//send to both connections
-						sendMessage_S(player1, messageToSend); 
+						sendMessage_S(player1, messageToSend);
 						if(DEBUG) {
-							printf("SENT TO PLAYER 1 (deathflag): %s\n", messageToSend); 
-							
+							printf("SENT TO PLAYER 1 (deathflag): %s\n", messageToSend);
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 1 (deathflag confirm): %s\n", clientConfirm);
-							
+
 						}
-						
-						sendMessage_S(player2, messageToSend); 
+
+						sendMessage_S(player2, messageToSend);
 						if(DEBUG) {
 							printf("SENT TO PLAYER 2 (deathflag): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 2 (deathflag confirm): %s\n", clientConfirm);
-							
+
 						}
 
 						// SEND Connection2: deathFlag
@@ -511,11 +511,11 @@ int main(int argc, char* argv[]) {
 							//send to both connections
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", 1);
-								
+
 								sendMessage_S(player1, messageToSend);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player1, clientConfirm);
-								
+
 								sendMessage_S(player2, messageToSend);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player2, clientConfirm);
@@ -538,18 +538,18 @@ int main(int argc, char* argv[]) {
 						//		SEND Connection2: 0		//Death but no game over
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", 0);
-								
+
 								sendMessage_S(player1, messageToSend);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player1, clientConfirm);
-								
+
 								sendMessage_S(player2, messageToSend);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player2, clientConfirm);
-								
+
 						//	 	(Optional ?) RECEIVE connection2: confirmation		//Probably not optional, need to wait for death animation
-								
-								
+
+
 							}
 						}
 						else {
@@ -570,52 +570,52 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player1, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 1 (lives): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 1 (lives confirm): %s\n", clientConfirm);
-							
+
 						}
-						
+
 						sendMessage_S(player2, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 2 (lives): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 2 (lives confirm): %s\n", clientConfirm);
-							
+
 						}
-						
+
 						//send row to clients
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", cube->getCubePositionRow());
 						sendMessage_S(player1, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 1 (row): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 1 (row confirm): %s\n", clientConfirm);
-							
+
 						}
-						
+
 						sendMessage_S(player2, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 2 (row): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 1 (row confirm): %s\n", clientConfirm);
-							
+
 						}
 
 						//send col to clients
@@ -624,31 +624,31 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player1, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 1 (col): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 1 (col confirm): %s\n", clientConfirm);
-							
+
 						}
-						
+
 						sendMessage_S(player2, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 2 (col): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 2 (col confirm): %s\n", clientConfirm);
-							
+
 						}
 
 						//send cubeChars
 
 						//buffers for character array
-						char cubeCharsBuff[20]; char cubeCharBuff[2];
+						char cubeCharsBuff[40]; char cubeCharBuff[2];
 
 						memset(cubeCharsBuff, '\0', sizeof cubeCharsBuff);
 
@@ -673,25 +673,25 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player1, cubeCharsBuff);
 						if(DEBUG) {
 							printf("SENT PLAYER 1 (cubeChars): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 1 (cubeChars confirm): %s\n", clientConfirm);
-							
+
 						}
-						
+
 						sendMessage_S(player2, cubeCharsBuff);
 						if(DEBUG) {
 							printf("SENT PLAYER 2 (cubeChars): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 2 (cubeChars confirm): %s\n", clientConfirm);
-							
+
 						}
 
 						// (Optional ?) RECEIVE connection1: confirmation
@@ -709,25 +709,25 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player1, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 1 (score): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 1 (score confirm): %s\n", clientConfirm);
-							
+
 						}
-						
+
 						sendMessage_S(player2, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 2 (score): %s\n", messageToSend);
-							
+
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 2 (score confirm): %s\n", clientConfirm);
-							
+
 						}
 
 						// (Optional ?) RECEIVE connection1: confirmation
@@ -747,11 +747,11 @@ int main(int argc, char* argv[]) {
 							//send flag to both clients
 							memset(messageToSend, '\0', sizeof messageToSend);
 							sprintf(messageToSend, "%d", 1);
-							
+
 							sendMessage_S(player1, messageToSend);
 							memset(clientConfirm, '\0', sizeof clientConfirm);
 							receiveMessage_S(player1, clientConfirm);
-							
+
 							sendMessage_S(player2, messageToSend);
 							memset(clientConfirm, '\0', sizeof clientConfirm);
 							receiveMessage_S(player2, clientConfirm);
@@ -759,11 +759,11 @@ int main(int argc, char* argv[]) {
 							//send new world type to clients
 							memset(messageToSend, '\0', sizeof messageToSend);
 							sprintf(messageToSend, "%d", newWorldType);
-							
+
 							sendMessage_S(player1, messageToSend);
 							memset(clientConfirm, '\0', sizeof clientConfirm);
 							receiveMessage_S(player1, clientConfirm);
-							
+
 							sendMessage_S(player2, messageToSend);
 							memset(clientConfirm, '\0', sizeof clientConfirm);
 							receiveMessage_S(player2, clientConfirm);
@@ -777,25 +777,25 @@ int main(int argc, char* argv[]) {
 							sendMessage_S(player1, messageToSend);
 							if(DEBUG) {
 								printf("SENT PLAYER 1 (No New World): %s\n", messageToSend);
-								
+
 							}
 							memset(clientConfirm, '\0', sizeof clientConfirm);
 							receiveMessage_S(player1, clientConfirm);
 							if(DEBUG) {
 								printf("RECV FROM PLAYER 1 (No New World confirm): %s\n", clientConfirm);
-								
+
 							}
-							
+
 							sendMessage_S(player2, messageToSend);
 							if(DEBUG) {
 								printf("SENT PLAYER 2 (No New World): %s\n", messageToSend);
-								
+
 							}
 							memset(clientConfirm, '\0', sizeof clientConfirm);
 							receiveMessage_S(player2, clientConfirm);
 							if(DEBUG) {
 								printf("RECV FROM PLAYER 2 (No New World confirm): %s\n", clientConfirm);
-								
+
 							}
 						}
 
@@ -836,34 +836,34 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player1, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 1 (numObs): %s\n", messageToSend);
-							
+
 						}
 
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 1 (numObs confirm): %s\n", clientConfirm);
-							
+
 						}
-						
+
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", onScreenCount);
 						sendMessage_S(player2, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 2 (numObs): %s\n", messageToSend);
-							
+
 						}
 
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 2 (numObs confirm): %s\n", clientConfirm);
-							
+
 						}
-						
+
 						//Debugging only
 						int obsNum = 0;
-						
+
 						// loop through obstacles
 						for(itObs = world->getObstacles().begin();
 							itObs != world->getObstacles().end();
@@ -880,30 +880,30 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player1, messageToSend);
 									if(DEBUG) {
 										printf("SENT PLAYER 1 (ob %d type): %s\n", obsNum, messageToSend);
-										
+
 									}
 
 									memset(clientConfirm, '\0', sizeof clientConfirm);
 									receiveMessage_S(player1, clientConfirm);
 									if(DEBUG) {
 										printf("RECV FROM PLAYER 1 (ob %d type confirm): %s\n",obsNum, clientConfirm);
-										
+
 									}
-									
+
 									// SEND connection2: 1
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 1);
 									sendMessage_S(player2, messageToSend);
 									if(DEBUG) {
 										printf("SENT PLAYER 2 (ob %d type): %s\n", obsNum, messageToSend);
-										
+
 									}
 
 									memset(clientConfirm, '\0', sizeof clientConfirm);
 									receiveMessage_S(player2, clientConfirm);
 									if(DEBUG) {
 										printf("RECV FROM PLAYER 2 (ob %d type confirm): %s\n", obsNum, clientConfirm);
-										
+
 									}
 								}
 
@@ -915,30 +915,30 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player1, messageToSend);
 									if(DEBUG) {
 										printf("SENT PLAYER 1 (ob %d type): %s\n", obsNum, messageToSend);
-										
+
 									}
 
 									memset(clientConfirm, '\0', sizeof clientConfirm);
 									receiveMessage_S(player1, clientConfirm);
 									if(DEBUG) {
 										printf("RECV FROM PLAYER 1 (ob %d type confirm): %s\n",obsNum, clientConfirm);
-										
+
 									}
-									
+
 									// SEND connection2: 2
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 2);
 									sendMessage_S(player2, messageToSend);
 									if(DEBUG) {
 										printf("SENT PLAYER 2 (ob %d type): %s\n", obsNum, messageToSend);
-										
+
 									}
 
 									memset(clientConfirm, '\0', sizeof clientConfirm);
 									receiveMessage_S(player2, clientConfirm);
 									if(DEBUG) {
 										printf("RECV FROM PLAYER 2 (ob %d type confirm): %s\n", obsNum, clientConfirm);
-										
+
 									}
 								}
 
@@ -950,30 +950,30 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player1, messageToSend);
 									if(DEBUG) {
 										printf("SENT PLAYER 1 (ob %d type): %s\n", obsNum, messageToSend);
-										
+
 									}
 
 									memset(clientConfirm, '\0', sizeof clientConfirm);
 									receiveMessage_S(player1, clientConfirm);
 									if(DEBUG) {
 										printf("RECV FROM PLAYER 1 (ob %d type confirm): %s\n",obsNum, clientConfirm);
-										
+
 									}
-									
+
 									// SEND connection2: 3
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 3);
 									sendMessage_S(player2, messageToSend);
 									if(DEBUG) {
 										printf("SENT PLAYER 2 (ob %d type): %s\n", obsNum, messageToSend);
-										
+
 									}
 
 									memset(clientConfirm, '\0', sizeof clientConfirm);
 									receiveMessage_S(player2, clientConfirm);
 									if(DEBUG) {
 										printf("RECV FROM PLAYER 2 (ob %d type confirm): %s\n", obsNum, clientConfirm);
-										
+
 									}
 								}
 
@@ -985,30 +985,30 @@ int main(int argc, char* argv[]) {
 									sendMessage_S(player1, messageToSend);
 									if(DEBUG) {
 										printf("SENT PLAYER 1 (ob %d type): %s\n", obsNum, messageToSend);
-										
+
 									}
 
 									memset(clientConfirm, '\0', sizeof clientConfirm);
 									receiveMessage_S(player1, clientConfirm);
 									if(DEBUG) {
 										printf("RECV FROM PLAYER 1 (ob %d type confirm): %s\n",obsNum, clientConfirm);
-										
+
 									}
-									
+
 									// SEND connection2: 4
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 4);
 									sendMessage_S(player2, messageToSend);
 									if(DEBUG) {
 										printf("SENT PLAYER 2 (ob %d type): %s\n", obsNum, messageToSend);
-										
+
 									}
 
 									memset(clientConfirm, '\0', sizeof clientConfirm);
 									receiveMessage_S(player2, clientConfirm);
 									if(DEBUG) {
 										printf("RECV FROM PLAYER 2 (ob %d type confirm): %s\n", obsNum, clientConfirm);
-										
+
 									}
 								}
 
@@ -1088,31 +1088,31 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 								if(DEBUG) {
 										printf("SENT PLAYER 1 (ob %d posX): %s\n", obsNum, messageToSend);
-										
+
 								}
 
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player1, clientConfirm);
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 1 (ob %d posX confirm): %s\n", obsNum, clientConfirm);
-									
+
 								}
-									
+
 								//posX
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getPosX());
 								sendMessage_S(player2, messageToSend);
 								if(DEBUG) {
 									printf("SENT PLAYER 2 (ob %d posX): %s\n", obsNum, messageToSend);
-									
+
 								}
 
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player2, clientConfirm);
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 2 (ob %d posX confirm): %s\n", obsNum, clientConfirm);
-									
-								}	
+
+								}
 
 								// posY
 								memset(messageToSend, '\0', sizeof messageToSend);
@@ -1120,30 +1120,30 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 								if(DEBUG) {
 										printf("SENT PLAYER 1 (ob %d posY): %s\n", obsNum, messageToSend);
-										
+
 								}
 
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player1, clientConfirm);
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 1 (ob %d posY confirm): %s\n", obsNum, clientConfirm);
-									
+
 								}
-								
+
 								// posY
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getPosY());
 								sendMessage_S(player2, messageToSend);
 								if(DEBUG) {
 									printf("SENT PLAYER 2 (ob %d posY): %s\n", obsNum, messageToSend);
-									
+
 								}
 
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player2, clientConfirm);
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 2 (ob %d posY confirm): %s\n", obsNum, clientConfirm);
-									
+
 								}
 
 								/** Ben's Troubleshooting gt **
@@ -1162,30 +1162,30 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 								if(DEBUG) {
 										printf("SENT PLAYER 1 (ob %d gt): %s\n", obsNum, messageToSend);
-										
+
 								}
 
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player1, clientConfirm);
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 1 (ob %d gt confirm): %s\n",obsNum, clientConfirm);
-									
+
 								}
-								
+
 								// gt
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGT());
 								sendMessage_S(player2, messageToSend);
 								if(DEBUG) {
 									printf("SENT PLAYER 2 (ob %d gt): %s\n", obsNum, messageToSend);
-									
+
 								}
 
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player2, clientConfirm);
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 2 (ob %d gt confirm): %s\n", obsNum, clientConfirm);
-									
+
 								}
 
 								// gts
@@ -1194,24 +1194,24 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player1, messageToSend);
 								if(DEBUG) {
 									printf("SENT PLAYER 1 (ob %d gts): %s\n", obsNum, messageToSend);
-									
+
 								}
 
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player1, clientConfirm);
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 1 (ob %d gts confirm): %s\n",obsNum, clientConfirm);
-									
+
 									//sleep(1);
 								}
-								
+
 								// gts
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGTS());
 								sendMessage_S(player2, messageToSend);
 								if(DEBUG) {
 									printf("SENT PLAYER 2 (ob %d gts): %s\n", obsNum, messageToSend);
-									
+
 								}
 
 								memset(clientConfirm, '\0', sizeof clientConfirm);
@@ -1221,12 +1221,12 @@ int main(int argc, char* argv[]) {
 									cin.get();
 									//sleep(1);
 								}
-				
+
 								// (Optional ?) RECEIVE connection1: confirmation
 							}
 						}
 
-						
+
 						/**** END SEND ONSCREEN OBSTACLES  ****/
 
 						/**** SEND MINICUBES  ****/
@@ -1236,11 +1236,11 @@ int main(int argc, char* argv[]) {
 						// (Optional ?) RECEIVE connection1: confirmation
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%ld", world->getMiniCubes().size());
-						
+
 						sendMessage_S(player1, messageToSend);
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
-						
+
 						sendMessage_S(player2, messageToSend);
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
@@ -1253,7 +1253,7 @@ int main(int argc, char* argv[]) {
 
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", itMiniCubes->first);
-								
+
 								sendMessage_S(player1, messageToSend);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player1, clientConfirm);
@@ -1261,10 +1261,10 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player2, messageToSend);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player2, clientConfirm);
-								
+
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", itMiniCubes->second);
-								
+
 								sendMessage_S(player1, messageToSend);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player1, clientConfirm);
@@ -1282,11 +1282,11 @@ int main(int argc, char* argv[]) {
 						//SEND connection1: hours
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", hours);
-						
+
 						sendMessage_S(player1, messageToSend);
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
-						
+
 						sendMessage_S(player2, messageToSend);
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
@@ -1295,11 +1295,11 @@ int main(int argc, char* argv[]) {
 						//SEND connection1: minutes
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", minutes);
-						
+
 						sendMessage_S(player1, messageToSend);
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
-						
+
 						sendMessage_S(player2, messageToSend);
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
@@ -1308,11 +1308,11 @@ int main(int argc, char* argv[]) {
 						//SEND connection1: seconds
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", seconds);
-						
+
 						sendMessage_S(player1, messageToSend);
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
-						
+
 						sendMessage_S(player2, messageToSend);
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
