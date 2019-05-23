@@ -613,12 +613,12 @@ int Game::playGame(char host[], char port[]) {
 
 				//receive confirmation from server
 				memset(message, '\0', sizeof message);
-				receiveMessage_C(inputPort, message);
+				receiveMessage_C(inputSocket, message);
 
 				//send confirmation on new connection
 				memset(confirm, '\0', sizeof confirm);
 				sprintf(confirm, "%d", playerNum);
-				sendMessage_C(inputPort, confirm);
+				sendMessage_C(inputSocket, confirm);
 
 				//set isConnected to TRUE
 				isConnected = TRUE;
