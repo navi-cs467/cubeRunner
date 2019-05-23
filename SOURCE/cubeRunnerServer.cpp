@@ -161,9 +161,6 @@ int main(int argc, char* argv[]) {
 		char portToSend[MSG_SIZE];
 
 		strcpy(portToSend, inputPort);
-
-		sendMessage_S(player1, portToSend);
-
 		memset(confirm, '\0', sizeof confirm);
 
 		sendMessage_S(player1, portToSend);
