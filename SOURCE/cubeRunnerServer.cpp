@@ -672,7 +672,7 @@ int main(int argc, char* argv[]) {
 						//send the whole buffer to both clients
 						sendMessage_S(player1, cubeCharsBuff);
 						if(DEBUG) {
-							printf("SENT PLAYER 1 (cubeChars): %s\n", messageToSend);
+							printf("SENT PLAYER 1 (cubeChars): %s\n", cubeCharsBuff);
 
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
@@ -684,7 +684,7 @@ int main(int argc, char* argv[]) {
 
 						sendMessage_S(player2, cubeCharsBuff);
 						if(DEBUG) {
-							printf("SENT PLAYER 2 (cubeChars): %s\n", messageToSend);
+							printf("SENT PLAYER 2 (cubeChars): %s\n", cubeCharsBuff);
 
 						}
 						memset(clientConfirm, '\0', sizeof clientConfirm);
