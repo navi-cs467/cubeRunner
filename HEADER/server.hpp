@@ -17,7 +17,7 @@ void acceptConnections(int socketFD, int* firstClient, int* secondClient);
 void bindSocket(int socketFD, struct addrinfo *servinfo);
 void receiveMessage_S(int socketFD, char* buffer);
 void sendMessage_S(int socketFD, char* buffer);
-int createSocket_S(struct addrinfo *servinfo);
+int createSocket(struct addrinfo *servinfo);
 struct addrinfo* getServerInfo_S(char* portNum);
 
 #endif
