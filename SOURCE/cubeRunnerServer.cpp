@@ -1372,16 +1372,16 @@ int main(int argc, char* argv[]) {
 						}
 
 						/**** REQUEST CONFIRMATION OF WORLD RENDER ****/
-						memset(messageToSend, '\0', sizeof messageToSend);
-						sprintf(messageToSend, "%s", "Rendered1?");
-
-						sendMessage_S(player1, messageToSend);
-						memset(clientConfirm, '\0', sizeof clientConfirm);
-						receiveMessage_S(player1, clientConfirm);
-
-						sendMessage_S(player2, messageToSend);
-						memset(clientConfirm, '\0', sizeof clientConfirm);
-						receiveMessage_S(player2, clientConfirm);
+						// memset(messageToSend, '\0', sizeof messageToSend);
+						// sprintf(messageToSend, "%s", "Rendered1?");
+						//
+						// sendMessage_S(player1, messageToSend);
+						// memset(clientConfirm, '\0', sizeof clientConfirm);
+						// receiveMessage_S(player1, clientConfirm);
+						//
+						// sendMessage_S(player2, messageToSend);
+						// memset(clientConfirm, '\0', sizeof clientConfirm);
+						// receiveMessage_S(player2, clientConfirm);
 						/**** END REQUEST CONFIRMATION OF WORLD RENDER ****/
 
 						/**** END SEND MINICUBES  ****/
@@ -1497,16 +1497,16 @@ int main(int argc, char* argv[]) {
 					}
 
 					/**** REQUEST CONFIRMATION OF GAME STATS RENDER ****/
-					memset(messageToSend, '\0', sizeof messageToSend);
-					sprintf(messageToSend, "%s", "Rendered2?");
-
-					sendMessage_S(player1, messageToSend);
-					memset(clientConfirm, '\0', sizeof clientConfirm);
-					receiveMessage_S(player1, clientConfirm);
-
-					sendMessage_S(player2, messageToSend);
-					memset(clientConfirm, '\0', sizeof clientConfirm);
-					receiveMessage_S(player2, clientConfirm);
+					// memset(messageToSend, '\0', sizeof messageToSend);
+					// sprintf(messageToSend, "%s", "Rendered2?");
+					//
+					// sendMessage_S(player1, messageToSend);
+					// memset(clientConfirm, '\0', sizeof clientConfirm);
+					// receiveMessage_S(player1, clientConfirm);
+					//
+					// sendMessage_S(player2, messageToSend);
+					// memset(clientConfirm, '\0', sizeof clientConfirm);
+					// receiveMessage_S(player2, clientConfirm);
 					/**** END REQUEST CONFIRMATION OF GAME STATS RENDER ****/
 
 					if(DEBUG)

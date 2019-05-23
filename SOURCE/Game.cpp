@@ -1181,12 +1181,12 @@ int Game::playGame(char host[], char port[]) {
 						}
 
 						/**** RECEIVE WORLD RENDER CONFIRM REQUEST ****/
-						memset(gameData, '\0', sizeof gameData);
-						receiveMessage_C(socketFD, gameData);
-
-						memset(sendConfirm, '\0', sizeof sendConfirm);
-						sprintf(sendConfirm, "%d", 1);
-						sendMessage_C(socketFD, sendConfirm);
+						// memset(gameData, '\0', sizeof gameData);
+						// receiveMessage_C(socketFD, gameData);
+						//
+						// memset(sendConfirm, '\0', sizeof sendConfirm);
+						// sprintf(sendConfirm, "%d", 1);
+						// sendMessage_C(socketFD, sendConfirm);
 						/**** END RECEIVE WORLD RENDER CONFIRM REQUEST ****/
 
 						/**** RECEIVE TIME  ****/
