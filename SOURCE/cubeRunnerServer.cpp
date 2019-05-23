@@ -817,22 +817,22 @@ int main(int argc, char* argv[]) {
 						list<Obstacle*>::iterator itObs;
 
 						//Count how many Obstacles are on screen
-						int onScreenCount = 0;
+						int onScreenObs = 0;
 						for(itObs = world->getObstacles().begin();
 							itObs != world->getObstacles().end();
 							itObs++) {
-								if(((*itObs)->getPosY() >= 0) &&
-								   ((*itObs)->getPosY() < COLS) &&
-								   ((*itObs)->getPosX() >= 0) &&
-								   ((*itObs)->getPosX() <= world->getBottomRow()))
-									onScreenCount++;
+								if((*itObs)->getPosY() >= 0 - (*itObs)->getLongestGS() &&
+								   (*itObs)->getPosY() < COLS &&
+								   (*itObs)->getPosX() >= 0 - (*itObs)->getGTS() &&
+								   (*itObs)->getPosX() <= world->getBottomRow())
+									onScreenObs++;
 						}
 
 						// SEND connection1: onScreenCount;
 						// send total number of obstacles
 						// (Optional ?) RECEIVE connection1: confirmation
 						memset(messageToSend, '\0', sizeof messageToSend);
-						sprintf(messageToSend, "%d", onScreenCount);
+						sprintf(messageToSend, "%d", onScreenObs);
 						sendMessage_S(player1, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 1 (numObs): %s\n", messageToSend);
@@ -847,7 +847,7 @@ int main(int argc, char* argv[]) {
 						}
 
 						memset(messageToSend, '\0', sizeof messageToSend);
-						sprintf(messageToSend, "%d", onScreenCount);
+						sprintf(messageToSend, "%d", onScreenObs);
 						sendMessage_S(player2, messageToSend);
 						if(DEBUG) {
 							printf("SENT PLAYER 2 (numObs): %s\n", messageToSend);
@@ -868,10 +868,10 @@ int main(int argc, char* argv[]) {
 						for(itObs = world->getObstacles().begin();
 							itObs != world->getObstacles().end();
 							itObs++, obsNum++) {
-								if(((*itObs)->getPosY() >= 0) &&
-								   ((*itObs)->getPosY() < COLS) &&
-								   ((*itObs)->getPosX() >= 0) &&
-								   ((*itObs)->getPosX() <= world->getBottomRow())) {
+								if((*itObs)->getPosY() >= 0 - (*itObs)->getLongestGS() &&
+								   (*itObs)->getPosY() < COLS &&
+								   (*itObs)->getPosX() >= 0 - (*itObs)->getGTS() &&
+								   (*itObs)->getPosX() <= world->getBottomRow()) {
 								if(typeid(**itObs) == typeid(Seaweed))
 								{
 									// SEND connection1: 1
@@ -1230,12 +1230,18 @@ int main(int argc, char* argv[]) {
 						/**** END SEND ONSCREEN OBSTACLES  ****/
 
 						/**** SEND MINICUBES  ****/
-						set<pair<int, int>>::iterator itMiniCubes;
+						set<pair<int, int>>::iterator itMiniCubes; int onScreenMCs = 0;
+						for(itMiniCubes = world->getMiniCubes().begin();
+							itMiniCubes != world->getMiniCubes().end();
+							itMiniCubes++) 
+							if(((itMiniCubes)->second >= 0) &&
+								((itMiniCubes)->second < COLS)) 
+									onScreenMCs++;
 
 						// SEND connection1: world->getMiniCubes().size();
 						// (Optional ?) RECEIVE connection1: confirmation
 						memset(messageToSend, '\0', sizeof messageToSend);
-						sprintf(messageToSend, "%ld", world->getMiniCubes().size());
+						sprintf(messageToSend, "%d", onScreenMCs);
 
 						sendMessage_S(player1, messageToSend);
 						memset(clientConfirm, '\0', sizeof clientConfirm);
@@ -1248,33 +1254,49 @@ int main(int argc, char* argv[]) {
 						for(itMiniCubes = world->getMiniCubes().begin();
 							itMiniCubes != world->getMiniCubes().end();
 							itMiniCubes++) {
-								//SEND connection1: miniCubes->first,
-								//					miniCubes->second
+								if(((itMiniCubes)->second >= 0) &&
+									   ((itMiniCubes)->second < COLS)) {
+									//SEND connection1: miniCubes->first,
+									//					miniCubes->second
 
-								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", itMiniCubes->first);
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", itMiniCubes->first);
 
-								sendMessage_S(player1, messageToSend);
-								memset(clientConfirm, '\0', sizeof clientConfirm);
-								receiveMessage_S(player1, clientConfirm);
+									sendMessage_S(player1, messageToSend);
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
 
-								sendMessage_S(player2, messageToSend);
-								memset(clientConfirm, '\0', sizeof clientConfirm);
-								receiveMessage_S(player2, clientConfirm);
+									sendMessage_S(player2, messageToSend);
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
 
-								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", itMiniCubes->second);
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", itMiniCubes->second);
 
-								sendMessage_S(player1, messageToSend);
-								memset(clientConfirm, '\0', sizeof clientConfirm);
-								receiveMessage_S(player1, clientConfirm);
+									sendMessage_S(player1, messageToSend);
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
 
-								sendMessage_S(player2, messageToSend);
-								memset(clientConfirm, '\0', sizeof clientConfirm);
-								receiveMessage_S(player2, clientConfirm);
+									sendMessage_S(player2, messageToSend);
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
 
-								// (Optional ?) RECEIVE connection1: confirmation
+									// (Optional ?) RECEIVE connection1: confirmation
+							   }
 						}
+						
+						/**** REQUEST CONFIRMATION OF WORLD RENDER ****/
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%s", "Rendered1?");
+
+						sendMessage_S(player1, messageToSend);
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
+						sendMessage_S(player2, messageToSend);
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
+						/**** END REQUEST CONFIRMATION OF WORLD RENDER ****/
 
 						/**** END SEND MINICUBES  ****/
 
@@ -1387,6 +1409,22 @@ int main(int argc, char* argv[]) {
 							hours++;
 						}
 					}
+					
+					/**** REQUEST CONFIRMATION OF GAME STATS RENDER ****/
+					memset(messageToSend, '\0', sizeof messageToSend);
+					sprintf(messageToSend, "%s", "Rendered2?");
+
+					sendMessage_S(player1, messageToSend);
+					memset(clientConfirm, '\0', sizeof clientConfirm);
+					receiveMessage_S(player1, clientConfirm);
+
+					sendMessage_S(player2, messageToSend);
+					memset(clientConfirm, '\0', sizeof clientConfirm);
+					receiveMessage_S(player2, clientConfirm);
+					/**** END REQUEST CONFIRMATION OF GAME STATS RENDER ****/
+					
+					if(DEBUG)
+						cin.get();
 				}
 			}
 		}

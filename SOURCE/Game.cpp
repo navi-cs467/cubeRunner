@@ -51,10 +51,11 @@ int Game::playGame(char host[], char port[]) {
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
 		{
-			while ( /* cube->getCubeLives() > 0 && */  userInput != 27 &&
-									  userInput != KEY_END &&
-									  userInput != 'q' &&
-									  userInput != 'Q' && !hasTerminated) {
+			/* while ( // cube->getCubeLives() > 0 && 
+					userInput != 27 &&
+				    userInput != KEY_END &&
+				    userInput != 'q' &&
+				    userInput != 'Q' && !hasTerminated) {
 
 
 				userInput = getch();
@@ -114,7 +115,7 @@ int Game::playGame(char host[], char port[]) {
 					//Unlock the lock after movement update
 					omp_unset_lock(&userInputLock);
 
-				}
+				} */
 
 				/***** BEGIN Client for multiplayer (SEND) *****/
 				//NOTE: If the player inputs movement commands faster than the
@@ -222,7 +223,7 @@ int Game::playGame(char host[], char port[]) {
 					}
 				} */
 				/***** END Client for multiplayer (SEND) *****/
-			}
+			//}
 		}
 
 		//Thread (2) for game engine
@@ -423,6 +424,8 @@ int Game::playGame(char host[], char port[]) {
 
 					}
 
+					//Load new offscreen Obstacles and miniCubes every time
+					//a screens-worth has been scrolled
 					if(omp_get_wtime() - lastScrollTime > scrollRate) {
 						lastScrollTime = omp_get_wtime();
 						world->scroll_();
@@ -1152,7 +1155,16 @@ int Game::playGame(char host[], char port[]) {
 							cube->drawCubeDeath(&userInput);
 							deathFlag = false;
 						}
+						
+						/**** RECEIVE WORLD RENDER CONFIRM REQUEST ****/
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
 
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+						/**** END RECEIVE WORLD RENDER CONFIRM REQUEST ****/
+						
 						/**** RECEIVE TIME  ****/
 						//RECEIVE int_1 into hours
 						memset(gameData, '\0', sizeof gameData);
@@ -1187,7 +1199,9 @@ int Game::playGame(char host[], char port[]) {
 						seconds = atoi(gameData);
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE TIME  ****/
-
+						
+						string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
+						
 						//Time display
 						timeDisplay.clear();
 						if(hours < 10)
@@ -1217,6 +1231,15 @@ int Game::playGame(char host[], char port[]) {
 						mvhline(LINES - 1, 0, ' ', COLS);
 						mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
 						refresh();
+						
+						/**** RECEIVE GAME STATS RENDER CONFIRM REQUEST ****/
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+						/**** END RECEIVE WORLD RENDER CONFIRM REQUEST ****/
 				}
 			}
 		}
