@@ -137,8 +137,7 @@ int main(int argc, char* argv[]) {
 			printf("After sending GM No Match Loop (if applicable)...\n");
 
 		//determine data port
-		int status = -1;
-		int port = atoi(portNum);
+		int port = atoi(inputPort);
 
 		if(DEBUG)
 			printf("Sending Input Port Number To Clients...\n");
