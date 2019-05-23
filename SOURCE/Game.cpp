@@ -122,9 +122,9 @@ int Game::playGame(char host[], char port[]) {
 				//		since the code below blocks at "RECEIVE confirmation",
 				//		then the input buffer is flushed
 				/* else if (!deathFlag && isConnected && !hasTerminated) {
-					char messageToSend[20];
+					char messageToSend[MSG_SIZE];
 					memset(messageToSend, '\0', sizeof(messageToSend));
-					char confirm[20];
+					char confirm[MSG_SIZE];
 					memset(confirm, '\0', sizeof(confirm));
 
 					if(playerNum == 1) {
@@ -546,7 +546,7 @@ int Game::playGame(char host[], char port[]) {
 				if (strcmp(message,"0") == 0)
 				{
 					//send chosen game mode
-					char gM[40];
+					char gM[MSG_SIZE];
 					sprintf(gM, "%d", gameMode);
 					sendMessage_C(socketFD, gM);
 					if(DEBUG)
@@ -566,7 +566,7 @@ int Game::playGame(char host[], char port[]) {
 				if ((strcmp(message,"1") == 0) && playerNum != 1)
 				{
 					//send chosen game mode
-					char gM[40];
+					char gM[MSG_SIZE];
 					sprintf(gM, "%d", gameMode);
 					sendMessage_C(socketFD, gM);
 
@@ -606,8 +606,8 @@ int Game::playGame(char host[], char port[]) {
 				while (!hasTerminated) {
 
 						//Pseudocode variables... change as desired
-						int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[40];
-						char scoreStr[40]; char gameData[40]; char sendConfirm[40];
+						int int_1, int_2, int_3, int_4, int_5, int_6; char earlyTerm[MSG_SIZE];
+						char scoreStr[MSG_SIZE]; char gameData[MSG_SIZE]; char sendConfirm[MSG_SIZE];
 
 						memset(earlyTerm, '\0', sizeof earlyTerm);
 						memset(scoreStr, '\0', sizeof scoreStr);
@@ -1026,9 +1026,7 @@ int Game::playGame(char host[], char port[]) {
 							receiveMessage_C(socketFD, gameData); mvhline(23, 0, ' ', COLS); move(22, 5); printw("gt (string): %s", gameData); refresh();
 							int_5 = atoi(gameData); mvhline(23, 0, ' ', COLS); move(23, 5); printw("gt: %d", int_5); refresh();
 							sleep(50000000); */
-
-							char testStr[40];
-
+							
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
 							if(DEBUG) {
@@ -1042,7 +1040,7 @@ int Game::playGame(char host[], char port[]) {
 								//move(z, 60); printw("SENT CONFIRM (ob %d gt): %s\n", obsNum, sendConfirm); refresh();
 							}
 
-							int_5 = atoi(testStr); //move(23, 5); printw("gt: %d", int_5); refresh();
+							int_5 = atoi(gameData); //move(23, 5); printw("gt: %d", int_5); refresh();
 
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);

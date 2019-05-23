@@ -10,8 +10,8 @@
 #define constants_hpp
 
 /*** Menu-Related ***/
-#define MIN_WIN_HEIGHT 32					
-#define MIN_WIN_WIDTH 135					
+#define MIN_WIN_HEIGHT 32
+#define MIN_WIN_WIDTH 135
 #define INTRO_HEIGHT 28
 #define INTRO_WIDTH 120
 #define MM_GRAPHIC_HEIGHT 9			//MM stands for Main Menu
@@ -45,10 +45,10 @@
 #define MIN_MOVE_COUNTER 5
 #define TRANSITION_SCORE_INTERVAL 10
 
-//"Rates" are scan intervals, 
-//so as the following three constants decrease, 
+//"Rates" are scan intervals,
+//so as the following three constants decrease,
 //their  respective rates increase
-#define SCROLL_RATE_HARD 0.35		
+#define SCROLL_RATE_HARD 0.35
 #define SCROLL_RATE_NORMAL 0.75
 #define SCROLL_RATE_EASY 1.5
 
@@ -63,6 +63,10 @@
 //As this value decreases, the rate at which
 //move and scroll speeds increases.
 #define SCROLL_MOVE_UPDATE_RATE 0.9
+
+//message buffer size for all messages sent and received between client and server
+#define MSG_SIZE 20
+
 /*** End Game-Related ***/
 
 /*** DEBUG ***/

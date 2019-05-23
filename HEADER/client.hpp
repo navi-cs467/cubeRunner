@@ -10,6 +10,8 @@
 #define client_hpp
 
 #include "include.hpp"
+#include "constants.hpp"
+
 int initSocket(char* hostname, char* portNum);
 void sendMessage_C(int socketFD, char* buffer);
 void receiveMessage_C(int socketFD, char* buffer);

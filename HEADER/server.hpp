@@ -10,6 +10,7 @@
 #define server_hpp
 
 #include "include.hpp"
+#include "constants.hpp"
 
 void initServer(char* portNum, int* firstClient, int* secondClient);
 void acceptConnections(int socketFD, int* firstClient, int* secondClient);

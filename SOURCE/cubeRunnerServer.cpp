@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
 		int player1, player2 = -1;
 
 		//confirmation flag
-		char confirm[40] = "0";
+		char confirm[MSG_SIZE] = "0";
 
 		//initialize server and accept connections
 		//also send confirmation messages to players when they are connected
@@ -89,11 +89,11 @@ int main(int argc, char* argv[]) {
 			printf("Both Confirmations Sent...\n");
 
 		//receive game mode from player1
-		char gm1Str[40];
+		char gm1Str[MSG_SIZE];
 		receiveMessage_S(player1, gm1Str);
 
 		//receive game mode from player2
-		char gm2Str[40];
+		char gm2Str[MSG_SIZE];
 		receiveMessage_S(player2, gm2Str);
 
 		printf("Received Both Game Modes...\n");
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
 
 		printf("After sending GM Match Loop (if applicable)...\n");
 
-		char message[40];
+		char message[MSG_SIZE];
 		memset(message, '\0', sizeof message);
 
 		if (gmP1 != gmP2)
@@ -184,9 +184,9 @@ int main(int argc, char* argv[]) {
 			#pragma omp section
 			{
 				/* //Variable for user 1 input
-				char confirm[20];
+				char confirm[MSG_SIZE];
 				memset(confirm, '\0', sizeof(confirm));
-				char messageToReceive[20];
+				char messageToReceive[MSG_SIZE];
 				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
 				while (userInput1 != 'q') {
@@ -234,9 +234,9 @@ int main(int argc, char* argv[]) {
 			#pragma omp section
 			{
 				/* //Variable for user 2 input
-				char confirm[20];
+				char confirm[MSG_SIZE];
 				memset(confirm, '\0', sizeof(confirm));
-				char messageToReceive[20];
+				char messageToReceive[MSG_SIZE];
 				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
 				while (userInput2 != 'q') {
@@ -314,7 +314,7 @@ int main(int argc, char* argv[]) {
 
 				//Main game engine loop
 				while (1) {
-					char messageToSend[40]; char clientConfirm[40];
+					char messageToSend[MSG_SIZE]; char clientConfirm[MSG_SIZE];
 					memset(clientConfirm, '\0', sizeof clientConfirm);
 					memset(messageToSend, '\0', sizeof messageToSend);
 					/**** SEND EARLY TERMINATION STATUS ****/
@@ -648,7 +648,7 @@ int main(int argc, char* argv[]) {
 						//send cubeChars
 
 						//buffers for character array
-						char cubeCharsBuff[40]; char cubeCharBuff[2];
+						char cubeCharsBuff[MSG_SIZE]; char cubeCharBuff[2];
 
 						memset(cubeCharsBuff, '\0', sizeof cubeCharsBuff);
 

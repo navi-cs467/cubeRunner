@@ -69,9 +69,7 @@ int startConnection(int socketFD, struct addrinfo *servinfo)
 */
 void receiveMessage_C(int socketFD, char* buffer)
 {
-	int len_received, bytes_received;
-	len_received = sizeof(buffer);
-	bytes_received = recv(socketFD, buffer, len_received, 0);
+	int bytes_received = recv(socketFD, buffer, MSG_SIZE, 0);
 
 	//check for error
 	if (bytes_received == -1)
@@ -109,7 +107,7 @@ void sendMessage_C(int socketFD, char* buffer)
 {
 	// adapted from cs 344 lectures, make sure all the data is sent over the socket
 	// Send message to client
-	int charsWritten = send(socketFD, buffer, sizeof(buffer), 0);
+	int charsWritten = send(socketFD, buffer, MSG_SIZE, 0);
 	// if (charsWritten < sizeof(buffer)) printf("WARNING: Not all data written to socket!\n");
 	//
 	// int checkSend = -5;  // Holds amount of bytes remaining in send buffer
