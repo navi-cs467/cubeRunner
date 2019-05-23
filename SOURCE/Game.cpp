@@ -46,7 +46,7 @@ int Game::playGame(char host[], char port[]) {
 	int socketFD = -1;
 	int inputSocket = -1;
 	char inputPort[MSG_SIZE];
-	memset(inputPort, '\0, sizeof inputPort);
+	memset(inputPort, '\0', sizeof inputPort);
 
 	bool hasTerminated = false;
 
