@@ -165,7 +165,7 @@ int main(int argc, char* argv[]) {
 
 		//temporary holders for sockets until we figure out which player is which
 		int temp1, temp2 = -1;
-		initServer(dataPort, &temp1, &temp2);
+		initServer(inputPort, &temp1, &temp2);
 
 		char playerNum[40];
 		memset(playerNum, '\0', sizeof playerNum);
