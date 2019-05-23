@@ -63,15 +63,15 @@ int main(int argc, char* argv[]) {
 
 		//receive port number to start server on
 		char* portNum = argv[1];
+		char* inputPort = argv[2];
 
 		//hold player socket FDs
-		int player1, player2 = -1;
+		int player1, player2, player1In, player2In = -1;
 
 		//confirmation flag
 		char confirm[MSG_SIZE] = "0";
 
 		//initialize server and accept connections
-		//also send confirmation messages to players when they are connected
 		initServer(portNum, &player1, &player2);
 
 		if(DEBUG)
@@ -135,6 +135,83 @@ int main(int argc, char* argv[]) {
 
 		if(DEBUG)
 			printf("After sending GM No Match Loop (if applicable)...\n");
+
+		//determine data port
+		int status = -1;
+		int port = atoi(portNum);
+
+		if(DEBUG)
+			printf("Sending Input Port Number To Clients...\n");
+
+		//send second port number to clients
+		char portToSend[MSG_SIZE];
+
+		strcpy(portToSend, inputPort);
+
+		sendMessage_S(player1, portToSend);
+
+		memset(confirm, '\0', sizeof confirm);
+
+		sendMessage_S(player1, portToSend);
+		receiveMessage_S(player1, confirm);
+
+		memset(confirm, '\0', sizeof confirm);
+
+		sendMessage_S(player2, portToSend);
+		receiveMessage_S(player2, confirm);
+
+		if(DEBUG)
+			printf("Creating New Socket For Input Connections...\n");
+
+		//temporary holders for sockets until we figure out which player is which
+		int temp1, temp2 = -1;
+		initServer(dataPort, &temp1, &temp2);
+
+		char playerNum[40];
+		memset(playerNum, '\0', sizeof playerNum);
+
+		//send confirmation to socket and receive back which player, set correct socket Variables
+		memset(confirm, '\0', sizeof confirm);
+		sprintf(confirm, "%d", 1);
+		sendMessage_S(temp1, confirm);
+		receiveMessage_C(temp1, playerNum);
+
+		if (strcmp(playerNum, "1") == 0)
+		{
+			player1In = temp1;
+		}
+
+		if(strcmp(playerNum, "2") == 0)
+		{
+			player2In = temp1;
+		}
+
+		if(DEBUG)
+			printf("Confirmed Player %s Input Connection...\n", playerNum);
+
+		//send confirmation to socket and receive back which player, set correct socket Variables
+		memset(confirm, '\0', sizeof confirm);
+		sprintf(confirm, "%d", 1);
+		sendMessage_S(temp2, confirm);
+		memset(playerNum, '\0', sizeof playerNum);
+		receiveMessage_C(temp2, playerNum);
+
+		if (strcmp(playerNum, "1") == 0)
+		{
+			player1In = temp2;
+		}
+
+		if(strcmp(playerNum, "2") == 0)
+		{
+			player2In = temp2;
+		}
+
+		if(DEBUG)
+			printf("Confirmed Player %s Input Connection...\n", playerNum);
+
+		if(DEBUG)
+			printf("Both Input Connections Established...\n");
+
 
 		//Initialize gameMode
 		int gameMode;
@@ -1233,9 +1310,9 @@ int main(int argc, char* argv[]) {
 						set<pair<int, int>>::iterator itMiniCubes; int onScreenMCs = 0;
 						for(itMiniCubes = world->getMiniCubes().begin();
 							itMiniCubes != world->getMiniCubes().end();
-							itMiniCubes++) 
+							itMiniCubes++)
 							if(((itMiniCubes)->second >= 0) &&
-								((itMiniCubes)->second < COLS)) 
+								((itMiniCubes)->second < COLS))
 									onScreenMCs++;
 
 						// SEND connection1: world->getMiniCubes().size();
@@ -1284,7 +1361,7 @@ int main(int argc, char* argv[]) {
 									// (Optional ?) RECEIVE connection1: confirmation
 							   }
 						}
-						
+
 						/**** REQUEST CONFIRMATION OF WORLD RENDER ****/
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%s", "Rendered1?");
@@ -1409,7 +1486,7 @@ int main(int argc, char* argv[]) {
 							hours++;
 						}
 					}
-					
+
 					/**** REQUEST CONFIRMATION OF GAME STATS RENDER ****/
 					memset(messageToSend, '\0', sizeof messageToSend);
 					sprintf(messageToSend, "%s", "Rendered2?");
@@ -1422,7 +1499,7 @@ int main(int argc, char* argv[]) {
 					memset(clientConfirm, '\0', sizeof clientConfirm);
 					receiveMessage_S(player2, clientConfirm);
 					/**** END REQUEST CONFIRMATION OF GAME STATS RENDER ****/
-					
+
 					if(DEBUG)
 						cin.get();
 				}
