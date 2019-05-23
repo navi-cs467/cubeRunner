@@ -24,8 +24,9 @@ class Bat : public Obstacle {
 		//int sameDirectionMoveCount;
 	
 	public:
-		Bat(int type, int posX, int posY, int gt, int gts, int gm) :
-			Obstacle(type, posX, posY, gt, gts, gm) {}				//Constructor for client
+		Bat(int type, int posX, int posY, int gt, int gts,
+				int colorOrColorSeed, int hits, int gm) :
+			Obstacle(type, posX, posY, gt, gts, colorOrColorSeed, hits, gm) {}				//Constructor for client
 		Bat(World *world, Direction offScreen = none,
 			  int specificGraphic = -1);					//Constructor for server and 1-player
 		static vector<vector<wstring>> _getGraphicLines() {return graphicLines;}

@@ -71,7 +71,7 @@ Water::Water(int gameMode, bool isTwoPlayer, bool forServer) :
 			for (int y = bottomRow + 1; y < LINES - 1; y++)
 				mvhline(y, 0, ' ', COLS);
 
-			refresh();
+			//refresh();
 
 			//renderWorld();
 		}
@@ -130,7 +130,7 @@ void Water::renderWorld(Cube *cube) {
             mvaddwstr(it->first, it->second, mc); //refresh();
 	}
 	
-	//Print all Obstacles
+	 //Print all Obstacles
 	for(list<Obstacle*>::iterator it = obstacles.begin();
 			it != obstacles.end(); it++) {
 
@@ -178,7 +178,7 @@ void Water::renderWorld(Cube *cube) {
 					}
 				}
 		}
-				
+		
 		else if(typeid(**it) == typeid(Coral)) {
 			int nextColor = Coral::getColorSeed();
 			attron(A_BOLD);
@@ -212,7 +212,7 @@ void Water::renderWorld(Cube *cube) {
 					if(nextColor == 35) nextColor = 30;
 				}
 		}
-				
+			
 		else if(typeid(**it) == typeid(Shark)) {
 			int color = Shark::getColor();
 			attron(A_BOLD);
@@ -250,7 +250,7 @@ void Water::renderWorld(Cube *cube) {
 					}
 				}
 		}
-
+		
 		else if(typeid(**it) == typeid(Octopus)) {
 			int color = static_cast<Octopus *>(*it)->getColor();
 			attron(A_BOLD);
@@ -284,13 +284,12 @@ void Water::renderWorld(Cube *cube) {
 						printw("%lc", tmpWChArr[0]);
 					}					
 				}
-		}
+		} 
 	}
-	
-	cube->processShot();
+	cube->processShot(); 
 	
 	if(!forServer) {
-		refresh();
+		//refresh();
 	}
 
 }

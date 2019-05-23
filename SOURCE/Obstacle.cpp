@@ -14,7 +14,8 @@
 #include "../HEADER/Water.hpp"
 #include "../HEADER/Land.hpp"
 
-Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts, int gm) :
+Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts, 
+				   int colorOrColorSeed, int hits, int gm) :
 			posX(posX), posY(posY), gt(gt), gts(gts) {
 	longestGS = 0;
 	for(int i = 0; i < gts; i++) {
@@ -35,8 +36,7 @@ Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts, int gm) :
 			else maxHits = 5;
 			
 			//Initialize hits ands mvsSinceLastHit
-			hits = 0;
-			mvsSinceLastHit = 0;
+			this->hits = hits;
 		}
 		else if(type == 4) {
 			if(Octopus::_getGraphicLines()[gt][i].size() > longestGS)
@@ -47,8 +47,7 @@ Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts, int gm) :
 			else maxHits = 4;
 			
 			//Initialize hits and mvsSinceLastHit
-			hits = 0;
-			mvsSinceLastHit = 0;
+			this->hits = hits;
 		}
 		else if(type == 5) {
 			if(Tree::_getGraphicLines()[gt][i].size() > longestGS)

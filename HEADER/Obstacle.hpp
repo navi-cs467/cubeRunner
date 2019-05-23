@@ -42,7 +42,8 @@ class Obstacle {
 		int hits, maxHits, mvsSinceLastHit;
 
 	public:
-		Obstacle(int type, int posX, int posY, int gt, int gts, int gm);
+		Obstacle(int type, int posX, int posY, int gt, int gts,
+				 int colorOrColorSeed, int hits, int gm);
 		Obstacle() {}
 		int getPosX() {return posX;}
 		int getPosY() {return posY;}
