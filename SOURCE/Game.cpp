@@ -45,13 +45,18 @@ int Game::playGame(char host[], char port[]) {
 	bool isConnected = false;
 	int playerNum = 0;
 	int socketFD = -1;
+	int inputSocket = -1;
+	char inputPort[MSG_SIZE];
+	memset(inputPort, '\0', sizeof inputPort);
+
 	bool hasTerminated = false;
 
-	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, playerNum, socketFD, hasTerminated)
+	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, playerNum, socketFD, hasTerminated, inputPort)
 	{
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
 		{
+
 			while ( // cube->getCubeLives() > 0 && 
 					userInput != 27 &&
 				    userInput != KEY_END &&
@@ -601,6 +606,26 @@ int Game::playGame(char host[], char port[]) {
 					//easiest game mode used automatically
 				}
 
+				//receive dataPort from server, send confirmation to server
+				/*char confirm[MSG_SIZE];
+				memset(confirm, '\0', sizeof confirm);
+				sprintf(confirm, "%d", 1);
+
+				receiveMessage_C(socketFD, inputPort);
+				sendMessage_C(socketFD, confirm);
+
+				//connect to input socket
+				inputSocket = initSocket(host, inputPort);
+
+				//receive confirmation from server
+				memset(message, '\0', sizeof message);
+				receiveMessage_C(inputSocket, message);
+
+				//send confirmation on new connection
+				memset(confirm, '\0', sizeof confirm);
+				sprintf(confirm, "%d", playerNum);
+				sendMessage_C(inputSocket, confirm);*/
+
 				//set isConnected to TRUE
 				isConnected = TRUE;
 
@@ -1052,7 +1077,7 @@ int Game::playGame(char host[], char port[]) {
 							}
 
 							int_4 = atoi(gameData);
-							
+
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
 							if(DEBUG) {
@@ -1214,7 +1239,16 @@ int Game::playGame(char host[], char port[]) {
 							cube->drawCubeDeath(&userInput);
 							deathFlag = false;
 						}
-						
+
+						/**** RECEIVE WORLD RENDER CONFIRM REQUEST ****/
+						// memset(gameData, '\0', sizeof gameData);
+						// receiveMessage_C(socketFD, gameData);
+						//
+						// memset(sendConfirm, '\0', sizeof sendConfirm);
+						// sprintf(sendConfirm, "%d", 1);
+						// sendMessage_C(socketFD, sendConfirm);
+						/**** END RECEIVE WORLD RENDER CONFIRM REQUEST ****/
+
 						/**** RECEIVE TIME  ****/
 						//RECEIVE int_1 into hours
 						memset(gameData, '\0', sizeof gameData);
@@ -1249,9 +1283,9 @@ int Game::playGame(char host[], char port[]) {
 						seconds = atoi(gameData);
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE TIME  ****/
-						
+
 						string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
-						
+
 						//Time display
 						timeDisplay.clear();
 						if(hours < 10)
@@ -1282,7 +1316,16 @@ int Game::playGame(char host[], char port[]) {
 						mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
 						
 						refresh();
-					
+
+						/**** RECEIVE GAME STATS RENDER CONFIRM REQUEST ****/
+						//memset(gameData, '\0', sizeof gameData);
+						//receiveMessage_C(socketFD, gameData);
+
+						//memset(sendConfirm, '\0', sizeof sendConfirm);
+						//sprintf(sendConfirm, "%d", 1);
+						//sendMessage_C(socketFD, sendConfirm);
+						/**** END RECEIVE WORLD RENDER CONFIRM REQUEST ****/
+
 				}
 			}
 		}

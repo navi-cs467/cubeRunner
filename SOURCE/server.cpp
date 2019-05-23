@@ -54,7 +54,7 @@ struct addrinfo* getServerInfo_S(char* portNum)
 	that was called in the getServerInfo function, returns the file descriptor (int)
 	for the socket
 */
-int createSocket(struct addrinfo *servinfo)
+int createSocket_S(struct addrinfo *servinfo)
 {
 	int socketFD;
 
@@ -233,7 +233,7 @@ void initServer(char* portNum, int* firstClient, int* secondClient)
 	struct addrinfo *servinfo = getServerInfo_S(portNum);
 
 	// create socket to communicate with client
-	int socketFD = createSocket(servinfo);
+	int socketFD = createSocket_S(servinfo);
 
 	// bind socket
 	bindSocket(socketFD, servinfo);
