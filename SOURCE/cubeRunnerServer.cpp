@@ -136,8 +136,23 @@ int main(int argc, char* argv[]) {
 		if(DEBUG)
 			printf("After sending GM No Match Loop (if applicable)...\n");
 
-		//determine data port
-		int port = atoi(inputPort);
+
+	  if(DEBUG)
+				printf("Creating New Socket For Input Connections...\n");
+
+		struct addrinfo *servinfo = getServerInfo_S(inputPort);
+
+		// create socket to communicate with client
+		int socketFD = createSocket(servinfo);
+
+		// bind socket
+		bindSocket(socketFD, servinfo);
+
+		// print for debugging purposes
+		printf("Server open for input on port %s\n", inputPort);
+
+		// listen on socket for multiple connections
+		listen(socketFD, 10);
 
 		if(DEBUG)
 			printf("Sending Input Port Number To Clients...\n");
@@ -159,12 +174,10 @@ int main(int argc, char* argv[]) {
 		sendMessage_S(player2, portToSend);
 		receiveMessage_S(player2, confirm);
 
-		if(DEBUG)
-			printf("Creating New Socket For Input Connections...\n");
-
-		//temporary holders for sockets until we figure out which player is which
 		int temp1, temp2 = -1;
-		initServer(inputPort, &temp1, &temp2);
+
+		// accepting new connections
+		acceptConnections(socketFD, &temp1, &temp2);
 
 		char playerNum[40];
 		memset(playerNum, '\0', sizeof playerNum);
