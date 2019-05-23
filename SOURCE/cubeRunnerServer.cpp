@@ -143,7 +143,7 @@ int main(int argc, char* argv[]) {
 		struct addrinfo *servinfo = getServerInfo_S(inputPort);
 
 		// create socket to communicate with client
-		int socketFD = createSocket(servinfo);
+		int socketFD = createSocket_S(servinfo);
 
 		// bind socket
 		bindSocket(socketFD, servinfo);
