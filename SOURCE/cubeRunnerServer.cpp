@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 
 		//receive port number to start server on
 		char* portNum = argv[1];
-		char* inputPort = argv[2];
+		//char* inputPort = argv[2];
 
 		//hold player socket FDs
 		int player1, player2, player1In, player2In = -1;
@@ -136,7 +136,7 @@ int main(int argc, char* argv[]) {
 		if(DEBUG)
 			printf("After sending GM No Match Loop (if applicable)...\n");
 
-
+/*
 	  if(DEBUG)
 				printf("Creating New Socket For Input Connections...\n");
 
@@ -155,10 +155,10 @@ int main(int argc, char* argv[]) {
 		listen(socketFD, 10);
 
 		if(DEBUG)
-			printf("Sending Input Port Number To Clients...\n");
+			printf("Sending Input Port Number To Clients...\n");*/
 
 		//send second port number to clients
-		char portToSend[MSG_SIZE];
+		/*char portToSend[MSG_SIZE];
 
 		strcpy(portToSend, inputPort);
 		memset(confirm, '\0', sizeof confirm);
@@ -221,7 +221,7 @@ int main(int argc, char* argv[]) {
 		if(DEBUG)
 			printf("Both Input Connections Established...\n");
 
-
+*/
 		//Initialize gameMode
 		int gameMode;
 		gmP1 < gmP2 ? gameMode = gmP1 : gameMode = gmP2;			//If no match, use easiest of two modes specified
