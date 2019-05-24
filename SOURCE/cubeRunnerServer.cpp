@@ -406,7 +406,7 @@ int main(int argc, char* argv[]) {
 						if(userInput1 == 'q') {
 							//SEND Connection1 score
 							sprintf(messageToSend, "%d", cube->getCubeScore());
-							sendMessage_S(player1n, messageToSend);
+							sendMessage_S(player1In, messageToSend);
 
 							//CLOSE CONNECTION1
 							close(player1);
