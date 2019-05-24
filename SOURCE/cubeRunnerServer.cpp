@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
 		char confirm[MSG_SIZE] = "0";
 
 		//accept connections
-		acceptConnections(servSock1, &player1, &player2)
+		acceptConnections(servSock1, &player1, &player2);
 
 		if(DEBUG)
 			printf("Both Connections Established...\n");
