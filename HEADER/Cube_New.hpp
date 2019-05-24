@@ -91,6 +91,7 @@ class Cube{
 		void setCubeScore(int score){this->score = score;}
 		Direction getCubeDirection(void){return curDir;}
 		void setCubeDirection(Direction newDir) {curDir = newDir;}
+		bool getUseLeftCube() {return useLeftCube;}
 		void fireShot();
 		void moveShot();
 		void processShot();
