@@ -42,7 +42,18 @@ int main(int argc, char* argv[]) {
 
 	srand(time(NULL));	//Seed random number generator with system time
 
+  //receive port number to start server on
+	char* portNum = argv[1];
+	char* inputPort = argv[2];
+
+	//initialize server on first port number
+	int servSock1 = initServer(portNum);
+
+	//intialize input port on second port number
+	int servSock2  = initServer(inputPort);
+
 	while(1) {
+		printf("Listening For New Connections...\n");
 		//Optional: int gmP1, gmP2;		//"game mode player 1" & "game mode player 2"
 
 		// Set up listener1, wait for connection
@@ -62,18 +73,14 @@ int main(int argc, char* argv[]) {
 			//  Optional: RECEIVE connection1 "1" (Confirmation acknowledgment that game modes do not match)
 			//  Optional: RECEIVE connection2 "1" (Confirmation acknowledgment that game modes do not match)
 
-		//receive port number to start server on
-		char* portNum = argv[1];
-		char* inputPort = argv[2];
-
 		//hold player socket FDs
 		int player1, player2, player1In, player2In = -1;
 
 		//confirmation flag
 		char confirm[MSG_SIZE] = "0";
 
-		//initialize server and accept connections
-		initServer(portNum, &player1, &player2);
+		//accept connections
+		acceptConnections(servSock1, &player1, &player2)
 
 		if(DEBUG)
 			printf("Both Connections Established...\n");
@@ -131,29 +138,10 @@ int main(int argc, char* argv[]) {
 
 			//receive confirmation back from each player
 			//leaving out for now, might add later
-
 		}
 
 		if(DEBUG)
 			printf("After sending GM No Match Loop (if applicable)...\n");
-
-
-	  if(DEBUG)
-				printf("Creating New Socket For Input Connections...\n");
-
-		struct addrinfo *servinfo = getServerInfo_S(inputPort);
-
-		// create socket to communicate with client
-		int socketFD = createSocket_S(servinfo);
-
-		// bind socket
-		bindSocket(socketFD, servinfo);
-
-		// print for debugging purposes
-		printf("Server open for input on port %s\n", inputPort);
-
-		// listen on socket for multiple connections
-		listen(socketFD, 10);
 
 		if(DEBUG)
 			printf("Sending Input Port Number To Clients...\n");
@@ -174,13 +162,17 @@ int main(int argc, char* argv[]) {
 
 		int temp1, temp2 = -1;
 
+		printf("Accepting New Connections On Input Port...\n");
+
 		// accepting new connections
-		acceptConnections(socketFD, &temp1, &temp2);
+		acceptConnections(servSock2, &temp1, &temp2);
 
 		char playerNum[40];
 		memset(playerNum, '\0', sizeof playerNum);
 
 		//send confirmation to socket and receive back which player, set correct socket Variables
+		//need to do this because we are not sure about the order of the new connection requests
+		//until we check which player sent which request by their confirmation
 		memset(confirm, '\0', sizeof confirm);
 		sprintf(confirm, "%d", 1);
 		sendMessage_S(temp1, confirm);
@@ -221,7 +213,6 @@ int main(int argc, char* argv[]) {
 
 		if(DEBUG)
 			printf("Both Input Connections Established...\n");
-
 
 		//Initialize gameMode
 		int gameMode;
@@ -270,7 +261,7 @@ int main(int argc, char* argv[]) {
 			//Thread (1) for updating userInput1 and cube position
 			#pragma omp section
 			{
-				/* //Variable for user 1 input
+				//Variable for user 1 input
 				char confirm[MSG_SIZE];
 				memset(confirm, '\0', sizeof(confirm));
 				char messageToReceive[MSG_SIZE];
@@ -279,9 +270,8 @@ int main(int argc, char* argv[]) {
 				while (userInput1 != 'q') {
 
 					// Blocks here waiting for input
-
 					// RECEIVE int_1 into userInput1 from connection1;
-					receiveMessage_S(player1, messageToReceive);
+					receiveMessage_S(player1In, messageToReceive);
 					//convert to int
 					userInput1 = atoi(messageToReceive);
 
@@ -290,7 +280,7 @@ int main(int argc, char* argv[]) {
 
 					// (Optional ?) SEND Confirmation Connection1
 					sprintf(confirm, "%d", 1);
-					sendMessage_S(player1, confirm);
+					sendMessage_S(player1In, confirm);
 
 					while(renderedLastMv1 == false){}
 
@@ -314,13 +304,13 @@ int main(int argc, char* argv[]) {
 
 					renderedLastMv1 = false;
 					omp_unset_lock(&lock1);
-				} */
+				}
 			}
 
 			//Thread (2) for updating userInput2 and cube position
 			#pragma omp section
 			{
-				/* //Variable for user 2 input
+				 //Variable for user 2 input
 				char confirm[MSG_SIZE];
 				memset(confirm, '\0', sizeof(confirm));
 				char messageToReceive[MSG_SIZE];
@@ -330,7 +320,7 @@ int main(int argc, char* argv[]) {
 
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput2 from connection2;
-					receiveMessage_S(player2, messageToReceive);
+					receiveMessage_S(player2In, messageToReceive);
 					//convert to int
 					userInput2 = atoi(messageToReceive);
 
@@ -340,7 +330,7 @@ int main(int argc, char* argv[]) {
 					// (Optional ?) SEND: Confirmation Connection2
 					sprintf(confirm, "%d", 1);
 
-					sendMessage_S(player2, confirm);
+					sendMessage_S(player2In, confirm);
 
 					while(renderedLastMv2 == false){}
 
@@ -364,7 +354,7 @@ int main(int argc, char* argv[]) {
 
 					renderedLastMv2 = false;
 					omp_unset_lock(&lock1);
-				} */
+				}
 			}
 
 			//Thread (3) for game engine
@@ -401,25 +391,26 @@ int main(int argc, char* argv[]) {
 
 				//Main game engine loop
 				while (1) {
-					
+
 					char messageToSend[MSG_SIZE]; char clientConfirm[MSG_SIZE];
 					memset(clientConfirm, '\0', sizeof clientConfirm);
 					memset(messageToSend, '\0', sizeof messageToSend);
-					
+
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();
-						
-						
+
+
 						/**** SEND EARLY TERMINATION STATUS ****/
 						//If either user quits, report back early termination to other player,
 						//and score to both, then break
 						if(userInput1 == 'q') {
 							//SEND Connection1 score
 							sprintf(messageToSend, "%d", cube->getCubeScore());
-							sendMessage_S(player1, messageToSend);
+							sendMessage_S(player1n, messageToSend);
 
 							//CLOSE CONNECTION1
 							close(player1);
+							close(player1In);
 
 							//SEND Connection2 "ET"		//Early Termination
 							memset(messageToSend, '\0', sizeof messageToSend);
@@ -438,6 +429,7 @@ int main(int argc, char* argv[]) {
 
 							//CLOSE CONNECTION2
 							close(player2);
+							close(player2In);
 							break;
 						}
 						//Otherwise report no early termination to other player
@@ -453,9 +445,10 @@ int main(int argc, char* argv[]) {
 						if(userInput2 == 'q') {
 							//SEND Connection2 score
 							sprintf(messageToSend, "%d", cube->getCubeScore());
-							sendMessage_S(player2, messageToSend);
+							sendMessage_S(player2In, messageToSend);
 							//CLOSE CONNECTION2
 							close(player2);
+							close(player2In);
 							//SEND Connection1 "ET"		//Early Termination
 							//(Optional ?) RECEIVE confirmation Connection1
 
@@ -476,6 +469,7 @@ int main(int argc, char* argv[]) {
 
 							//CLOSE CONNECTION1
 							close(player1);
+							close(player1In);
 							break;
 						}
 						//Otherwise report no early termination to other player
@@ -610,7 +604,23 @@ int main(int argc, char* argv[]) {
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player2, clientConfirm);
 
-						//		CLOSE Connection2
+								//send final score
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", cube->getCubeScore());
+
+								sendMessage_S(player1, messageToSend);
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player1, clientConfirm);
+
+								sendMessage_S(player2, messageToSend);
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player2, clientConfirm);
+
+						//		CLOSE All Socket Connections because game is over
+								close(player1);
+								close(player2);
+								close(player1In);
+								close(player2In);
 								//Delete all Obstacles
 								for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 									it != world->getObstacles().begin(); it++) {
@@ -623,7 +633,7 @@ int main(int argc, char* argv[]) {
 								break;
 							}
 							else {
-								
+
 						//		SEND Connection2: 0		//Death but no game over
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", 0);
@@ -637,8 +647,6 @@ int main(int argc, char* argv[]) {
 								receiveMessage_S(player2, clientConfirm);
 
 						//	 	(Optional ?) RECEIVE connection2: confirmation		//Probably not optional, need to wait for death animation
-
-
 							}
 						}
 						else {
@@ -753,7 +761,7 @@ int main(int argc, char* argv[]) {
 								strcat(cubeCharsBuff, cubeCharBuff);
 							}
 						}
-						
+
 						//send the whole buffer to both clients
 						sendMessage_S(player1, cubeCharsBuff);
 						if(DEBUG) {
@@ -782,7 +790,7 @@ int main(int argc, char* argv[]) {
 						//send x shotCoord to clients
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", cube->getShotCoords().first);
-						
+
 						//player 1
 						sendMessage_S(player1, messageToSend);
 						if(DEBUG) {
@@ -808,11 +816,11 @@ int main(int argc, char* argv[]) {
 							printf("RECV FROM PLAYER 2 (x shot coord confirm confirm): %s\n", clientConfirm);
 
 						}
-						
+
 						//send y shotCoord to clients
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", cube->getShotCoords().first);
-						
+
 						//player 1
 						sendMessage_S(player1, messageToSend);
 						if(DEBUG) {
@@ -836,7 +844,7 @@ int main(int argc, char* argv[]) {
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 2 (y shot confirm): %s\n", clientConfirm);
 
-						}	
+						}
 
 						// (Optional ?) RECEIVE connection1: confirmation
 
@@ -1018,10 +1026,10 @@ int main(int argc, char* argv[]) {
 								   (*itObs)->getPosX() <= world->getBottomRow()) {
 								if(typeid(**itObs) == typeid(Seaweed))
 								{
-									
+
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 1);
-									
+
 									// SEND connection1: 1
 									sendMessage_S(player1, messageToSend);
 									if(DEBUG) {
@@ -1051,10 +1059,10 @@ int main(int argc, char* argv[]) {
 
 								else if(typeid(**itObs) == typeid(Coral))
 								{
-									
+
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 2);
-									
+
 									// SEND connection1: 2
 									sendMessage_S(player1, messageToSend);
 									if(DEBUG) {
@@ -1086,7 +1094,7 @@ int main(int argc, char* argv[]) {
 								{
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 3);
-									
+
 									// SEND connection1: 3
 									sendMessage_S(player1, messageToSend);
 									if(DEBUG) {
@@ -1116,10 +1124,10 @@ int main(int argc, char* argv[]) {
 
 								else if(typeid(**itObs) == typeid(Octopus))
 								{
-									
+
 									memset(messageToSend, '\0', sizeof messageToSend);
 									sprintf(messageToSend, "%d", 4);
-									
+
 									// SEND connection1: 4
 									sendMessage_S(player1, messageToSend);
 									if(DEBUG) {
@@ -1217,11 +1225,11 @@ int main(int argc, char* argv[]) {
 								//					 (*itObs)->getGT(),
 								//					 (*itObs)->getGTS()
 
-								
-								//posX 
+
+								//posX
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getPosX());
-								
+
 								//(Player 1)
 								sendMessage_S(player1, messageToSend);
 								if(DEBUG) {
@@ -1248,10 +1256,10 @@ int main(int argc, char* argv[]) {
 
 								}
 
-								// posY 
+								// posY
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getPosY());
-								
+
 								//(Player 1)
 								sendMessage_S(player1, messageToSend);
 								if(DEBUG) {
@@ -1281,7 +1289,7 @@ int main(int argc, char* argv[]) {
 								// gt
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGT());
-								
+
 								//(Player 1)
 								sendMessage_S(player1, messageToSend);
 								if(DEBUG) {
@@ -1308,10 +1316,10 @@ int main(int argc, char* argv[]) {
 
 								}
 
-								// gts 
+								// gts
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", (*itObs)->getGTS());
-								
+
 								//(Player 1)
 								sendMessage_S(player1, messageToSend);
 								if(DEBUG) {
@@ -1336,15 +1344,15 @@ int main(int argc, char* argv[]) {
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 2 (ob %d gts confirm): %s\n", obsNum, clientConfirm);
 								}
-								
+
 								// color or color seed
 								memset(messageToSend, '\0', sizeof messageToSend);
 								if(typeid(**itObs) == typeid(Octopus))
-									sprintf(messageToSend, "%d", 
+									sprintf(messageToSend, "%d",
 										(static_cast<Octopus*>(*itObs))->getColor());
 								else
 									sprintf(messageToSend, "%d", -1);
-								
+
 								//(Player 1)
 								sendMessage_S(player1, messageToSend);
 								if(DEBUG) {
@@ -1356,7 +1364,7 @@ int main(int argc, char* argv[]) {
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 2 (ob %d color or colorSeed): confirm): %s\n", obsNum, clientConfirm);
 								}
-								
+
 								//(Player 2)
 								sendMessage_S(player2, messageToSend);
 								if(DEBUG) {
@@ -1368,14 +1376,14 @@ int main(int argc, char* argv[]) {
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 2 (ob %d color or colorSeed): confirm): %s\n", obsNum, clientConfirm);
 								}
-								
+
 								// numHits
 								memset(messageToSend, '\0', sizeof messageToSend);
 								if(!(*itObs)->getIsStationary())
 									sprintf(messageToSend, "%d", (*itObs)->getHits());
 								else
 									sprintf(messageToSend, "%d", -1);
-								
+
 								//(Player 1)
 								sendMessage_S(player1, messageToSend);
 								if(DEBUG) {
@@ -1387,7 +1395,7 @@ int main(int argc, char* argv[]) {
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 2 (ob %d hits): confirm): %s\n", obsNum, clientConfirm);
 								}
-								
+
 								//(Player 2)
 								sendMessage_S(player2, messageToSend);
 								if(DEBUG) {
@@ -1589,7 +1597,7 @@ int main(int argc, char* argv[]) {
 							hours++;
 						}
 					}
-					
+
 					//Reset player position
 					if(deathFlag) {
 						world->resetPlayer(cube);
@@ -1615,6 +1623,10 @@ int main(int argc, char* argv[]) {
 			}
 		}
 	}
+
+	//close server sockets
+	close(servSock1);
+	close(servSock2);
 	return 0;
 }
 

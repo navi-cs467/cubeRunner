@@ -57,12 +57,11 @@ int Game::playGame(char host[], char port[]) {
 		#pragma omp section
 		{
 
-			while ( // cube->getCubeLives() > 0 && 
+			while ( // cube->getCubeLives() > 0 &&
 					userInput != 27 &&
 				    userInput != KEY_END &&
 				    userInput != 'q' &&
 				    userInput != 'Q' && !hasTerminated) {
-
 
 				userInput = getch();
 
@@ -93,7 +92,7 @@ int Game::playGame(char host[], char port[]) {
 						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(left);
 					}
-					else if((userInput == 7 || userInput == 'e') && 
+					else if((userInput == 7 || userInput == 'e') &&
 							 cube->getCubePositionRow() > 0 &&
 							 cube->getCubePositionCol() > 0) {
 						cube->updateCubePosition(0, 1, 0, 1);
@@ -133,7 +132,7 @@ int Game::playGame(char host[], char port[]) {
 				//	  	server can handle, the "extra commands" go unprocessed,
 				//		since the code below blocks at "RECEIVE confirmation",
 				//		then the input buffer is flushed
-				/* else if (!deathFlag && isConnected && !hasTerminated) {
+				else if (!deathFlag && isConnected && !hasTerminated) {
 					char messageToSend[MSG_SIZE];
 					memset(messageToSend, '\0', sizeof(messageToSend));
 					char confirm[MSG_SIZE];
@@ -143,24 +142,24 @@ int Game::playGame(char host[], char port[]) {
 						if(userInput == KEY_UP) {
 							// SEND: KEY_UP
 							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(socketFD, messageToSend);
+							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
-							receiveMessage_C(socketFD, confirm);
+							receiveMessage_C(inputSocket, confirm);
 
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
 						else if(userInput == KEY_DOWN) {
 							// SEND: KEY_DOWN
 							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(socketFD, messageToSend);
+							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
-							receiveMessage_C(socketFD, confirm);
+							receiveMessage_C(inputSocket, confirm);
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
 						else if(userInput == 32) {
 							// SEND: 32 (SPACE_BAR - For cube->fireShot())
 							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(socketFD, messageToSend);
+							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
@@ -171,16 +170,18 @@ int Game::playGame(char host[], char port[]) {
 							// SEND: q
 							userInput = 'q';
 							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(socketFD, messageToSend);
+							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
-							receiveMessage_C(socketFD, confirm);
+							receiveMessage_C(inputSocket, confirm);
+
 							// RECEIVE score into score (as in, into this->score)
 							memset(confirm, '\0', sizeof(confirm));
-
-							receiveMessage_C(socketFD, confirm);
+							receiveMessage_C(inputSocket, confirm);
 							cube->setCubeScore(atoi(confirm));
+
 							// CLOSE CONNECTION
 							close(socketFD);
+							close(inputPort);
 
 							hasTerminated = true;
 							break;
@@ -190,21 +191,22 @@ int Game::playGame(char host[], char port[]) {
 						if(userInput == KEY_LEFT) {
 							// SEND: KEY_LEFT
 							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(socketFD, messageToSend);
+							sendMessage_C(inputSocket, messageToSend);
+
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
 						else if(userInput == KEY_RIGHT) {
 							// SEND: KEY_RIGHT
 							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(socketFD, messageToSend);
+							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
 						else if(userInput == 32) {
 							// SEND: 32 (SPACE_BAR - For cube->fireShot())
 							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(socketFD, messageToSend);
+							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
 							fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
 						}
@@ -215,24 +217,25 @@ int Game::playGame(char host[], char port[]) {
 							// SEND: q
 							userInput = 'q';
 							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(socketFD, messageToSend);
+							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
-							receiveMessage_C(socketFD, confirm);
+							receiveMessage_C(inputSocket, confirm);
 							// RECEIVE score into score (as in, into this->score)
 							memset(confirm, '\0', sizeof(confirm));
 
-							receiveMessage_C(socketFD, confirm);
+							receiveMessage_C(inputSocket, confirm);
 							cube->setCubeScore(atoi(confirm));
 
 							// CLOSE CONNECTION
 							close(socketFD);
+							close(inputPort);
 
 							//set the FLAG
 							hasTerminated = true;
 							break;
 						}
 					}
-				} */
+				}
 				/***** END Client for multiplayer (SEND) *****/
 			}
 		}
@@ -554,7 +557,7 @@ int Game::playGame(char host[], char port[]) {
 				if(DEBUG) {
 					move(6,5); printw("Received Player Indicator..."); refresh();
 				}
-				
+
 				//check for other player
 				//if we received 0, we are connected but other player isn't
 				//so we check for next confirmation which should tell us if gamemodes match or not
@@ -574,7 +577,7 @@ int Game::playGame(char host[], char port[]) {
 					if(DEBUG) {
 						move(8,5); printw("Received Confirmation Other Player Now Connected & GM Match Indicator...\n"); refresh();
 					}
-					
+
 					//if we got to this point, player is player 1 so change the value
 					playerNum = 1;
 				}
@@ -589,7 +592,7 @@ int Game::playGame(char host[], char port[]) {
 					if(DEBUG) {
 						move(9,5); printw("Sent GM Player 2...\n"); refresh();
 					}
-					
+
 					//check for gamemode match
 					memset(message, '\0', sizeof message);
 					receiveMessage_C(socketFD, message);
@@ -597,7 +600,7 @@ int Game::playGame(char host[], char port[]) {
 					if(DEBUG) {
 						move(10,5); printw("Received GM Match Indicator...\n"); refresh();
 					}
-					
+
 					//if we got to this point, player is player 2 so change the value
 					playerNum = 2;
 				}
@@ -641,12 +644,12 @@ int Game::playGame(char host[], char port[]) {
 				if(DEBUG) {
 					move(11,5); printw("Starting Game Loop..."); refresh();
 				}
-				
+
 				double lastRefreshTime = omp_get_wtime();
 				while (!hasTerminated) {
-							
+
 						//Pseudocode variables... change as desired
-						int int_1, int_2, int_3, int_4, int_5, int_6, int_7, int_8; 
+						int int_1, int_2, int_3, int_4, int_5, int_6, int_7, int_8;
 						char earlyTerm[MSG_SIZE], scoreStr[MSG_SIZE],
 							 gameData[MSG_SIZE], sendConfirm[MSG_SIZE];
 
@@ -686,6 +689,7 @@ int Game::playGame(char host[], char port[]) {
 
 							// close connection
 							close(socketFD);
+							close(inputPort);
 
 							break;
 						}
@@ -711,7 +715,6 @@ int Game::playGame(char host[], char port[]) {
 						int_1 = atoi(gameData);
 						//If int_1 == 1:		//Death happened
 						if (int_1 == 1)
-						//if(0)
 						{
 							//	  RECEIVE int_2
 							memset(gameData, '\0', sizeof gameData);
@@ -729,8 +732,21 @@ int Game::playGame(char host[], char port[]) {
 							//	  If int_2 == 1:		//Game Over
 							if (int_2 == 1)
 							{
-							  //CLOSE connection
-									close(socketFD);
+								//receive final score
+								memset(gameData, '\0', sizeof gameData);
+								receiveMessage_C(socketFD, gameData);
+
+								cube->setCubeScore(atoi(gameData));
+
+								//send confirmation
+								memset(sendConfirm, '\0', sizeof sendConfirm);
+								sprintf(sendConfirm, "%d", 1);
+								sendMessage_C(socketFD, sendConfirm);
+
+							  //CLOSE connections
+								close(socketFD);
+								close(inputPort);
+
 						//	  	  /* animationTransition("GRAPHICS/gameOver.txt"); */
 							  //Delete all Obstacles
 									for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -770,7 +786,6 @@ int Game::playGame(char host[], char port[]) {
 						if(DEBUG) {
 							move(z++, 8); printw("RECEIVED (lives): %s\n", gameData); refresh();
 						}
-
 
 						memset(sendConfirm, '\0', sizeof sendConfirm);
 						sprintf(sendConfirm, "%d", 1);
@@ -819,7 +834,7 @@ int Game::playGame(char host[], char port[]) {
 						int cubeCoordsArray[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];
 
 						//calculate cube coords from row and col received from server
-						for(int i = 0, lineInc = 0, colInc = 0; 
+						for(int i = 0, lineInc = 0, colInc = 0;
 							i < CUBE_COORDS_HEIGHT * CUBE_COORDS_WIDTH / 2; i++)
 						{
 						   if(i % 4 == 0) colInc = 0;
@@ -872,7 +887,7 @@ int Game::playGame(char host[], char port[]) {
 
 						//RECEIVE CUBE SHOT COORDS...
 						//LOAD CUBE SHOT COORDS (USE cube->setShotCoords(x, y)...
-						
+
 						//receive x shot coord
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
@@ -903,7 +918,7 @@ int Game::playGame(char host[], char port[]) {
 							//move(z, 60); printw("SENT CONFIRM (y shot coord): %s\n", sendConfirm); refresh();
 						}
 						int yShotCoord = atoi(gameData);
-						
+
 						cube->setShotCoords(xShotCoord, yShotCoord);
 
 						// cube->loadCubeCoords(coords); cube->loadCubeChars(chars); cube->setLives(int_3);
@@ -1112,7 +1127,7 @@ int Game::playGame(char host[], char port[]) {
 							}
 
 							int_6 = atoi(gameData);
-							
+
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
 							if(DEBUG) {
@@ -1127,7 +1142,7 @@ int Game::playGame(char host[], char port[]) {
 							}
 
 							int_7 = atoi(gameData);
-							
+
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
 							if(DEBUG) {
@@ -1319,7 +1334,7 @@ int Game::playGame(char host[], char port[]) {
 						attron(COLOR_PAIR(YELLOW_BLACK));
 						mvhline(LINES - 1, 0, ' ', COLS);
 						mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
-						
+
 						refresh();
 
 						/**** RECEIVE GAME STATS RENDER CONFIRM REQUEST ****/

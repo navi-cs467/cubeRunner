@@ -12,7 +12,7 @@
 #include "include.hpp"
 #include "constants.hpp"
 
-void initServer(char* portNum, int* firstClient, int* secondClient);
+int initServer(char* portNum);
 void acceptConnections(int socketFD, int* firstClient, int* secondClient);
 void bindSocket(int socketFD, struct addrinfo *servinfo);
 void receiveMessage_S(int socketFD, char* buffer);
