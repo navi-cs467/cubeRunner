@@ -608,7 +608,7 @@ int Game::playGame(char host[], char port[]) {
 				}
 
 				//receive dataPort from server, send confirmation to server
-				/*char confirm[MSG_SIZE];
+				char confirm[MSG_SIZE];
 				memset(confirm, '\0', sizeof confirm);
 				sprintf(confirm, "%d", 1);
 
@@ -625,7 +625,7 @@ int Game::playGame(char host[], char port[]) {
 				//send confirmation on new connection
 				memset(confirm, '\0', sizeof confirm);
 				sprintf(confirm, "%d", playerNum);
-				sendMessage_C(inputSocket, confirm);*/
+				sendMessage_C(inputSocket, confirm);
 
 				//set isConnected to TRUE
 				isConnected = TRUE;
