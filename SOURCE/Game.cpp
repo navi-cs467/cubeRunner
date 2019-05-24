@@ -73,22 +73,23 @@ int Game::playGame(char host[], char port[]) {
 					omp_set_lock(&userInputLock);
 
 					if((userInput == KEY_UP || userInput == '8' || userInput == 'w')
-							&& cube->getCubeCoords()[0][0] > 0) {
+							&& cube->getCubePositionRow() > 0) {
 						cube->updateCubePosition(0, 0, 0, 1);
 						cube->setCubeDirection(up);
 					}
 					else if((userInput == KEY_DOWN || userInput == '2' || userInput == 's') &&
-								cube->getCubeCoords()[15][0] < world->getBottomRow()) {
+								cube->getCubePositionRow() + CUBE_CHARS_HEIGHT - 1
+									< world->getBottomRow()) {
 						cube->updateCubePosition(0, 0, 1, 0);
 						cube->setCubeDirection(down);
 					}
 					else if((userInput == KEY_RIGHT || userInput == '6' || userInput == 'd') &&
-								cube->getCubeCoords()[15][1] < COLS) {
+								cube->getCubePositionCol() + CUBE_CHARS_WIDTH - 1 < COLS) {
 						cube->updateCubePosition(1, 0, 0, 0);
 						cube->setCubeDirection(right);
 					}
 					else if((userInput == KEY_LEFT || userInput == '4' || userInput == 'a') &&
-							cube->getCubeCoords()[0][1] > 0) {
+							cube->getCubePositionCol() > 0) {
 						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(left);
 					}
