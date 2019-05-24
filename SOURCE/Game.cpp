@@ -93,25 +93,29 @@ int Game::playGame(char host[], char port[]) {
 						cube->updateCubePosition(0, 1, 0, 0);
 						cube->setCubeDirection(left);
 					}
-					else if(userInput == 7 && cube->getCubeCoords()[0][0] > 0 &&
-											  cube->getCubeCoords()[0][1] > 0) {
+					else if((userInput == 7 || userInput == 'e') && 
+							 cube->getCubePositionRow() > 0 &&
+							 cube->getCubePositionCol() > 0) {
 						cube->updateCubePosition(0, 1, 0, 1);
 						cube->setCubeDirection(left_up);
 					}
-					else if(userInput == 1 &&
-							cube->getCubeCoords()[15][0] < world->getBottomRow() &&
-							cube->getCubeCoords()[0][1] > 0) {
+					else if((userInput == 1 || userInput == 'c') &&
+							cube->getCubePositionCol() > 0 &&
+							cube->getCubePositionRow() + CUBE_CHARS_HEIGHT - 1
+									< world->getBottomRow()) {
 						cube->updateCubePosition(0, 1, 1, 0);
 						cube->setCubeDirection(left_down);
 					}
-					else if(userInput == 9 && cube->getCubeCoords()[0][0] > 0 &&
-											  cube->getCubeCoords()[15][1] < COLS) {
+					else if((userInput == 9 || userInput == 'r')
+						    && cube->getCubePositionRow() > 0 &&
+							cube->getCubePositionCol() + CUBE_CHARS_WIDTH - 1 < COLS) {
 						cube->updateCubePosition(1, 0, 0, 1);
 						cube->setCubeDirection(right_up);
 					}
-					else if(userInput == 3 &&
-							cube->getCubeCoords()[15][0] < world->getBottomRow() &&
-							cube->getCubeCoords()[15][1] < COLS) {
+					else if((userInput == 3 || userInput == 'v') &&
+							cube->getCubePositionRow() > 0 &&
+							cube->getCubePositionRow() + CUBE_CHARS_HEIGHT - 1
+									< world->getBottomRow()) {
 						cube->updateCubePosition(1, 0, 1, 0);
 						cube->setCubeDirection(right_down);
 					}
