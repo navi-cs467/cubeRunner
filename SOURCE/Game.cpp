@@ -181,7 +181,7 @@ int Game::playGame(char host[], char port[]) {
 
 							// CLOSE CONNECTION
 							close(socketFD);
-							close(inputPort);
+							close(inputSocket);
 
 							hasTerminated = true;
 							break;
@@ -228,7 +228,7 @@ int Game::playGame(char host[], char port[]) {
 
 							// CLOSE CONNECTION
 							close(socketFD);
-							close(inputPort);
+							close(inputSocket);
 
 							//set the FLAG
 							hasTerminated = true;
@@ -689,7 +689,7 @@ int Game::playGame(char host[], char port[]) {
 
 							// close connection
 							close(socketFD);
-							close(inputPort);
+							close(inputSocket);
 
 							break;
 						}
@@ -745,7 +745,7 @@ int Game::playGame(char host[], char port[]) {
 
 							  //CLOSE connections
 								close(socketFD);
-								close(inputPort);
+								close(inputSocket);
 
 						//	  	  /* animationTransition("GRAPHICS/gameOver.txt"); */
 							  //Delete all Obstacles
