@@ -315,7 +315,7 @@ int main(int argc, char* argv[]) {
 				char messageToReceive[MSG_SIZE];
 				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
-				while (userInput2 != 'q' && deathFlag == false) {
+				while (userInput2 != 'q' && gameOver == false) {
 
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput2 from connection2;
