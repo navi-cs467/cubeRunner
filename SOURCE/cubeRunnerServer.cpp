@@ -161,7 +161,7 @@ int main(int argc, char* argv[]) {
 
 		int temp1, temp2 = -1;
 
-		printf("Accepting New Connections On Input Port %d...\n", inputPort);
+		printf("Accepting New Connections On Input Port %s...\n", inputPort);
 
 		// accepting new connections
 		acceptConnections(servSock2, &temp1, &temp2);
