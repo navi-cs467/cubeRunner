@@ -46,6 +46,8 @@ int main(int argc, char* argv[]) {
 	char* portNum = argv[1];
 	char* inputPort = argv[2];
 
+	bool gameOver == false;
+
 	//initialize server on first port number
 	int servSock1 = initServer(portNum);
 
@@ -53,7 +55,7 @@ int main(int argc, char* argv[]) {
 	int servSock2  = initServer(inputPort);
 
 	while(1) {
-		printf("Listening For New Connections...\n");
+		printf("Listening For New Connections On Port %d...\n", portNum);
 		//Optional: int gmP1, gmP2;		//"game mode player 1" & "game mode player 2"
 
 		// Set up listener1, wait for connection
@@ -135,9 +137,6 @@ int main(int argc, char* argv[]) {
 			sendMessage_S(player2, confirm);
 			if(DEBUG)
 				printf("Sent Game Mode Indicator (GM No Match)...\n");
-
-			//receive confirmation back from each player
-			//leaving out for now, might add later
 		}
 
 		if(DEBUG)
@@ -162,7 +161,7 @@ int main(int argc, char* argv[]) {
 
 		int temp1, temp2 = -1;
 
-		printf("Accepting New Connections On Input Port...\n");
+		printf("Accepting New Connections On Input Port %d...\n", inputPort);
 
 		// accepting new connections
 		acceptConnections(servSock2, &temp1, &temp2);
@@ -256,7 +255,7 @@ int main(int argc, char* argv[]) {
 			printf("Instantiating Game and starting...\n"); fflush(stdout);
 
 		#pragma omp parallel sections shared(deathFlag, lock1, \
-											 renderedLastMv1, renderedLastMv2, userInput1, userInput2)
+											 renderedLastMv1, renderedLastMv2, userInput1, userInput2, gameOver)
 		{
 			//Thread (1) for updating userInput1 and cube position
 			#pragma omp section
@@ -267,7 +266,7 @@ int main(int argc, char* argv[]) {
 				char messageToReceive[MSG_SIZE];
 				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
-				while (userInput1 != 'q') {
+				while (userInput1 != 'q' && gameOver == false) {
 
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput1 from connection1;
@@ -316,7 +315,7 @@ int main(int argc, char* argv[]) {
 				char messageToReceive[MSG_SIZE];
 				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
-				while (userInput2 != 'q') {
+				while (userInput2 != 'q' && deathFlag == false) {
 
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput2 from connection2;
@@ -390,7 +389,7 @@ int main(int argc, char* argv[]) {
 				bool isNewWorldFlag = false; int newWorldType;
 
 				//Main game engine loop
-				while (1) {
+				while (gameOver == false) {
 
 					char messageToSend[MSG_SIZE]; char clientConfirm[MSG_SIZE];
 					memset(clientConfirm, '\0', sizeof clientConfirm);
@@ -630,6 +629,7 @@ int main(int argc, char* argv[]) {
 								delete cube;
 								//Delete world
 								delete world;
+								gameOver = true;
 								break;
 							}
 							else {

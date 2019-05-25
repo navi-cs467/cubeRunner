@@ -308,7 +308,7 @@ int Game::playGame(char host[], char port[]) {
 				while ( userInput != 27 &&
 						userInput != KEY_END &&
 						userInput != 'q' &&
-						userInput != 'Q') {
+						userInput != 'Q' && !hasTerminated) {
 
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();
@@ -757,6 +757,9 @@ int Game::playGame(char host[], char port[]) {
 									delete world;
 									//Delete cube
 									delete cube;
+
+									hasTerminated = true;
+
 									break;
 							}
 
