@@ -71,31 +71,31 @@ int createSocket_S(struct addrinfo *servinfo)
 	return socketFD;
 }
 
-void sendMessage_S(int socketFD, char* buffer)
+int sendMessage_S(int socketFD, char* buffer)
 {
 	// Send message to client
 	int charsWritten = send(socketFD, buffer, MSG_SIZE, 0);
+
+	return charsWritten;
 }
 
-void receiveMessage_S(int socketFD, char* buffer)
+int receiveMessage_S(int socketFD, char* buffer)
 {
 	int bytes_received = recv(socketFD, buffer, MSG_SIZE, 0);
 
 	//check for error
 	if (bytes_received == -1)
 	{
-		// fprintf(stderr,"Error receving from socket\n");
-		// close(socketFD);
-		// exit(0);
+
 	}
 
-	// server closed the connection
+	// connection closed
 	else if (bytes_received == 0)
 	{
-		// fprintf(stderr,"Server has closed the connection\n");
-		// close(socketFD);
-		// exit(0);
+
 	}
+
+	return bytes_received;
 }
 
 /*
