@@ -858,7 +858,7 @@ int Game::playGame(char host[], char port[]) {
 						// set the cube coords
 						cube->loadCubeCoords(cubeCoordsArray);
 
-						//receive string of cube chars
+						/* //receive string of cube chars (OLD CUBE ONLY)
 						char cubeCharsArray[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH];
 
 						memset(gameData, '\0', sizeof gameData);
@@ -886,7 +886,7 @@ int Game::playGame(char host[], char port[]) {
 						}
 
 						//load cube chars
-						cube->loadCubeChars(cubeCharsArray);
+						cube->loadCubeChars(cubeCharsArray); */
 
 						//RECEIVE CUBE SHOT COORDS...
 						//LOAD CUBE SHOT COORDS (USE cube->setShotCoords(x, y)...
@@ -923,6 +923,27 @@ int Game::playGame(char host[], char port[]) {
 						int yShotCoord = atoi(gameData);
 
 						cube->setShotCoords(xShotCoord, yShotCoord);
+						
+						//receive cube direction
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+						if(DEBUG) {
+							move(z++, 8); printw("RECEIVED (cube direction): %s\n", gameData); refresh();
+						}
+
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+						if(DEBUG) {
+							//move(z, 60); printw("SENT CONFIRM (cube direction): %s\n", sendConfirm); refresh();
+						}
+						Direction cubeDirection = static_cast<Direction>(atoi(gameData));
+
+						cube->setCubeDirection(cubeDirection);
+						if(cubeDirection == right || cubeDirection == right_down || cubeDirection == right_up)
+							cube->setUseLeftCube(false);
+						else if(cubeDirection == left || cubeDirection == left_down || cubeDirection == left_up)
+							cube->setUseLeftCube(true);
 
 						// cube->loadCubeCoords(coords); cube->loadCubeChars(chars); cube->setLives(int_3);
 						// cube->setCubePositionRow(int_5); cube->setCubePositionCol(int_6);

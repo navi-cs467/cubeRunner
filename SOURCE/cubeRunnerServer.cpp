@@ -742,7 +742,7 @@ int main(int argc, char* argv[]) {
 
 						}
 
-						//send cubeChars
+						/* //send cubeChars (OLD CUBE ONLY)
 
 						//buffers for character array
 						char cubeCharsBuff[MSG_SIZE]; char cubeCharBuff[2];
@@ -785,7 +785,7 @@ int main(int argc, char* argv[]) {
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 2 (cubeChars confirm): %s\n", clientConfirm);
 
-						}
+						} */
 
 						//send x shotCoord to clients
 						memset(messageToSend, '\0', sizeof messageToSend);
@@ -843,6 +843,35 @@ int main(int argc, char* argv[]) {
 						receiveMessage_S(player2, clientConfirm);
 						if(DEBUG) {
 							printf("RECV FROM PLAYER 2 (y shot confirm): %s\n", clientConfirm);
+
+						}
+						
+						//send cube direction to clients
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", cube->getCubeDirection());
+
+						//player 1
+						sendMessage_S(player1, messageToSend);
+						if(DEBUG) {
+							printf("SENT PLAYER 1 (cube direction confirm): %s\n", messageToSend);
+
+						}
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+						if(DEBUG) {
+							printf("RECV FROM PLAYER 1 (cube direction confirm): %s\n", clientConfirm);
+						}
+
+						//player 2
+						sendMessage_S(player2, messageToSend);
+						if(DEBUG) {
+							printf("SENT PLAYER 2 (cube direction): %s\n", messageToSend);
+
+						}
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
+						if(DEBUG) {
+							printf("RECV FROM PLAYER 2 (cube direction confirm): %s\n", clientConfirm);
 
 						}
 
