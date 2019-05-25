@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
 	char* portNum = argv[1];
 	char* inputPort = argv[2];
 
-	bool gameOver == false;
+	bool gameOver = false;
 
 	//initialize server on first port number
 	int servSock1 = initServer(portNum);
