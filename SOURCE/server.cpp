@@ -84,17 +84,17 @@ void receiveMessage_S(int socketFD, char* buffer)
 	//check for error
 	if (bytes_received == -1)
 	{
-		fprintf(stderr,"Error receving from socket\n");
-		close(socketFD);
-		exit(0);
+		// fprintf(stderr,"Error receving from socket\n");
+		// close(socketFD);
+		// exit(0);
 	}
 
 	// server closed the connection
 	else if (bytes_received == 0)
 	{
-		fprintf(stderr,"Server has closed the connection\n");
-		close(socketFD);
-		exit(0);
+		// fprintf(stderr,"Server has closed the connection\n");
+		// close(socketFD);
+		// exit(0);
 	}
 }
 
