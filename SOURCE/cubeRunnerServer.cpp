@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 	int servSock2  = initServer(inputPort);
 
 	while(1) {
-		printf("Listening For New Connections On Port %d...\n", portNum);
+		printf("Listening For New Connections On Port %s...\n", portNum);
 		//Optional: int gmP1, gmP2;		//"game mode player 1" & "game mode player 2"
 
 		// Set up listener1, wait for connection
