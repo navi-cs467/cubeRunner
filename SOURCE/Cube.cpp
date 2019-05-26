@@ -596,9 +596,12 @@ void Cube::drawCube(void){
 			}
 			else{
 				//mvaddch(cubeCoords[11][0],cubeCoords[11][1],cubeLeftChars[2][1]);
-				move(cubeCoords[11][0],cubeCoords[11][1]); printw("%c", cubeRightChars[2][1]);
+				//move(cubeCoords[11][0],cubeCoords[11][1]); printw("%c", cubeRightChars[2][1]);
+				move(cubeCoords[11][0],cubeCoords[11][1]); printw("%c", cubeLeftChars[2][1]);
 				//mvaddch(cubeCoords[12][0],cubeCoords[12][1],cubeLeftChars[2][2]);
-				move(cubeCoords[12][0],cubeCoords[12][1]); printw("%c", cubeRightChars[2][2]);
+				//move(cubeCoords[12][0],cubeCoords[12][1]); printw("%c", cubeRightChars[2][2]);
+				move(cubeCoords[12][0],cubeCoords[12][1]); printw("%c", cubeLeftChars[2][2]);
+
 			}
 		}
 
@@ -625,13 +628,13 @@ void Cube::drawCubeDeath(int *userInput){
 	*userInput = 0;
 
 	//Death Part 1 - small ring around token
-	for(i = (row - 1); i <= (row + 4); ++i){ //draw left/right sides
-		mvaddch(i,(col-1),'@');
-		mvaddch(i,(col+4),'@');
-	}
-	for(i = col; i <= (col + 4); ++i){ //draw top/bottom sides
+	for(i = (col-1); i <= (col+5); ++i){ //draw top/bottom sides
 		mvaddch((row-1),i,'@');
-		mvaddch((row+4),i,'@');
+		mvaddch((row+3),i,'@');
+	}
+	for(i = row; i <= (row+2); ++i){ //draw left/right sides
+		mvaddch(i,(col-1),'@');
+		mvaddch(i,(col+5),'@');
 	}
 	refresh();
 	for(int i = 0; *userInput != 10 && i < 500000 / 100; i++)
@@ -642,13 +645,13 @@ void Cube::drawCubeDeath(int *userInput){
 	attron(COLOR_PAIR(2));
 
 	//Death Part 2 - larger ring around token
-	for(i = (row - 2); i <= (row + 5); ++i){ //draw left/right sides
-		mvaddch(i,(col-2),'@');
-		mvaddch(i,(col+5),'@');
-	}
-	for(i = (col - 1); i <= (col + 5); ++i){ //draw top/bottom sides
+	for(i = (col-2); i <= (col+6); ++i){ //draw top/bottom sides
 		mvaddch((row-2),i,'@');
-		mvaddch((row+5),i,'@');
+		mvaddch((row+4),i,'@');
+	}
+	for(i = (row-1); i <= (row+3); ++i){ //draw left/right sides
+		mvaddch(i,(col-2),'@');
+		mvaddch(i,(col+6),'@');
 	}
 	refresh();
 	for(int i = 0; *userInput != 10 && i < 450000 / 100; i++)
@@ -660,13 +663,13 @@ void Cube::drawCubeDeath(int *userInput){
 
 
 	//Death Part 3 - first broken ring around token
-	for(i = (row - 3); i <= (row + 6); (i=i+2)){ //draw left/right sides
-		mvaddch(i,(col-3),'@');
-		mvaddch((i+1),(col+6),'@');
-	}
-	for(i = (col - 1); i <= (col + 6); (i=i+2)){ //draw top/bottom sides
+	for(i = (col-3); i <= (col+7); (i=i+2)){ //draw top/bottom sides
 		mvaddch((row-3),i,'@');
-		mvaddch((row+6),(i-1),'@');
+		mvaddch((row+5),i,'@');
+	}
+	for(i = (row-1); i <= (row+3); (i=i+2)){ //draw left/right sides
+		mvaddch(i,(col-3),'@');
+		mvaddch(i,(col+7),'@');
 	}
 	refresh();
 	for(int i = 0; *userInput != 10 && i < 400000 / 100; i++)
@@ -678,13 +681,13 @@ void Cube::drawCubeDeath(int *userInput){
 
 
 	//Death Part 4 - second broken ring around token
-	for(i = (row - 4); i <= (row + 7); (i=i+2)){ //draw left/right sides
-		mvaddch(i,(col-4),'@');
-		mvaddch((i+1),(col+7),'@');
-	}
-	for(i = (col - 2); i <= (col + 7); (i=i+2)){ //draw top/bottom sides
+	for(i = (col-4); i <= (col+8); (i=i+2)){ //draw top/bottom sides
 		mvaddch((row-4),i,'@');
-		mvaddch((row+7),(i-1),'@');
+		mvaddch((row+6),i,'@');
+	}
+	for(i = (row-2); i <= (row+4); (i=i+2)){ //draw left/right sides
+		mvaddch(i,(col-4),'@');
+		mvaddch(i,(col+8),'@');
 	}
 	refresh();
 	for(int i = 0; *userInput != 10 && i < 350000 / 100; i++)
@@ -695,13 +698,13 @@ void Cube::drawCubeDeath(int *userInput){
 	attron(COLOR_PAIR(5));
 
 	//Death Part 5 - third broken ring around token
-	for(i = (row - 5); i <= (row + 8); (i=i+2)){ //draw left/right sides
-		mvaddch(i,(col-5),'@');
-		mvaddch((i+1),(col+8),'@');
-	}
-	for(i = (col - 3); i <= (col + 8); (i=i+2)){ //draw top/bottom sides
+	for(i = (col-5); i <= (col+9); (i=i+2)){ //draw top/bottom sides
 		mvaddch((row-5),i,'@');
-		mvaddch((row+8),(i-1),'@');
+		mvaddch((row+7),i,'@');
+	}
+	for(i = (row-3); i <= (row+5); (i=i+2)){ //draw left/right sides
+		mvaddch(i,(col-5),'@');
+		mvaddch(i,(col+9),'@');
 	}
 	refresh();
 	for(int i = 0; *userInput != 10 && i < 300000 / 100; i++)
@@ -712,15 +715,25 @@ void Cube::drawCubeDeath(int *userInput){
 	attron(COLOR_PAIR(6));
 
 	//Death Part 6 - fourth broken ring around token (shorter)
-	for(i = (row - 2); i <= (row + 6); (i=i+2)){ //draw left/right sides
-		mvaddch(i,(col-6),'@');
-		mvaddch((i-1),(col+9),'@');
-	}
-	for(i = (col - 2); i <= (col + 6); (i=i+2)){ //draw top/bottom sides
+	for(i = (col-3); i <= (col+7); (i=i+2)){ //draw top/bottom sides
 		mvaddch((row-6),i,'@');
-		mvaddch((row+9),(i-1),'@');
+		mvaddch((row+8),i,'@');
+	}
+	for(i = (row-4); i <= (row+6); (i=i+2)){ //draw left/right sides
+		mvaddch(i,(col-6),'@');
+		mvaddch(i,(col+10),'@');
 	}
 	refresh();
+	for(i = (col-2); i <= (col+6); (i=i+2)){ //draw top/bottom sides
+		mvaddch((row-7),i,'@');
+		mvaddch((row+9),i,'@');
+	}
+	for(i = (row-3); i <= (row+5); (i=i+2)){ //draw left/right sides
+		mvaddch(i,(col-7),'@');
+		mvaddch(i,(col+11),'@');
+	}
+	refresh();
+
 	for(int i = 0; *userInput != 10 && i < 300000 / 100; i++)
 		usleep(50);
 
@@ -730,8 +743,8 @@ void Cube::drawCubeDeath(int *userInput){
 
 	for(k = 0; k < 5; ++k){
 		//Token Flash Part 1 - blank
-		for(i = row; i < (row + 4); ++i){
-			for(j = col; j < (col + 4); ++j){
+		for(i = row; i <= (row+2); ++i){
+			for(j = col; j <= (col+4); ++j){ 
 				mvaddch(i,j,' ');
 			}
 		}
@@ -740,8 +753,8 @@ void Cube::drawCubeDeath(int *userInput){
 			usleep(50);
 
 		//Token Flash Part 2 - appear
-		for(i = row; i < (row + 4); ++i){
-			for(j = col; j < (col + 4); ++j){
+		for(i = row; i <= (row+2); ++i){
+			for(j = col; j <= (col+4); ++j){ 
 				mvaddch(i,j,'X');
 			}
 		}
