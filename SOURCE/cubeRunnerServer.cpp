@@ -309,7 +309,7 @@ int main(int argc, char* argv[]) {
 							cube->updateCubePosition(0, 1, 0, 0);
 							cube->setCubeDirection(left);
 						}
-						else if(userInput2 == 32) {
+						else if(userInput1 == 32) {
 							cube->fireShot(); 
 							if(DEBUG)
 								printf("SHOT FIRED!!\n");

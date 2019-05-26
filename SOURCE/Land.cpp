@@ -288,9 +288,7 @@ void Land::renderWorld(Cube *cube) {
 
 	cube->processShot(); 
 	
-	if(!forServer) {
-		//refresh();
-	}
+	//refresh();
 }
 
 void Land::scroll_(Cube* cube) {

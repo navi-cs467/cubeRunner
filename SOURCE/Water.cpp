@@ -291,9 +291,7 @@ void Water::renderWorld(Cube *cube) {
 	}
 	cube->processShot(); 
 	
-	if(!forServer) {
-		//refresh();
-	}
+	//refresh();
 
 }
 
