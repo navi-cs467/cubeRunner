@@ -260,7 +260,13 @@ int main(int argc, char* argv[]) {
 
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput1 from connection1;
-					receiveMessage_S(player1In, messageToReceive);
+					int status = receiveMessage_S(player1In, messageToReceive);
+
+					if (status <= 0)
+					{
+						break;
+					}
+					
 					//convert to int
 					userInput1 = atoi(messageToReceive);
 
@@ -269,7 +275,12 @@ int main(int argc, char* argv[]) {
 
 					// (Optional ?) SEND Confirmation Connection1
 					sprintf(confirm, "%d", 1);
-					sendMessage_S(player1In, confirm);
+					status = sendMessage_S(player1In, confirm);
+
+					if (status <= 0)
+					{
+						break;
+					}
 
 					if(renderedLastMv1 == true) {
 
@@ -323,7 +334,13 @@ int main(int argc, char* argv[]) {
 
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput2 from connection2;
-					receiveMessage_S(player2In, messageToReceive);
+					int status = receiveMessage_S(player2In, messageToReceive);
+
+					if (status <= 0)
+					{
+						break;
+					}
+
 					//convert to int
 					userInput2 = atoi(messageToReceive);
 
@@ -333,7 +350,12 @@ int main(int argc, char* argv[]) {
 					// (Optional ?) SEND: Confirmation Connection2
 					sprintf(confirm, "%d", 1);
 
-					sendMessage_S(player2In, confirm);
+					status = sendMessage_S(player2In, confirm);
+
+					if (status <= 0)
+					{
+						break;
+					}
 
 					if(renderedLastMv2 == true) {
 
