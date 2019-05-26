@@ -65,7 +65,7 @@ SRC = $(patsubst %,$(SDIR)/%,$(_SRC))
 
 $(PROGRAM_NAME): $(OBJ)
 	$(CXX) -o $@ $^ $(CXXFLAGS)
-	
+
 $(PROGRAM_NAME_SERVER): $(OBJ_SERVER)
 	$(CXX) -o $@ $^ $(CXXFLAGS)
 
@@ -85,18 +85,19 @@ $(ODIR_SERVER)/%.o: $(SDIR)/%.cpp $(HDR_SERVER)
 
 all: $(PROGRAM_NAME) $(PROGRAM_NAME_SERVER)
 
-	
+
 run:
 	./$(PROGRAM_NAME)
 
 clean:
 	rm -f -r $(OBJ) $(PROGRAM_NAME) $(ODIR)
 	rm -f -r $(OBJ_SERVER) $(PROGRAM_NAME_SERVER) $(ODIR_SERVER)
-
+	rm -f -r gameHighScores.txt
+	
 zip:
 	zip $(PROGRAM_NAME).zip $(SDIR) $(HDIR) $(GDIR) Makefile \
 		makeOBJECTDir makeOBJECT_SOURCEDir
-		
+
 # REFERENCES
 # http://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
 # https://stackoverflow.com/questions/19475037/function-and-difference-between-and-in-makefile
