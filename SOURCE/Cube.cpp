@@ -38,11 +38,13 @@ currWorld(world), lives(lives) {
 	//lives = 2;
 	importCubeImage();
 	initializeCubeCoords();
-	curDir = none;
+	curDir = right;
 	useLeftCube = 0;
 	color = WHITE_BLUE;
 	highlightColor = RED_BLUE;
 	shotColor = RED_BLUE;
+	shotOff = false;
+	shotCoords.first = -1; shotCoords.second = -1;
 
 }
 
@@ -189,11 +191,19 @@ void Cube::initializeCubeCoords(void){
 }
 
 void Cube::transitionWorld(World *world) {
+	currWorld = world;
+	shotOff = false;
 	if(typeid(*world) == typeid(Water)) {
 		color = WHITE_BLUE;
 		highlightColor = RED_BLUE;
 		shotColor = RED_BLUE;
 	}
+	if(typeid(*world) == typeid(Land)) {
+		color = BLACK_WHITE;
+		highlightColor = RED_WHITE;
+		shotColor = RED_WHITE;
+	}
+	shotCoords.first = -1; shotCoords.second = -1;
 }
 
 //Initialize for World 1
@@ -297,7 +307,8 @@ void Cube::cubeReset(World *world){
 	shotCoords.first = -1; shotCoords.second = -1;
 }
 
-void Cube::loadCubeChars(char chars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH]){
+//OLD CUBE ONLY
+/* void Cube::loadCubeChars(char chars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH]){
 	//Load cubeChars with new values (clientside multiplayer only)
 
 	for(int i = 0; i < CUBE_CHARS_HEIGHT; i++){
@@ -312,23 +323,25 @@ void Cube::loadCubeChars(char chars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH]){
 	}
 
 
-/*
+
 	for(int i = 0; i < CUBE_CHARS_HEIGHT; i++)
 		for(int j = 0; j < CUBE_CHARS_WIDTH; j++)
 			cubeChars[i][j] = chars[i][j];
-*/
-}
 
-void Cube::loadCubeCoords(int coords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH]){
+} */
+
+//OLD CUBE ONLY
+/* void Cube::loadCubeCoords(int coords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH]){
 	//Load cubeChars with new values (clientside multiplayer only)
 	for(int i = 0; i < CUBE_COORDS_HEIGHT; i++)
 		for(int j = 0; j < CUBE_COORDS_WIDTH; j++)
 			cubeCoords[i][j] = coords[i][j];
-}
+} */
 
 
 //Update the cube token position based on input by the user(s)
-void Cube::updateCubePosition(bool colInc, bool colDec, bool rowInc, bool rowDec){
+void Cube::updateCubePosition(bool colInc, bool colDec, bool rowInc, bool rowDec,
+							  bool userInputInitiated){
 	int colIncInt = 0, colDecInt = 0, rowIncInt = 0, rowDecInt = 0;
 
 	if(colInc == 1){
@@ -337,7 +350,7 @@ void Cube::updateCubePosition(bool colInc, bool colDec, bool rowInc, bool rowDec
 	if(colDec == 1){
 		colDecInt = 1;
 	}
-	if(rowInc == 1){
+	if(rowInc == 1 && row + cubeHeight <= currWorld->getBottomRow()){
 		rowIncInt = 1;
 	}
 	if(rowDec == 1){
@@ -345,46 +358,48 @@ void Cube::updateCubePosition(bool colInc, bool colDec, bool rowInc, bool rowDec
 	}
 
 	//Update curDir member
-	if(colInc == 0 && colDec == 1 && rowInc == 0 && rowDec == 0 ){
-		prevDir = curDir;
-		curDir = left;
-		useLeftCube = 1;
-	}
-	else if(colInc == 1 && colDec == 0 && rowInc == 0 && rowDec == 0 ){
-		prevDir = curDir;
-		curDir = right;
-		useLeftCube = 0;
-	}
-	else if(colInc == 0 && colDec == 0 && rowInc == 0 && rowDec == 1 ){
-		prevDir = curDir;
-		curDir = up;
-	}
-	else if(colInc == 0 && colDec == 0 && rowInc == 1 && rowDec == 0 ){
-		prevDir = curDir;
-		curDir = down;
-	}
-	else if(colInc == 0 && colDec == 1 && rowInc == 0 && rowDec == 1 ){
-		prevDir = curDir;
-		curDir = left_up;
-		useLeftCube = 1;
-	}
-	else if(colInc == 0 && colDec == 1 && rowInc == 1 && rowDec == 0 ){
-		prevDir = curDir;
-		curDir = left_down;
-		useLeftCube = 1;
-	}
-	else if(colInc == 1 && colDec == 0 && rowInc == 0 && rowDec == 1 ){
-		prevDir = curDir;
-		curDir = right_up;
-		useLeftCube = 0;
-	}
-	else if(colInc == 1 && colDec == 0 && rowInc == 1 && rowDec == 0 ){
-		prevDir = curDir;
-		curDir = right_down;
-		useLeftCube = 0;
-	}
-	else{ //no user directional input
-		curDir = none;
+	if(userInputInitiated) {
+		if(colInc == 0 && colDec == 1 && rowInc == 0 && rowDec == 0 ){
+			prevDir = curDir;
+			curDir = left;
+			useLeftCube = 1;
+		}
+		else if(colInc == 1 && colDec == 0 && rowInc == 0 && rowDec == 0 ){
+			prevDir = curDir;
+			curDir = right;
+			useLeftCube = 0;
+		}
+		else if(colInc == 0 && colDec == 0 && rowInc == 0 && rowDec == 1 ){
+			prevDir = curDir;
+			curDir = up;
+		}
+		else if(colInc == 0 && colDec == 0 && rowInc == 1 && rowDec == 0 ){
+			prevDir = curDir;
+			curDir = down;
+		}
+		else if(colInc == 0 && colDec == 1 && rowInc == 0 && rowDec == 1 ){
+			prevDir = curDir;
+			curDir = left_up;
+			useLeftCube = 1;
+		}
+		else if(colInc == 0 && colDec == 1 && rowInc == 1 && rowDec == 0 ){
+			prevDir = curDir;
+			curDir = left_down;
+			useLeftCube = 1;
+		}
+		else if(colInc == 1 && colDec == 0 && rowInc == 0 && rowDec == 1 ){
+			prevDir = curDir;
+			curDir = right_up;
+			useLeftCube = 0;
+		}
+		else if(colInc == 1 && colDec == 0 && rowInc == 1 && rowDec == 0 ){
+			prevDir = curDir;
+			curDir = right_down;
+			useLeftCube = 0;
+		}
+		else{ //no user directional input
+			curDir = none;
+		}
 	}
 
 	updateCubePositionHelper(colDecInt, colIncInt, rowIncInt, rowDecInt);
@@ -398,7 +413,7 @@ void Cube::updateCubePositionHelper(int colDec, int colInc, int rowInc, int rowD
 	//position as directed by the user(s). If the user(s) is not
 	//providing input for an col/row direction or if both a positive col/row
 	//and negative col/row
-	if(typeid(*currWorld) == typeid(Water)){
+	//if(typeid(*currWorld) == typeid(Water)){
 	//if(currWorld == 1){
 		colPrev = col;
 		rowPrev = row;
@@ -406,8 +421,8 @@ void Cube::updateCubePositionHelper(int colDec, int colInc, int rowInc, int rowD
 		row = row + rowInc - rowDec;
 		Cube::updateCubeCoords(colPrev, col, rowPrev, row);
 
-	}
-	else if(typeid(*currWorld) == typeid(Land)){
+	//}
+	/* else if(typeid(*currWorld) == typeid(Land)){
 	//else if(currWorld == 2){
 		colPrev = col;
 		rowPrev = row;
@@ -417,7 +432,7 @@ void Cube::updateCubePositionHelper(int colDec, int colInc, int rowInc, int rowD
 			row = row + 1;
 		}
 		Cube::updateCubeCoords(colPrev, col, rowPrev, row);
-	}
+	} */
 	/* else if(typeid(*currWorld) == typeid(Space)){
 	//else if(currWorld == 3){
 		colPrev = col;
@@ -458,7 +473,7 @@ int Cube::updateCubeCoords(int colPrev, int colCurr, int rowPrev, int rowCurr){
 	colChange = colCurr - colPrev;
 	rowChange = rowCurr - rowPrev;
 
-	for(i = 0; i < 15; ++i){
+	for(i = 0; i < CUBE_COORDS_HEIGHT; ++i){
 		cubeCoords[i][0] = cubeCoords[i][0] + rowChange;
 		cubeCoords[i][1] = cubeCoords[i][1] + colChange;	
 
@@ -736,6 +751,10 @@ void Cube::drawCubeDeath(int *userInput){
 	}
 
 	attroff(COLOR_PAIR(7));
+	
+	attron(COLOR_PAIR(YELLOW_BLACK));
+	mvaddstr(LINES - 1, 15, "Death! (Press Enter to Continue)");
+	refresh();
 
 	//Block here until user presses Enter key
 	while(*userInput != 10){}
@@ -1117,9 +1136,12 @@ void Cube::processShot() {
 
 //Multiplayer Client Only
 void Cube::printShot() {
-	attron(COLOR_PAIR(shotColor));
-	mvaddstr(shotCoords.first, shotCoords.second, "■");
-	//refresh();
+	if(shotCoords.first >= 0 && shotCoords.first <= currWorld->getBottomRow() &&
+	   shotCoords.second >= 0 && shotCoords.second < COLS) {
+			attron(COLOR_PAIR(shotColor));
+			mvaddstr(shotCoords.first, shotCoords.second, "■");
+			//refresh();
+	 }
 }
 
 

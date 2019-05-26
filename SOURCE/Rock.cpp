@@ -34,7 +34,7 @@ vector<vector<wstring>> Rock::initializeVectorGraphics () {
 								
 								  {L"    _____ ",
 								   L"___/   __\\",
-								   L"\\     /   ",
+								   L"\\     \\_   ",
 								   L" \\     /   ",
 								   L"/__   \\   ",
 								   L"   \\__/   "},

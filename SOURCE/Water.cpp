@@ -113,6 +113,9 @@ void Water::loadOSMCs() {
 
 void Water::renderWorld(Cube *cube) {
 
+	//clear();
+	//refresh();
+
 	//Paint blank background
 	attron(COLOR_PAIR(BLUE_BLUE));
 	for(int i = 0; i <= bottomRow; i++)
@@ -294,7 +297,7 @@ void Water::renderWorld(Cube *cube) {
 
 }
 
-void Water::scroll_() {
+void Water::scroll_(Cube *cube) {
 	
 	/* //Paint blank background
 	attron(COLOR_PAIR(BLUE_BLUE));

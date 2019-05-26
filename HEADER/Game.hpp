@@ -19,6 +19,7 @@ class World;
 //#include "include.hpp"
 #include "constants.hpp"
 #include "transitionAnimation.hpp"
+#include "waitingForOtherPlayer.hpp"
 
 //client network functions
 #include "client.hpp"

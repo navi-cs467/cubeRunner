@@ -14,6 +14,7 @@ Bird::Bird(World *world, Direction offScreen,
 	isStationary = false;
 	//curDirection = left;
 	//sameDirectionMoveCount = 0;
+	color = rand() % 5 + 16;
 	createObstacle(world, offScreen, specificGraphic);
 	
 	//Update size of graphic type array 
@@ -29,9 +30,9 @@ Bird::Bird(World *world, Direction offScreen,
 	world->updateObsCoords(this);
 	
 	//Initialize maxHits based on gameMode
-	if(world->getGameMode() == EASY) maxHits = 3;
-	else if(world->getGameMode() == NORMAL) maxHits = 4;
-	else maxHits = 5;
+	if(world->getGameMode() == EASY) maxHits = 1;
+	else if(world->getGameMode() == NORMAL) maxHits = 2;
+	else maxHits = 3;
 	
 	//Initialize hits ands mvsSinceLastHit
 	hits = 0;
@@ -59,8 +60,6 @@ vector<vector<wstring>> Bird::initializeVectorGraphics () {
 vector<vector<wstring>> Bird::graphicLines = 
 	Bird::initializeVectorGraphics();	  
 
-//Color scheme	
-int Bird::colorSeed = rand() % 5 + 16;
 
 // References
 // https://ubuntuforums.org/showthread.php?t=836043

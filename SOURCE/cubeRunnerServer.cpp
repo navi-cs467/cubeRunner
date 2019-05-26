@@ -13,17 +13,6 @@
 //See using.hpp for "using" declarations
 #include "../HEADER/using.hpp"
 
-//Function prototypes
-//#include "../HEADER/highlight.hpp"		//Shouldn't need
-//#include "../HEADER/hostPrompt.hpp"		//Shouldn't need
-//#include "../HEADER/initColors.hpp"		//Shouldn't need
-//#include "../HEADER/transitionAnimation.hpp"			//Shouldn't need	//This will probably be renamed, changed a bit (i.e. parameter added to specify file name) and then also used for transitions
-//#include "../HEADER/loadGraphic.hpp"		//Shouldn't need
-//#include "../HEADER/paintCubeGraphic.hpp"	//Shouldn't need
-//#include "../HEADER/paintGraphic.hpp"		//Shouldn't need
-//#include "../HEADER/printMenu.hpp"		//Shouldn't need
-//#include "../HEADER/validateWinSize.hpp"	//Shouldn't need
-
 //Game class
 #include "../HEADER/Game.hpp"
 
@@ -240,10 +229,10 @@ int main(int argc, char* argv[]) {
 
 		//Lock needed so threads do not update the same
 		//data at the same time
-		omp_lock_t lock1;
+		omp_lock_t userInputLock;
 
 		//Initialize lock
-		omp_init_lock(&lock1);
+		omp_init_lock(&userInputLock);
 
 		//Used to ensure user sees every move input
 		//(so cube doesn't appear to "skip" around)
@@ -254,8 +243,9 @@ int main(int argc, char* argv[]) {
 		if(DEBUG)
 			printf("Instantiating Game and starting...\n"); fflush(stdout);
 
-		#pragma omp parallel sections shared(deathFlag, lock1, \
-											 renderedLastMv1, renderedLastMv2, userInput1, userInput2, gameOver)
+		#pragma omp parallel sections shared(deathFlag, userInputLock, \
+											 renderedLastMv1, renderedLastMv2, \
+											 userInput1, userInput2, gameOver)
 		{
 			//Thread (1) for updating userInput1 and cube position
 			#pragma omp section
@@ -281,28 +271,42 @@ int main(int argc, char* argv[]) {
 					sprintf(confirm, "%d", 1);
 					sendMessage_S(player1In, confirm);
 
-					while(renderedLastMv1 == false){}
+					if(renderedLastMv1 == true) {
 
-					//Will block here if other player input thread is doing the same thing
-					//Or if data is being sent (Ensures players see every move they input)
-					omp_set_lock(&lock1);
+						//Will block here if other player input thread is doing the same thing
+						//Or if data is being sent (Ensures players see every move they input)
+						omp_set_lock(&userInputLock);
 
-					if((userInput1 == KEY_UP || userInput1 == '8' || userInput1 == 'w')
-							&& cube->getCubeCoords()[0][0] > 0){
-						cube->updateCubePosition(0, 0, 0, 1);
-						cube->setCubeDirection(up);
-					}
-					else if((userInput1 == KEY_DOWN || userInput1 == '2' || userInput1 == 's') &&
-								cube->getCubeCoords()[15][0] < world->getBottomRow()) {
-						cube->updateCubePosition(0, 0, 1, 0);
-						cube->setCubeDirection(down);
-					}
-					else if(userInput2 == 32) {
-						cube->fireShot();
-					}
+						if((userInput1 == KEY_UP || userInput1 == '8' || userInput1 == 'w')
+								&& cube->getCubePositionRow() > 0){
+							cube->updateCubePosition(0, 0, 0, 1);
+							cube->setCubeDirection(up);
+						}
+						else if((userInput1 == KEY_DOWN || userInput1 == '2' || userInput1 == 's') &&
+									cube->getCubePositionRow() + CUBE_CHARS_HEIGHT - 1
+										< world->getBottomRow()) {
+							cube->updateCubePosition(0, 0, 1, 0);
+							cube->setCubeDirection(down);
+						}
+						else if((userInput1 == KEY_RIGHT || userInput2 == '6' || userInput2 == 'd') &&
+									cube->getCubePositionCol() + CUBE_CHARS_WIDTH - 1 < COLS) {
+							cube->updateCubePosition(1, 0, 0, 0);
+							cube->setCubeDirection(right);
+						}
+						else if((userInput1 == KEY_LEFT || userInput2 == '4' || userInput2 == 'a') &&
+								cube->getCubePositionCol() > 0) {
+							cube->updateCubePosition(0, 1, 0, 0);
+							cube->setCubeDirection(left);
+						}
+						else if(userInput2 == 32) {
+							cube->fireShot(); 
+							if(DEBUG)
+								printf("SHOT FIRED!!\n");
+						}
 
-					renderedLastMv1 = false;
-					omp_unset_lock(&lock1);
+						renderedLastMv1 = false;
+						omp_unset_lock(&userInputLock);
+					}
 				}
 			}
 
@@ -331,28 +335,42 @@ int main(int argc, char* argv[]) {
 
 					sendMessage_S(player2In, confirm);
 
-					while(renderedLastMv2 == false){}
+					if(renderedLastMv2 == true) {
 
-					//Will block here if other player input thread is doing the same thing to the same data
-					//Or if data is being sent (Ensures players see every move they input)
-					omp_set_lock(&lock1);
+						//Will block here if other player input thread is doing the same thing to the same data
+						//Or if data is being sent (Ensures players see every move they input)
+						omp_set_lock(&userInputLock);
 
-					if((userInput2 == KEY_RIGHT || userInput2 == '6' || userInput2 == 'd') &&
-								cube->getCubeCoords()[15][1] < COLS) {
-						cube->updateCubePosition(1, 0, 0, 0);
-						cube->setCubeDirection(right);
-					}
-					else if((userInput2 == KEY_LEFT || userInput2 == '4' || userInput2 == 'a') &&
-							cube->getCubeCoords()[0][1] > 0) {
-						cube->updateCubePosition(0, 1, 0, 0);
-						cube->setCubeDirection(left);
-					}
-					else if(userInput2 == 32) {
-						cube->fireShot();
-					}
+						if((userInput2 == KEY_RIGHT || userInput2 == '6' || userInput2 == 'd') &&
+									cube->getCubePositionCol() + CUBE_CHARS_WIDTH - 1 < COLS) {
+							cube->updateCubePosition(1, 0, 0, 0);
+							cube->setCubeDirection(right);
+						}
+						else if((userInput2 == KEY_LEFT || userInput2 == '4' || userInput2 == 'a') &&
+								cube->getCubePositionCol() > 0) {
+							cube->updateCubePosition(0, 1, 0, 0);
+							cube->setCubeDirection(left);
+						}
+						else if((userInput2 == KEY_UP || userInput1 == '8' || userInput1 == 'w')
+								&& cube->getCubePositionRow() > 0){
+							cube->updateCubePosition(0, 0, 0, 1);
+							cube->setCubeDirection(up);
+						}
+						else if((userInput2 == KEY_DOWN || userInput1 == '2' || userInput1 == 's') &&
+									cube->getCubePositionRow() + CUBE_CHARS_HEIGHT - 1
+										< world->getBottomRow()) {
+							cube->updateCubePosition(0, 0, 1, 0);
+							cube->setCubeDirection(down);
+						}
+						else if(userInput2 == 32) {
+							cube->fireShot();
+							if(DEBUG)
+								printf("SHOT FIRED!!\n");
+						}
 
-					renderedLastMv2 = false;
-					omp_unset_lock(&lock1);
+						renderedLastMv2 = false;
+						omp_unset_lock(&userInputLock);
+					}
 				}
 			}
 
@@ -485,50 +503,57 @@ int main(int argc, char* argv[]) {
 						// World transition if cube->transitionCount
 						//reaches TRANSITION_SCORE_INTERVAL
 
-						//if(cube->getCubeTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
-						if(0) {
+						if(cube->getCubeTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
+						//if(userInput1 == 't' || userInput2 == 't') {
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 							it != world->getObstacles().begin(); it++) {
 								delete *it;
 							}
 
-							// //Delete and create new world
-							// if(typeid(*world) == typeid(Water)) {
-							// 	delete world;
-							// 	world = new Land(gameMode, isTwoPlayer);
-							// 	newWorldType = 1;
-							// }
-							// else if(typeid(*world) == typeid(Land)) {
-							// 	delete world;
-							// 	world = new Space(gameMode, isTwoPlayer);
-							// 	newWorldType = 2;
-							// }
-							// else if(typeid(*world) == typeid(Space)) {
-							// 	delete world;
-							// 	world = new Water(gameMode, isTwoPlayer);
-							// 	newWorldType = 3;
-							// }
-
-							isNewWorldFlag = true;
+							//Create new world
+							if(typeid(*world) == typeid(Water)) {
+								
+								//Delete the existing world
+								delete world;
+								
+								//Create new world
+								world = new Land(gameMode, true, true);
+								cube->transitionWorld(world);
+								newWorldType = 2;
+							}
+							else if(typeid(*world) == typeid(Land)) {
+								
+								//Delete the existing world
+								delete world;
+								
+								//Create new world
+								world = new Water(gameMode, true, true);
+								cube->transitionWorld(world);
+								newWorldType = 1;
+							}
+							/* else if(typeid(*world) == typeid(Space))
+								world = new Water(gameMode, isTwoPlayer); */
 
 							//If score is less than 3000, increase scroll and move time intervals by a constant
-							//(This is the point at which all three worlds have been cycled 3 times each,
+							//(Once score is 3000, all three worlds have been cycled 3 times each,
 							// and the speeds are capped.)
 							scrollRate *= SCROLL_MOVE_UPDATE_RATE;
 							moveRate *= SCROLL_MOVE_UPDATE_RATE;
 
 							//Reset cubes position to left-middle starting point
-							cube->cubeReset(world);
+							world->resetPlayer(cube);
 
 							//Reset transitionCount
 							cube->resetCubeTransitionScore();
+							
+							isNewWorldFlag = true;
 						}
 
 						// ** COMMS WITH CLIENTS **
 
-						omp_set_lock(&lock1);	//Block here if updating cube parameters via playerInputs,
-												//then lock out input threads from updating until finished
+						omp_set_lock(&userInputLock);	//Block here if updating cube parameters via playerInputs,
+														//then lock out input threads from updating until finished
 
 						//Check for death
 						cube->checkCubeCollision(world);
@@ -819,7 +844,7 @@ int main(int argc, char* argv[]) {
 
 						//send y shotCoord to clients
 						memset(messageToSend, '\0', sizeof messageToSend);
-						sprintf(messageToSend, "%d", cube->getShotCoords().first);
+						sprintf(messageToSend, "%d", cube->getShotCoords().second);
 
 						//player 1
 						sendMessage_S(player1, messageToSend);
@@ -922,32 +947,95 @@ int main(int argc, char* argv[]) {
 						// SEND connection1: isNewWorldFlag
 						// (Optional ?) RECEIVE connection1: confirmation
 
-						//if (isNewWorldFlag)
-						if(0)
+						if (isNewWorldFlag)
 						{
 							//send flag to both clients
 							memset(messageToSend, '\0', sizeof messageToSend);
 							sprintf(messageToSend, "%d", 1);
 
 							sendMessage_S(player1, messageToSend);
+							if(DEBUG) {
+								printf("SENT PLAYER 1 (New World): %s\n", messageToSend);
+
+							}
 							memset(clientConfirm, '\0', sizeof clientConfirm);
 							receiveMessage_S(player1, clientConfirm);
+							if(DEBUG) {
+								printf("RECV FROM PLAYER 1 (New World confirm): %s\n", clientConfirm);
+							}
 
 							sendMessage_S(player2, messageToSend);
+							if(DEBUG) {
+								printf("SENT PLAYER 2 (New World): %s\n", messageToSend);
+
+							}
 							memset(clientConfirm, '\0', sizeof clientConfirm);
 							receiveMessage_S(player2, clientConfirm);
+							if(DEBUG) {
+								printf("RECV FROM PLAYER 2 (New World confirm): %s\n", clientConfirm);
+							}
 
 							//send new world type to clients
 							memset(messageToSend, '\0', sizeof messageToSend);
 							sprintf(messageToSend, "%d", newWorldType);
 
 							sendMessage_S(player1, messageToSend);
+							if(DEBUG) {
+								printf("SENT PLAYER 1 (New World Type): %s\n", messageToSend);
+
+							}
 							memset(clientConfirm, '\0', sizeof clientConfirm);
 							receiveMessage_S(player1, clientConfirm);
-
+							if(DEBUG) {
+								printf("RECV FROM PLAYER 1 (New World Type confirm): %s\n", clientConfirm);
+							}
+							
 							sendMessage_S(player2, messageToSend);
+							if(DEBUG) {
+								printf("SENT PLAYER 2 (New World Type): %s\n", messageToSend);
+							}
 							memset(clientConfirm, '\0', sizeof clientConfirm);
 							receiveMessage_S(player2, clientConfirm);
+							if(DEBUG) {
+								printf("RECV FROM PLAYER 2 (New World Type confirm): %s\n", clientConfirm);
+							}
+							
+							//Unlock input so users can confirm
+							omp_unset_lock(&userInputLock);
+							
+							//Send requests for player confirmations of new world
+							memset(messageToSend, '\0', sizeof messageToSend);
+							sprintf(messageToSend, "%d", newWorldType);
+
+							sendMessage_S(player1, messageToSend);
+							if(DEBUG) {
+								printf("SENT PLAYER 1 (New World Player Confirm Request): %s\n", messageToSend);
+
+							}
+							memset(clientConfirm, '\0', sizeof clientConfirm);
+							receiveMessage_S(player1, clientConfirm);
+							if(DEBUG) {
+								printf("RECV FROM PLAYER 1 (New World Player Confirm Request confirm): %s\n", clientConfirm);
+							}
+							
+							sendMessage_S(player2, messageToSend);
+							if(DEBUG) {
+								printf("SENT PLAYER 2 (New World Player Confirm Request): %s\n", messageToSend);
+							}
+							memset(clientConfirm, '\0', sizeof clientConfirm);
+							receiveMessage_S(player2, clientConfirm);
+							if(DEBUG) {
+								printf("RECV FROM PLAYER 2 (New World Player Confirm Request confirm): %s\n", clientConfirm);
+							}
+					
+							//Relock
+							omp_set_lock(&userInputLock);
+							
+							//Clear any userInput remaining in the buffer
+							//So cube doesn't move without input after new world renders
+							//char bufClear[256];
+							//while (read(player1In, bufClear, sizeof(bufClear)) > 0){}
+							//while (read(player2In, bufClear, sizeof(bufClear)) > 0){}
 						}
 
 						else
@@ -1184,38 +1272,137 @@ int main(int argc, char* argv[]) {
 									}
 								}
 
-								/* else if(typeid(**itObs) == typeid(Tree))
-								// SEND connection1: 5
+								else if(typeid(**itObs) == typeid(Tree))
 								{
-								// SEND connection1: 5
-								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", 5);
-								sendMessage_S(player1, messageToSend);
-							}
+
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 5);
+
+									// SEND connection1: 1
+									sendMessage_S(player1, messageToSend);
+									if(DEBUG) {
+										printf("SENT PLAYER 1 (ob %d type): %s\n", obsNum, messageToSend);
+
+									}
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
+									if(DEBUG) {
+										printf("RECV FROM PLAYER 1 (ob %d type confirm): %s\n",obsNum, clientConfirm);
+
+									}
+
+									// SEND connection2: 1
+									sendMessage_S(player2, messageToSend);
+									if(DEBUG) {
+										printf("SENT PLAYER 2 (ob %d type): %s\n", obsNum, messageToSend);
+
+									}
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
+									if(DEBUG) {
+										printf("RECV FROM PLAYER 2 (ob %d type confirm): %s\n", obsNum, clientConfirm);
+
+									}
+								}
+
 								else if(typeid(**itObs) == typeid(Rock))
 								{
-								// SEND connection1: 6
-								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", 6);
-								sendMessage_S(player1, messageToSend);
-							}
-								=
+
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 6);
+
+									// SEND connection1: 2
+									sendMessage_S(player1, messageToSend);
+									if(DEBUG) {
+										printf("SENT PLAYER 1 (ob %d type): %s\n", obsNum, messageToSend);
+
+									}
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
+									if(DEBUG) {
+										printf("RECV FROM PLAYER 1 (ob %d type confirm): %s\n",obsNum, clientConfirm);
+
+									}
+
+									// SEND connection2: 2
+									sendMessage_S(player2, messageToSend);
+									if(DEBUG) {
+										printf("SENT PLAYER 2 (ob %d type): %s\n", obsNum, messageToSend);
+
+									}
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
+									if(DEBUG) {
+										printf("RECV FROM PLAYER 2 (ob %d type confirm): %s\n", obsNum, clientConfirm);
+
+									}
+								}
+
 								else if(typeid(**itObs) == typeid(Bird))
 								{
-								// SEND connection1: 7
-								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", 7);
-								sendMessage_S(player1, messageToSend);
-							}
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 7);
+
+									// SEND connection1: 3
+									sendMessage_S(player1, messageToSend);
+									if(DEBUG) {
+										printf("SENT PLAYER 1 (ob %d type): %s\n", obsNum, messageToSend);
+
+									}
+
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
+									if(DEBUG) {
+										printf("RECV FROM PLAYER 1 (ob %d type confirm): %s\n",obsNum, clientConfirm);
+
+									}
+									// SEND connection2: 3
+									sendMessage_S(player2, messageToSend);
+									if(DEBUG) {
+										printf("SENT PLAYER 2 (ob %d type): %s\n", obsNum, messageToSend);
+
+									}
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
+									if(DEBUG) {
+										printf("RECV FROM PLAYER 2 (ob %d type confirm): %s\n", obsNum, clientConfirm);
+
+									}
+								}
 
 								else if(typeid(**itObs) == typeid(Bat))
 								{
-								// SEND connection1: 8
-								memset(messageToSend, '\0', sizeof messageToSend);
-								sprintf(messageToSend, "%d", 8);
-								sendMessage_S(player1, messageToSend);
-							}
-						9
+
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%d", 8);
+
+									// SEND connection1: 4
+									sendMessage_S(player1, messageToSend);
+									if(DEBUG) {
+										printf("SENT PLAYER 1 (ob %d type): %s\n", obsNum, messageToSend);
+
+									}
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
+									if(DEBUG) {
+										printf("RECV FROM PLAYER 1 (ob %d type confirm): %s\n",obsNum, clientConfirm);
+
+									}
+
+									// SEND connection2: 4
+									sendMessage_S(player2, messageToSend);
+									if(DEBUG) {
+										printf("SENT PLAYER 2 (ob %d type): %s\n", obsNum, messageToSend);
+
+									}
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
+									if(DEBUG) {
+										printf("RECV FROM PLAYER 2 (ob %d type confirm): %s\n", obsNum, clientConfirm);
+
+									}
+								}
+						/*
 								else if(typeid(**itObs) == typeid(Asteroid))
 								{
 								// SEND connection1: 9
@@ -1379,6 +1566,9 @@ int main(int argc, char* argv[]) {
 								if(typeid(**itObs) == typeid(Octopus))
 									sprintf(messageToSend, "%d",
 										(static_cast<Octopus*>(*itObs))->getColor());
+								else if(typeid(**itObs) == typeid(Bird))
+									sprintf(messageToSend, "%d",
+										(static_cast<Bird*>(*itObs))->getColor());
 								else
 									sprintf(messageToSend, "%d", -1);
 
@@ -1435,10 +1625,105 @@ int main(int argc, char* argv[]) {
 								receiveMessage_S(player2, clientConfirm);
 								if(DEBUG) {
 									printf("RECV FROM PLAYER 2 (ob %d hits): confirm): %s\n", obsNum, clientConfirm);
-									cin.get();
 								}
+								
+								//Send position of holes for stationary Obstacles
+								if((*itObs)->getIsStationary()) {
+									// number of holes
+									memset(messageToSend, '\0', sizeof messageToSend);
+									sprintf(messageToSend, "%ld", (*itObs)->getHoles().size());
 
-								// (Optional ?) RECEIVE connection1: confirmation
+									//(Player 1)
+									sendMessage_S(player1, messageToSend);
+									if(DEBUG) {
+										printf("SENT PLAYER 1 (ob %d number of holes): %s\n", obsNum, messageToSend);
+
+									}
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player1, clientConfirm);
+									if(DEBUG) {
+										printf("RECV FROM PLAYER 1 (ob %d number of holes confirm): %s\n",obsNum, clientConfirm);
+									}
+
+									//(Player 2)
+									sendMessage_S(player2, messageToSend);
+									if(DEBUG) {
+										printf("SENT PLAYER 2 (ob %d number of holes): %s\n", obsNum, messageToSend);
+
+									}
+
+									memset(clientConfirm, '\0', sizeof clientConfirm);
+									receiveMessage_S(player2, clientConfirm);
+									if(DEBUG) {
+										printf("RECV FROM PLAYER 2 (ob %d number of holes confirm): %s\n", obsNum, clientConfirm);
+									}
+									
+									int holeNum = 0;	//Debugging only
+									for(set<pair<int, int>>::iterator holesIt = (*itObs)->getHoles().begin();
+										holesIt != (*itObs)->getHoles().end(); holesIt++) {
+										
+										// hole position x
+										memset(messageToSend, '\0', sizeof messageToSend);
+										sprintf(messageToSend, "%d", holesIt->first);
+
+										//(Player 1)
+										sendMessage_S(player1, messageToSend);
+										if(DEBUG) {
+											printf("SENT PLAYER 1 (ob %d hole num %d x pos): %s\n", obsNum, holeNum, messageToSend);
+
+										}
+										memset(clientConfirm, '\0', sizeof clientConfirm);
+										receiveMessage_S(player1, clientConfirm);
+										if(DEBUG) {
+											printf("RECV FROM PLAYER 1 (ob %d hole num %d x pos confirm): %s\n",obsNum, holeNum, clientConfirm);
+										}
+
+										//(Player 2)
+										sendMessage_S(player2, messageToSend);
+										if(DEBUG) {
+											printf("SENT PLAYER 2 (ob %d hole num %d x pos): %s\n", obsNum, holeNum, messageToSend);
+
+										}
+
+										memset(clientConfirm, '\0', sizeof clientConfirm);
+										receiveMessage_S(player2, clientConfirm);
+										if(DEBUG) {
+											printf("RECV FROM PLAYER 2 (ob %d hole num %d x pos confirm): %s\n", obsNum, holeNum, messageToSend);
+										}
+										
+										// hole position y
+										memset(messageToSend, '\0', sizeof messageToSend);
+										sprintf(messageToSend, "%d", holesIt->second);
+
+										//(Player 1)
+										sendMessage_S(player1, messageToSend);
+										if(DEBUG) {
+											printf("SENT PLAYER 1 (ob %d hole num %d x pos): %s\n", obsNum, holeNum, messageToSend);
+
+										}
+										memset(clientConfirm, '\0', sizeof clientConfirm);
+										receiveMessage_S(player1, clientConfirm);
+										if(DEBUG) {
+											printf("RECV FROM PLAYER 1 (ob %d hole num %d x pos confirm): %s\n",obsNum, holeNum, clientConfirm);
+										}
+
+										//(Player 2)
+										sendMessage_S(player2, messageToSend);
+										if(DEBUG) {
+											printf("SENT PLAYER 2 (ob %d hole num %d x pos): %s\n", obsNum, holeNum, messageToSend);
+
+										}
+
+										memset(clientConfirm, '\0', sizeof clientConfirm);
+										receiveMessage_S(player2, clientConfirm);
+										if(DEBUG) {
+											printf("RECV FROM PLAYER 2 (ob %d hole num %d x pos confirm): %s\n", obsNum, holeNum++, messageToSend);
+										}
+									}
+								}
+							}
+							if(DEBUG) {
+								//cin.get();
 							}
 						}
 
@@ -1565,12 +1850,12 @@ int main(int argc, char* argv[]) {
 						renderedLastMv1 = renderedLastMv2 = true;
 
 						//Done Sending - Unset Lock!
-						omp_unset_lock(&lock1);
+						omp_unset_lock(&userInputLock);
 					}
 
 					if(omp_get_wtime() - lastScrollTime > scrollRate) {
 						lastScrollTime = omp_get_wtime();
-						world->scroll_();
+						world->scroll_(cube);
 						//if(typeid(*world) != typeid(Space))
 							if(scrollCount == COLS) {
 								world->loadOSObs();
@@ -1601,12 +1886,14 @@ int main(int argc, char* argv[]) {
 						omp_get_wtime() - lastShotTime > moveRate / 2) {
 							lastShotTime = omp_get_wtime();
 							cube->moveShot();
+							cube->processShot(); 
 					}
 					else if(cube->getShotDir() != up &&
 							cube->getShotDir() != down &&
 							omp_get_wtime() - lastShotTime > moveRate / 4) {
 						lastShotTime = omp_get_wtime();
-						cube->moveShot();
+							cube->moveShot();
+							cube->processShot(); 
 					}
 
 					//Update time every second
@@ -1646,8 +1933,9 @@ int main(int argc, char* argv[]) {
 					// receiveMessage_S(player2, clientConfirm);
 					/**** END REQUEST CONFIRMATION OF GAME STATS RENDER ****/
 
-					if(DEBUG)
-						cin.get();
+					if(DEBUG) {
+						//cin.get();
+					}
 				}
 			}
 		}

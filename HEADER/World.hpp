@@ -48,7 +48,7 @@ class World {
 						   Direction offScreenDirection = none);
 		virtual void renderWorld(Cube *cube) = 0;
 		//virtual void scroll_(bool newObs) = 0;
-		virtual void scroll_() = 0;
+		virtual void scroll_(Cube *cube) = 0;
 		virtual void loadOSObs() = 0;	//Load offscreen Obstacles (for scrolling)
 		virtual void loadOSMCs() = 0;	//Load offscreen miniCubes (for scrolling)
 		int getBottomRow() const {return bottomRow;}
@@ -56,6 +56,7 @@ class World {
 		void resetPlayer(Cube *cube);
 		int getGameMode() {return gameMode;}
 		bool getIsTwoPlayer() {return isTwoPlayer;}
+		bool getForServer() {return forServer;}
 		
 		//Method to access
 		list<Obstacle*>& getObstacles() {return obstacles;}

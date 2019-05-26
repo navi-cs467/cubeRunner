@@ -26,7 +26,7 @@ class Water : public World {
 		Water(int gameMode, bool isTwoPlayer, bool forServer = false);
 		virtual void renderWorld(Cube *cube);
 		//virtual void scroll_(bool newObs);
-		virtual void scroll_();
+		virtual void scroll_(Cube *cube);
 		virtual void loadOSObs();	//Load offscreen Obstacles (for scrolling)
 		virtual void loadOSMCs();	//Load offscreen miniCubes (for scrolling)
 };

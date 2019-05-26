@@ -49,9 +49,35 @@ Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts,
 			//Initialize hits and mvsSinceLastHit
 			this->hits = hits;
 		}
-		else if(type == 5) {
+		if(type == 5) {
 			if(Tree::_getGraphicLines()[gt][i].size() > longestGS)
 				longestGS = Tree::_getGraphicLines()[gt][i].size();
+		}
+		else if(type == 6) {
+			if(Rock::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Rock::_getGraphicLines()[gt][i].size();
+		}
+		else if(type == 7) {
+			if(Bird::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Bird::_getGraphicLines()[gt][i].size();
+			//Initialize maxHits based on gameMode
+			if(gm == EASY) maxHits = 1;
+			else if(gm == NORMAL) maxHits = 2;
+			else maxHits = 3;
+			
+			//Initialize hits ands mvsSinceLastHit
+			this->hits = hits;
+		}
+		else if(type == 8) {
+			if(Bat::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Bat::_getGraphicLines()[gt][i].size();
+			//Initialize maxHits based on gameMode
+			if(gm == EASY) maxHits = 1;
+			else if(gm == NORMAL) maxHits = 2;
+			else maxHits = 3;
+			
+			//Initialize hits and mvsSinceLastHit
+			this->hits = hits;
 		}
 	}
 }

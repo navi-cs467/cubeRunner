@@ -26,11 +26,12 @@ class Bat : public Obstacle {
 	public:
 		Bat(int type, int posX, int posY, int gt, int gts,
 				int colorOrColorSeed, int hits, int gm) :
-			Obstacle(type, posX, posY, gt, gts, colorOrColorSeed, hits, gm) {}				//Constructor for client
+			Obstacle(type, posX, posY, gt, gts, colorOrColorSeed, hits, gm) 
+			{isStationary = false;}				//Constructor for client
 		Bat(World *world, Direction offScreen = none,
 			  int specificGraphic = -1);					//Constructor for server and 1-player
 		static vector<vector<wstring>> _getGraphicLines() {return graphicLines;}
-		int getColor() {return color;}
+		static int getColor() {return color;}
 		static vector<vector<wstring>> initializeVectorGraphics();
 		//Direction getDirection() {return curDirection;}
 		//void setDirection(Direction newDirection) {curDirection = newDirection;}

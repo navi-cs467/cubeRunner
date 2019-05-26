@@ -454,7 +454,7 @@ int main(void)
 						}
 
 						//Exit
-						else if(currMenu == 2 && cursorPos == BACK) {
+						else if(currMenu == 2 && (cursorPos == BACK || c == KEY_END || c == 27)) {
 							delwin(subscrnMenu2);
 							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL,
 														MENU1_LENGTH, MM_WIDTH);
@@ -467,6 +467,19 @@ int main(void)
 							currMenu = 1;
 						}
 					}
+					//Go back to first menu if user presses "END" or "ESC"
+					else if(currMenu == 2 && (c == KEY_END || c == 27)) {
+							delwin(subscrnMenu2);
+							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL,
+														MENU1_LENGTH, MM_WIDTH);
+							subscrnGraphic = paintCubeGraphic(subscrnGraphic,
+												"GRAPHICS/menuCubeRight1_1.txt");
+							if(isTwoPlayer == false) cursorPos = ONE_PLAYER;
+							else cursorPos = TWO_PLAYER;
+							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
+								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
+							currMenu = 1;
+						}
 				}
 			}
 		}

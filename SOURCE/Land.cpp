@@ -111,7 +111,11 @@ void Land::loadOSMCs() {
 
 void Land::renderWorld(Cube *cube) {
 
+	//clear();
+	//refresh();
+
 	//Paint blank background
+	attron(A_BOLD);
 	attron(COLOR_PAIR(WHITE_WHITE));
 	for(int i = 0; i <= bottomRow; i++)
 		mvhline(i, 0, ' ', COLS);
@@ -211,7 +215,7 @@ void Land::renderWorld(Cube *cube) {
 		}
 				
 		else if(typeid(**it) == typeid(Bird)) {
-			int color = static_cast<Bird *>(*it)->getColorSeed();
+			int color = static_cast<Bird*>(*it)->getColor();
 			attron(A_BOLD);
 			if((*it)->getHits()) {
 				attron(COLOR_PAIR(RED_WHITE));
@@ -235,7 +239,7 @@ void Land::renderWorld(Cube *cube) {
 						move(i + xCoord + xOffset, j + yCoord);
 						attron(COLOR_PAIR(GREEN_WHITE));
 						printw("%lc", (*it)->getMaxHits() - (*it)->getHits() + '0');
-						attron(COLOR_PAIR(RED_BLUE));
+						attron(COLOR_PAIR(RED_WHITE));
 					}
 					//output to screen
 					else {
@@ -247,7 +251,7 @@ void Land::renderWorld(Cube *cube) {
 	
 
 		else if(typeid(**it) == typeid(Bat)) {
-			int color = static_cast<Bat *>(*it)->getColor();
+			int color = Bat::getColor();
 			attron(A_BOLD);
 			if((*it)->getHits()) {
 				attron(COLOR_PAIR(RED_WHITE));
@@ -271,7 +275,7 @@ void Land::renderWorld(Cube *cube) {
 						move(i + xCoord + xOffset, j + yCoord);
 						attron(COLOR_PAIR(GREEN_WHITE));
 						printw("%lc", (*it)->getMaxHits() - (*it)->getHits() + '0');
-						attron(COLOR_PAIR(RED_BLUE));
+						attron(COLOR_PAIR(RED_WHITE));
 					}
 					//output to screen
 					else {
@@ -282,16 +286,14 @@ void Land::renderWorld(Cube *cube) {
 			}
 		}
 
+	cube->processShot(); 
 	
-	if(!isTwoPlayer && !forServer) {
-		cube->processShot();
-		refresh();
+	if(!forServer) {
+		//refresh();
 	}
-
-	refresh();
 }
 
-void Land::scroll_() {
+void Land::scroll_(Cube* cube) {
 	
 	/* //Paint blank background
 	attron(COLOR_PAIR(BLUE_BLUE));
@@ -300,6 +302,9 @@ void Land::scroll_() {
 	attron(COLOR_PAIR(GREEN_GREEN));
 	for(int i = bottomRow + 1; i < LINES - 1; i++)
 		mvhline(i, 0, ' ', COLS); */
+	
+	//Cube "falls" with each scroll on Land
+	cube->updateCubePosition(0, 0, 1, 0, false);
 	
 	set<pair<int, int>>::iterator itObs;
 	

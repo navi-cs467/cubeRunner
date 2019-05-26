@@ -14,7 +14,6 @@ Bat::Bat(World *world, Direction offScreen,
 	isStationary = false;
 	//curDirection = left;
 	//sameDirectionMoveCount = 0;
-	color = rand() % 3 + 32;
 	createObstacle(world, offScreen, specificGraphic);
 	
 	//Update size of graphic type array 
@@ -30,9 +29,9 @@ Bat::Bat(World *world, Direction offScreen,
 	world->updateObsCoords(this);
 	
 	//Initialize maxHits based on gameMode
-	if(world->getGameMode() == EASY) maxHits = 2;
-	else if(world->getGameMode() == NORMAL) maxHits = 3;
-	else maxHits = 4;
+	if(world->getGameMode() == EASY) maxHits = 1;
+	else if(world->getGameMode() == NORMAL) maxHits = 2;
+	else maxHits = 3;
 	
 	//Initialize hits and mvsSinceLastHit
 	hits = 0;

@@ -27,7 +27,7 @@ void transitionAnimationInsideThread(const char* fileName,
 	bool animation1Completed = false;
 	
 	attron(A_BOLD);
-	if(*userInput != KEY_ENTER) {
+	if(*userInput != 10) {
 		// paint screen background color
 		attron(COLOR_PAIR(backgroundColor));
 		for (int y = 0; y < LINES; y++) {
@@ -44,7 +44,7 @@ void transitionAnimationInsideThread(const char* fileName,
 	WINDOW *subscrn = newwin(graphicHeight, graphicWidth, 
 							 startingRow, startingCol);
 	
-	if(*userInput != KEY_ENTER) {
+	if(*userInput != 10) {
 		// paint subscreen background color
 		wattron(subscrn, COLOR_PAIR(backgroundColor)); wattron(subscrn, A_BOLD);
 		for (int y = 0; y < graphicHeight; y++) {
@@ -59,7 +59,7 @@ void transitionAnimationInsideThread(const char* fileName,
     int color, row;
 	//Paint the rows to the screen
 	for (row = 0, color = rand() % 6 + startingSeedColor; 
-			row < graphicHeight - 2 && *userInput != KEY_ENTER;
+			row < graphicHeight - 2 && *userInput != 10;
 			row++, color++) {  
 	   if(color == startingSeedColor + 6) color = startingSeedColor;		//Cycle to first index when necessary
 	   //Change color
@@ -78,15 +78,15 @@ void transitionAnimationInsideThread(const char* fileName,
 	mvwhline(subscrn, row, 0, ' ', graphicWidth);	//correctly before threading below
 	mvwhline(subscrn, row + 1, 0, ' ', graphicWidth);	
 		
-	if(!userInput != KEY_ENTER) usleep(200 * 1000);	//Sleep for 200 milliseconds
+	if(!userInput != 10) usleep(200 * 1000);	//Sleep for 200 milliseconds
 	
 	//Print blinking continue prompt (if animation was not skipped)
 	//attron(A_BLINK);	//Doesn't work, (at least for some terminals)
 	double time = omp_get_wtime(); 
 	bool visible = false; 
-	if(*userInput != KEY_ENTER){
+	if(*userInput != 10){
 		animation1Completed = true;
-		while(!*userInput != KEY_ENTER) {
+		while(*userInput != 10) {
 			if(time + 0.6 < omp_get_wtime() && visible == false){
 				time = omp_get_wtime();
 				wattron(subscrn, COLOR_PAIR(promptColor));
@@ -119,7 +119,7 @@ void transitionAnimationInsideThread(const char* fileName,
 		//of the enter key
 		*userInput = 0;
 		for(int i = LINES, j = COLS, color = rand() % 6 + 9, z = 0; 
-			*userInput != KEY_ENTER && i >= LINES/2 && j >= COLS/2; 
+			*userInput != 10 && i >= LINES/2 && j >= COLS/2; 
 			i -= MAIN_BORDER_ANIMATION_ROW_WIDTH, j -= MAIN_BORDER_ANIMATION_COL_WIDTH, color++, z++) {
 			if(color == 15) color = 9;	//Reset color when necessary
 			attron(COLOR_PAIR(color));

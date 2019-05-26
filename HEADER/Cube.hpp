@@ -25,7 +25,7 @@
 #define CUBE_CHARS_WIDTH 5
 #define CUBE_CHARS_HEIGHT 3
 #define CUBE_COORDS_WIDTH 2
-#define CUBE_COORDS_HEIGHT 16
+#define CUBE_COORDS_HEIGHT 15
 
 
 class Cube{
@@ -37,7 +37,6 @@ class Cube{
 		char cubeRightChars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH];
 		int cubeCoords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];	 //row, col
 		void updateCubePositionHelper(int, int, int, int);
-		int updateCubeCoords(int, int, int, int);
 		bool isDead; //0 = alive, 1 = dead
 		int score; //points total
 		int transitionScore;	//points since last world transition
@@ -49,7 +48,6 @@ class Cube{
 		static const int cubeHeight = 3;
 		static const int cubeWidth = 5;
 		void importCubeImage(void);
-		void initializeCubeCoords(void);
 		bool useLeftCube; //0= right, 1 = left
 		bool shotOff;
 		pair<int, int> shotCoords;
@@ -64,15 +62,17 @@ class Cube{
 		void cubeInitWorld2(void);
 		void cubeInitWorld3(void);
 		void cubeReset(World *world);
-		void updateCubePosition(bool, bool, bool, bool);
+		void initializeCubeCoords(void);
+		int updateCubeCoords(int, int, int, int);
+		void updateCubePosition(bool, bool, bool, bool, bool = true);
 		int getCubePositionCol(void){return col;}  					//Return Cube's Current Column
 		void setCubePositionCol(int col){this->col = col;}  				//Set Cube's Current Column (multiplayer only)
 		int getCubePositionRow(void){return row;}  					//Return Cube's Current Row
 		void setCubePositionRow(int row){this->row = row;}  				//Set Cube's Current Row (multiplayer only)
 		//char (*getCubeChars(void))[4]{return cubeChars;}				//Return's Cube's characters
-		void loadCubeChars(char chars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH]);							//Load Cube's characters (multiplayer only)
-		int (*getCubeCoords(void))[2]{return cubeCoords;}			//Return Cube's coordinates
-		void loadCubeCoords(int coords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH]);							//Return Cube's coordinates
+		//void loadCubeChars(char chars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH]);							//Load Cube's characters (multiplayer only)
+		//int (*getCubeCoords(void))[2]{return cubeCoords;}			//Return Cube's coordinates
+		//void loadCubeCoords(int coords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH]);							//Return Cube's coordinates
 		//int getCubeCurrWorld(void){return currWorld;}  				//Return Cube's World
 		World* getCubeCurrWorld(void){return currWorld;}
 		void setCubeCurrWorld(World *newWorld){currWorld = newWorld;}  //Set Cube's World
@@ -92,7 +92,7 @@ class Cube{
 		Direction getCubeDirection(void){return curDir;}
 		void setCubeDirection(Direction newDir) {curDir = newDir;}
 		bool getUseLeftCube() {return useLeftCube;}
-		void setUseLeftCube(bool useLeftCube) {this->useLeftCube = ustLeftCube;}
+		void setUseLeftCube(bool useLeftCube) {this->useLeftCube = useLeftCube;}
 		void fireShot();
 		void moveShot();
 		void processShot();

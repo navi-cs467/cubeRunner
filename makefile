@@ -28,7 +28,7 @@ _OBJ = cubeRunner.o highlight.o hostPrompt.o transitionAnimation.o \
 	   paintCubeGraphic.o paintGraphic.o printMenu.o validateWinSize.o \
 	   initColors.o Game.o World.o Water.o Land.o Obstacle.o Seaweed.o \
 	   Coral.o Shark.o Octopus.o Tree.o Rock.o Bird.o Bat.o \
-	   Direction.o Cube.o client.o 
+	   Direction.o Cube.o client.o waitingForOtherPlayer.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 #Objects (Server)
@@ -43,11 +43,11 @@ _HDR = constants.hpp highlight.hpp hostPrompt.hpp include.hpp \
 	   paintGraphic.hpp printMenu.hpp using.hpp validateWinSize.hpp \
 	   initColors.hpp Game.hpp World.hpp Water.hpp Land.hpp Obstacle.hpp \
 	   Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp Tree.hpp Rock.hpp \
-	   Bird.hpp Bat.hpp Direction.hpp Cube.hpp client.hpp
+	   Bird.hpp Bat.hpp Direction.hpp Cube.hpp client.hpp waitingForOtherPlayer.hpp
 HDR = $(patsubst %,$(IDIR)/%,$(_HDR))
 
 #Headers (Server)
-_HDR_SERVER = include.hpp using.hpp initColors.hpp Game.hpp World.hpp \
+_HDR_SERVER = constants.hpp include.hpp using.hpp initColors.hpp Game.hpp World.hpp \
 	   Water.hpp Land.hpp Obstacle.hpp Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp \
 	   Tree.hpp Rock.hpp Bird.hpp Bat.hpp Direction.hpp Cube.hpp \
 	   server.hpp client.hpp
@@ -60,7 +60,7 @@ _SRC = cubeRunner.cpp cubeRunnerServer.cpp highlight.cpp hostPrompt.cpp \
 	   paintGraphic.cpp printMenu.cpp validateWinSize.cpp initColors.cpp \
 	   server.cpp client.cpp Game.cpp World.cpp Water.cpp Land.cpp Obstacle.cpp \
 	   Seaweed.cpp Coral.cpp Shark.cpp Octopus.cpp Tree.cpp Rock.cpp \
-	   Bird.cpp Bat.cpp Direction.cpp Cube.cpp
+	   Bird.cpp Bat.cpp Direction.cpp Cube.cpp waitingForOtherPlayer.cpp
 SRC = $(patsubst %,$(SDIR)/%,$(_SRC))
 
 $(PROGRAM_NAME): $(OBJ)
