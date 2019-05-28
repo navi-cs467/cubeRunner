@@ -285,7 +285,7 @@ int Game::playGame(char host[], char port[]) {
 					   lastRefreshTime = omp_get_wtime(),
 					   lastNewObsTime = omp_get_wtime(),
 					   lastShotTime = omp_get_wtime();
-				int statsTime, startTime, scrollCount = 0,
+				int statsTime, startTime, scrollCountCols = 0, scrollCountRows = 0,
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
@@ -356,7 +356,7 @@ int Game::playGame(char host[], char port[]) {
 								world = new Land(gameMode, isTwoPlayer);
 								cube->transitionWorld(world);
 								omp_unset_lock(&userInputLock);		//Unlock input thread to confirm death animation
-								transitionAnimationInsideThread("GRAPHICS/Land.txt", 115,
+								transitionAnimationInsideThread("GRAPHICS/Land.txt", 107,
 									16, WHITE_WHITE, 15, GREEN_WHITE, &userInput);
 								omp_set_lock(&userInputLock);		//Relock
 							}
@@ -366,15 +366,26 @@ int Game::playGame(char host[], char port[]) {
 								delete world;
 								
 								//Create new world
+								world = new Space(gameMode, isTwoPlayer);
+								cube->transitionWorld(world);
+								omp_unset_lock(&userInputLock);		//Unlock input thread to confirm death animation
+								transitionAnimationInsideThread("GRAPHICS/Space.txt", 121,
+									16, BLACK_BLACK, 30, WHITE_BLACK, &userInput);
+								omp_set_lock(&userInputLock);		//Relock
+							}
+							else if(typeid(*world) == typeid(Space)) {
+								
+								//Delete the existing world
+								delete world;
+								
+								//Create new world
 								world = new Water(gameMode, isTwoPlayer);
 								cube->transitionWorld(world);
 								omp_unset_lock(&userInputLock);		//Unlock input thread to confirm death animation
-								transitionAnimationInsideThread("GRAPHICS/Water.txt", 120,
+								transitionAnimationInsideThread("GRAPHICS/Water.txt", 110,
 									16, BLUE_BLUE, 30, WHITE_BLUE, &userInput);
 								omp_set_lock(&userInputLock);		//Relock
 							}
-							/* else if(typeid(*world) == typeid(Space))
-								world = new Water(gameMode, isTwoPlayer); */
 
 							//Increase speeds after each transition. 
 							//Speeds are capped after 6 world transitions
@@ -472,16 +483,25 @@ int Game::playGame(char host[], char port[]) {
 
 					}
 
-					//Load new offscreen Obstacles and miniCubes every time
-					//a screens-worth has been scrolled
+					//Scroll
 					if(omp_get_wtime() - lastScrollTime > scrollRate) {
 						lastScrollTime = omp_get_wtime();
-						world->scroll_(cube);
-						//if(typeid(*world) != typeid(Space))
-							if(scrollCount == COLS) {
-								world->loadOSObs();
-								world->loadOSMCs();
+						world->scroll_(cube);	
+						
+						//Load new offscreen Obstacles and miniCubes every time
+						//a screens-worth has been scrolled
+						if(typeid(*world) != typeid(Space)) {
+							if(scrollCountCols == COLS) {
+								world->loadOSObs(right);
+								world->loadOSMCs(right);
 							}
+						}
+						else {
+							if(scrollCountCols == COLS || scrollCountRows == ROWS) {
+								world->loadOSObs(cube->getCubeDirection());
+								world->loadOSMCs(cube->getCubeDirection());
+							}
+						}
 
 						//Repopulate miniCubes if too many have been
 						//consumed by moving obstacles according to this
@@ -490,8 +510,10 @@ int Game::playGame(char host[], char port[]) {
 								< (NUM_MCS_EASY / gameMode))
 							world->initMiniCubes(1);
 
-						if(scrollCount == COLS) scrollCount = 0;
-						else scrollCount++;
+						if(scrollCountCols == COLS) scrollCountCols = 0;
+						else scrollCountCols++;
+						if(scrollCountRows == LINES) scrollCountRows = 0;
+						else scrollCountRows++;
 					}
 
 					if(omp_get_wtime() - lastMoveTime > moveRate) {
@@ -1293,18 +1315,22 @@ int Game::playGame(char host[], char port[]) {
 								world->getObstacles().push_back(new Bat(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-							//else if(int_2 == 9)
-							//	world->getObstacles().push_back(new Asteroid(int_2, int_3, int_4,
-							//												 int_5, int_6, /* int_7, */ gameMode));
-							//else if(int_2 == 10)
-							//	world->getObstacles().push_back(new Planet(int_2, int_3, int_4,
-							//											   int_5, int_6, /* int_7, */ gameMode));
-							//else if(int_2 == 11)
-							//	world->getObstacles().push_back(new Comet(int_2, int_3, int_4,
-							//											  int_5, int_6, /* int_7, */ gameMode));
-							//else if(int_2 == 12)
-							//	world->getObstacles().push_back(new Spaceship(int_2, int_3, int_4,
-							//												  int_5, int_6, /* int_7, */ gameMode));;	 */
+							else if(int_2 == 9) 
+								world->getObstacles().push_back(new Asteroid(int_2, int_3, int_4,
+																			int_5, int_6, int_7,
+																			int_8, gameMode));
+							else if(int_2 == 10) 
+								world->getObstacles().push_back(new Planet(int_2, int_3, int_4,
+																			int_5, int_6, int_7,
+																			int_8, gameMode));	 
+							else if(int_2 == 11) 
+								world->getObstacles().push_back(new Comet(int_2, int_3, int_4,
+																			int_5, int_6, int_7,
+																			int_8, gameMode));
+							else if(int_2 == 12) 
+								world->getObstacles().push_back(new Spaceship(int_2, int_3, int_4,
+																			  int_5, int_6, int_7,
+																			  int_8, gameMode));												
 
 							// (Optional ?) SEND: confirmation
 							

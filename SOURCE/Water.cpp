@@ -93,22 +93,22 @@ void Water::loadOSObs(Direction dir) {
 	for(int i = 0, random = rand() % 4; 
 		i < obstacleCount; i++, random = rand() % 4) {
 			if(random == 0) {
-				obstacles.push_back(new Seaweed(this, right));
+				obstacles.push_back(new Seaweed(this, dir));
 			}
 			else if(random == 1) {
-				obstacles.push_back(new Coral(this, right));
+				obstacles.push_back(new Coral(this, dir));
 			}
 			else if(random == 2) {
-				obstacles.push_back(new Shark(this, right));
+				obstacles.push_back(new Shark(this, dir));
 			}
 			else {
-				obstacles.push_back(new Octopus(this, right));
+				obstacles.push_back(new Octopus(this, dir));
 			}
 	}
 }
 
 void Water::loadOSMCs(Direction dir) {
-	initMiniCubes(NUM_MCS_EASY / gameMode, right);
+	initMiniCubes(NUM_MCS_EASY / gameMode, dir);
 }
 
 void Water::renderWorld(Cube *cube) {
@@ -152,8 +152,6 @@ void Water::renderWorld(Cube *cube) {
 
 		//Temporary c-string used in call to mvaddstr below
 		wchar_t tmpWChArr[2]; tmpWChArr[1] = '\0';
-		
-		//move(50, 50); printw("Getting here..."); refresh();
 		
 		if(typeid(**it) == typeid(Seaweed)) {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
@@ -316,8 +314,10 @@ void Water::scroll_(Cube *cube) {
 		//Free memory and delete Obstacle from obstacles and
 		//remove all associated obsCoords and nonWSObsCoords if 
 		//Obstacle goes completely offscreen a full screen width 
-		//to the left or a full-screen width above
-		if((*it)->getPosY() <= -COLS || (*it)->getPosX() <= -LINES) {
+		//to the left, or above, or 2 screen widths to the right
+		if((*it)->getPosY() <= -COLS ||
+		   (*it)->getPosY() >= COLS * 2 ||
+		   (*it)->getPosX() <= -LINES) {
 			//Remove all associated obsCoords
 			for(int i = 0; i <(*it)->getGTS(); i++) 
 				for(int j = 0; j < (*it)->getLongestGS(); j++) {

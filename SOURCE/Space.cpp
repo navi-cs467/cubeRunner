@@ -61,7 +61,7 @@ Space::Space(int gameMode, bool isTwoPlayer, bool forServer) :
 			clear();  // curses clear-screen call
 
 			//Paint all but last 4 lines of the screen blue
-			attron(COLOR_PAIR(BLUE_BLUE));
+			attron(COLOR_PAIR(BLACK_BLACK));
 			for (int y = 0; y <= bottomRow; y++)
 				mvhline(y, 0, ' ', COLS);
 
@@ -92,16 +92,16 @@ void Space::loadOSObs(Direction dir) {
 	for(int i = 0, random = rand() % 4; 
 		i < obstacleCount; i++, random = rand() % 4) {
 			if(random == 0) {
-				obstacles.push_back(new Seaweed(this, dir));
+				obstacles.push_back(new Asteroid(this, dir));
 			}
 			else if(random == 1) {
-				obstacles.push_back(new Coral(this, dir));
+				obstacles.push_back(new Planet(this, dir));
 			}
 			else if(random == 2) {
-				obstacles.push_back(new Shark(this, dir));
+				obstacles.push_back(new Comet(this, dir));
 			}
 			else {
-				obstacles.push_back(new Octopus(this, dir));
+				obstacles.push_back(new Spaceship(this, dir));
 			}
 	}
 }
@@ -119,16 +119,13 @@ void Space::renderWorld(Cube *cube) {
 	attron(COLOR_PAIR(BLACK_BLACK));
 	for(int i = 0; i <= bottomRow; i++)
 		mvhline(i, 0, ' ', COLS);
-	attron(COLOR_PAIR(GREEN_GREEN));
-	for(int i = bottomRow + 1; i < LINES - 1; i++)
-		mvhline(i, 0, ' ', COLS);
 	
 	//Print all the miniCubes
 	wchar_t mc[] = L"\u25A0";		
 	//char mc = 'c';
 	for(set<pair<int, int>>::iterator it = miniCubes.begin();
 		it != miniCubes.end(); it++) {
-			attron(COLOR_PAIR(WHITE_BLUE));
+			attron(COLOR_PAIR(WHITE_BLACK));
             mvaddwstr(it->first, it->second, mc); //refresh();
 	}
 	
@@ -152,52 +149,50 @@ void Space::renderWorld(Cube *cube) {
 		//Temporary c-string used in call to mvaddstr below
 		wchar_t tmpWChArr[2]; tmpWChArr[1] = '\0';
 		
-		//move(50, 50); printw("Getting here..."); refresh();
-		
-		if(typeid(**it) == typeid(Seaweed)) {
+		if(typeid(**it) == typeid(Asteroid)) {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++)
 				for(int j = 0;
-					j < Seaweed::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Asteroid::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					
 					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
 					
-					tmpWChArr[0] = Seaweed::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Asteroid::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
 					//output to screen
 					move(i + xCoord + xOffset, j + yCoord);
 					if((*it)->getHoles().
 						find(make_pair(i + xCoord + xOffset, j + yCoord)) == 
 							(*it)->getHoles().end()) {
-								attron(COLOR_PAIR(Seaweed::getColor()));
+								attron(COLOR_PAIR(Asteroid::getColor()));
 								printw("%lc", tmpWChArr[0]);
 					}
 					else {
-						attron(COLOR_PAIR(BLUE_BLUE));
+						attron(COLOR_PAIR(BLACK_BLACK));
 						printw("%lc", " ");
 					}
 				}
 		}
 		
-		else if(typeid(**it) == typeid(Coral)) {
-			int nextColor = Coral::getColorSeed();
+		else if(typeid(**it) == typeid(Planet)) {
+			int nextColor = Planet::getColorSeed();
 			attron(A_BOLD);
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Coral::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Planet::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 
 					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
 					
-					tmpWChArr[0] = Coral::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Planet::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
 					//To address a strange background color issue
-					//with partially off-screen right - Coral Only
-					attron(COLOR_PAIR(BLUE_BLUE));
+					//with partially off-screen right - Planet Only
+					attron(COLOR_PAIR(BLACK_BLACK));
 					mvaddstr(i + xCoord + xOffset, j + yCoord, " ");
 					
 					//output to screen
@@ -208,18 +203,18 @@ void Space::renderWorld(Cube *cube) {
 						printw("%lc", tmpWChArr[0]);
 					}
 					else {
-						attron(COLOR_PAIR(BLUE_BLUE));
+						attron(COLOR_PAIR(BLACK_BLACK));
 						printw("%lc", " ");
 					}
 					if(nextColor == 35) nextColor = 30;
 				}
 		}
 			
-		else if(typeid(**it) == typeid(Shark)) {
-			int color = Shark::getColor();
+		else if(typeid(**it) == typeid(Comet)) {
+			int color = static_cast<Comet*>(*it)->getColor();
 			attron(A_BOLD);
 			if((*it)->getHits()) {
-				attron(COLOR_PAIR(RED_BLUE));
+				attron(COLOR_PAIR(RED_BLACK));
 			}
 			else {
 				attron(COLOR_PAIR(color));
@@ -228,22 +223,22 @@ void Space::renderWorld(Cube *cube) {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Shark::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Comet::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					
 					//Continue if character is off-screen
 					if(j - yOffset < 0) continue;
 					
-					tmpWChArr[0] = Shark::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Comet::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
 					//Print remaining hits counter in first whitespace available
 					//if Obstacle->hits > 0
 					if((*it)->getHits() && i == 0 && j == 0 && 
 						xOffset == 0 && yOffset == 0) {
 						move(i + xCoord + xOffset, j + yCoord);
-						attron(COLOR_PAIR(WHITE_BLUE));
+						attron(COLOR_PAIR(WHITE_BLACK));
 						printw("%lc", (*it)->getMaxHits() - (*it)->getHits() + '0');
-						attron(COLOR_PAIR(RED_BLUE));
+						attron(COLOR_PAIR(RED_BLACK));
 					}
 					//output to screen
 					else {
@@ -253,11 +248,11 @@ void Space::renderWorld(Cube *cube) {
 				}
 		}
 		
-		else if(typeid(**it) == typeid(Octopus)) {
-			int color = static_cast<Octopus *>(*it)->getColor();
+		else if(typeid(**it) == typeid(Spaceship)) {
+			int nextColor = Spaceship::getColor();
 			attron(A_BOLD);
 			if((*it)->getHits()) {
-				attron(COLOR_PAIR(RED_BLUE));
+				attron(COLOR_PAIR(RED_BLACK));
 			}
 			else {
 				attron(COLOR_PAIR(color));
@@ -266,19 +261,19 @@ void Space::renderWorld(Cube *cube) {
 			for(int i = 0; i < (*it)->getGTS() + -xOffset &&
 				i + xCoord <= bottomRow; i++) 
 				for(int j = 0; 
-					j < Octopus::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
+					j < Spaceship::_getGraphicLines()[(*it)->getGT()][i+xOffset].length() &&
 					j + yCoord + yOffset < COLS; j++) {
 					if(j - yOffset < 0) continue;
-					tmpWChArr[0] = Octopus::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
+					tmpWChArr[0] = Spaceship::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
 					
 					//Print remaining hits counter in first whitespace available
 					//if Obstacle->hits > 0
 					if((*it)->getHits() && i == 0 && j == 0 &&
 						xOffset == 0 && yOffset == 0) {
 						move(i + xCoord + xOffset, j + yCoord);
-						attron(COLOR_PAIR(WHITE_BLUE));
+						attron(COLOR_PAIR(WHITE_BLACK));
 						printw("%lc", (*it)->getMaxHits() - (*it)->getHits() + '0');
-						attron(COLOR_PAIR(RED_BLUE));
+						attron(COLOR_PAIR(RED_BLACK));
 					}
 					//output to screen
 					else {
@@ -297,26 +292,37 @@ void Space::renderWorld(Cube *cube) {
 void Space::scroll_(Cube *cube) {
 	
 	/* //Paint blank background
-	attron(COLOR_PAIR(BLUE_BLUE));
+	attron(COLOR_PAIR(BLACK_BLACK));
 	for(int i = 0; i <= bottomRow; i++)
-		mvhline(i, 0, ' ', COLS);
-	attron(COLOR_PAIR(GREEN_GREEN));
-	for(int i = bottomRow + 1; i < LINES - 1; i++)
 		mvhline(i, 0, ' ', COLS); */
 	
 	set<pair<int, int>>::iterator itObs;
 	
 	for(list<Obstacle*>::iterator it = obstacles.begin();
 			it != obstacles.end(); it++) {
-		(*it)->setPosY((*it)->getPosY() - 1);
+		if(cube->getCubeDirection() == right ||
+		   cube->getCubeDirection() == right_up ||
+		   cube->getCubeDirection() == right_down)
+			(*it)->setPosY((*it)->getPosY() - 1);
+		else if(cube->getCubeDirection() == left ||
+				cube->getCubeDirection() == left_up ||
+				cube->getCubeDirection() == left_down)
+			(*it)->setPosY((*it)->getPosY() + 1);
+		else if(cube->getCubeDirection() == up)
+			(*it)->setPosY((*it)->getPosX() + 1);
+		else
+			(*it)->setPosY((*it)->getPosY() - 1);
 		
 		int xCoord = (*it)->getPosX(), yCoord = (*it)->getPosY();
 		
 		//Free memory and delete Obstacle from obstacles and
 		//remove all associated obsCoords and nonWSObsCoords if 
-		//Obstacle goes completely offscreen a full screen width 
-		//to the left or a full-screen width above
-		if((*it)->getPosY() <= -COLS || (*it)->getPosX() <= -LINES) {
+		//Obstacle goes completely offscreen 2 full screen widths 
+		//to the left, right, above or below
+		if((*it)->getPosY() <= -COLS * 2 ||
+		   (*it)->getPosY() >= COLS * 2 ||
+		   (*it)->getPosX() <= -LINES * 2 ||
+		   (*it)->getPosX() <= -LINES * 2) {
 			//Remove all associated obsCoords
 			for(int i = 0; i <(*it)->getGTS(); i++) 
 				for(int j = 0; j < (*it)->getLongestGS(); j++) {
@@ -333,13 +339,24 @@ void Space::scroll_(Cube *cube) {
 		}
 	}
 	
-	attron(COLOR_PAIR(BLUE_BLUE));
+	attron(COLOR_PAIR(BLACK_BLACK));
 	
 	//Temporary set of pairs used to update obsCoords values via swap
 	set<pair<int, int>> newObsCoords;
 	for(set<pair<int, int>>::iterator it = obsCoords.begin();
 		it != obsCoords.end(); it++) {
-			newObsCoords.insert(make_pair(it->first, it->second - 1));
+			if(cube->getCubeDirection() == right ||
+			   cube->getCubeDirection() == right_up ||
+			   cube->getCubeDirection() == right_down)
+				newObsCoords.insert(make_pair(it->first, it->second - 1));
+			else if(cube->getCubeDirection() == left ||
+					cube->getCubeDirection() == left_up ||
+					cube->getCubeDirection() == left_down)
+				newObsCoords.insert(make_pair(it->first, it->second + 1));
+			else if(cube->getCubeDirection() == up)
+				newObsCoords.insert(make_pair(it->first + 1, it->second));
+			else
+				newObsCoords.insert(make_pair(it->first - 1, it->second));
 			//Set to blank background where obsCoords will be removed
 			mvaddstr(it->first, it->second, " ");
 	}
@@ -353,9 +370,26 @@ void Space::scroll_(Cube *cube) {
 				(*it)->getNonWSObsCoords().begin();
 				itNWObsCoords != (*it)->getNonWSObsCoords().end(); 
 				itNWObsCoords++) {
-					newNonWSObsCoords.
-						insert(make_pair(itNWObsCoords->first, 
-							itNWObsCoords->second - 1));
+					if(cube->getCubeDirection() == right ||
+					   cube->getCubeDirection() == right_up ||
+					   cube->getCubeDirection() == right_down)
+						newNonWSObsCoords.
+							insert(make_pair(itNWObsCoords->first, 
+								itNWObsCoords->second - 1));
+					else if(cube->getCubeDirection() == left ||
+							cube->getCubeDirection() == left_up ||
+							cube->getCubeDirection() == left_down)
+						newNonWSObsCoords.
+							insert(make_pair(itNWObsCoords->first, 
+								itNWObsCoords->second + 1));
+					else if(cube->getCubeDirection() == up)
+						newNonWSObsCoords.
+							insert(make_pair(itNWObsCoords->first + 1, 
+								itNWObsCoords->second));
+					else
+						newNonWSObsCoords.
+							insert(make_pair(itNWObsCoords->first - 1, 
+								itNWObsCoords->second));
 		}
 		swap((*it)->getNonWSObsCoords(), newNonWSObsCoords);
 		newNonWSObsCoords.clear();
@@ -369,9 +403,26 @@ void Space::scroll_(Cube *cube) {
 				(*it)->getHoles().begin();
 				itHoles != (*it)->getHoles().end(); 
 				itHoles++) {
-					newHoles.
-						insert(make_pair(itHoles->first, 
-							itHoles->second - 1));
+					if(cube->getCubeDirection() == right ||
+					   cube->getCubeDirection() == right_up ||
+					   cube->getCubeDirection() == right_down)
+						newHoles.
+							insert(make_pair(itHoles->first, 
+								itHoles->second - 1));
+					else if(cube->getCubeDirection() == left ||
+							cube->getCubeDirection() == left_up ||
+							cube->getCubeDirection() == left_down)
+						newHoles.
+							insert(make_pair(itHoles->first, 
+								itHoles->second + 1));
+					else if(cube->getCubeDirection() == up)
+						newHoles.
+							insert(make_pair(itHoles->first + 1, 
+								itHoles->second));
+					else
+						newHoles.
+							insert(make_pair(itHoles->first - 1, 
+								itHoles->second));
 		}
 		swap((*it)->getHoles(), newHoles);
 		newHoles.clear();
@@ -379,13 +430,35 @@ void Space::scroll_(Cube *cube) {
 	
 	//Temporary set of pairs used to update miniCubes values via swap
 	set<pair<int, int>> newMinCubes;
-	for(set<pair<int, int>>::iterator it = miniCubes.begin();
+	for(set<pair<int, int>>::iterator itMiniCubes = miniCubes.begin();
 		it != miniCubes.end(); it++) {
-			//If miniCube won't go offscreen, add it to new set
-			if(it->second >= 1)
-				newMinCubes.insert(make_pair(it->first, it->second - 1));
-				//Set to blank background where miniCubes will be removed
-				mvaddstr(it->first, it->second, " ");
+			//if miniCube is 2 screen widths offscreen, erase and continue
+			if(itMiniCubes->second <= -COLS * 2 ||
+			   itMiniCubes->second >= COLS * 2 ||
+			   itMiniCubes->first <= -LINES * 2 ||
+			   itMiniCubes->first <= -LINES * 2) {
+			if(cube->getCubeDirection() == right ||
+			   cube->getCubeDirection() == right_up ||
+			   cube->getCubeDirection() == right_down)
+				newMiniCubes.
+					insert(make_pair(itMiniCubes->first, 
+						itMiniCubes->second - 1));
+			else if(cube->getCubeDirection() == left ||
+					cube->getCubeDirection() == left_up ||
+					cube->getCubeDirection() == left_down)
+				newMiniCubes.
+					insert(make_pair(itMiniCubes->first, 
+						itMiniCubes->second + 1));
+			else if(cube->getCubeDirection() == up)
+				newMiniCubes.
+					insert(make_pair(itMiniCubes->first + 1, 
+						itMiniCubes->second));
+			else
+				newMiniCubes.
+					insert(make_pair(itMiniCubes->first - 1, 
+						itMiniCubes->second));
+			//Set to blank background where miniCube used to be
+			mvaddstr(it->first, it->second, " ");
 	}
 	swap(miniCubes, newMinCubes);
 }

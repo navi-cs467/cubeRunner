@@ -49,8 +49,8 @@ class World {
 		virtual void renderWorld(Cube *cube) = 0;
 		//virtual void scroll_(bool newObs) = 0;
 		virtual void scroll_(Cube *cube) = 0;
-		virtual void loadOSObs(Direction dir = none) = 0;	//Load offscreen Obstacles (for scrolling)
-		virtual void loadOSMCs(Direction dir = none) = 0;	//Load offscreen miniCubes (for scrolling)
+		virtual void loadOSObs(Direction dir) = 0;	//Load offscreen Obstacles (for scrolling)
+		virtual void loadOSMCs(Direction dir) = 0;	//Load offscreen miniCubes (for scrolling)
 		int getBottomRow() const {return bottomRow;}
 		void moveObs();
 		void resetPlayer(Cube *cube);

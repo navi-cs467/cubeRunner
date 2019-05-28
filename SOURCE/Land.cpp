@@ -91,16 +91,16 @@ void Land::loadOSObs(Direction dir) {
 	for(int i = 0, random = rand() % 4; 
 		i < obstacleCount; i++, random = rand() % 4) {
 			if(random == 0) {
-				obstacles.push_back(new Tree(this, right));
+				obstacles.push_back(new Tree(this, dir));
 			}
 			else if(random == 1) {
-				obstacles.push_back(new Rock(this, right));
+				obstacles.push_back(new Rock(this, dir));
 			}
 			else if(random == 2) {
-				obstacles.push_back(new Bird(this, right));
+				obstacles.push_back(new Bird(this, dir));
 			}
 			else {
-				obstacles.push_back(new Bat(this, right));
+				obstacles.push_back(new Bat(this, dir));
 			}
 	}
 }
@@ -194,11 +194,6 @@ void Land::renderWorld(Cube *cube) {
 					if(j - yOffset < 0) continue;
 					
 					tmpWChArr[0] = Rock::_getGraphicLines()[(*it)->getGT()][i+xOffset][j];
-					
-					/* //To address a strange background color issue
-					//with partially off-screen right - Rock Only
-					attron(COLOR_PAIR(WHITE_WHITE));
-					mvaddstr(i + xCoord + xOffset, j + yCoord, " "); */
 					
 					//output to screen
 					move(i + xCoord + xOffset, j + yCoord);
@@ -315,8 +310,10 @@ void Land::scroll_(Cube* cube) {
 		//Free memory and delete Obstacle from obstacles and
 		//remove all associated obsCoords and nonWSObsCoords if 
 		//Obstacle goes completely offscreen a full screen width 
-		//to the left or a full-screen width above
-		if((*it)->getPosY() <= -COLS || (*it)->getPosX() <= -LINES) {
+		//to the left, or above, or 2 screen widths to the right
+		if((*it)->getPosY() <= -COLS ||
+		   (*it)->getPosY() >= COLS * 2 ||
+		   (*it)->getPosX() <= -LINES) {
 			//Remove all associated obsCoords
 			for(int i = 0; i <(*it)->getGTS(); i++) 
 				for(int j = 0; j < (*it)->getLongestGS(); j++) {

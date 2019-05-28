@@ -104,7 +104,7 @@ void Obstacle::createObstacle(World *world,
 	bool enchroaches;
 	do {
 		posX = rand() % world->getBottomRow();
-		//if(typeid(*world) != Space)
+		if(typeid(*world) != typeid(Space))
 		//Can't have partial graphic beneath "ground" for Water or Land
 		if(world->getBottomRow() - posX < getGraphicLines()[gt].size())
 			posX = world->getBottomRow() - (getGraphicLines()[gt].size() - 1);
@@ -115,9 +115,13 @@ void Obstacle::createObstacle(World *world,
 			posY = rand() % COLS;
 		
 		if(offScreenDirection != none) {
-			if(offScreenDirection == right)
+			if(offScreenDirection == right ||
+			   offScreenDirection == right_up ||
+			   offScreenDirection == right_down)
 				posY = posY + COLS;
-			else if(offScreenDirection == left)
+			else if(offScreenDirection == left ||
+				    offScreenDirection == left_up ||
+					offScreenDirection == left_down ||)
 				posY = -posY;
 			else if(offScreenDirection == up)
 				posX = -posX;
@@ -197,7 +201,8 @@ void Obstacle::move(World* world) {
 	Direction mvDir; //int testMvDir;
 	//Randomly assign a new "seed" direction for the
 	//following for loop if the last move direction has 
-	//been "exhausted" per the move counter.
+	//been "exhausted" per the move counter. 
+	//(Asteroid only changes direction if it hits something)
 	if(mvCounter == 0) {
 		mvDir = static_cast<Direction>(rand() % NUM_DIRECTIONS);
 		//Randomly assign a new value for
@@ -284,9 +289,8 @@ void Obstacle::move(World* world) {
 			}
 		}
 		else if(mvDir == left_down) {
-			//if(typeof(world*) != typeof(Space) &&
-			//	 posX + gts == world->getBottomRow() + 1) continue;
-			if(posX + gts == world->getBottomRow() + 1) {
+			if(typeof(world*) != typeof(Space) &&
+				 posX + gts == world->getBottomRow() + 1) {
 				mvDir = down;
 				continue;
 			}
@@ -380,9 +384,8 @@ void Obstacle::move(World* world) {
 			}
 		}
 		else if(mvDir == down) {
-			//if(typeof(world*) != typeof(Space) &&
-			//	 posX + gts == world->getBottomRow() + 1) continue;
-			if(posX + gts == world->getBottomRow() + 1) {
+			if(typeof(world*) != typeof(Space) &&
+				 posX + gts == world->getBottomRow() + 1) {
 				mvDir = right_down;
 				continue;
 			}
@@ -405,7 +408,9 @@ void Obstacle::move(World* world) {
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
 				}
+				//Update Obstacle's position and (if Spaceship) graphic
 				posX++;
+				if(gts > 2) setGT(3);
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX + gts - 1, posY + j));
@@ -445,9 +450,8 @@ void Obstacle::move(World* world) {
 			}
 		}
 		else if(mvDir == right_down) {
-			//if(typeof(world*) != typeof(Space) &&
-			//	 posX + gts == world->getBottomRow() + 1) continue;
-			if(posX + gts == world->getBottomRow() + 1) {
+			if(typeof(world*) != typeof(Space) &&
+				 posX + gts == world->getBottomRow() + 1) {
 				mvDir = right;
 				continue;
 			}
@@ -709,7 +713,9 @@ void Obstacle::move(World* world) {
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
 				}
+				//Update Obstacle's position and (if Spaceship) graphic
 				posX--;
+				if(gts > 2) setGT(2);
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX, posY + j));
