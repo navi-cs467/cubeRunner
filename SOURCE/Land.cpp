@@ -77,7 +77,7 @@ Land::Land(int gameMode, bool isTwoPlayer, bool forServer) :
 		//Last line is reserved for life count, timer, and score display
 }
 
-void Land::loadOSObs() {
+void Land::loadOSObs(Direction dir) {
 	
 	int obstacleCount;
 	if(gameMode == HARD)
@@ -105,7 +105,7 @@ void Land::loadOSObs() {
 	}
 }
 
-void Land::loadOSMCs() {
+void Land::loadOSMCs(Direction dir) {
 	initMiniCubes(NUM_MCS_EASY / gameMode, right);
 }
 

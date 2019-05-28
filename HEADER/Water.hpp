@@ -27,8 +27,8 @@ class Water : public World {
 		virtual void renderWorld(Cube *cube);
 		//virtual void scroll_(bool newObs);
 		virtual void scroll_(Cube *cube);
-		virtual void loadOSObs();	//Load offscreen Obstacles (for scrolling)
-		virtual void loadOSMCs();	//Load offscreen miniCubes (for scrolling)
+		virtual void loadOSObs(Direction dir);	//Load offscreen Obstacles (for scrolling)
+		virtual void loadOSMCs(Direction dir);	//Load offscreen miniCubes (for scrolling)
 };
 
 #endif /* Water_hpp */

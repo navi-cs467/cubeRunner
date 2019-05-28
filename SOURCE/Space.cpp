@@ -1,9 +1,9 @@
 /********************************************************************
-** Program name: Water.cpp
+** Program name: Space.cpp
 ** CS467 Capstone - 2D Runner - "Cube Runner"
 ** Team: NAVI
 ** Date: 4/25/2019
-** Description: Source file for Water class. The Water class is
+** Description: Source file for Space class. The Space class is
 ** 				one of three world types for the game. The colors
 **				and obstacles are distinct for this world, along
 **				with the player movement. The game "scrolls" the
@@ -14,14 +14,13 @@
 **				by the player.
 ********************************************************************/
 
-#include "../HEADER/Water.hpp"
+#include "../HEADER/Space.hpp"
 
-Water::Water(int gameMode, bool isTwoPlayer, bool forServer) :
+Space::Space(int gameMode, bool isTwoPlayer, bool forServer) :
 	World(gameMode, isTwoPlayer, forServer) {
-		//Set bottom row to LINES - 5, to allow for
-		//score, life count, and timer display +
-		//3 lines of green
-		bottomRow = LINES - 5;
+		//Set bottom row to LINES - 2, to allow for
+		//score, life count, and timer display @ LINES - 1
+		bottomRow = LINES - 2;
 
 		int obstacleCount;
 		if(gameMode == HARD)
@@ -34,19 +33,19 @@ Water::Water(int gameMode, bool isTwoPlayer, bool forServer) :
 		for(int i = 0, random = rand() % 4; 
 			i < obstacleCount; i++, random = rand() % 4) {
 				if(random == 0) {
-					obstacles.push_back(new Seaweed(this));
+					obstacles.push_back(new Asteroid(this));
 					//updateObsCoords(obstacles.back());
 				}
 				else if(random == 1) {
-					obstacles.push_back(new Coral(this));
+					obstacles.push_back(new Planet(this));
 					//updateObsCoords(obstacles.back());
 				}
 				else if(random == 2) {
-					obstacles.push_back(new Shark(this));
+					obstacles.push_back(new Comet(this));
 					//updateObsCoords(obstacles.back());
 				}
 				else {
-					obstacles.push_back(new Octopus(this));
+					obstacles.push_back(new Spaceship(this));
 					//updateObsCoords(obstacles.back());
 				}
 		}
@@ -79,7 +78,7 @@ Water::Water(int gameMode, bool isTwoPlayer, bool forServer) :
 		//Last line is reserved for life count, timer, and score display
 }
 
-void Water::loadOSObs(Direction dir) {
+void Space::loadOSObs(Direction dir) {
 	
 	int obstacleCount;
 	if(gameMode == HARD)
@@ -93,31 +92,31 @@ void Water::loadOSObs(Direction dir) {
 	for(int i = 0, random = rand() % 4; 
 		i < obstacleCount; i++, random = rand() % 4) {
 			if(random == 0) {
-				obstacles.push_back(new Seaweed(this, right));
+				obstacles.push_back(new Seaweed(this, dir));
 			}
 			else if(random == 1) {
-				obstacles.push_back(new Coral(this, right));
+				obstacles.push_back(new Coral(this, dir));
 			}
 			else if(random == 2) {
-				obstacles.push_back(new Shark(this, right));
+				obstacles.push_back(new Shark(this, dir));
 			}
 			else {
-				obstacles.push_back(new Octopus(this, right));
+				obstacles.push_back(new Octopus(this, dir));
 			}
 	}
 }
 
-void Water::loadOSMCs(Direction dir) {
-	initMiniCubes(NUM_MCS_EASY / gameMode, right);
+void Space::loadOSMCs(Direction dir) {
+	initMiniCubes(NUM_MCS_EASY / gameMode, dir);
 }
 
-void Water::renderWorld(Cube *cube) {
+void Space::renderWorld(Cube *cube) {
 
 	//clear();
 	//refresh();
 
 	//Paint blank background
-	attron(COLOR_PAIR(BLUE_BLUE));
+	attron(COLOR_PAIR(BLACK_BLACK));
 	for(int i = 0; i <= bottomRow; i++)
 		mvhline(i, 0, ' ', COLS);
 	attron(COLOR_PAIR(GREEN_GREEN));
@@ -143,7 +142,7 @@ void Water::renderWorld(Cube *cube) {
 		//(Not needed for right or bottom because ncurses will
 		// print partial sub-windows if print coordinates
 		// exceed LINES or COLS)
-		xOffset = 0, 			//xOffset not needed for Water
+		xOffset = 0, 			//xOffset not needed for Space
 		yOffset = 0;
 
 		//Determine offsets	if necessary (i.e. when part of graphic is off screen)
@@ -295,7 +294,7 @@ void Water::renderWorld(Cube *cube) {
 
 }
 
-void Water::scroll_(Cube *cube) {
+void Space::scroll_(Cube *cube) {
 	
 	/* //Paint blank background
 	attron(COLOR_PAIR(BLUE_BLUE));
