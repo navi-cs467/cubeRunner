@@ -29,9 +29,9 @@ Spaceship::Spaceship(World *world, Direction offScreen,
 	world->updateObsCoords(this);
 	
 	//Initialize maxHits based on gameMode
-	if(world->getGameMode() == EASY) maxHits = 3;
-	else if(world->getGameMode() == NORMAL) maxHits = 4;
-	else maxHits = 5;
+	if(world->getGameMode() == EASY) maxHits = 2;
+	else if(world->getGameMode() == NORMAL) maxHits = 3;
+	else maxHits = 4;
 	
 	//Initialize hits ands mvsSinceLastHit
 	hits = 0;

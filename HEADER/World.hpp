@@ -25,6 +25,10 @@ class Cube;
 #include "Rock.hpp"
 #include "Bird.hpp"
 #include "Bat.hpp"
+#include "Asteroid.hpp"
+#include "Planet.hpp"
+#include "Comet.hpp"
+#include "Spaceship.hpp"
 #include "using.hpp"
 
 class World {
