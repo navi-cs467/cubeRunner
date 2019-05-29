@@ -412,7 +412,7 @@ int main(void)
 								//Restore menu variable
 								currMenu = 2;
 							}
-							
+
 							escaped = false;
 						}
 
@@ -427,11 +427,6 @@ int main(void)
 							//return to host prompt if user escapes the menu
 							if(escaped) {
 								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
-
-								subscrnMenu3 =
-									hostPrompt(startingColMenu3, startingRowMenu3,
-										&subscrnGraphic, &currMenu, &escaped, host, port);
-
 								currMenu = 3;
 							}
 
