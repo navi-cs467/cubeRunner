@@ -293,7 +293,11 @@ int main(void)
 			#pragma omp section
 			{
 				while(!gameOn) {
-					int c = getch();
+					while(currMenu != 3)
+					{
+						int c = getch();
+					}
+					
 					if(c == KEY_DOWN || c == 'k') {
 						if(cursorPos != EXIT && currMenu == 1) {
 							cursorPos++;
@@ -483,7 +487,7 @@ int main(void)
 							if(escaped)
 							{
 								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
-								
+
 								//Paint screen black
 								attron(COLOR_PAIR(BLACK_BLACK));
 								for (int y = 0; y < LINES; y++) {
