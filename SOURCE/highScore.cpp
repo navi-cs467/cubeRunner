@@ -80,6 +80,9 @@ void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, 
   char timeStr[50];
   char numberBuffer[10];
 
+  memset(numberBuffer, '\0', sizeof numberBuffer);
+  memset(timeStr, '\0', sizeof timeStr);
+
   //create time string
   if (hours < 10)
   {
@@ -88,7 +91,7 @@ void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, 
   }
   else
   {
-    sprintf(numberBuffer, "0%d:", hours);
+    sprintf(numberBuffer, "%d:", hours);
     strcat(timeStr, numberBuffer);
   }
 
@@ -101,7 +104,7 @@ void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, 
   }
   else
   {
-    sprintf(numberBuffer, "0%d:", minutes);
+    sprintf(numberBuffer, "%d:", minutes);
     strcat(timeStr, numberBuffer);
   }
 
@@ -114,7 +117,7 @@ void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, 
   }
   else
   {
-    sprintf(numberBuffer, "0%d:", seconds);
+    sprintf(numberBuffer, "%d", seconds);
     strcat(timeStr, numberBuffer);
   }
 
@@ -192,6 +195,9 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
   char timeStr[50];
   char numberBuffer[10];
 
+  memset(numberBuffer, '\0', sizeof numberBuffer);
+  memset(timeStr, '\0', sizeof timeStr);
+
   //create time string
   if (hours < 10)
   {
@@ -200,7 +206,7 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
   }
   else
   {
-    sprintf(numberBuffer, "0%d:", hours);
+    sprintf(numberBuffer, "%d:", hours);
     strcat(timeStr, numberBuffer);
   }
 
@@ -213,7 +219,7 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
   }
   else
   {
-    sprintf(numberBuffer, "0%d:", minutes);
+    sprintf(numberBuffer, "%d:", minutes);
     strcat(timeStr, numberBuffer);
   }
 
@@ -226,7 +232,7 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
   }
   else
   {
-    sprintf(numberBuffer, "0%d:", seconds);
+    sprintf(numberBuffer, "%d", seconds);
     strcat(timeStr, numberBuffer);
   }
 
