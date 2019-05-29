@@ -135,6 +135,8 @@ int main(int argc, char* argv[]) {
 		memset(player2name, '\0', sizeof player2name);
 
 	  receiveMessage_S(player2, player2name);
+
+		printf("Received player name of player 2 %s...\n", player2name);
 		sendMessage_S(player1, player2name);
 
 
