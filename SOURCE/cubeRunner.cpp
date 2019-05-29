@@ -413,31 +413,21 @@ int main(void)
 								currMenu = 2;
 							}
 
-							escaped = false;
-						}
-
-						else if(currMenu == 3 && cursorPos == EASY && isTwoPlayer == true) {
-							//Clear and delete host prompt menu
-							werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
-
-							subscrnMenu4 =
-								userPrompt(startingColMenu4, startingRowMenu4,
-									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-
-							//return to host prompt if user escapes the menu
-							if(escaped) {
-								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
-								currMenu = 3;
-							}
-
+							//ask for hostname
 							else {
+								//Clear and delete host prompt menu
+								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+
+								subscrnMenu4 =
+									userPrompt(startingColMenu4, startingRowMenu4,
+										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
+
 								gameOn = true;
 								gameMode = EASY;
 							}
 
 							escaped = false;
 						}
-
 
 						//Normal game...
 						else if(currMenu == 2 && cursorPos == NORMAL && isTwoPlayer == false) {
