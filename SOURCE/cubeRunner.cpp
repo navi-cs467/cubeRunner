@@ -483,7 +483,7 @@ int main(void)
 
 							if(escaped)
 							{
-								/Clear and delete username prompt
+								//Clear and delete username prompt
 								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
 
 								//Reinstate outer menu border
