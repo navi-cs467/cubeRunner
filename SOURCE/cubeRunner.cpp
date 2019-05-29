@@ -418,19 +418,6 @@ int main(void)
 								gameMode = EASY;
 							}
 
-							//ask for hostname
-							while(currMenu != 2) {
-								//Clear and delete host prompt menu
-								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
-
-								subscrnMenu4 =
-									userPrompt(startingColMenu4, startingRowMenu4,
-										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-
-								gameOn = true;
-								gameMode = EASY;
-							}
-
 							escaped = false;
 						}
 
