@@ -37,6 +37,7 @@ vector<string> cmdoutlinesGraphics;		//Reserved for graphics only (multi-threade
 const char* menu1[] = {"1 Player",
 					   "2 Player",
 					   "High Scores",
+					   "Instructions", 
 					   "Exit"};
 
 const char* menu2[] = {"Easy",
@@ -208,7 +209,10 @@ int main(void)
 					else if(currMenu == 1 && cursorPos == 3) {
 						paintGraphic(subscrnGraphic, "GRAPHICS/highScore.txt", seedColor, toggled);
 					}
-					else if(currMenu == 1 && cursorPos == 4)
+					else if(currMenu == 1 && cursorPos == 4) {
+						paintGraphic(subscrnGraphic, "GRAPHICS/instructionsPic.txt", seedColor, toggled);
+					}
+					else if(currMenu == 1 && cursorPos == 5)
 						if(toggled == true)
 						paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft1_1.txt", seedColor, toggled);
