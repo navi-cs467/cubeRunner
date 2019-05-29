@@ -50,10 +50,7 @@ const char* menu3[] = {"Hostname or IP Address: ",
 						"",
 						"   *Press End or Esc To Go Back*"};
 
-const char* menu4[] = {"Username: ",
-						"",
-						"",
-						"   *Press End or Esc To Go Back*"};
+const char* menu4[] = {"Username: "};
 
 //Convert c_strings arrays to string vector
 vector<string> loadMenuVec(const char** menu, int length) {
@@ -415,39 +412,18 @@ int main(void)
 
 							else
 							{
-								gameMode = EASY;
-							}
-
-							escaped = false;
-						}
-
-						else if(currMenu == 3 && isTwoPlayer == true) {
-
-							//Clear and delete host prompt menu
-							werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
-
-							subscrnMenu4 =
-								userPrompt(startingColMenu4, startingRowMenu4,
-									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-
-							if (escaped) {
 								//Clear and delete host prompt menu
-								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
-								subscrnMenu3 =
-									hostPrompt(startingColMenu3, startingRowMenu3,
-										&subscrnGraphic, &currMenu, &escaped, host, port);
+								subscrnMenu4 =
+									userPrompt(startingColMenu4, startingRowMenu4,
+										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
 
-								currMenu = 3;
-
-							}
-
-							else {
+								gameMode = EASY;
 								gameOn = true;
 							}
 
 							escaped = false;
-
 						}
 
 						//Normal game...
