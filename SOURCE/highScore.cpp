@@ -77,9 +77,49 @@ void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, 
   string strToAdd;
 
   char str[500];
+  char timeStr[50];
+  char numberBuffer[10];
 
-  //create a string with score
-  sprintf(str, "%d %s %d:%d:%d %d", score, name, hours, minutes, seconds, mode);
+  //create time string
+  if (hours < 10)
+  {
+    sprintf(numberBuffer, "0%d:", hours);
+    strcat(timeStr, numberBuffer);
+  }
+  else
+  {
+    sprintf(numberBuffer, "0%d:", hours);
+    strcat(timeStr, numberBuffer);
+  }
+
+  memset(numberBuffer, '\0', sizeof numberBuffer);
+
+  if (minutes < 10)
+  {
+    sprintf(numberBuffer, "0%d:", minutes);
+    strcat(timeStr, numberBuffer);
+  }
+  else
+  {
+    sprintf(numberBuffer, "0%d:", minutes);
+    strcat(timeStr, numberBuffer);
+  }
+
+  memset(numberBuffer, '\0', sizeof numberBuffer);
+
+  if (seconds < 10)
+  {
+    sprintf(numberBuffer, "0%d", seconds);
+    strcat(timeStr, numberBuffer);
+  }
+  else
+  {
+    sprintf(numberBuffer, "0%d:", seconds);
+    strcat(timeStr, numberBuffer);
+  }
+
+  //create a string with game info
+  sprintf(str, "%d %s %s %d", score, name, timeStr, mode);
   strToAdd = string(str);
 
   //open file for reading
@@ -149,9 +189,49 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
   string strToAdd;
 
   char str[500];
+  char timeStr[50];
+  char numberBuffer[10];
+
+  //create time string
+  if (hours < 10)
+  {
+    sprintf(numberBuffer, "0%d:", hours);
+    strcat(timeStr, numberBuffer);
+  }
+  else
+  {
+    sprintf(numberBuffer, "0%d:", hours);
+    strcat(timeStr, numberBuffer);
+  }
+
+  memset(numberBuffer, '\0', sizeof numberBuffer);
+
+  if (minutes < 10)
+  {
+    sprintf(numberBuffer, "0%d:", minutes);
+    strcat(timeStr, numberBuffer);
+  }
+  else
+  {
+    sprintf(numberBuffer, "0%d:", minutes);
+    strcat(timeStr, numberBuffer);
+  }
+
+  memset(numberBuffer, '\0', sizeof numberBuffer);
+
+  if (seconds < 10)
+  {
+    sprintf(numberBuffer, "0%d", seconds);
+    strcat(timeStr, numberBuffer);
+  }
+  else
+  {
+    sprintf(numberBuffer, "0%d:", seconds);
+    strcat(timeStr, numberBuffer);
+  }
 
   //create a string with score
-  sprintf(str, "%d %s&%s %d:%d:%d %d", score, firstName, secondName, hours, minutes, seconds, mode);
+  sprintf(str, "%d %s&%s %s %d", score, firstName, secondName, timeStr, mode);
   strToAdd = string(str);
 
   //open file for reading
