@@ -134,21 +134,9 @@ int main(int argc, char* argv[]) {
 		memset(player1name, '\0', sizeof player1name);
 		memset(player2name, '\0', sizeof player2name);
 
-		receiveMessage_S(player1, player1name);
-		memset(confirm, '\0', sizeof confirm);
-		sprintf(confirm, "%d", 1);
-		sendMessage_S(player1, confirm);
-
-		receiveMessage_S(player2, player2name);
-		sendMessage_S(player2, confirm);
-
+	  receiveMessage_S(player2, player2name);
 		sendMessage_S(player1, player2name);
-		memset(confirm, '\0', sizeof confirm);
-		receiveMessage_S(player1, confirm);
 
-		sendMessage_S(player2, player1name);
-		memset(confirm, '\0', sizeof confirm);
-		receiveMessage_S(player1, confirm);
 
 		if(DEBUG)
 			printf("After sending GM No Match Loop (if applicable)...\n");
