@@ -761,6 +761,8 @@ int main(void)
 		if(isTwoPlayer == false) {
 			gameinfo = game.playGame(NULL, NULL, username);
 
+			printw("gameinfo: score %d firstName: %s", gameinfo.finalScore, gameinfo.firstName);
+
 			addScoreSingle(gameinfo.finalScore, gameinfo.firstName);
 
 		}
