@@ -309,10 +309,6 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				else
 					timeDisplay << seconds;
 
-				scoreInfo.hours = hours;
-				scoreInfo.minutes = minutes;
-				scoreInfo.seconds = seconds;
-
 				//Initial Life count display
 				livesDisplay.clear();
 				livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
@@ -460,6 +456,10 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							timeDisplay << "0" << seconds;
 						else
 							timeDisplay << seconds;
+
+						scoreInfo.hours = hours;
+						scoreInfo.minutes = minutes;
+						scoreInfo.seconds = seconds;
 
 						//Render Life count display
 						livesDisplay.clear();
@@ -1466,9 +1466,6 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE TIME  ****/
 
-						scoreInfo.hours = hours;
-						scoreInfo.minutes = minutes;
-						scoreInfo.seconds = seconds;
 
 						string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
