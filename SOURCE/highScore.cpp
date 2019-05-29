@@ -80,8 +80,6 @@ void addScoreSingle(int score, char* name)
 
   //create a string with score
   sprintf(str, "%d %s", score, name);
-  //debug
-  printf("%s\n", str);
   strToAdd = string(str);
 
   //open file for reading
