@@ -482,15 +482,15 @@ int main(void)
 
 						else if(currMenu == 3 && cursorPos == EASY && isTwoPlayer == true) {
 							//Clear and delete host prompt menu
-							werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
-							clear();  // curses clear-screen call
-
-							//Paint screen black
-							attron(COLOR_PAIR(BLACK_BLACK));
-							for (int y = 0; y < LINES; y++) {
-								mvhline(y, 0, ' ', COLS);
-							}
-							refresh();
+							// werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+							// clear();  // curses clear-screen call
+							//
+							// //Paint screen black
+							// attron(COLOR_PAIR(BLACK_BLACK));
+							// for (int y = 0; y < LINES; y++) {
+							// 	mvhline(y, 0, ' ', COLS);
+							// }
+							// refresh();
 
 							subscrnMenu4 =
 								userPrompt(startingColMenu4, startingRowMenu4,
