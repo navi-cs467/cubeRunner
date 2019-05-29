@@ -433,8 +433,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							//Delete world
 							delete world;
 
-							hasTerminated == true;
-							
+							hasTerminated = true;
+
 							break;
 						}
 
