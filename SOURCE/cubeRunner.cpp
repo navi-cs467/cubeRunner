@@ -415,8 +415,8 @@ int main(void)
 
 							else {
 
-								cursorPos = NORMAL;
-								
+								cursorPos = EASY;
+
 								// //Clear and delete host prompt menu
 								// werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 								// clear();  // curses clear-screen call
