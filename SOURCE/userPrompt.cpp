@@ -6,7 +6,7 @@
 ** Description: Source file for userPrompt function.
 *****************************************************/
 
-include "../HEADER/userPrompt.hpp"
+#include "../HEADER/userPrompt.hpp"
 
 //Prompts the user for a username
 //ia a ncurses sub-window object that is returned. Prints
