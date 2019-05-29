@@ -26,7 +26,7 @@ class World;
 
 struct gameData {
 	char* firstName;
-	char* lastName;
+	char* secondName;
 	int hours;
 	int minutes;
 	int seconds;

@@ -23,6 +23,7 @@
 #include "../HEADER/paintGraphic.hpp"
 #include "../HEADER/printMenu.hpp"
 #include "../HEADER/validateWinSize.hpp"
+#include "../HEADER/highScore.hpp"
 
 //Game class
 #include "../HEADER/Game.hpp"
@@ -751,15 +752,20 @@ int main(void)
 		}
 
 		Game game = Game(gameMode, isTwoPlayer);
-		//prompt for username
 
 		//Initial transition animation
 		transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);
+
+		struct gameData gameinfo;
+
 		if(isTwoPlayer == false) {
-			game.playGame(NULL, NULL, username);
+			gameinfo = game.playGame(NULL, NULL, username);
+
+			addScoreSingle(gameinfo.finalScore, gameinfo.firstName);
+
 		}
 		else {
-			game.playGame(host, port, username);
+			gameinfo = game.playGame(host, port, username);
 		}
 		gameOn = false;
 	}

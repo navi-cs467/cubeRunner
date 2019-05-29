@@ -209,22 +209,22 @@ void addScoreMulti(int score, char* firstName, char* secondName)
 }
 
 //testing
-int main()
-{
-  char first[10] = "Tom";
-
-  char second[10] = "Sally";
-
-  addScoreSingle(500, first);
-  addScoreSingle(3000, second);
-  addScoreSingle(4000, first);
-  addScoreMulti(5000, first, second);
-  addScoreSingle(6500, first);
-  addScoreMulti(1000, first, second);
-  addScoreSingle(5000, first);
-  addScoreMulti(1500, second, first);
-  addScoreSingle(4500, second);
-  addScoreSingle(7000, second);
-  addScoreSingle(7500, first);
-  return 0;
-}
+// int main()
+// {
+//   char first[10] = "Tom";
+//
+//   char second[10] = "Sally";
+//
+//   addScoreSingle(500, first);
+//   addScoreSingle(3000, second);
+//   addScoreSingle(4000, first);
+//   addScoreMulti(5000, first, second);
+//   addScoreSingle(6500, first);
+//   addScoreMulti(1000, first, second);
+//   addScoreSingle(5000, first);
+//   addScoreMulti(1500, second, first);
+//   addScoreSingle(4500, second);
+//   addScoreSingle(7000, second);
+//   addScoreSingle(7500, first);
+//   return 0;
+// }

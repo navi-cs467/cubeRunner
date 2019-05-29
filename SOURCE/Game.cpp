@@ -51,6 +51,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 	struct gameData scoreInfo;
 
+	scoreInfo.firstName = username;
+
 	bool hasTerminated = false;
 
 	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, playerNum, socketFD, hasTerminated, inputPort)
