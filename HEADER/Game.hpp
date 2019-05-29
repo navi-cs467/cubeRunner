@@ -50,7 +50,7 @@ class Game {
 		void setScore(int score) {this->score = score;}
 		Cube* getCube(){return cube;}
 		World* getWorld(){return world;}
-		struct gameData playGame(char host[] = NULL, char port[] = NULL);
+		struct gameData playGame(char host[] = NULL, char port[] = NULL, char username[]);
 };
 
 #endif /* Game_hpp */

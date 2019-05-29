@@ -654,10 +654,10 @@ int main(void)
 		//Initial transition animation
 		transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);
 		if(isTwoPlayer == false) {
-			game.playGame();
+			game.playGame(username);
 		}
 		else {
-			game.playGame(host, port);
+			game.playGame(host, port, username);
 		}
 		gameOn = false;
 	}

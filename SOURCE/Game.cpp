@@ -26,7 +26,7 @@ Game::Game(int gameMode, bool isTwoPlayer) :
 
 }
 
-struct gameData Game::playGame(char host[], char port[]) {
+struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 	int userInput = 0;
 
