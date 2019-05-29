@@ -761,15 +761,7 @@ int main(void)
 		if(isTwoPlayer == false) {
 			gameinfo = game.playGame(NULL, NULL, username);
 
-
-			printf("gameinfo: score %d firstName: %s", gameinfo.finalScore, gameinfo.firstName);
-
-
-			char testing[10] = "test";
-			addScoreSingle(10, testing);
-
-			endwin();
-			exit(0);
+			addScoreSingle(gameinfo.finalScore, gameinfo.firstName);
 		}
 		else {
 			gameinfo = game.playGame(host, port, username);
