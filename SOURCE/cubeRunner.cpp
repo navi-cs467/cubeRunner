@@ -413,14 +413,10 @@ int main(void)
 								currMenu = 2;
 							}
 
-							else {
-								gameMode = EASY;
-							}
-
 							escaped = false;
 						}
 
-						else if(currMenu == 3) {
+						else if(currMenu == 3 && cursorPos == EASY) {
 							//Clear and delete host prompt menu
 							werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
@@ -441,6 +437,7 @@ int main(void)
 
 							else {
 								gameOn = true;
+								gameMode = EASY;
 							}
 
 							escaped = false;
