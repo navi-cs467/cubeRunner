@@ -31,6 +31,7 @@ struct gameData {
 	int minutes;
 	int seconds;
 	int finalScore;
+	int playerNum;
 };
 
 class Game {

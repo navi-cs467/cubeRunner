@@ -1522,7 +1522,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 	}
 
 
-
+	scoreInfo.playerNum = playerNum;
 	scoreInfo.finalScore = cube->getCubeScore();
 	return scoreInfo;
 }

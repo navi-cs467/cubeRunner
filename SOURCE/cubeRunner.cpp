@@ -761,7 +761,7 @@ int main(void)
 		if(isTwoPlayer == false) {
 			gameinfo = game.playGame(NULL, NULL, username);
 
-			addScoreSingle(gameinfo.finalScore, gameinfo.firstName);
+			addScoreSingle(gameinfo.finalScore, gameinfo.firstName, gameinfo.hours, gameinfo.minutes, gameinfo.seconds, gameMode);
 		}
 		else {
 			gameinfo = game.playGame(host, port, username);

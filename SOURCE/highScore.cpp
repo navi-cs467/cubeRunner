@@ -64,7 +64,7 @@ int isHighScore (int score)
 
 }
 
-void addScoreSingle(int score, char* name)
+void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, int mode)
 {
   //check if score is a high score
   int highScore = isHighScore(score);
@@ -79,7 +79,7 @@ void addScoreSingle(int score, char* name)
   char str[500];
 
   //create a string with score
-  sprintf(str, "%d %s", score, name);
+  sprintf(str, "%d %s %d:%d:%d %d", score, name, hours, minutes, seconds, mode);
   strToAdd = string(str);
 
   //open file for reading
@@ -136,7 +136,7 @@ void addScoreSingle(int score, char* name)
   ofs.close();
 }
 //
-void addScoreMulti(int score, char* firstName, char* secondName)
+void addScoreMulti(int score, char* firstName, char* secondName, int hours, int minutes, int seconds, int mode)
 {
   //check if score is a high score
   int highScore = isHighScore(score);
@@ -151,7 +151,7 @@ void addScoreMulti(int score, char* firstName, char* secondName)
   char str[500];
 
   //create a string with score
-  sprintf(str, "%d %s & %s", score, firstName, secondName);
+  sprintf(str, "%d %s&%s %d:%d:%d %d", score, firstName, secondName, hours, minutes, seconds, mode);
   strToAdd = string(str);
 
   //open file for reading
