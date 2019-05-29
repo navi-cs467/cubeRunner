@@ -293,12 +293,8 @@ int main(void)
 			#pragma omp section
 			{
 				while(!gameOn) {
-					int c;
-					if(currMenu != 3)
-					{
-						c = getch();
-					}
-
+					
+					int c = getch();
 					if(c == KEY_DOWN || c == 'k') {
 						if(cursorPos != EXIT && currMenu == 1) {
 							cursorPos++;
