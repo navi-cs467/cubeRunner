@@ -413,8 +413,13 @@ int main(void)
 								currMenu = 2;
 							}
 
+							else
+							{
+								gameMode = EASY;
+							}
+
 							//ask for hostname
-							else {
+							while(currMenu != 2) {
 								//Clear and delete host prompt menu
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
@@ -427,6 +432,35 @@ int main(void)
 							}
 
 							escaped = false;
+						}
+
+						else if(currMenu == 3 && isTwoPlayer == true) {
+
+							//Clear and delete host prompt menu
+							delwin(subscrnMenu3);
+
+							subscrnMenu4 =
+								userPrompt(startingColMenu4, startingRowMenu4,
+									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
+
+							if (escaped) {
+								//Clear and delete host prompt menu
+								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+
+								subscrnMenu3 =
+									hostPrompt(startingColMenu3, startingRowMenu3,
+										&subscrnGraphic, &currMenu, &escaped, host, port);
+
+								currMenu = 3;
+
+							}
+
+							else {
+								gameOn = true;
+							}
+
+							escaped = false;
+
 						}
 
 						//Normal game...
