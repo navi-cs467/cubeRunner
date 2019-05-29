@@ -483,25 +483,48 @@ int main(void)
 
 							if(escaped)
 							{
-								//Clear and delete username prompt
 								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
 
-								//Reinstate outer menu border
-								box(subscrnMenuBorder, '|', '_');
-								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
-								wrefresh(subscrnMenuBorder);
-								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
-
-								//Replace Game Menu header
+								//Paint screen black
 								attron(COLOR_PAIR(BLACK_BLACK));
-								mvhline(startingRow - 1, 0, ' ', COLS);
-								attron(COLOR_PAIR(WHITE_BLACK));
-								mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
+								for (int y = 0; y < LINES; y++) {
+									mvhline(y, 0, ' ', COLS);
+								}
 								refresh();
 
-								//Restore menu variable
-								currMenu = 2;
+								subscrnMenu3 =
+									hostPrompt(startingColMenu3, startingRowMenu3,
+										&subscrnGraphic, &currMenu, &escaped, host, port);
+
+								if(escaped)
+								{
+									// Clear and delete host prompt menu
+											werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+
+											//Reinstate outer menu border
+											box(subscrnMenuBorder, '|', '_');
+											wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+											wrefresh(subscrnMenuBorder);
+											highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
+												startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+
+											//Replace Game Menu header
+											attron(COLOR_PAIR(BLACK_BLACK));
+											mvhline(startingRow - 1, 0, ' ', COLS);
+											attron(COLOR_PAIR(WHITE_BLACK));
+											mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
+											refresh();
+
+											//Restore menu variable
+											currMenu = 2;
+								}
+
+								else
+								{
+ 									c = 0;
+								}
+
+								escaped = false;
 							}
 							//
 							else
