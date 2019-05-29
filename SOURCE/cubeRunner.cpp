@@ -416,7 +416,7 @@ int main(void)
 							escaped = false;
 
 							//Clear and delete host prompt menu
-							refresh();
+							clear();
 							werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
 							subscrnMenu4 =
@@ -431,7 +431,7 @@ int main(void)
 									hostPrompt(startingColMenu3, startingRowMenu3,
 										&subscrnGraphic, &currMenu, &escaped, host, port);
 
-								currMenu = 2;
+								currMenu = 3;
 							}
 
 							else {
