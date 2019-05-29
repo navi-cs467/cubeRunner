@@ -24,7 +24,7 @@
 #define MENU1_LENGTH 4
 #define MENU2_LENGTH 4
 #define MENU3_LENGTH 4
-#define MENU4_LENGTH 1
+#define MENU4_LENGTH 4
 #define ONE_PLAYER 1
 #define TWO_PLAYER 2
 #define HIGH_SCORE 3

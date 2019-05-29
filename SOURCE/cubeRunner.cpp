@@ -50,7 +50,10 @@ const char* menu3[] = {"Hostname or IP Address: ",
 						"",
 						"   *Press End or Esc To Go Back*"};
 
-const char* menu4[] = {"Username: "};
+const char* menu4[] = {"Username: ",
+						"",
+						"",
+					"  *Press End or Esc To Go Back*"};
 
 //Convert c_strings arrays to string vector
 vector<string> loadMenuVec(const char** menu, int length) {
@@ -427,8 +430,18 @@ int main(void)
 									userPrompt(startingColMenu4, startingRowMenu4,
 										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
 
-								gameMode = EASY;
-								gameOn = true;
+								if(escaped)
+								{
+									werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+									currMenu = 2;
+								}
+
+								else
+								{
+									gameMode = EASY;
+									gameOn = true;
+								}
+
 							}
 
 							escaped = false;
