@@ -294,7 +294,7 @@ int main(void)
 			{
 				while(!gameOn) {
 					int c;
-					while(currMenu != 3)
+					if(currMenu != 3)
 					{
 						c = getch();
 					}
