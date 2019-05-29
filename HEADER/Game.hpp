@@ -24,6 +24,15 @@ class World;
 //client network functions
 #include "client.hpp"
 
+struct gameData {
+	char* firstName;
+	char* lastName;
+	int hours;
+	int minutes;
+	int seconds;
+	int finalScore;
+};
+
 class Game {
 	private:
 		Cube *cube;
@@ -41,7 +50,7 @@ class Game {
 		void setScore(int score) {this->score = score;}
 		Cube* getCube(){return cube;}
 		World* getWorld(){return world;}
-		int playGame(char host[] = NULL, char port[] = NULL);
+		struct gameData playGame(char host[] = NULL, char port[] = NULL);
 };
 
 #endif /* Game_hpp */

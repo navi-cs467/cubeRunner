@@ -8,7 +8,7 @@
 
 CXX = g++
 CXXFLAGS = -g -std=c++0x -Wall -Werror -Wfatal-errors \
-		   -lncursesw -lm -fopenmp -Wno-error=sign-compare \
+		   -lncurses -lm -fopenmp -Wno-error=sign-compare \
 		   -Wno-error=unused-but-set-variable \
 		   -Wno-error=unused-variable --pedantic-errors \
 		   -Wno-error=maybe-uninitialized -Wno-error=comment
@@ -43,7 +43,8 @@ _HDR = constants.hpp highlight.hpp hostPrompt.hpp include.hpp \
 	   paintGraphic.hpp printMenu.hpp using.hpp validateWinSize.hpp \
 	   initColors.hpp Game.hpp World.hpp Water.hpp Land.hpp Obstacle.hpp \
 	   Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp Tree.hpp Rock.hpp \
-	   Bird.hpp Bat.hpp Direction.hpp Cube.hpp client.hpp waitingForOtherPlayer.hpp
+	   Bird.hpp Bat.hpp Direction.hpp Cube.hpp client.hpp waitingForOtherPlayer.hpp \
+		 userPrompt.hpp
 HDR = $(patsubst %,$(IDIR)/%,$(_HDR))
 
 #Headers (Server)
@@ -60,7 +61,8 @@ _SRC = cubeRunner.cpp cubeRunnerServer.cpp highlight.cpp hostPrompt.cpp \
 	   paintGraphic.cpp printMenu.cpp validateWinSize.cpp initColors.cpp \
 	   server.cpp client.cpp Game.cpp World.cpp Water.cpp Land.cpp Obstacle.cpp \
 	   Seaweed.cpp Coral.cpp Shark.cpp Octopus.cpp Tree.cpp Rock.cpp \
-	   Bird.cpp Bat.cpp Direction.cpp Cube.cpp waitingForOtherPlayer.cpp
+	   Bird.cpp Bat.cpp Direction.cpp Cube.cpp waitingForOtherPlayer.cpp \
+		 userPrompt.cpp
 SRC = $(patsubst %,$(SDIR)/%,$(_SRC))
 
 $(PROGRAM_NAME): $(OBJ)
@@ -93,7 +95,7 @@ clean:
 	rm -f -r $(OBJ) $(PROGRAM_NAME) $(ODIR)
 	rm -f -r $(OBJ_SERVER) $(PROGRAM_NAME_SERVER) $(ODIR_SERVER)
 	rm -f -r gameHighScores.txt
-	
+
 zip:
 	zip $(PROGRAM_NAME).zip $(SDIR) $(HDIR) $(GDIR) Makefile \
 		makeOBJECTDir makeOBJECT_SOURCEDir

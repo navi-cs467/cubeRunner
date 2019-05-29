@@ -15,6 +15,7 @@
 //Function prototypes
 #include "../HEADER/highlight.hpp"
 #include "../HEADER/hostPrompt.hpp"
+#include "../HEADER/userPrompt.hpp"
 #include "../HEADER/initColors.hpp"
 #include "../HEADER/transitionAnimation.hpp"
 #include "../HEADER/loadGraphic.hpp"
@@ -49,6 +50,10 @@ const char* menu3[] = {"Hostname or IP Address: ",
 						"",
 						"   *Press End or Esc To Go Back*"};
 
+const char* menu4[] = {"Username: ",
+						"",
+						"   *Press End or Esc To Go Back*"};
+
 //Convert c_strings arrays to string vector
 vector<string> loadMenuVec(const char** menu, int length) {
 	vector<string> retVec;
@@ -61,11 +66,15 @@ vector<string> loadMenuVec(const char** menu, int length) {
 const vector<string> menu1Items = loadMenuVec(menu1, MENU1_LENGTH);
 const vector<string> menu2Items = loadMenuVec(menu2, MENU2_LENGTH);
 const vector<string> menu3Items = loadMenuVec(menu3, MENU3_LENGTH);
+const vector<string> menu4Items = loadMenuVec(menu4, MENU3_LENGTH);
 
 //Network prompt
 const string networkPrompt = "Please enter a Hostname or IP Address "
 							 "and port number to connect to a Cube Runner "
 							 "multiplayer server";
+
+//username prompt
+const string usernamePrompt = "Please enter a username to begin the game";
 
 /*************************** END GLOBALS *****************************/
 
@@ -139,12 +148,16 @@ int main(void)
 											MENU1_LENGTH, MM_WIDTH);
 
 		//Declare menu 2 and 3 (for future use)
-		WINDOW *subscrnMenu2, *subscrnMenu3;
+		WINDOW *subscrnMenu2, *subscrnMenu3, *subscrnMenu4;
 
 		//Initialize menu 3 starting position variables
 		int startingColMenu3 = startingCol +
 			(MM_WIDTH - networkPrompt.length() - 2)/2;
 		int startingRowMenu3 = startingRow + 1;
+
+		//menu 4 starting position variables
+		int startingColMenu4 = startingCol + (MM_WIDTH - usernamePrompt.length() - 2)/2;
+		int startingRowMenu4 = startingRow + 1;
 
 		//Start highlighting at line 1
 		highlight(subscrnMenu1, 1, lineColors[0], startingLineColor,
@@ -155,6 +168,7 @@ int main(void)
 		bool gameOn = false, escaped = false, isTwoPlayer = false;
 		char host[256]; //memset(host, 0, sizeof(char) * 256);
 		char port[6]; //memset(port, 0, sizeof(char) * 6);
+		char username[256];
 
 		//Setup multi-threaded block, with three threads as described below...
 		#pragma omp parallel sections shared(cursorPos, currMenu, \
@@ -329,8 +343,43 @@ int main(void)
 
 						//Easy game...
 						else if(currMenu == 2 && cursorPos == EASY && isTwoPlayer == false) {
-							gameOn = true;
-							gameMode = EASY;
+
+							delwin(subscrnMenu2);
+							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
+
+							subscrnMenu4 =
+								userPrompt(startingColMenu4, startingRowMenu4,
+									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
+
+							//return back to menu
+							if(escaped) {
+								//Clear and delete username prompt
+								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+
+								//Reinstate outer menu border
+								box(subscrnMenuBorder, '|', '_');
+								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+								wrefresh(subscrnMenuBorder);
+								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
+									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+
+								//Replace Game Menu header
+								attron(COLOR_PAIR(BLACK_BLACK));
+								mvhline(startingRow - 1, 0, ' ', COLS);
+								attron(COLOR_PAIR(WHITE_BLACK));
+								mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
+								refresh();
+
+								//Restore menu variable
+								currMenu = 2;
+							}
+
+							else {
+								gameOn = true;
+								gameMode = EASY;
+							}
+
+							escaped = false;
 						}
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == EASY && isTwoPlayer == true) {
@@ -362,7 +411,12 @@ int main(void)
 								//Restore menu variable
 								currMenu = 2;
 							}
-							else { 
+							else {
+								//Clear and delete host prompt menu
+								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+
+
+
 								gameOn = true;
 								gameMode = EASY;
 							}
@@ -381,7 +435,7 @@ int main(void)
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &escaped, host, port);
-							
+
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
 								//Clear and delete host prompt menu
@@ -423,7 +477,7 @@ int main(void)
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &escaped, host, port);
-							
+
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
 								//Clear and delete host prompt menu
@@ -445,7 +499,7 @@ int main(void)
 
 								//Restore menu variable
 								currMenu = 2;
-							} 
+							}
 							else {
 								gameOn = true;
 								gameMode = HARD;
@@ -484,14 +538,14 @@ int main(void)
 			}
 		}
 
-		Game game = Game(gameMode, isTwoPlayer);  
+		Game game = Game(gameMode, isTwoPlayer);
 		//Initial transition animation
-		transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);	
+		transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);
 		if(isTwoPlayer == false) {
 			game.playGame();
 		}
-		else { 
-			game.playGame(host, port); 
+		else {
+			game.playGame(host, port);
 		}
 		gameOn = false;
 	}

@@ -26,7 +26,7 @@ Game::Game(int gameMode, bool isTwoPlayer) :
 
 }
 
-int Game::playGame(char host[], char port[]) {
+struct gameData Game::playGame(char host[], char port[]) {
 
 	int userInput = 0;
 
@@ -48,6 +48,8 @@ int Game::playGame(char host[], char port[]) {
 	int inputSocket = -1;
 	char inputPort[MSG_SIZE];
 	memset(inputPort, '\0', sizeof inputPort);
+
+	struct gameData scoreInfo;
 
 	bool hasTerminated = false;
 
@@ -348,10 +350,10 @@ int Game::playGame(char host[], char port[]) {
 
 							//Create new world
 							if(typeid(*world) == typeid(Water)) {
-								
+
 								//Delete the existing world
 								delete world;
-								
+
 								//Create new world
 								world = new Land(gameMode, isTwoPlayer);
 								cube->transitionWorld(world);
@@ -361,10 +363,10 @@ int Game::playGame(char host[], char port[]) {
 								omp_set_lock(&userInputLock);		//Relock
 							}
 							else if(typeid(*world) == typeid(Land)) {
-								
+
 								//Delete the existing world
 								delete world;
-								
+
 								//Create new world
 								world = new Water(gameMode, isTwoPlayer);
 								cube->transitionWorld(world);
@@ -376,7 +378,7 @@ int Game::playGame(char host[], char port[]) {
 							/* else if(typeid(*world) == typeid(Space))
 								world = new Water(gameMode, isTwoPlayer); */
 
-							//Increase speeds after each transition. 
+							//Increase speeds after each transition.
 							//Speeds are capped after 6 world transitions
 							if(cube->getCubeScore() <= TRANSITION_SCORE_INTERVAL * 6) {
 								scrollRate *= SCROLL_MOVE_UPDATE_RATE;
@@ -394,14 +396,14 @@ int Game::playGame(char host[], char port[]) {
 						cube->checkCubeCollision(world);
 						deathFlag = cube->getCubeIsDead();
 
-						
+
 						//Render World
 						world->renderWorld(cube);
-						
+
 						//Render Cube
 						cube->drawCube();
 
-						
+
 						//Death animation if death occurred
 						if(deathFlag) {
 							//Allow user to confirm death
@@ -678,12 +680,12 @@ int Game::playGame(char host[], char port[]) {
 				if(DEBUG) {
 					move(11,5); printw("Starting Game Loop..."); refresh();
 				}
-				
+
 				//initialize cube coords
 				cube->initializeCubeCoords();
-				
+
 				while (!hasTerminated) {
-					
+
 						//Block movement updates while render completes
 						omp_set_lock(&userInputLock);
 
@@ -883,11 +885,11 @@ int Game::playGame(char host[], char port[]) {
 						int col = atoi(gameData);
 						int prevCol = cube->getCubePositionCol();
 						cube->setCubePositionCol(col);
-						
+
 						//Update cubeCoords
 						cube->updateCubeCoords(prevCol, cube->getCubePositionCol(),
 											   prevRow, cube->getCubePositionRow());
-						
+
 
 						//initialize cubeCoors (OLD CUBE ONLY)
 						/* int cubeCoordsArray[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];
@@ -979,7 +981,7 @@ int Game::playGame(char host[], char port[]) {
 						int yShotCoord = atoi(gameData);
 
 						cube->setShotCoords(xShotCoord, yShotCoord);
-						
+
 						//receive cube direction
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
@@ -1056,14 +1058,14 @@ int Game::playGame(char host[], char port[]) {
 						if (int_1 == 1)
 						{
 							delete world;
-							
+
 							//Receive new world type
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
 							if(DEBUG) {
 								move(z++, 8); printw("RECEIVED (new world type): %s\n", gameData); refresh();
 							}
-							
+
 							//Confirm new world type
 							memset(sendConfirm, '\0', sizeof sendConfirm);
 							sprintf(sendConfirm, "%d", 1);
@@ -1081,7 +1083,7 @@ int Game::playGame(char host[], char port[]) {
 								transitionAnimationInsideThread("GRAPHICS/Water.txt", 120,
 									16, BLUE_BLUE, 30, WHITE_BLUE, &userInput);
 							}
-							
+
 							else if(int_2 == 2)
 							{
 								world = new Land(isTwoPlayer);
@@ -1089,18 +1091,18 @@ int Game::playGame(char host[], char port[]) {
 								transitionAnimationInsideThread("GRAPHICS/Land.txt", 115,
 									16, WHITE_WHITE, 15, GREEN_WHITE, &userInput);
 							}
-							
+
 							//print waiting screen, in case waiting on other player's confirmation
 							waitingForOtherPlayer(playerNum);
-							
+
 							//Receive new world player confirm request
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
 							if(DEBUG) {
 								move(z++, 8); printw("RECEIVED (new world player confirm request): %s\n", gameData); refresh();
 							}
-							
-							//Confirm "player confirmed" new world 
+
+							//Confirm "player confirmed" new world
 							memset(sendConfirm, '\0', sizeof sendConfirm);
 							sprintf(sendConfirm, "%d", 1);
 							sendMessage_C(socketFD, sendConfirm);
@@ -1256,40 +1258,40 @@ int Game::playGame(char host[], char port[]) {
 							receiveMessage_C(socketFD, gameData);
 							int_7 = atoi(gameData); //move(25, 5); printw("gts: %d", int_7); refresh(); */
 
-							if(int_2 == 1) 
+							if(int_2 == 1)
 								world->getObstacles().push_back(new Seaweed(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-								
+
 							else if(int_2 == 2)
 								world->getObstacles().push_back(new Coral(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-							else if(int_2 == 3) 
+							else if(int_2 == 3)
 								world->getObstacles().push_back(new Shark(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-							
-							else if(int_2 == 4) 
+
+							else if(int_2 == 4)
 								world->getObstacles().push_back(new Octopus(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-							
-							if(int_2 == 5) 
+
+							if(int_2 == 5)
 								world->getObstacles().push_back(new Tree(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-								
+
 							else if(int_2 == 6)
 								world->getObstacles().push_back(new Rock(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-							else if(int_2 == 7) 
+							else if(int_2 == 7)
 								world->getObstacles().push_back(new Bird(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-							
-							else if(int_2 == 8) 
+
+							else if(int_2 == 8)
 								world->getObstacles().push_back(new Bat(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
@@ -1307,10 +1309,10 @@ int Game::playGame(char host[], char port[]) {
 							//												  int_5, int_6, /* int_7, */ gameMode));;	 */
 
 							// (Optional ?) SEND: confirmation
-							
+
 							//If Obstacle is stationary, get holes
 							if(world->getObstacles().back()->getIsStationary()) {
-								
+
 								//Recieve number of holes
 								memset(gameData, '\0', sizeof gameData);
 								receiveMessage_C(socketFD, gameData);
@@ -1321,11 +1323,11 @@ int Game::playGame(char host[], char port[]) {
 								memset(sendConfirm, '\0', sizeof sendConfirm);
 								sprintf(sendConfirm, "%d", 1);
 								sendMessage_C(socketFD, sendConfirm);
-								
+
 								int numHoles = atoi(gameData);
-								
+
 								for(int j = 0; j < numHoles; j++) {
-									
+
 									//get hole position x
 									memset(gameData, '\0', sizeof gameData);
 									receiveMessage_C(socketFD, gameData);
@@ -1336,9 +1338,9 @@ int Game::playGame(char host[], char port[]) {
 									memset(sendConfirm, '\0', sizeof sendConfirm);
 									sprintf(sendConfirm, "%d", 1);
 									sendMessage_C(socketFD, sendConfirm);
-								
+
 									int holePosX = atoi(gameData);
-									
+
 									//get hole position y
 									memset(gameData, '\0', sizeof gameData);
 									receiveMessage_C(socketFD, gameData);
@@ -1349,9 +1351,9 @@ int Game::playGame(char host[], char port[]) {
 									memset(sendConfirm, '\0', sizeof sendConfirm);
 									sprintf(sendConfirm, "%d", 1);
 									sendMessage_C(socketFD, sendConfirm);
-								
+
 									int holePosY = atoi(gameData);
-									
+
 									world->getObstacles().back()->getHoles().insert(make_pair(holePosX, holePosY));
 								}
 							}
@@ -1454,6 +1456,10 @@ int Game::playGame(char host[], char port[]) {
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE TIME  ****/
 
+						scoreInfo.hours = hours;
+						scoreInfo.minutes = minutes;
+						scoreInfo.seconds = seconds;
+
 						string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
 						//Time display
@@ -1495,7 +1501,7 @@ int Game::playGame(char host[], char port[]) {
 						//sprintf(sendConfirm, "%d", 1);
 						//sendMessage_C(socketFD, sendConfirm);
 						/**** END RECEIVE WORLD RENDER CONFIRM REQUEST ****/
-						
+
 						//Allow user input processing before next render
 						omp_unset_lock(&userInputLock);
 						usleep(1000);
@@ -1505,7 +1511,10 @@ int Game::playGame(char host[], char port[]) {
 		}
 	}
 
-	return cube->getCubeScore();
+
+
+	scoreInfo.finalScore = cube->getCubeScore();
+	return scoreInfo;
 }
 
 
