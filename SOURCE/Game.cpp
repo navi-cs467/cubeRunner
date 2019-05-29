@@ -662,12 +662,18 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 				char confirm[MSG_SIZE];
 
-				//send username to server, receive other player's username as confirm
+				//send username to server, receive other player's username
 				memset(confirm, '\0', sizeof confirm);
+				memset(message, '\0', sizeof message);
 				sendMessage_C(socketFD, username);
 				receiveMessage_C(socketFD, confirm);
 
-				scoreInfo.secondName = confirm;
+				memset(confirm, '\0', sizeof confirm);
+				receiveMessage_C(socketFD, message);
+				sprintf(confirm, "%d", 1);
+				sendMessage_C(socketFD, confirm);
+
+				scoreInfo.secondName = message;
 
 				//receive dataPort from server, send confirmation to server
 				memset(confirm, '\0', sizeof confirm);
