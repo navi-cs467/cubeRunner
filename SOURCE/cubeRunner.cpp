@@ -416,7 +416,7 @@ int main(void)
 							escaped = false;
 
 							//Clear and delete host prompt menu
-							delwin(subscrnMenu3); werase(subscrnMenu3); wrefresh(subscrnMenu3);
+							werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3); 
 
 							subscrnMenu4 =
 								userPrompt(startingColMenu4, startingRowMenu4,
