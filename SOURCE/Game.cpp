@@ -422,6 +422,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						//Game Over animation and break if game over occurred
 						if(cube->getCubeLives() == 0) {
 							// transitionAnimation("gameOver.txt");
+							transitionAnimation("GRAPHICS/GameOver.txt");
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 							it != world->getObstacles().begin(); it++) {
@@ -803,7 +804,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 								close(socketFD);
 								close(inputSocket);
 
-						//	  	  /* animationTransition("GRAPHICS/gameOver.txt"); */
+						//animationTransition("GRAPHICS/gameOver.txt"); */
 							  //Delete all Obstacles
 									for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 										it != world->getObstacles().begin(); it++) {
