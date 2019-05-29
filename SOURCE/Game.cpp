@@ -422,8 +422,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						//Game Over animation and break if game over occurred
 						if(cube->getCubeLives() == 0) {
 							// transitionAnimation("gameOver.txt");
-							transitionAnimationInsideThread("GRAPHICS/Water.txt", 120,
-								16, BLUE_BLUE, 30, WHITE_BLUE, &userInput);
+
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 							it != world->getObstacles().begin(); it++) {
@@ -433,6 +432,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							delete cube;
 							//Delete world
 							delete world;
+
+							hasTerminated == true;
+							
 							break;
 						}
 
