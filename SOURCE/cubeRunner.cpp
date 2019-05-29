@@ -170,7 +170,7 @@ int main(void)
 		bool gameOn = false, escaped = false, isTwoPlayer = false;
 		char host[256]; //memset(host, 0, sizeof(char) * 256);
 		char port[6]; //memset(port, 0, sizeof(char) * 6);
-		char username[256];
+		char username[MSG_SIZE];
 
 		//Setup multi-threaded block, with three threads as described below...
 		#pragma omp parallel sections shared(cursorPos, currMenu, \
@@ -765,6 +765,12 @@ int main(void)
 		}
 		else {
 			gameinfo = game.playGame(host, port, username);
+
+			//only save high scores from first player to prevent duplicates
+			if (gameinfo.playerNum == 1)
+			{
+				addScoreMulti(gameinfo.finalScore, gameinfo.firstName, gameinfo.secondName, gameinfo.hours, gameinfo.minutes, gameinfo.seconds, gameMode);
+			}
 		}
 		gameOn = false;
 	}

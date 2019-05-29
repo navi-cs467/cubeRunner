@@ -660,8 +660,16 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					//easiest game mode used automatically
 				}
 
-				//receive dataPort from server, send confirmation to server
 				char confirm[MSG_SIZE];
+
+				//send username to server, receive other player's username as confirm
+				memset(confirm, '\0', sizeof confirm);
+				sendMessage_C(socketFD, username);
+				receiveMessage_C(socketFD, confirm);
+
+				scoreInfo.secondName = confirm;
+				
+				//receive dataPort from server, send confirmation to server
 				memset(confirm, '\0', sizeof confirm);
 				sprintf(confirm, "%d", 1);
 

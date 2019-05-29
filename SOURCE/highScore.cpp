@@ -138,7 +138,6 @@ void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, 
   else if (highScore == -1)
   {
     ifs.close();
-    printf("here");
     ofs.open("gameHighScores.txt");
     ofs << strToAdd << endl;
     ofs.close();
