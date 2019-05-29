@@ -412,11 +412,11 @@ int main(void)
 								//Restore menu variable
 								currMenu = 2;
 							}
-
+							
 							escaped = false;
 						}
 
-						else if(currMenu == 3 && cursorPos == EASY) {
+						else if(currMenu == 3 && cursorPos == EASY && isTwoPlayer == true) {
 							//Clear and delete host prompt menu
 							werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
