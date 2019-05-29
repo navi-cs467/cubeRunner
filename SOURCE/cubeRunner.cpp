@@ -765,7 +765,8 @@ int main(void)
 			printf("gameinfo: score %d firstName: %s", gameinfo.finalScore, gameinfo.firstName);
 
 
-			addScoreSingle(gameinfo.finalScore, gameinfo.firstName);
+			char testing[10] = "test";
+			addScoreSingle(10, testing);
 
 			endwin();
 			exit(0);
