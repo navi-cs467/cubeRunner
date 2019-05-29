@@ -66,7 +66,7 @@ vector<string> loadMenuVec(const char** menu, int length) {
 const vector<string> menu1Items = loadMenuVec(menu1, MENU1_LENGTH);
 const vector<string> menu2Items = loadMenuVec(menu2, MENU2_LENGTH);
 const vector<string> menu3Items = loadMenuVec(menu3, MENU3_LENGTH);
-const vector<string> menu4Items = loadMenuVec(menu4, MENU3_LENGTH);
+const vector<string> menu4Items = loadMenuVec(menu4, MENU4_LENGTH);
 
 //Network prompt
 const string networkPrompt = "Please enter a Hostname or IP Address "
