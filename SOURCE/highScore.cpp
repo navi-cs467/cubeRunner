@@ -66,6 +66,7 @@ int isHighScore (int score)
 
 void addScoreSingle(int score, char* name)
 {
+  printf("Determining if score is high score...");
   //check if score is a high score
   int highScore = isHighScore(score);
 
@@ -82,6 +83,7 @@ void addScoreSingle(int score, char* name)
   sprintf(str, "%d %s", score, name);
   strToAdd = string(str);
 
+  printf("Creating new file or opening existing file...");
   //open file for reading
   ifs.open("../gameHighScores.txt");
 
@@ -167,7 +169,6 @@ void addScoreMulti(int score, char* firstName, char* secondName)
   else if (highScore == -1)
   {
     ifs.close();
-    printf("here");
     ofs.open("../gameHighScores.txt");
     ofs << strToAdd << endl;
     ofs.close();
