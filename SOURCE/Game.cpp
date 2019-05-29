@@ -668,7 +668,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				receiveMessage_C(socketFD, confirm);
 
 				scoreInfo.secondName = confirm;
-				
+
 				//receive dataPort from server, send confirmation to server
 				memset(confirm, '\0', sizeof confirm);
 				sprintf(confirm, "%d", 1);
@@ -1491,6 +1491,10 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							timeDisplay << "0" << seconds;
 						else
 							timeDisplay << seconds;
+
+						scoreInfo.hours = hours;
+						scoreInfo.minutes = minutes;
+						scoreInfo.seconds = seconds;
 
 						//Life count display
 						livesDisplay.clear();
