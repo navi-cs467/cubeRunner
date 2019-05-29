@@ -28,7 +28,7 @@ int isHighScore (int score)
 {
   //if high score file can't be opened, then we should create a new file
   ifstream file;
-  file.open("../gameHighScores.txt");
+  file.open("gameHighScores.txt");
 
   if(!file)
   {
@@ -66,7 +66,6 @@ int isHighScore (int score)
 
 void addScoreSingle(int score, char* name)
 {
-  printf("Determining if score is high score...");
   //check if score is a high score
   int highScore = isHighScore(score);
 
@@ -83,9 +82,8 @@ void addScoreSingle(int score, char* name)
   sprintf(str, "%d %s", score, name);
   strToAdd = string(str);
 
-  printf("Creating new file or opening existing file...");
   //open file for reading
-  ifs.open("../gameHighScores.txt");
+  ifs.open("gameHighScores.txt");
 
   if (highScore == -2)
   {
@@ -98,7 +96,7 @@ void addScoreSingle(int score, char* name)
   {
     ifs.close();
     printf("here");
-    ofs.open("../gameHighScores.txt");
+    ofs.open("gameHighScores.txt");
     ofs << strToAdd << endl;
     ofs.close();
     return;
@@ -127,7 +125,7 @@ void addScoreSingle(int score, char* name)
   ifs.close();
 
   //overwrite file with contents of vector
-  ofs.open("../gameHighScores.txt", std::ios::out | std::ios::trunc);
+  ofs.open("gameHighScores.txt", std::ios::out | std::ios::trunc);
   for (int i = 0; i < fileText.size(); i++)
   {
 
@@ -157,7 +155,7 @@ void addScoreMulti(int score, char* firstName, char* secondName)
   strToAdd = string(str);
 
   //open file for reading
-  ifs.open("../gameHighScores.txt");
+  ifs.open("gameHighScores.txt");
 
   if (highScore == -2)
   {
@@ -169,7 +167,7 @@ void addScoreMulti(int score, char* firstName, char* secondName)
   else if (highScore == -1)
   {
     ifs.close();
-    ofs.open("../gameHighScores.txt");
+    ofs.open("gameHighScores.txt");
     ofs << strToAdd << endl;
     ofs.close();
     return;
@@ -198,7 +196,7 @@ void addScoreMulti(int score, char* firstName, char* secondName)
   ifs.close();
 
   //overwrite file with contents of vector
-  ofs.open("../gameHighScores.txt", std::ios::out | std::ios::trunc);
+  ofs.open("gameHighScores.txt", std::ios::out | std::ios::trunc);
   for (int i = 0; i < fileText.size(); i++)
   {
 
