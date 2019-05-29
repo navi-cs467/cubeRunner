@@ -414,6 +414,9 @@ int main(void)
 							}
 
 							else {
+
+								cursorPos = NORMAL;
+								
 								// //Clear and delete host prompt menu
 								// werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 								// clear();  // curses clear-screen call
@@ -476,7 +479,7 @@ int main(void)
 							escaped = false;
 						}
 
-						else if(currMenu == 3 && cursorPos == EASY && isTwoPlayer == true) {
+						else if(currMenu == 3 && cursorPos == EASY) {
 							//Clear and delete host prompt menu
 							werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 							clear();  // curses clear-screen call
