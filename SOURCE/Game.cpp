@@ -309,6 +309,10 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				else
 					timeDisplay << seconds;
 
+				scoreInfo.hours = hours;
+				scoreInfo.minutes = minutes;
+				scoreInfo.seconds = seconds;
+
 				//Initial Life count display
 				livesDisplay.clear();
 				livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
@@ -416,8 +420,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						}
 
 						//Game Over animation and break if game over occurred
-						/* if(cube->getCubeLives() == 0) {
-							transitionAnimation("gameOver.txt");
+						if(cube->getCubeLives() == 0) {
+							// transitionAnimation("gameOver.txt");
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 							it != world->getObstacles().begin(); it++) {
@@ -428,7 +432,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							//Delete world
 							delete world;
 							break;
-						} */
+						}
 
 						//Reset player if death occurred (but no game over)
 						if(deathFlag) world->resetPlayer(cube);
