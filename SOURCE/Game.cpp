@@ -673,8 +673,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				if(playerNum == 1)
 				{
 					receiveMessage_C(socketFD, message);
-					sendMessage_C(socketFD, message);
 					scoreInfo.secondName = message;
+					sendMessage_C(socketFD, scoreInfo.secondName);
+
 				}
 
 				//receive dataPort from server, send confirmation to server
