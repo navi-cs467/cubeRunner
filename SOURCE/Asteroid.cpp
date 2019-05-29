@@ -7,6 +7,9 @@
 ********************************************************************/
 
 #include "../HEADER/Asteroid.hpp"
+#include "../HEADER/World.hpp"
+#include "../HEADER/Water.hpp"
+#include "../HEADER/Land.hpp"
 
 Asteroid::Asteroid(World *world, Direction offScreen,
 				 int specificGraphic) : Obstacle() {
@@ -52,13 +55,13 @@ vector<vector<wstring>> Asteroid::initializeVectorGraphics () {
 	//Generate random Asteroid graphics according to the
 	//number of graphic types specified in NUM_ASTEROID_TYPES
 	//(see constants.hpp)
-	vector<vector<wstring>> tmpV;
+	vector<vector<wstring>> tmpV(NUM_ASTEROID_TYPES);
 	for(int i = 0; i < NUM_ASTEROID_TYPES; i++) {
-		int randHeight = rand() % 4 + 3;
-		for(int j = 0; j < randHeight; j++) {
+		int randSize = rand() % 4 + 3;
+		for(int j = 0; j < randSize; j++) {
 			int randStrLength = rand() % 8 + 3;
 			wstring tmpStr;
-			for(ink k = 0; k < randStrLength; k++) {
+			for(int k = 0; k < randStrLength; k++) {
 				int randomAsteroidChar = rand() % 6;
 				if(randomAsteroidChar == 0)
 					tmpStr.push_back(' ');
@@ -75,7 +78,7 @@ vector<vector<wstring>> Asteroid::initializeVectorGraphics () {
 				else
 					tmpStr.push_back('=');	
 			}
-			tmpV.push_back(tmpStr);
+			tmpV[i].push_back(tmpStr);
 		}
 	}
 			
@@ -183,7 +186,7 @@ void Asteroid::move(World* world) {
 			}
 		}
 		else if(mvDir == left_down) {
-			if(typeof(world*) != typeof(Space) &&
+			if(typeid(*world) != typeid(Space) &&
 				 posX + gts == world->getBottomRow() + 1) {
 				mvDir = down;
 				continue;
@@ -277,7 +280,7 @@ void Asteroid::move(World* world) {
 			}
 		}
 		else if(mvDir == down) {
-			if(typeof(world*) != typeof(Space) &&
+			if(typeid(*world) != typeid(Space) &&
 				 posX + gts == world->getBottomRow() + 1) {
 				mvDir = right_down;
 				continue;
@@ -341,7 +344,7 @@ void Asteroid::move(World* world) {
 			}
 		}
 		else if(mvDir == right_down) {
-			if(typeof(world*) != typeof(Space) &&
+			if(typeid(*world) != typeid(Space) &&
 				 posX + gts == world->getBottomRow() + 1) {
 				mvDir = right;
 				continue;

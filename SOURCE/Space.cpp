@@ -54,8 +54,8 @@ Space::Space(int gameMode, bool isTwoPlayer, bool forServer) :
 		initMiniCubes(NUM_MCS_EASY / (gameMode));
 		
 		//Create offscreen obs and minCubes for scrolling
-		loadOSObs();
-		loadOSMCs();
+		loadOSObs(right);
+		loadOSMCs(right);
 
 		if(!forServer) {
 			clear();  // curses clear-screen call
@@ -206,7 +206,7 @@ void Space::renderWorld(Cube *cube) {
 						attron(COLOR_PAIR(BLACK_BLACK));
 						printw("%lc", " ");
 					}
-					if(nextColor == 35) nextColor = 30;
+					if(nextColor == 6) nextColor = 1;
 				}
 		}
 			
@@ -249,7 +249,7 @@ void Space::renderWorld(Cube *cube) {
 		}
 		
 		else if(typeid(**it) == typeid(Spaceship)) {
-			int nextColor = Spaceship::getColor();
+			int color = Spaceship::getColor();
 			attron(A_BOLD);
 			if((*it)->getHits()) {
 				attron(COLOR_PAIR(RED_BLACK));
@@ -429,14 +429,17 @@ void Space::scroll_(Cube *cube) {
 	}
 	
 	//Temporary set of pairs used to update miniCubes values via swap
-	set<pair<int, int>> newMinCubes;
+	set<pair<int, int>> newMiniCubes;
 	for(set<pair<int, int>>::iterator itMiniCubes = miniCubes.begin();
-		it != miniCubes.end(); it++) {
+		itMiniCubes != miniCubes.end(); itMiniCubes++) {
 			//if miniCube is 2 screen widths offscreen, erase and continue
 			if(itMiniCubes->second <= -COLS * 2 ||
 			   itMiniCubes->second >= COLS * 2 ||
 			   itMiniCubes->first <= -LINES * 2 ||
 			   itMiniCubes->first <= -LINES * 2) {
+				   miniCubes.erase(itMiniCubes--);
+				   continue;
+			   }
 			if(cube->getCubeDirection() == right ||
 			   cube->getCubeDirection() == right_up ||
 			   cube->getCubeDirection() == right_down)
@@ -458,9 +461,9 @@ void Space::scroll_(Cube *cube) {
 					insert(make_pair(itMiniCubes->first - 1, 
 						itMiniCubes->second));
 			//Set to blank background where miniCube used to be
-			mvaddstr(it->first, it->second, " ");
+			mvaddstr(itMiniCubes->first, itMiniCubes->second, " ");
 	}
-	swap(miniCubes, newMinCubes);
+	swap(miniCubes, newMiniCubes);
 }
 
 // References

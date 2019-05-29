@@ -6,8 +6,8 @@
 ** Description: Header file for Comet class, a derived Obstacle.
 ********************************************************************/
 
-#ifndef Octopus_hpp
-#define Octopus_hpp
+#ifndef Comet_hpp
+#define Comet_hpp
 
 #include "Obstacle.hpp"
 #include "World.hpp"
@@ -43,7 +43,7 @@ class Comet : public Obstacle {
 		
 };
 								 
-#endif /* Octopus_hpp */
+#endif /* Comet_hpp */
 
 // References
 // http://www.cplusplus.com/reference/vector/vector/vector/

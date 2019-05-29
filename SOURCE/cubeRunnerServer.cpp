@@ -421,7 +421,7 @@ int main(int argc, char* argv[]) {
 					   lastRefreshTime = omp_get_wtime(),
 					   lastNewObsTime = omp_get_wtime(),
 					   lastShotTime = omp_get_wtime();
-				int statsTime, startTime, scrollCount = 0,
+				int statsTime, startTime, scrollCountCols = 0, scrollCountRows = 0,
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 
@@ -1955,7 +1955,7 @@ int main(int argc, char* argv[]) {
 							}
 						}
 						else {
-							if(scrollCountCols == COLS || scrollCountRows == ROWS) {
+							if(scrollCountCols == COLS || scrollCountRows == LINES) {
 								world->loadOSObs(cube->getCubeDirection());
 								world->loadOSMCs(cube->getCubeDirection());
 							}

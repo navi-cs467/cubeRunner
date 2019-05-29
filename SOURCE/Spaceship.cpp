@@ -49,7 +49,7 @@ vector<vector<wstring>> Spaceship::initializeVectorGraphics () {
 									
 								   {L"  _____/",
 								    L"<|_____==",
-								    L"       \\"}
+								    L"       \\"},
 		
 								  {L" /\\",
 								   L"/  \\",
@@ -65,12 +65,12 @@ vector<vector<wstring>> Spaceship::initializeVectorGraphics () {
 								   L"| u|",
 								   L"/||\\"},
 								
-								  {L"\||/",
+								  {L"\\||/",
 								   L"|  |",
 								   L"|  |",
 								   L"|__|",
-								   L"\ */",
-								   L" \/"}};
+								   L"\\ */",
+								   L" \\/"}};
 								  
 	return tmpV;
 }

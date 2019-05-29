@@ -203,6 +203,11 @@ void Cube::transitionWorld(World *world) {
 		highlightColor = RED_WHITE;
 		shotColor = RED_WHITE;
 	}
+	if(typeid(*world) == typeid(Space)) {
+		color = WHITE_BLACK;
+		highlightColor = RED_BLACK;
+		shotColor = RED_BLACK;
+	}
 	shotCoords.first = -1; shotCoords.second = -1;
 }
 

@@ -27,7 +27,7 @@ class Space : public World {
 		//virtual void scroll_(bool newObs);
 		virtual void scroll_(Cube *cube);
 		virtual void loadOSObs(Direction dir);	//Load offscreen Obstacles (for scrolling)
-		virtual void loadOSMCs();				//Load offscreen miniCubes (for scrolling)
+		virtual void loadOSMCs(Direction dir);	//Load offscreen miniCubes (for scrolling)
 };
 
 #endif /* Space_hpp */

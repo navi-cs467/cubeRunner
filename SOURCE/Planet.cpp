@@ -32,7 +32,7 @@ vector<vector<wstring>> Planet::initializeVectorGraphics () {
 								   L" ╚`:██░░░░██",
 								   L"   █:´░░░░░░█",
 								   L"   █░░░░`:░░█._",
-								   L"    ██░░░░██:`‗",",
+								   L"    ██░░░░██:`‗",
 								   L"      ▀▀▀▀"},
 								
 								  {L"      ▄▄▄▄ _¸-.┌",

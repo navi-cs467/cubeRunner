@@ -55,8 +55,8 @@ Water::Water(int gameMode, bool isTwoPlayer, bool forServer) :
 		initMiniCubes(NUM_MCS_EASY / (gameMode));
 		
 		//Create offscreen obs and minCubes for scrolling
-		loadOSObs();
-		loadOSMCs();
+		loadOSObs(right);
+		loadOSMCs(right);
 
 		if(!forServer) {
 			clear();  // curses clear-screen call

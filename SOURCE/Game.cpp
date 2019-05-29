@@ -497,7 +497,7 @@ int Game::playGame(char host[], char port[]) {
 							}
 						}
 						else {
-							if(scrollCountCols == COLS || scrollCountRows == ROWS) {
+							if(scrollCountCols == COLS || scrollCountRows == LINES) {
 								world->loadOSObs(cube->getCubeDirection());
 								world->loadOSMCs(cube->getCubeDirection());
 							}

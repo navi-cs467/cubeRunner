@@ -26,14 +26,14 @@ PROGRAM_NAME_SERVER = cubeRunnerServer
 _OBJ = cubeRunner.o highlight.o hostPrompt.o transitionAnimation.o \
 	   transitionAnimationInsideThread.o loadGraphic.o \
 	   paintCubeGraphic.o paintGraphic.o printMenu.o validateWinSize.o \
-	   initColors.o Game.o World.o Water.o Land.o Obstacle.o Seaweed.o \
+	   initColors.o Game.o World.o Water.o Land.o Space.o Obstacle.o Seaweed.o \
 	   Coral.o Shark.o Octopus.o Tree.o Rock.o Bird.o Bat.o \
 	   Asteroid.o Planet.o Comet.o Spaceship.o \
 	   Direction.o Cube.o client.o waitingForOtherPlayer.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 #Objects (Server)
-_OBJ_SERVER = cubeRunnerServer.o server.o client.o World.o Water.o Land.o \
+_OBJ_SERVER = cubeRunnerServer.o server.o client.o World.o Water.o Land.o Space.o \
 			  Obstacle.o Seaweed.o Coral.o Shark.o Octopus.o Tree.o \
 			  Rock.o Bird.o Bat.o Asteroid.o Planet.o Comet.o Spaceship.o \
 			  Direction.o Cube.o
@@ -43,7 +43,7 @@ OBJ_SERVER = $(patsubst %,$(ODIR_SERVER)/%,$(_OBJ_SERVER))
 _HDR = constants.hpp highlight.hpp hostPrompt.hpp include.hpp \
 	   colorDefs.hpp transitionAnimation.hpp loadGraphic.hpp paintCubeGraphic.hpp \
 	   paintGraphic.hpp printMenu.hpp using.hpp validateWinSize.hpp \
-	   initColors.hpp Game.hpp World.hpp Water.hpp Land.hpp Obstacle.hpp \
+	   initColors.hpp Game.hpp World.hpp Water.hpp Land.hpp Space.hpp Obstacle.hpp \
 	   Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp Tree.hpp Rock.hpp \
 	   Bird.hpp Bat.hpp Asteroid.hpp Planet.hpp Comet.hpp Spaceship.hpp \
 	   Direction.hpp Cube.hpp client.hpp waitingForOtherPlayer.hpp
@@ -51,8 +51,8 @@ HDR = $(patsubst %,$(IDIR)/%,$(_HDR))
 
 #Headers (Server)
 _HDR_SERVER = constants.hpp include.hpp using.hpp initColors.hpp Game.hpp World.hpp \
-	   Water.hpp Land.hpp Obstacle.hpp Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp \
-	   Tree.hpp Rock.hpp Bird.hpp Bat.hpp Asteroid.o Planet.o Comet.o Spaceship.o \
+	   Water.hpp Land.hpp Space.hpp Obstacle.hpp Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp \
+	   Tree.hpp Rock.hpp Bird.hpp Bat.hpp Asteroid.hpp Planet.hpp Comet.hpp Spaceship.hpp \
 	   Direction.hpp Cube.hpp server.hpp client.hpp
 HDR_SERVER = $(patsubst %,$(IDIR)/%,$(_HDR_SERVER))
 
@@ -61,9 +61,9 @@ _SRC = cubeRunner.cpp cubeRunnerServer.cpp highlight.cpp hostPrompt.cpp \
 	   transitionAnimation.cpp transitionAnimationInsideThread.cpp \
 	   loadGraphic.cpp paintCubeGraphic.cpp \
 	   paintGraphic.cpp printMenu.cpp validateWinSize.cpp initColors.cpp \
-	   server.cpp client.cpp Game.cpp World.cpp Water.cpp Land.cpp Obstacle.cpp \
-	   Seaweed.cpp Coral.cpp Shark.cpp Octopus.cpp Tree.cpp Rock.cpp \
-	   Bird.cpp Bat.cpp Asteroid.o Planet.o Comet.o Spaceship.o \
+	   server.cpp client.cpp Game.cpp World.cpp Water.cpp Land.cpp Space.cpp \
+	   Obstacle.cpp Seaweed.cpp Coral.cpp Shark.cpp Octopus.cpp Tree.cpp \
+	   Rock.cpp Bird.cpp Bat.cpp Asteroid.o Planet.o Comet.o Spaceship.o \
 	   Direction.cpp Cube.cpp waitingForOtherPlayer.cpp
 SRC = $(patsubst %,$(SDIR)/%,$(_SRC))
 

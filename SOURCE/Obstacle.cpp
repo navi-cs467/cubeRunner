@@ -121,7 +121,7 @@ void Obstacle::createObstacle(World *world,
 				posY = posY + COLS;
 			else if(offScreenDirection == left ||
 				    offScreenDirection == left_up ||
-					offScreenDirection == left_down ||)
+					offScreenDirection == left_down)
 				posY = -posY;
 			else if(offScreenDirection == up)
 				posX = -posX;
@@ -289,7 +289,7 @@ void Obstacle::move(World* world) {
 			}
 		}
 		else if(mvDir == left_down) {
-			if(typeof(world*) != typeof(Space) &&
+			if(typeid(*world) != typeid(Space) &&
 				 posX + gts == world->getBottomRow() + 1) {
 				mvDir = down;
 				continue;
@@ -384,7 +384,7 @@ void Obstacle::move(World* world) {
 			}
 		}
 		else if(mvDir == down) {
-			if(typeof(world*) != typeof(Space) &&
+			if(typeid(*world) != typeid(Space) &&
 				 posX + gts == world->getBottomRow() + 1) {
 				mvDir = right_down;
 				continue;
@@ -450,7 +450,7 @@ void Obstacle::move(World* world) {
 			}
 		}
 		else if(mvDir == right_down) {
-			if(typeof(world*) != typeof(Space) &&
+			if(typeid(*world) != typeid(Space) &&
 				 posX + gts == world->getBottomRow() + 1) {
 				mvDir = right;
 				continue;
