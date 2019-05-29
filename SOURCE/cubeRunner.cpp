@@ -761,7 +761,17 @@ int main(void)
 		if(isTwoPlayer == false) {
 			gameinfo = game.playGame(NULL, NULL, username);
 
+			clear();  // curses clear-screen call
+
+			//Paint screen black
+			attron(COLOR_PAIR(BLACK_BLACK));
+			for (int y = 0; y < LINES; y++) {
+				mvhline(y, 0, ' ', COLS);
+			}
+			refresh();
+
 			printw("gameinfo: score %d firstName: %s", gameinfo.finalScore, gameinfo.firstName);
+			refresh();
 
 			addScoreSingle(gameinfo.finalScore, gameinfo.firstName);
 
