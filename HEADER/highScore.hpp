@@ -10,6 +10,7 @@
 #define highScore_hpp
 
 #include "include.hpp"
+
 int isHighScore (int score);
 void addScoreSingle(int score, char* name);
 void addScoreMulti(int score, char* firstName, char* secondName);
