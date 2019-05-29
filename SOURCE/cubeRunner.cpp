@@ -52,6 +52,7 @@ const char* menu3[] = {"Hostname or IP Address: ",
 
 const char* menu4[] = {"Username: ",
 						"",
+						"",
 						"   *Press End or Esc To Go Back*"};
 
 //Convert c_strings arrays to string vector
@@ -425,8 +426,42 @@ int main(void)
 
 						//Normal game...
 						else if(currMenu == 2 && cursorPos == NORMAL && isTwoPlayer == false) {
-							gameOn = true;
-							gameMode = NORMAL;
+							delwin(subscrnMenu2);
+							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
+
+							subscrnMenu4 =
+								userPrompt(startingColMenu4, startingRowMenu4,
+									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
+
+							//return back to menu
+							if(escaped) {
+								//Clear and delete username prompt
+								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+
+								//Reinstate outer menu border
+								box(subscrnMenuBorder, '|', '_');
+								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+								wrefresh(subscrnMenuBorder);
+								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
+									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+
+								//Replace Game Menu header
+								attron(COLOR_PAIR(BLACK_BLACK));
+								mvhline(startingRow - 1, 0, ' ', COLS);
+								attron(COLOR_PAIR(WHITE_BLACK));
+								mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
+								refresh();
+
+								//Restore menu variable
+								currMenu = 2;
+							}
+
+							else {
+								gameOn = true;
+								gameMode = NORMAL;
+							}
+
+							escaped = false;
 						}
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == NORMAL && isTwoPlayer == true) {
@@ -467,8 +502,42 @@ int main(void)
 
 						//Hard game...
 						else if(currMenu == 2 && cursorPos == HARD && isTwoPlayer == false) {
-							gameOn = true;
-							gameMode = HARD;
+							delwin(subscrnMenu2);
+							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
+
+							subscrnMenu4 =
+								userPrompt(startingColMenu4, startingRowMenu4,
+									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
+
+							//return back to menu
+							if(escaped) {
+								//Clear and delete username prompt
+								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+
+								//Reinstate outer menu border
+								box(subscrnMenuBorder, '|', '_');
+								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+								wrefresh(subscrnMenuBorder);
+								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
+									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+
+								//Replace Game Menu header
+								attron(COLOR_PAIR(BLACK_BLACK));
+								mvhline(startingRow - 1, 0, ' ', COLS);
+								attron(COLOR_PAIR(WHITE_BLACK));
+								mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
+								refresh();
+
+								//Restore menu variable
+								currMenu = 2;
+							}
+
+							else {
+								gameOn = true;
+								gameMode = HARD;
+							}
+
+							escaped = false;
 						}
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == HARD && isTwoPlayer == true) {
