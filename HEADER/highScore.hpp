@@ -13,6 +13,6 @@
 
 int isHighScore (int score);
 void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, int mode);
-void addScoreMulti(int score, char* firstName, char* secondName, int hours, int minutes, int seconds, int mode;
+void addScoreMulti(int score, char* firstName, char* secondName, int hours, int minutes, int seconds, int mode);
 
 #endif
