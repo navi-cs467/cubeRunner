@@ -20,6 +20,6 @@ extern const vector<string>menu4Items;
 
 WINDOW *userPrompt(int startingColMenu4, int startingRowMenu4,
 						WINDOW **subscrnGraphic, int *currMenu,
-						bool *connected, char *username, bool twoPlayer);
+						bool *escaped, char *username, bool twoPlayer);
 
 #endif
