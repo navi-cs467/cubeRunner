@@ -476,7 +476,7 @@ int main(void)
 							escaped = false;
 						}
 
-						else if(currMenu == 3 && cursorPos == NORMAL && isTwoPlayer == false) {
+						else if(currMenu == 3 && cursorPos == NORMAL && isTwoPlayer == true) {
 							//Clear and delete host prompt menu
 							werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 							clear();  // curses clear-screen call
