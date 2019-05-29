@@ -773,6 +773,8 @@ int main(void)
 			printw("gameinfo: score %d firstName: %s", gameinfo.finalScore, gameinfo.firstName);
 			refresh();
 
+			usleep(100 * 1000);
+			
 			addScoreSingle(gameinfo.finalScore, gameinfo.firstName);
 
 		}
