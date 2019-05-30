@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*******************************************************
 ** Program name: constants.cpp
 ** CS467 Capstone - 2D Runner - "Cube Runner"
