@@ -33,3 +33,22 @@ void loadGraphic(const char* fileName)
    }
    f.close();  //Close file
 }
+
+void loadGraphicInstructions(void){
+	fstream f;
+	string line;
+	f.open("../GRAPHICS/instructionsText.txt", ios::in);
+	move(0,0);
+	if(f.is_open()){
+		while(getline(f, line)){	
+           		printw("%s\n", line.c_str());
+		}
+		f.close();  //Close file
+	}
+	else{
+		printw("INSTRUCTIONS GRAPHIC FILE DID NOT OPEN\n\n\n");
+		printw("Press any key to continue...\n\n\n");
+   	}
+   
+
+}

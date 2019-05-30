@@ -26,6 +26,13 @@
 //Game class
 #include "../HEADER/Game.hpp"
 
+//reading text file
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
 /*************************** GLOBALS *********************************/
 
 WINDOW *scrn; 	//Will point to curses window object
@@ -37,6 +44,7 @@ vector<string> cmdoutlinesGraphics;		//Reserved for graphics only (multi-threade
 const char* menu1[] = {"1 Player",
 					   "2 Player",
 					   "High Scores",
+					   "Instructions", 
 					   "Exit"};
 
 const char* menu2[] = {"Easy",
@@ -100,7 +108,17 @@ int main(void)
     //Run transitionAnimation animation
     transitionAnimation("GRAPHICS/cubeRunner.txt", 120, 28, BLACK_BLACK, 1, RED_BLACK);
 
+
+	//Variables needed for menu and game
+	int cursorPos = 1, currMenu = 1, gameMode = -1;
+	bool gameOn = false, escaped = false, isTwoPlayer = false;
+	char host[256]; //memset(host, 0, sizeof(char) * 256);
+	char port[6]; //memset(port, 0, sizeof(char) * 6);
+	//WINDOW *subscrnMenuBorder;
+
+
 	while(1) {
+
 
 		//Set number of omp threads for menu
 		omp_set_num_threads(3);
@@ -122,7 +140,10 @@ int main(void)
 						  (MM_GRAPHIC_WIDTH - MM_WIDTH) / 2,
 			startingRow = ((LINES - MM_GRAPHIC_HEIGHT)/4) +
 						   MM_GRAPHIC_HEIGHT + 5;		//Menu starts 5 lines below the graphic
+
+
 		WINDOW *subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);
+
 		wattron(subscrnMenuBorder, COLOR_PAIR(WHITE_BLACK));
 		box(subscrnMenuBorder, '|', '_');
 		wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
@@ -135,8 +156,8 @@ int main(void)
 
 		//Print menu 1 with random starting line color
 		int startingLineColor = rand() % 6 + 1, lineColors[MAX_MENU_ITEMS];
-		WINDOW *subscrnMenu1 = printMenu(menu2Items, startingLineColor, lineColors,
-											MENU1_LENGTH, MM_WIDTH);
+		WINDOW *subscrnMenu1 = printMenu(menu1Items, startingLineColor, lineColors,
+											MENU1_LENGTH, MM_WIDTH); // change menu2Items to menu1Items
 
 		//Declare menu 2 and 3 (for future use)
 		WINDOW *subscrnMenu2, *subscrnMenu3;
@@ -150,11 +171,11 @@ int main(void)
 		highlight(subscrnMenu1, 1, lineColors[0], startingLineColor,
 					menu1Items, MENU1_LENGTH, MM_WIDTH);
 
-		//Variables needed for menu and game
-		int cursorPos = 1, currMenu = 1, gameMode = -1;
+		//Variables needed for menu and game     /////Move to top of while statement
+		/*int cursorPos = 1, currMenu = 1, gameMode = -1;
 		bool gameOn = false, escaped = false, isTwoPlayer = false;
 		char host[256]; //memset(host, 0, sizeof(char) * 256);
-		char port[6]; //memset(port, 0, sizeof(char) * 6);
+		char port[6]; //memset(port, 0, sizeof(char) * 6);*/
 
 		//Setup multi-threaded block, with three threads as described below...
 		#pragma omp parallel sections shared(cursorPos, currMenu, \
@@ -208,7 +229,11 @@ int main(void)
 					else if(currMenu == 1 && cursorPos == 3) {
 						paintGraphic(subscrnGraphic, "GRAPHICS/highScore.txt", seedColor, toggled);
 					}
-					else if(currMenu == 1 && cursorPos == 4)
+					else if(currMenu == 1 && cursorPos == 4) {
+						if(toggled == true)
+						paintGraphic(subscrnGraphic, "GRAPHICS/instructionsPic.txt", seedColor, toggled);
+					}
+					else if(currMenu == 1 && cursorPos == 5)
 						if(toggled == true)
 						paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft1_1.txt", seedColor, toggled);
@@ -285,12 +310,24 @@ int main(void)
 							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 						}
-						else if(cursorPos != EXIT && currMenu == 2) {
+						else if(cursorPos != BACK && currMenu == 2) {   //changed EXIT to BACK
 							cursorPos++;
 							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-								startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+								startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH); //changed MENU1_LENGTH to MENU2_LENGTH
+						}
+						else if(cursorPos == EXIT && currMenu == 1) {
+							cursorPos = ONE_PLAYER;
+							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
+								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
+						}
+						else if(cursorPos == BACK && currMenu == 2) {
+							cursorPos = EASY;
+							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
+								startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 						}
 						if(currMenu == 1 && cursorPos == TWO_PLAYER) isTwoPlayer = true;
+						else if(currMenu == 1 && cursorPos == ONE_PLAYER) isTwoPlayer = false;
+						
 					}
 					else if(c == KEY_UP || c == 'i') {
 						if(cursorPos != ONE_PLAYER && currMenu == 1) {
@@ -301,7 +338,17 @@ int main(void)
 						else if(cursorPos != EASY && currMenu == 2) {
 							cursorPos--;
 							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-								startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+								startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH); //changed MENU1_LENGTH to MENU2_LENGTH
+						}
+						else if(cursorPos == ONE_PLAYER && currMenu == 1) {
+							cursorPos = EXIT;
+							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
+								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
+						}
+						else if(cursorPos == EASY && currMenu == 2) {
+							cursorPos = BACK;
+							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
+								startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 						}
 						if(currMenu == 1 && cursorPos == ONE_PLAYER) isTwoPlayer = false;
 						else if(currMenu == 1 && cursorPos == TWO_PLAYER) isTwoPlayer = true;
@@ -309,16 +356,75 @@ int main(void)
 					else if(c == KEY_ENTER || c == 10 || c == 13) {
 						if(currMenu == 1 && (cursorPos == ONE_PLAYER || cursorPos == TWO_PLAYER)) {
 							delwin(subscrnMenu1);
+
+							//Update Outer Border
+							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							subscrnMenuBorder = newwin(MENU2_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
+							box(subscrnMenuBorder, '|', '_');
+							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+							wrefresh(subscrnMenuBorder);
+														
 							subscrnMenu2 = printMenu(menu2Items,
 								startingLineColor, NULL, MENU2_LENGTH, MM_WIDTH);
 							cursorPos = NORMAL;
+						
 							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-								startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+								startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH); //change MENU1_LENGTH to MENU2_LENGTH
 							currMenu = 2;
+				
+
 						}
 						else if(currMenu == 1 && cursorPos == HIGH_SCORE) {
 							//delwin(subscrnMenu1);
 							//showHighScores();
+						}
+						else if(currMenu == 1 && cursorPos == INSTRUCTIONS) {
+							/*fstream inFile;
+							string inLine;
+							inFile.open("../GRAPHICS/instructionsText.txt", ios::in);
+							
+
+							clear();
+							move(0,0); 
+							if(inFile.is_open()){ 
+								while(getline(inFile, inLine)){
+									printw("FILE IS OPEN");
+									//printw("%s", inLine);
+									refresh();
+								}
+								inFile.close();
+							}
+							else{
+								printw("FILE NOT OPEN");
+							}*/
+							clear();
+							loadGraphicInstructions();				
+							getch();
+
+							/////////////////REDRAW THE MENU/////////////////////
+							clear();
+
+
+						
+							//Print Game Menu header
+							attron(COLOR_PAIR(WHITE_BLACK));
+							mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
+							refresh();
+
+							//Update Outer Border
+							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
+							box(subscrnMenuBorder, '|', '_');
+							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+							wrefresh(subscrnMenuBorder);
+														
+							subscrnMenu1 = printMenu(menu1Items,
+								startingLineColor, NULL, MENU1_LENGTH, MM_WIDTH);
+							highlight(subscrnMenu1, INSTRUCTIONS, lineColors[cursorPos-1],
+								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
+
+							paintGraphic(subscrnGraphic, "GRAPHICS/instructionsPic.txt", 1, true);
+
 						}
 						else if(currMenu == 1 && cursorPos == EXIT) {
 							delwin(subscrnMenu1);
@@ -350,7 +456,7 @@ int main(void)
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
 								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+									startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);  //changed MENU1_LENGTH to MENU2_LENGTH
 
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
@@ -388,11 +494,12 @@ int main(void)
 								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
 								//Reinstate outer menu border
+								subscrnMenuBorder = newwin(MENU2_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
 								box(subscrnMenuBorder, '|', '_');
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
 								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+									startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);  //changed MENU1_LENGTH to MENU2_LENGTH
 
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
@@ -434,7 +541,7 @@ int main(void)
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
 								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+									startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH); //changed MENU1_LENGTH to MENU2_LENGTH
 
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
@@ -453,9 +560,20 @@ int main(void)
 							escaped = false;
 						}
 
-						//Exit
+						//Exit    // Back???
 						else if(currMenu == 2 && (cursorPos == BACK || c == KEY_END || c == 27)) {
 							delwin(subscrnMenu2);
+
+							//Update Outer Border
+							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
+							box(subscrnMenuBorder, '|', '_');
+							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+							wrefresh(subscrnMenuBorder);
+							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1], 
+							startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH); //change subscrnMenu2 to 1, menu2Items to 1
+
+
 							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL,
 														MENU1_LENGTH, MM_WIDTH);
 							subscrnGraphic = paintCubeGraphic(subscrnGraphic,
@@ -465,11 +583,23 @@ int main(void)
 							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 							currMenu = 1;
+
 						}
 					}
 					//Go back to first menu if user presses "END" or "ESC"
 					else if(currMenu == 2 && (c == KEY_END || c == 27)) {
 							delwin(subscrnMenu2);
+
+							//Update Outer Border
+							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
+							box(subscrnMenuBorder, '|', '_');
+							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+							wrefresh(subscrnMenuBorder);
+							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
+							startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+
+
 							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL,
 														MENU1_LENGTH, MM_WIDTH);
 							subscrnGraphic = paintCubeGraphic(subscrnGraphic,
@@ -486,7 +616,7 @@ int main(void)
 
 		Game game = Game(gameMode, isTwoPlayer);  
 		//Initial transition animation
-		transitionAnimation("GRAPHICS/Water.txt", 110, 16, BLUE_BLUE, 30, WHITE_BLUE);	
+		transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);	
 		if(isTwoPlayer == false) {
 			game.playGame();
 		}

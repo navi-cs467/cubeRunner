@@ -1,0 +1,36 @@
+   OBJECTIVE:  
+
+   Navigate through three worlds (Water, Land, Space) while avoiding stationary/moving obstacles and collecting as many
+   mini-cubes as possible. The token movement behaviour and obstacles differ in the various worlds:
+
+      Water - With no user input, the token will remain in the same location relative to console boundaries. Obstacles
+      include sharks, octopuses, coral, and seaweed.
+      Land -  With no user input or only horizontal input, the token will "fall" to the bottom of the console. Obstacles
+      include birds, bats, rocks, and trees.
+      Space - With no user input, the token will continue to move in the last commanded direction. Obstacles include comets,
+      asteroids, etc.
+
+   Colliding with obstacles results in token death and colliding with mini-cubes results in points added to the total score.
+   Try to collect as many mini-cubes as you can to achieve the highest score. Shots can be fired to destroy obstacles.
+
+   GAME CONTROLS:
+
+   Command the token to move in various directions using the following keys:
+   
+      w or up arrow - up
+      s or down arrow - down
+      a or left arrow - left
+      d or right arrow - right
+      spacebar - fire shot
+
+   In a single player game mode, the player will have access to all game controls. In a two player game mode, player 1 has
+   up, down, and fire shots control and player 2 has left, right, and fire shots control.
+
+   SCORE:  
+
+   Collect as many mini-cubes as possible. Each mini-cube collected is worth 10 points.
+
+
+
+
+   
