@@ -769,11 +769,6 @@ int main(void)
 			//only save high scores from first player to prevent duplicates
 			if (gameinfo.playerNum == 1)
 			{
-				endwin();
-				printf("%s\n", gameinfo.secondName);
-
-				exit(0);
-
 				addScoreMulti(gameinfo.finalScore, gameinfo.firstName, gameinfo.secondName, gameinfo.hours, gameinfo.minutes, gameinfo.seconds, gameMode);
 			}
 		}
