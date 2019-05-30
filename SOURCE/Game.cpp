@@ -47,7 +47,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 	int socketFD = -1;
 	int inputSocket = -1;
 	char inputPort[MSG_SIZE];
+	char secondName[MSG_SIZE];
 	memset(inputPort, '\0', sizeof inputPort);
+	memset(secondName, '\0', sizeof secondName);
 
 	struct gameData scoreInfo;
 
@@ -55,7 +57,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 	bool hasTerminated = false;
 
-	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, playerNum, socketFD, hasTerminated, inputPort)
+	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, playerNum, socketFD, hasTerminated, inputPort, secondName)
 	{
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
@@ -672,10 +674,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 				if(playerNum == 1)
 				{
-					receiveMessage_C(socketFD, message);
-					scoreInfo.secondName = message;
-					sendMessage_C(socketFD, scoreInfo.secondName);
-
+					receiveMessage_C(socketFD, secondName);
+					sendMessage_C(socketFD, secondName);
 				}
 
 				//receive dataPort from server, send confirmation to server
@@ -1539,7 +1539,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 		}
 	}
 
-
+	scoreInfo.secondName = secondName;
 	scoreInfo.playerNum = playerNum;
 	scoreInfo.finalScore = cube->getCubeScore();
 	return scoreInfo;
