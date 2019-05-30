@@ -27,6 +27,7 @@
 #define ONE_PLAYER 1
 #define TWO_PLAYER 2
 #define HIGH_SCORE 3
+#define INSTRUCTIONS 4
 #define EXIT 4
 #define EASY 1
 #define NORMAL 2
