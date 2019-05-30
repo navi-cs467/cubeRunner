@@ -1,268 +1,79 @@
 /********************************************************************
-** Program name: Obstacle.cpp
+** Program name: Comet.cpp
 ** CS467 Capstone - 2D Runner - "Cube Runner"
 ** Team: NAVI
 ** Date: 4/25/2019
-** Description: Source file for Obstacle class. The Obstacle class 
-**				is abstract and provides non-derived class specific
-**				member definitions/implementations for the game 
-**				obstacles.
+** Description: Source file for Comet class, a derived Obstacle.
 ********************************************************************/
 
-#include "../HEADER/Obstacle.hpp"
-#include "../HEADER/World.hpp"
-#include "../HEADER/Water.hpp"
-#include "../HEADER/Land.hpp"
+#include "../HEADER/Comet.hpp"
 
-Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts, 
-				   int colorOrColorSeed, int hits, int gm) :
-			posX(posX), posY(posY), gt(gt), gts(gts) {
-	longestGS = 0;
-	for(int i = 0; i < gts; i++) {
-		if(type == 1) {
-			if(Seaweed::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Seaweed::_getGraphicLines()[gt][i].size();
-		}
-		else if(type == 2) {
-			if(Coral::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Coral::_getGraphicLines()[gt][i].size();
-		}
-		else if(type == 3) {
-			if(Shark::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Shark::_getGraphicLines()[gt][i].size();
-			//Initialize maxHits based on gameMode
-			if(gm == EASY) maxHits = 3;
-			else if(gm == NORMAL) maxHits = 4;
-			else maxHits = 5;
-			
-			//Initialize hits ands mvsSinceLastHit
-			this->hits = hits;
-		}
-		else if(type == 4) {
-			if(Octopus::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Octopus::_getGraphicLines()[gt][i].size();
-			//Initialize maxHits based on gameMode
-			if(gm == EASY) maxHits = 2;
-			else if(gm == NORMAL) maxHits = 3;
-			else maxHits = 4;
-			
-			//Initialize hits and mvsSinceLastHit
-			this->hits = hits;
-		}
-		if(type == 5) {
-			if(Tree::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Tree::_getGraphicLines()[gt][i].size();
-		}
-		else if(type == 6) {
-			if(Rock::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Rock::_getGraphicLines()[gt][i].size();
-		}
-		else if(type == 7) {
-			if(Bird::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Bird::_getGraphicLines()[gt][i].size();
-			//Initialize maxHits based on gameMode
-			if(gm == EASY) maxHits = 1;
-			else if(gm == NORMAL) maxHits = 2;
-			else maxHits = 3;
-			
-			//Initialize hits ands mvsSinceLastHit
-			this->hits = hits;
-		}
-		else if(type == 8) {
-			if(Bat::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Bat::_getGraphicLines()[gt][i].size();
-			//Initialize maxHits based on gameMode
-			if(gm == EASY) maxHits = 1;
-			else if(gm == NORMAL) maxHits = 2;
-			else maxHits = 3;
-			
-			//Initialize hits and mvsSinceLastHit
-			this->hits = hits;
-		}
-		if(type == 9) {
-			if(Asteroid::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Asteroid::_getGraphicLines()[gt][i].size();
-		}
-		else if(type == 10) {
-			if(Planet::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Planet::_getGraphicLines()[gt][i].size();
-		}
-		else if(type == 11) {
-			if(Comet::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Comet::_getGraphicLines()[gt][i].size();
-			//Initialize maxHits based on gameMode
-			if(gm == EASY) maxHits = 1;
-			else if(gm == NORMAL) maxHits = 2;
-			else maxHits = 3;
-			
-			//Initialize hits ands mvsSinceLastHit
-			this->hits = hits;
-		}
-		else if(type == 12) {
-			if(Spaceship::_getGraphicLines()[gt][i].size() > longestGS)
-				longestGS = Spaceship::_getGraphicLines()[gt][i].size();
-			//Initialize maxHits based on gameMode
-			if(gm == EASY) maxHits = 1;
-			else if(gm == NORMAL) maxHits = 2;
-			else maxHits = 3;
-			
-			//Initialize hits and mvsSinceLastHit
-			this->hits = hits;
-		}
-	}
-}
-
-void Obstacle::createObstacle(World *world, 
-							  Direction offScreenDirection,
-							  int specificGraphic) {
+Comet::Comet(World *world, Direction offScreen, 
+			 int specificGraphic) : Obstacle() {
 	
-	//Number of potential graphics for this Obstacle
-	int numGraphics = getGraphicLines().size();
+	isStationary = false;
+	//curDirection = left;
+	//sameDirectionMoveCount = 0;
+	color = rand() % 5 + 2;
 	
-	//If multiple graphics are available for this Obstacle,
-	//and a specific graphic is not indicated via the specificGraphic
-	//parameter (i.e. specificGraphic == -1), randomly choose one of 
-	//the available graphics
-	if(numGraphics > 1 && specificGraphic == -1)
-		gt = (rand() % numGraphics);
-	else if(specificGraphic != -1) gt = specificGraphic;
-	else gt = 0;
+	//Set mvDir
+	lastMV = static_cast<Direction>(rand() % NUM_DIRECTIONS);
+	if(lastMV == right || lastMV == right_up || lastMV == right_down)
+		gt = 1;
+	else
+		gt = 0;
 	
-	//Timer to make sure loop doesn't get stuck
-	double escapeTimer = omp_get_wtime();
+	createObstacle(world, offScreen, gt);
 	
-	//Find random starting position that does not
-	//encroach on existing world obstacles or miniCubes
-	set<pair<int,int>>::iterator it1, it2;
-	bool enchroaches;
-	do {
-		posX = rand() % world->getBottomRow();
-		if(typeid(*world) != typeid(Space))
-		//Can't have partial graphic beneath "ground" for Water or Land
-		if(world->getBottomRow() - posX < getGraphicLines()[gt].size())
-			posX = world->getBottomRow() - (getGraphicLines()[gt].size() - 1);
-		
-		if(offScreenDirection == none)
-			posY = (rand() % (COLS - 10)) + 10;		//No obstacles start in first 10 columns
-		else
-			posY = rand() % COLS;
-		
-		if(offScreenDirection != none) {
-			if(offScreenDirection == right ||
-			   offScreenDirection == right_up ||
-			   offScreenDirection == right_down) {
-				posY = posY + COLS;
-				if(typeid(*world) == typeid(Space) &&
-				   posY < COLS + 10) 
-						posY = COLS + 10;
-			}
-			else if(offScreenDirection == left ||
-				    offScreenDirection == left_up ||
-					offScreenDirection == left_down) {
-				posY = -posY;
-					if(typeid(*world) == typeid(Space) &&
-					   posY > -10) 
-						posY = -10;
-			}
-			else if(offScreenDirection == up) {
-				posX = -posX;
-				if(typeid(*world) == typeid(Space) &&
-					posX > -4) 
-						posX = -4;
-			}
-			else {
-				posX = posX + LINES;
-				if(typeid(*world) == typeid(Space) &&
-					posX < LINES + 4) 
-						posX = LINES + 4;
-			}
-		}
-		
-		for(int i = 0; i < getGraphicLines()[gt].size(); i++) {
-			for(int j = 0; j < getGraphicLines()[gt][i].length(); j++) {
-				it1 = world->getObsCoords().
-					find(make_pair(i + posX, j + posY));
-				it2 = world->getMiniCubes().
-					find(make_pair(i + posX, j + posY));
-				if(it1 != world->getObsCoords().end() || 
-				   it2 != world->getMiniCubes().end()) {
-					enchroaches = true;
-					break;
-				}
-				else enchroaches = false;
-			}
-			if(enchroaches == true) break;
-		}
-		
-	} while(enchroaches == true && 
-			omp_get_wtime() - escapeTimer < REFRESH_RATE);
-}
-
-void Obstacle::setGT(int newGraphic) {
-	//Update graphic type
-	gt = newGraphic;
-	
-	//Update graphic type size
-	gts = getGraphicLines()[gt].size();
-	
-	//Update length of longest graphic string
+	//Update size of graphic type array 
+	//and length of longest graphic string
+	gts = Comet::getGraphicLines()[gt].size();
 	longestGS = 0;
 	for(int i = 0; i < gts; i++)
-		if(getGraphicLines()[gt][i].size() > longestGS)
-			longestGS = getGraphicLines()[gt][i].size();
+		if(Comet::getGraphicLines()[gt][i].size() > longestGS)
+			longestGS = Comet::getGraphicLines()[gt][i].size();
+		
+	//Update World's obsCoords and this Obstacle's
+	//nonWSObsCoords with new graphic position
+	world->updateObsCoords(this);
 	
-	/* //Update (invert) Obstacle's holes
-	set<pair<int, int>> tmpHoles;
-	//if(lastMV != up || lastMV != down) {
-	if(1) {
-		for(int i = 0; i < gts; i++) {
-			for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
-				if(holes.find(make_pair(posX + i, posY + j)) != holes.end()) {
-					tmpHoles.insert
-						(make_pair(posX + i, 
-							posY + this->getGraphicLines()[gt][i].length() - j - 1));
-				}
-			}
-		}
-		swap(holes, tmpHoles);
-	}
-	else {
-		for(int i = 0; i < gts; i++) {
-			for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
-				if(holes.find(make_pair(posX + i, posY + j)) != holes.end()) {
-					tmpHoles.insert
-						(make_pair(posX + this->getGraphicLines()[gt][i].length() - i - 1, 
-							posY + j));
-				}
-			}
-		}
-		swap(holes, tmpHoles);
-	} */
+	//Initialize maxHits based on gameMode
+	if(world->getGameMode() == EASY) maxHits = 1;
+	else if(world->getGameMode() == NORMAL) maxHits = 2;
+	else maxHits = 3;
+	
+	//Initialize hits and mvsSinceLastHit
+	hits = 0;
+	mvsSinceLastHit = 0;
 }
 
-void Obstacle::move(World* world) {
+vector<vector<wstring>> Comet::initializeVectorGraphics () {
+	vector<vector<wstring>> tmpV {{L"       _ .,-\"´:.",
+								   L" .--.´\"_'.:'´",
+								   L"(    )´.'",
+								   L" `--´-´"},
+								
+								  {L".:`\"-,. _",
+								   L" `':.'_\"` .--. ",
+								   L"      '.´(    )",
+								   L"        `-`--´ "}};
+								  
+	return tmpV;
+}
+
+vector<vector<wstring>> Comet::getGraphicLines() {
+	return Comet::_getGraphicLines();
+}
+
+vector<vector<wstring>> Comet::graphicLines = 
+	Comet::initializeVectorGraphics();
 	
-	//Do not move the Obstacle if it is offscreen left or right
-	//for Water and Land Worlds
-	if(((typeid(*world) == typeid(Water)) ||
-		typeid(*world) == typeid(Land)) &&
-		   (posY > COLS || posY < 0 - longestGS)) return;
+//Comet doesn't change direction unless it hits something
+void Comet::move(World* world) {
 	
 	Direction mvDir; //int testMvDir;
-	//Randomly assign a new "seed" direction for the
-	//following for loop if the last move direction has 
-	//been "exhausted" per the move counter. 
-	//(Asteroid only changes direction if it hits something)
-	if(mvCounter == 0) {
-		mvDir = static_cast<Direction>(rand() % NUM_DIRECTIONS);
-		//Randomly assign a new value for
-		//the move counter between MAX_MOVE_COUNTER
-		//and MIN_MOVE_COUNTER
-		mvCounter = rand() % (MAX_MOVE_COUNTER -
-							  MIN_MOVE_COUNTER + 1) +
-							  MIN_MOVE_COUNTER;
-	}
-	else mvDir = lastMV;
+
+	mvDir = lastMV;
 	
 	//This loop starts with mvDir, then cycles through
 	//all possible move directions to find one that will
@@ -298,7 +109,7 @@ void Obstacle::move(World* world) {
 				}
 				//Update Obstacle position and graphic
 				posY--;
-				setGT(1);
+				setGT(0);
 				//Insert new obsCoords
 				for(int j = 0; j < gts; j++) { 
 					world->getObsCoords().
@@ -339,11 +150,6 @@ void Obstacle::move(World* world) {
 			}
 		}
 		else if(mvDir == left_down) {
-			if(typeid(*world) != typeid(Space) &&
-				 posX + gts == world->getBottomRow() + 1) {
-				mvDir = down;
-				continue;
-			}
 			for(int j = 1; j <= gts; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY - 1));
@@ -382,7 +188,7 @@ void Obstacle::move(World* world) {
 				}
 				//Update Obstacle's position and graphic
 				posX++; posY--;
-				setGT(1);
+				setGT(0);
 				for(int j = 0; j < gts; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY));
@@ -434,11 +240,6 @@ void Obstacle::move(World* world) {
 			}
 		}
 		else if(mvDir == down) {
-			if(typeid(*world) != typeid(Space) &&
-				 posX + gts == world->getBottomRow() + 1) {
-				mvDir = right_down;
-				continue;
-			}
 			for(int j = 0; j < longestGS; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + gts, posY + j));
@@ -458,7 +259,6 @@ void Obstacle::move(World* world) {
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
 				}
-				//Update Obstacle's position and (if Spaceship) graphic
 				posX++;
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
@@ -499,11 +299,6 @@ void Obstacle::move(World* world) {
 			}
 		}
 		else if(mvDir == right_down) {
-			if(typeid(*world) != typeid(Space) &&
-				 posX + gts == world->getBottomRow() + 1) {
-				mvDir = right;
-				continue;
-			}
 			for(int j = 1; j <= gts; j++) {
 				itObs = world->getObsCoords().
 					find(make_pair(posX + j, posY + longestGS));
@@ -542,7 +337,7 @@ void Obstacle::move(World* world) {
 				}
 				//Update Obstacle's position and graphic
 				posX++; posY++;
-				setGT(0);
+				setGT(1);
 				for(int j = 0; j < gts; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY + longestGS - 1));
@@ -614,7 +409,7 @@ void Obstacle::move(World* world) {
 				}
 				//Update position and graphic
 				posY++;
-				setGT(0);
+				setGT(1);
 				for(int j = 0; j < gts; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY + longestGS - 1));
@@ -692,7 +487,7 @@ void Obstacle::move(World* world) {
 				}
 				//Update Obstacle's position and graphic
 				posX--; posY++;
-				setGT(0);
+				setGT(1);
 				for(int j = 0; j < gts; j++) { 
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY + longestGS - 1));
@@ -762,7 +557,6 @@ void Obstacle::move(World* world) {
 					if(itObs != world->getObsCoords().end())
 						world->getObsCoords().erase(itObs);
 				}
-				//Update Obstacle's position and (if Spaceship) graphic
 				posX--;
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
@@ -841,7 +635,7 @@ void Obstacle::move(World* world) {
 				}
 				//Update Obstacle's position and graphic
 				posX--; posY--;
-				setGT(1);
+				setGT(0);
 				for(int j = 0; j < gts; j++) { 
 					world->getObsCoords().
 						insert(make_pair(posX + j, posY));
@@ -905,4 +699,9 @@ void Obstacle::move(World* world) {
 			hits--;
 	}
 }
-	
+
+
+// References
+// https://ubuntuforums.org/showthread.php?t=836043
+// https://stackoverflow.com/questions/17663186/initializing-a-two-dimensional-stdvector
+// https://stackoverflow.com/questions/1115854/how-to-resolve-error-bad-index-fatal-index-file-corrupt-when-using-git

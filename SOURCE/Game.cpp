@@ -43,6 +43,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 	bool deathFlag = false;
 	bool isConnected = false;
+	bool scrollLock = false, scrollDirChanged = false;
+	Direction lockedScrollDir = right, lastScrollDir = right;
 	int playerNum = 0;
 	int socketFD = -1;
 	int inputSocket = -1;
@@ -57,7 +59,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 	bool hasTerminated = false;
 
-	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, playerNum, socketFD, hasTerminated, inputPort, secondName)
+	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, \
+	playerNum, socketFD, hasTerminated, inputPort, scrollLock, lockedScrollDir, secondName)
 	{
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
@@ -127,7 +130,16 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					else if(userInput == 32) {
 						cube->fireShot();
 					}
-
+					else if(userInput == 'l') {
+						scrollLock = true;
+						lockedScrollDir = cube->getCubeDirection();
+					}
+					else if(userInput == 'u') {
+						scrollLock = false;
+					}
+					else if(userInput == 't') {
+						cube->setTransitionScore(TRANSITION_SCORE_INTERVAL);
+					}
 					//Unlock the lock after movement update
 					omp_unset_lock(&userInputLock);
 
@@ -164,18 +176,42 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							sprintf(messageToSend, "%d", userInput);
 							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
 						}
 						else if(userInput == KEY_RIGHT) {
 							// SEND: KEY_RIGHT
 							sprintf(messageToSend, "%d", userInput);
 							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
 						}
 						else if(userInput == 32) {
 							// SEND: 32 (SPACE_BAR - For cube->fireShot())
 							sprintf(messageToSend, "%d", userInput);
 							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
+						else if(userInput == 'l') {
+							// SEND: 'l'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
+						else if(userInput == 'u') {
+							// SEND: 'u'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
+						else if(userInput == 't') {
+							// SEND: 't'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
 						}
 						else if(userInput == 27 ||
 								userInput == KEY_END ||
@@ -234,6 +270,27 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
 						}
+						else if(userInput == 'l') {
+							// SEND: 'l'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
+						else if(userInput == 'u') {
+							// SEND: 'u'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
+						else if(userInput == 't') {
+							// SEND: 't'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
 						else if(userInput == 27 ||
 								userInput == KEY_END ||
 								userInput == 'q' ||
@@ -291,7 +348,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					   lastRefreshTime = omp_get_wtime(),
 					   lastNewObsTime = omp_get_wtime(),
 					   lastShotTime = omp_get_wtime();
-				int statsTime, startTime, scrollCount = 0,
+				int statsTime, startTime, 
+					scrollCountRight = 0, scrollCountLeft = 0,
+					scrollCountUp = 0, scrollCountDown = 0,
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
@@ -354,35 +413,46 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 							//Create new world
 							if(typeid(*world) == typeid(Water)) {
-
+								
 								//Delete the existing world
 								delete world;
-
+								
 								//Create new world
 								world = new Land(gameMode, isTwoPlayer);
 								cube->transitionWorld(world);
 								omp_unset_lock(&userInputLock);		//Unlock input thread to confirm death animation
-								transitionAnimationInsideThread("GRAPHICS/Land.txt", 115,
+								transitionAnimationInsideThread("GRAPHICS/Land.txt", 107,
 									16, WHITE_WHITE, 15, GREEN_WHITE, &userInput);
 								omp_set_lock(&userInputLock);		//Relock
 							}
 							else if(typeid(*world) == typeid(Land)) {
-
+								
 								//Delete the existing world
 								delete world;
-
+								
+								//Create new world
+								world = new Space(gameMode, isTwoPlayer);
+								cube->transitionWorld(world);
+								omp_unset_lock(&userInputLock);		//Unlock input thread to confirm death animation
+								transitionAnimationInsideThread("GRAPHICS/Space.txt", 121,
+									16, BLACK_BLACK, 1, WHITE_BLACK, &userInput);
+								omp_set_lock(&userInputLock);		//Relock
+							}
+							else if(typeid(*world) == typeid(Space)) {
+								
+								//Delete the existing world
+								delete world;
+								
 								//Create new world
 								world = new Water(gameMode, isTwoPlayer);
 								cube->transitionWorld(world);
 								omp_unset_lock(&userInputLock);		//Unlock input thread to confirm death animation
-								transitionAnimationInsideThread("GRAPHICS/Water.txt", 120,
+								transitionAnimationInsideThread("GRAPHICS/Water.txt", 110,
 									16, BLUE_BLUE, 30, WHITE_BLUE, &userInput);
 								omp_set_lock(&userInputLock);		//Relock
 							}
-							/* else if(typeid(*world) == typeid(Space))
-								world = new Water(gameMode, isTwoPlayer); */
 
-							//Increase speeds after each transition.
+							//Increase speeds after each transition. 
 							//Speeds are capped after 6 world transitions
 							if(cube->getCubeScore() <= TRANSITION_SCORE_INTERVAL * 6) {
 								scrollRate *= SCROLL_MOVE_UPDATE_RATE;
@@ -400,14 +470,14 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						cube->checkCubeCollision(world);
 						deathFlag = cube->getCubeIsDead();
 
-
+						
 						//Render World
 						world->renderWorld(cube);
-
+						
 						//Render Cube
 						cube->drawCube();
 
-
+						
 						//Death animation if death occurred
 						if(deathFlag) {
 							//Allow user to confirm death
@@ -444,7 +514,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 						string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
-						//Render Time display
+						//Set time ostringstream
 						timeDisplay.clear();
 						if(hours < 10)
 							timeDisplay << "Time: " << "0" << hours << ":";
@@ -463,21 +533,39 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						scoreInfo.minutes = minutes;
 						scoreInfo.seconds = seconds;
 
-						//Render Life count display
+						//Setup life count ostringstream 
 						livesDisplay.clear();
 						livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
 						/* if(gameMode == EASY) livesDisplay << "Lives: " << 5;
 						else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
 						else if(gameMode == HARD) livesDisplay << "Lives: " << 3; */
 
-						//Render Score display
+						//Setup score ostreamstring
 						scoreDisplay.clear();
 						scoreDisplay << "Score: " << cube->getCubeScore();
+						
+						//If space world, prepare scroll lock indicator
+						string scrollLockIndicator;
+						if(typeid(*world) == typeid(Space)) {
+							if(scrollLock)
+								scrollLockIndicator = "Scroll Direction Locked. Press 'u' to Unlock.";
+							else
+								scrollLockIndicator = "Scroll Direction Unlocked. Press 'l' to Lock.";
+						}
+						else
+							scrollLockIndicator = "";
+						
+						//Render scroll lock indicator
+						attron(COLOR_PAIR(YELLOW_BLACK));
+						mvhline(LINES - 1, 0, ' ', COLS);
+						mvaddstr(LINES - 1, 10, scrollLockIndicator.c_str());
+						
+						//Render game stats display
 						output = string(timeDisplay.str().c_str())  + "   " +
 								 string(scoreDisplay.str().c_str()) + "   " +
 								 string(livesDisplay.str().c_str());
 						attron(COLOR_PAIR(YELLOW_BLACK));
-						mvhline(LINES - 1, 0, ' ', COLS);
+						mvhline(LINES - 1, 10 + scrollLockIndicator.length(), ' ', COLS);
 						mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
 						refresh();
 
@@ -486,26 +574,75 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 					}
 
-					//Load new offscreen Obstacles and miniCubes every time
-					//a screens-worth has been scrolled
+					//Scroll
 					if(omp_get_wtime() - lastScrollTime > scrollRate) {
 						lastScrollTime = omp_get_wtime();
-						world->scroll_(cube);
-						//if(typeid(*world) != typeid(Space))
-							if(scrollCount == COLS) {
-								world->loadOSObs();
-								world->loadOSMCs();
-							}
+						
+						if(typeid(*world) != typeid(Space)) {
+							world->scroll_(cube);
+						}
+						else {
+							if(scrollLock)
+								world->scroll_(cube, lockedScrollDir);
+							else
+								world->scroll_(cube, none);
+								//Used for loading offscreen Obstacles when scroll,
+								//direction changes (Space only)
+								if(lastScrollDir != cube->getCubeDirection())
+									scrollDirChanged = true;
+						}
+						
+						//Load new offscreen Obstacles and miniCubes every time
+						//a screens-worth has been scrolled, or the scroll direction
+						//changes (Space only)
+						if(scrollCountRight++ == COLS) {
+							world->loadOSObs(right);
+							world->loadOSMCs(right);
+							scrollCountRight = 0;
+						}
+						if(scrollCountLeft++ == COLS) {
+							world->loadOSObs(left);
+							world->loadOSMCs(left);
+							scrollCountLeft = 0;
+						}
+						if(scrollCountUp++ == LINES) {
+							world->loadOSObs(up);
+							world->loadOSMCs(up);
+							scrollCountUp = 0;
+						}
+						if(scrollCountDown++ == LINES) {
+							world->loadOSObs(down);
+							world->loadOSMCs(down);
+							scrollCountDown = 0;
+						}
+						if(scrollDirChanged) {
+							world->loadOSObs(cube->getCubeDirection());
+							world->loadOSMCs(cube->getCubeDirection());
+							scrollDirChanged = false;
+						}
 
-						//Repopulate miniCubes if too many have been
+						//Repopulate onscreen miniCubes if too many have been
 						//consumed by moving obstacles according to this
 						//threshold
-						if(world->getMiniCubes().size() / 2
-								< (NUM_MCS_EASY / gameMode))
+						
+						//Determine existing onscreen miniCube count
+						int onscreenMCCount = 0;
+						set<pair<int, int>>::iterator mcs;
+						for(mcs = world->getMiniCubes().begin(); 
+							mcs != world->getMiniCubes().end(); mcs++) {
+							if(mcs->second < COLS && mcs->second >= 0 &&
+							   mcs->first < world->getBottomRow() && mcs->first >= 0) 
+									onscreenMCCount++;
+						}
+						if(onscreenMCCount < (NUM_MCS_EASY / gameMode) / 2)
 							world->initMiniCubes(1);
-
-						if(scrollCount == COLS) scrollCount = 0;
-						else scrollCount++;
+						
+						//Used to determine if scroll direction changes 
+						//(Space only), for loading offscreen Obstacles
+						if(scrollLock) lastScrollDir = lockedScrollDir;
+						else if(typeid(*world) == typeid(Space))
+							lastScrollDir = cube->getCubeDirection();
+						else lastScrollDir = right;
 					}
 
 					if(omp_get_wtime() - lastMoveTime > moveRate) {
@@ -585,7 +722,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				clear();  // curses clear-screen call
 				refresh();
 
-				//Set LINES and COLS to minimum values
+				//Set LINES and COLS to minimum values (save original values)
+				int original_LINES = LINES, original_COLS = COLS;
 				LINES = MIN_WIN_HEIGHT;
 				COLS = MIN_WIN_WIDTH;
 
@@ -662,6 +800,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					//easiest game mode used automatically
 				}
 
+				//receive dataPort from server, send confirmation to server
 				char confirm[MSG_SIZE];
 				memset(confirm, '\0', sizeof confirm);
 				memset(message, '\0', sizeof message);
@@ -703,16 +842,19 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				//For Time Display
 				int seconds, minutes, hours;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
+				
+				//For death message display
+				int collisionType = 0;
 
 				if(DEBUG) {
 					move(11,5); printw("Starting Game Loop..."); refresh();
 				}
-
+				
 				//initialize cube coords
 				cube->initializeCubeCoords();
-
+				
 				while (!hasTerminated) {
-
+					
 						//Block movement updates while render completes
 						omp_set_lock(&userInputLock);
 
@@ -824,7 +966,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 								close(socketFD);
 								close(inputSocket);
 
-						//animationTransition("GRAPHICS/gameOver.txt"); */
+						//	  	  /* animationTransition("GRAPHICS/gameOver.txt"); */
 							  //Delete all Obstacles
 									for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 										it != world->getObstacles().begin(); it++) {
@@ -848,6 +990,23 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							{
 								//set deathFlag
 								deathFlag = true;
+								
+								//receive Obstacle collision type
+								memset(gameData, '\0', sizeof gameData);
+								receiveMessage_C(socketFD, gameData);
+								if(DEBUG) {
+									move(z++, 8); printw("RECEIVED (ob collision type): %s\n", gameData); refresh();
+								}
+								
+								collisionType = atoi(gameData);
+								
+								//send confirmation
+								memset(sendConfirm, '\0', sizeof sendConfirm);
+								sprintf(sendConfirm, "%d", 1);
+								sendMessage_C(socketFD, sendConfirm);
+								if(DEBUG) {
+									//move(z++, 8); printw("SEND CONFIRM (ob collision type): %s\n", gameData); refresh();
+								}
 							}
 						}
 						//Else:
@@ -912,11 +1071,11 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						int col = atoi(gameData);
 						int prevCol = cube->getCubePositionCol();
 						cube->setCubePositionCol(col);
-
+						
 						//Update cubeCoords
 						cube->updateCubeCoords(prevCol, cube->getCubePositionCol(),
 											   prevRow, cube->getCubePositionRow());
-
+						
 
 						//initialize cubeCoors (OLD CUBE ONLY)
 						/* int cubeCoordsArray[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH];
@@ -1008,7 +1167,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						int yShotCoord = atoi(gameData);
 
 						cube->setShotCoords(xShotCoord, yShotCoord);
-
+						
 						//receive cube direction
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
@@ -1085,14 +1244,14 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						if (int_1 == 1)
 						{
 							delete world;
-
+							
 							//Receive new world type
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
 							if(DEBUG) {
 								move(z++, 8); printw("RECEIVED (new world type): %s\n", gameData); refresh();
 							}
-
+							
 							//Confirm new world type
 							memset(sendConfirm, '\0', sizeof sendConfirm);
 							sprintf(sendConfirm, "%d", 1);
@@ -1110,7 +1269,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 								transitionAnimationInsideThread("GRAPHICS/Water.txt", 120,
 									16, BLUE_BLUE, 30, WHITE_BLUE, &userInput);
 							}
-
+							
 							else if(int_2 == 2)
 							{
 								world = new Land(isTwoPlayer);
@@ -1118,18 +1277,26 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 								transitionAnimationInsideThread("GRAPHICS/Land.txt", 115,
 									16, WHITE_WHITE, 15, GREEN_WHITE, &userInput);
 							}
-
+							
+							else if(int_2 == 3)
+							{
+								world = new Space(isTwoPlayer);
+								cube->transitionWorld(world);
+								transitionAnimationInsideThread("GRAPHICS/Space.txt", 121,
+									16, BLACK_BLACK, 1, WHITE_BLACK, &userInput);
+							}
+							
 							//print waiting screen, in case waiting on other player's confirmation
 							waitingForOtherPlayer(playerNum);
-
+							
 							//Receive new world player confirm request
 							memset(gameData, '\0', sizeof gameData);
 							receiveMessage_C(socketFD, gameData);
 							if(DEBUG) {
 								move(z++, 8); printw("RECEIVED (new world player confirm request): %s\n", gameData); refresh();
 							}
-
-							//Confirm "player confirmed" new world
+							
+							//Confirm "player confirmed" new world 
 							memset(sendConfirm, '\0', sizeof sendConfirm);
 							sprintf(sendConfirm, "%d", 1);
 							sendMessage_C(socketFD, sendConfirm);
@@ -1285,61 +1452,65 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							receiveMessage_C(socketFD, gameData);
 							int_7 = atoi(gameData); //move(25, 5); printw("gts: %d", int_7); refresh(); */
 
-							if(int_2 == 1)
+							if(int_2 == 1) 
 								world->getObstacles().push_back(new Seaweed(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-
+								
 							else if(int_2 == 2)
 								world->getObstacles().push_back(new Coral(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-							else if(int_2 == 3)
+							else if(int_2 == 3) 
 								world->getObstacles().push_back(new Shark(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-
-							else if(int_2 == 4)
+							
+							else if(int_2 == 4) 
 								world->getObstacles().push_back(new Octopus(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-
-							if(int_2 == 5)
+							
+							if(int_2 == 5) 
 								world->getObstacles().push_back(new Tree(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-
+								
 							else if(int_2 == 6)
 								world->getObstacles().push_back(new Rock(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-							else if(int_2 == 7)
+							else if(int_2 == 7) 
 								world->getObstacles().push_back(new Bird(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-
-							else if(int_2 == 8)
+							
+							else if(int_2 == 8) 
 								world->getObstacles().push_back(new Bat(int_2, int_3, int_4,
 																			int_5, int_6, int_7,
 																			int_8, gameMode));
-							//else if(int_2 == 9)
-							//	world->getObstacles().push_back(new Asteroid(int_2, int_3, int_4,
-							//												 int_5, int_6, /* int_7, */ gameMode));
-							//else if(int_2 == 10)
-							//	world->getObstacles().push_back(new Planet(int_2, int_3, int_4,
-							//											   int_5, int_6, /* int_7, */ gameMode));
-							//else if(int_2 == 11)
-							//	world->getObstacles().push_back(new Comet(int_2, int_3, int_4,
-							//											  int_5, int_6, /* int_7, */ gameMode));
-							//else if(int_2 == 12)
-							//	world->getObstacles().push_back(new Spaceship(int_2, int_3, int_4,
-							//												  int_5, int_6, /* int_7, */ gameMode));;	 */
+							else if(int_2 == 9) 
+								world->getObstacles().push_back(new Asteroid(int_2, int_3, int_4,
+																			int_5, int_6, int_7,
+																			int_8, gameMode));
+							else if(int_2 == 10) 
+								world->getObstacles().push_back(new Planet(int_2, int_3, int_4,
+																			int_5, int_6, int_7,
+																			int_8, gameMode));	 
+							else if(int_2 == 11) 
+								world->getObstacles().push_back(new Comet(int_2, int_3, int_4,
+																			int_5, int_6, int_7,
+																			int_8, gameMode));
+							else if(int_2 == 12) 
+								world->getObstacles().push_back(new Spaceship(int_2, int_3, int_4,
+																			  int_5, int_6, int_7,
+																			  int_8, gameMode));												
 
 							// (Optional ?) SEND: confirmation
-
+							
 							//If Obstacle is stationary, get holes
 							if(world->getObstacles().back()->getIsStationary()) {
-
+								
 								//Recieve number of holes
 								memset(gameData, '\0', sizeof gameData);
 								receiveMessage_C(socketFD, gameData);
@@ -1350,11 +1521,11 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 								memset(sendConfirm, '\0', sizeof sendConfirm);
 								sprintf(sendConfirm, "%d", 1);
 								sendMessage_C(socketFD, sendConfirm);
-
+								
 								int numHoles = atoi(gameData);
-
+								
 								for(int j = 0; j < numHoles; j++) {
-
+									
 									//get hole position x
 									memset(gameData, '\0', sizeof gameData);
 									receiveMessage_C(socketFD, gameData);
@@ -1365,9 +1536,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 									memset(sendConfirm, '\0', sizeof sendConfirm);
 									sprintf(sendConfirm, "%d", 1);
 									sendMessage_C(socketFD, sendConfirm);
-
+								
 									int holePosX = atoi(gameData);
-
+									
 									//get hole position y
 									memset(gameData, '\0', sizeof gameData);
 									receiveMessage_C(socketFD, gameData);
@@ -1378,9 +1549,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 									memset(sendConfirm, '\0', sizeof sendConfirm);
 									sprintf(sendConfirm, "%d", 1);
 									sendMessage_C(socketFD, sendConfirm);
-
+								
 									int holePosY = atoi(gameData);
-
+									
 									world->getObstacles().back()->getHoles().insert(make_pair(holePosX, holePosY));
 								}
 							}
@@ -1435,7 +1606,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						if(!deathFlag) cube->printShot();
 						cube->drawCube();
 						if(deathFlag) {
-							cube->drawCubeDeath(&userInput);
+							cube->drawCubeDeath(&userInput, collisionType);
 							deathFlag = false;
 						}
 
@@ -1483,10 +1654,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						// (Optional ?) SEND: confirmation
 						/**** END RECEIVE TIME  ****/
 
-
 						string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
-						//Time display
+						//Set time ostringstream
 						timeDisplay.clear();
 						if(hours < 10)
 							timeDisplay << "Time: " << "0" << hours << ":";
@@ -1505,20 +1675,53 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						scoreInfo.minutes = minutes;
 						scoreInfo.seconds = seconds;
 
-						//Life count display
+						//Setup life count ostringstream 
 						livesDisplay.clear();
 						livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
+						/* if(gameMode == EASY) livesDisplay << "Lives: " << 5;
+						else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
+						else if(gameMode == HARD) livesDisplay << "Lives: " << 3; */
 
-						//Score display
+						//Setup score ostreamstring
 						scoreDisplay.clear();
 						scoreDisplay << "Score: " << cube->getCubeScore();
+						
+						/**** RECEIVE SCROLL LOCK  ****/
+						//RECEIVE int_1 into seconds
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
+						scrollLock = atoi(gameData);
+						// (Optional ?) SEND: confirmation
+						/**** END SCROLL LOCK****/
+						
+						//If space world, prepare scroll lock indicator
+						string scrollLockIndicator;
+						if(typeid(*world) == typeid(Space)) {
+							if(scrollLock)
+								scrollLockIndicator = "Scroll Direction Locked. Press 'u' to Unlock.";
+							else
+								scrollLockIndicator = "Scroll Direction Unlocked. Press 'l' to Lock.";
+						}
+						else
+							scrollLockIndicator = "";
+						
+						//Render scroll lock indicator
+						attron(COLOR_PAIR(YELLOW_BLACK));
+						mvhline(LINES - 1, 0, ' ', COLS);
+						mvaddstr(LINES - 1, 10, scrollLockIndicator.c_str());
+						
+						//Render game stats display
 						output = string(timeDisplay.str().c_str())  + "   " +
 								 string(scoreDisplay.str().c_str()) + "   " +
 								 string(livesDisplay.str().c_str());
 						attron(COLOR_PAIR(YELLOW_BLACK));
-						mvhline(LINES - 1, 0, ' ', COLS);
+						mvhline(LINES - 1, 10 + scrollLockIndicator.length(), ' ', COLS);
 						mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
-
 						refresh();
 
 						/**** RECEIVE GAME STATS RENDER CONFIRM REQUEST ****/
@@ -1529,12 +1732,15 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						//sprintf(sendConfirm, "%d", 1);
 						//sendMessage_C(socketFD, sendConfirm);
 						/**** END RECEIVE WORLD RENDER CONFIRM REQUEST ****/
-
+						
 						//Allow user input processing before next render
 						omp_unset_lock(&userInputLock);
 						usleep(1000);
 
 				}
+				//Reset screen size constants
+				LINES = original_LINES;
+				COLS = original_COLS;
 			}
 		}
 	}

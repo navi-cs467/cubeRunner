@@ -25,6 +25,10 @@ class Cube;
 #include "Rock.hpp"
 #include "Bird.hpp"
 #include "Bat.hpp"
+#include "Asteroid.hpp"
+#include "Planet.hpp"
+#include "Comet.hpp"
+#include "Spaceship.hpp"
 #include "using.hpp"
 
 class World {
@@ -48,9 +52,9 @@ class World {
 						   Direction offScreenDirection = none);
 		virtual void renderWorld(Cube *cube) = 0;
 		//virtual void scroll_(bool newObs) = 0;
-		virtual void scroll_(Cube *cube) = 0;
-		virtual void loadOSObs() = 0;	//Load offscreen Obstacles (for scrolling)
-		virtual void loadOSMCs() = 0;	//Load offscreen miniCubes (for scrolling)
+		virtual void scroll_(Cube *cube, Direction lockedDirection = right) = 0;
+		virtual void loadOSObs(Direction dir) = 0;	//Load offscreen Obstacles (for scrolling)
+		virtual void loadOSMCs(Direction dir) = 0;	//Load offscreen miniCubes (for scrolling)
 		int getBottomRow() const {return bottomRow;}
 		void moveObs();
 		void resetPlayer(Cube *cube);

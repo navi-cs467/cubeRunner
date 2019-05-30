@@ -33,3 +33,47 @@ void loadGraphic(const char* fileName)
    }
    f.close();  //Close file
 }
+
+void loadGraphicInstructions(void){
+	/*fstream f;
+	string line;
+	f.open("../GRAPHICS/instructionsText.txt", ios::in);
+	move(0,0);
+	if(f.is_open()){
+		while(getline(f, line)){	
+           		printw("%s\n", line.c_str());
+		}
+		f.close();  //Close file
+	}
+	else{
+		printw("INSTRUCTIONS GRAPHIC FILE DID NOT OPEN\n\n\n");
+		printw("Press any key to continue...\n\n\n");
+   	}*/
+
+	printw("   OBJECTIVE:\n");
+	printw("   Navigate through three worlds (Water, Land, Space) while avoiding stationary/moving obstacles and collecting as many \"mini-cubes\"\n");
+   	printw("   as possible. The token movement behaviour and obstacles differ in the various worlds:\n\n");
+	printw("      Water - With no user input, the token will remain in the same location relative to console boundaries. Obstacles include\n");
+	printw("      sharks, octopuses, coral, and seaweed.\n");
+	printw("      Land -  With no user input or only horizontal input, the token will \"fall\" to the bottom of the console. Obstacles include\n");
+	printw("      birds, bats, rocks, and trees.\n");
+	printw("      Space - The background will scroll in the direction of the last user commanded direction. Obstacles include comets,\n");
+	printw("      asteroids, planets, and rocketships.\n\n");
+	printw("   Colliding with obstacles results in token death and colliding with mini-cubes results in points added to the total score. Try to\n");
+	printw("   collect as many mini-cubes as you can to achieve the highest score. Shots can be fired to destroy obstacles and earn points.\n\n");
+	printw("   GAME CONTROLS:\n");
+	printw("   Command the token to move in various directions using the following keys:\n\n");
+	printw("      w or up arrow - up\n");
+	printw("      s or down arrow - down\n");
+   	printw("      a or left arrow - left\n");
+	printw("      d or right arrow - right\n");
+	printw("      spacebar - fire shot (shot is released in the last commanded token direction)\n");
+	printw("      t - transition to next world (intended for testing purposes only)\n\n");
+	printw("      l/u - lock/unlock scroll direction changes in the space world (intended for testing purposes only)\n\n");
+	printw("   In a single player game mode, the player will have access to all game controls. In a two player game mode, player 1 has up, down,\n");
+	printw("   and fire shots control and player 2 has left, right, and fire shots control.\n\n");
+	printw("   SCORE: \n");
+	printw("   Collect as many mini-cubes as possible. Each mini-cube collected is worth 10 points.\n\n");
+	printw("***Press any key to return to the main menu.***\n");
+
+}

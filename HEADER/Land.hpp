@@ -10,7 +10,7 @@
 **				player along at a minimum speed (that increases
 **				with game mode difficulty and elapsed time up to
 **				a point) from left to right, and the cube's 
-**				vertical position tends downward until modified
+**				vertical position tends downward unless modified
 **				by the player.
 ********************************************************************/
 
@@ -26,9 +26,9 @@ class Land : public World {
 		Land(int gameMode, bool isTwoPlayer, bool forServer = false);
 		virtual void renderWorld(Cube *cube);
 		//virtual void scroll_(bool newObs);
-		virtual void scroll_(Cube *cube);
-		virtual void loadOSObs();	//Load offscreen Obstacles (for scrolling)
-		virtual void loadOSMCs();	//Load offscreen miniCubes (for scrolling)
+		virtual void scroll_(Cube *cube, Direction lockedDirection);
+		virtual void loadOSObs(Direction dir);	//Load offscreen Obstacles (for scrolling)
+		virtual void loadOSMCs(Direction dir);	//Load offscreen miniCubes (for scrolling)
 };
 
 #endif /* Land_hpp */

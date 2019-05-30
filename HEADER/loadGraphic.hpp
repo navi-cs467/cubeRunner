@@ -17,4 +17,6 @@ extern vector<string> cmdoutlinesGraphics;
 
 void loadGraphic(const char* fileName);
 
+void loadGraphicInstructions(void);
+
 #endif /* loadGraphic_hpp */
