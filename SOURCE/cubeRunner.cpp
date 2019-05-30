@@ -26,6 +26,13 @@
 //Game class
 #include "../HEADER/Game.hpp"
 
+//reading text file
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
 /*************************** GLOBALS *********************************/
 
 WINDOW *scrn; 	//Will point to curses window object
@@ -149,8 +156,8 @@ int main(void)
 
 		//Print menu 1 with random starting line color
 		int startingLineColor = rand() % 6 + 1, lineColors[MAX_MENU_ITEMS];
-		WINDOW *subscrnMenu1 = printMenu(menu2Items, startingLineColor, lineColors,
-											MENU1_LENGTH, MM_WIDTH);
+		WINDOW *subscrnMenu1 = printMenu(menu1Items, startingLineColor, lineColors,
+											MENU1_LENGTH, MM_WIDTH); // change menu2Items to menu1Items
 
 		//Declare menu 2 and 3 (for future use)
 		WINDOW *subscrnMenu2, *subscrnMenu3;
@@ -370,6 +377,54 @@ int main(void)
 						else if(currMenu == 1 && cursorPos == HIGH_SCORE) {
 							//delwin(subscrnMenu1);
 							//showHighScores();
+						}
+						else if(currMenu == 1 && cursorPos == INSTRUCTIONS) {
+							/*fstream inFile;
+							string inLine;
+							inFile.open("../GRAPHICS/instructionsText.txt", ios::in);
+							
+
+							clear();
+							move(0,0); 
+							if(inFile.is_open()){ 
+								while(getline(inFile, inLine)){
+									printw("FILE IS OPEN");
+									//printw("%s", inLine);
+									refresh();
+								}
+								inFile.close();
+							}
+							else{
+								printw("FILE NOT OPEN");
+							}*/
+							clear();
+							loadGraphicInstructions();				
+							getch();
+
+							/////////////////REDRAW THE MENU/////////////////////
+							clear();
+
+
+						
+							//Print Game Menu header
+							attron(COLOR_PAIR(WHITE_BLACK));
+							mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
+							refresh();
+
+							//Update Outer Border
+							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
+							box(subscrnMenuBorder, '|', '_');
+							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+							wrefresh(subscrnMenuBorder);
+														
+							subscrnMenu1 = printMenu(menu1Items,
+								startingLineColor, NULL, MENU1_LENGTH, MM_WIDTH);
+							highlight(subscrnMenu1, INSTRUCTIONS, lineColors[cursorPos-1],
+								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
+
+							paintGraphic(subscrnGraphic, "GRAPHICS/instructionsPic.txt", 1, true);
+
 						}
 						else if(currMenu == 1 && cursorPos == EXIT) {
 							delwin(subscrnMenu1);
