@@ -770,6 +770,10 @@ int main(void)
 			if (gameinfo.playerNum == 1)
 			{
 				printf("%s\n", gameinfo.secondName);
+				refresh();
+				endwin();
+				exit(0);
+
 				addScoreMulti(gameinfo.finalScore, gameinfo.firstName, gameinfo.secondName, gameinfo.hours, gameinfo.minutes, gameinfo.seconds, gameMode);
 			}
 		}
