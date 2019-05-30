@@ -417,8 +417,17 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							
 							gameOver = true;
 							
+							scoreInfo.firstName = username;
+							scoreInfo.secondName = NULL;
+							scoreInfo.playerNum = 1;
+							scoreInfo.hours = hours;
+							scoreInfo.minutes = minutes;
+							scoreInfo.seconds = seconds;
+							scoreInfo.finalScore = cube->getCubeScore();
+							
 							transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 97,
-									28, BLACK_BLACK, 1, RED_BLACK, &userInput, &confirmedGameOver);
+									28, BLACK_BLACK, 1, RED_BLACK, &userInput, &confirmedGameOver,
+									&scoreInfo);
 
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -893,9 +902,19 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							 //Set gameOver and hasTerminated flags
 							 hasTerminated = gameOver = true;
 							 
+							 //Load stat struct
+							 scoreInfo.firstName = username;
+							 scoreInfo.secondName = secondName;
+							 scoreInfo.playerNum = playerNum;
+							 scoreInfo.hours = hours;
+							 scoreInfo.minutes = minutes;
+							 scoreInfo.seconds = seconds;
+							 scoreInfo.finalScore = cube->getCubeScore();
+								
 							 //Game Over animation
 							 transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 97,
-							 		28, BLACK_BLACK, 1, RED_BLACK, &userInput, &confirmedGameOver);
+								28, BLACK_BLACK, 1, RED_BLACK, &userInput, &confirmedGameOver,
+								&scoreInfo);
 							  
 							  //Delete all Obstacles
 									for(list<Obstacle*>::iterator it = world->getObstacles().begin();

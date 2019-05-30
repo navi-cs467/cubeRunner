@@ -13,6 +13,7 @@
 #include "constants.hpp"
 #include "using.hpp"
 #include "loadGraphic.hpp"
+#include "Game.hpp"
 
 void transitionAnimation(const char* fileName,
 						 int graphicWidth,
@@ -28,6 +29,7 @@ void transitionAnimationInsideThread(const char* fileName,
 									 int startingSeedColor,
 									 int promptColor,
 									 int *userInput,
-									 int *confirmedGameOver = NULL);
+									 int *confirmedGameOver = NULL,
+									 struct gameData *gameStats = NULL);
 
 #endif /* transitionAnimation_hpp */

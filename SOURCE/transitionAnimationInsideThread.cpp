@@ -17,7 +17,8 @@ void transitionAnimationInsideThread(const char* fileName,
 									 int startingSeedColor,
 									 int promptColor,
 									 int *userInput,
-									 int *confirmedGameOver)
+									 int *confirmedGameOver,
+									 struct gameData *gameStats)
 { 
 	clear();  //Curses clear-screen call
 	
