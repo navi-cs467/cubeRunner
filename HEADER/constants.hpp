@@ -14,7 +14,7 @@
 #define MIN_WIN_WIDTH 135
 #define INTRO_HEIGHT 28
 #define INTRO_WIDTH 120
-#define MM_GRAPHIC_HEIGHT 9			//MM stands for Main Menu
+#define MM_GRAPHIC_HEIGHT 10			//MM stands for Main Menu
 #define MM_GRAPHIC_WIDTH 40
 #define MM_HEIGHT 25
 #define MM_WIDTH 25
