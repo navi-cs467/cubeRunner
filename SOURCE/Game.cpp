@@ -66,7 +66,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 		#pragma omp section
 		{
 
-			while ( // cube->getCubeLives() > 0 &&
+			while ( cube->getCubeLives() > 0 &&
 					userInput != 27 &&
 				    userInput != KEY_END &&
 				    userInput != 'q' &&
@@ -413,7 +413,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 						//Game Over animation and break if game over occurred
 						if(cube->getCubeLives() == 0) {
-							// transitionAnimation("gameOver.txt");
+							transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 109,
+									16, RED_RED, 36, BLACK_RED, &userInput);
 
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -889,8 +890,11 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							  //CLOSE connections
 								close(socketFD);
 								close(inputSocket);
-
-						//	  	  /* animationTransition("GRAPHICS/gameOver.txt"); */
+								
+							 //Game Over animation
+							 transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 109,
+								16, RED_RED, 36, BLACK_RED, &userInput);
+							  
 							  //Delete all Obstacles
 									for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 										it != world->getObstacles().begin(); it++) {

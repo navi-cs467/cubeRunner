@@ -412,6 +412,11 @@ int main(void)
 							box(subscrnMenuBorder, '|', '_');
 							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 							wrefresh(subscrnMenuBorder);
+							
+							//Something strange causing bottom line to go uncleared on some occasions...
+							mvhline(startingRow + 8, 0, ' ', COLS); refresh();
+							
+							
 
 							subscrnMenu2 = printMenu(menu2Items,
 								startingLineColor, NULL, MENU2_LENGTH, MM_WIDTH);
@@ -501,7 +506,7 @@ int main(void)
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
 								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+									startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
@@ -539,7 +544,7 @@ int main(void)
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
 								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+									startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
@@ -577,7 +582,7 @@ int main(void)
 									wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 									wrefresh(subscrnMenuBorder);
 									highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-										startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+										startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 
 									//Replace Game Menu header
 									attron(COLOR_PAIR(BLACK_BLACK));
@@ -622,7 +627,7 @@ int main(void)
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
 								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+									startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
@@ -660,7 +665,7 @@ int main(void)
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
 								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+									startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
@@ -697,7 +702,7 @@ int main(void)
 									wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 									wrefresh(subscrnMenuBorder);
 									highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-										startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+										startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 
 									//Replace Game Menu header
 									attron(COLOR_PAIR(BLACK_BLACK));
@@ -741,7 +746,7 @@ int main(void)
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
 								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+									startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
@@ -779,7 +784,7 @@ int main(void)
 								wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 								wrefresh(subscrnMenuBorder);
 								highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-									startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+									startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 
 								//Replace Game Menu header
 								attron(COLOR_PAIR(BLACK_BLACK));
@@ -816,7 +821,7 @@ int main(void)
 									wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 									wrefresh(subscrnMenuBorder);
 									highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
-										startingLineColor, menu2Items, MENU1_LENGTH, MM_WIDTH);
+										startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
 
 									//Replace Game Menu header
 									attron(COLOR_PAIR(BLACK_BLACK));
@@ -903,7 +908,8 @@ int main(void)
 		if(isTwoPlayer == false) {
 			gameinfo = game.playGame(NULL, NULL, username);
 
-			addScoreSingle(gameinfo.finalScore, gameinfo.firstName, gameinfo.hours, gameinfo.minutes, gameinfo.seconds, gameMode);
+			addScoreSingle(gameinfo.finalScore, gameinfo.firstName, 
+				gameinfo.hours, gameinfo.minutes, gameinfo.seconds, gameMode);
 		}
 		else {
 			gameinfo = game.playGame(host, port, username);
@@ -911,7 +917,9 @@ int main(void)
 			//only save high scores from first player to prevent duplicates
 			if (gameinfo.playerNum == 1)
 			{
-				addScoreMulti(gameinfo.finalScore, gameinfo.firstName, gameinfo.secondName, gameinfo.hours, gameinfo.minutes, gameinfo.seconds, gameMode);
+				addScoreMulti(gameinfo.finalScore, gameinfo.firstName, 
+					gameinfo.secondName, gameinfo.hours, gameinfo.minutes, 
+					gameinfo.seconds, gameMode);
 			}
 		}
 		gameOn = false;

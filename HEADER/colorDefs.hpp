@@ -49,6 +49,11 @@
 #define CYAN_BLUE 33
 #define MAGENTA_BLUE 34
 #define WHITE_BLUE 35
+#define YELLOW_RED 36
+#define GREEN_RED 37
+#define CYAN_RED 38
+#define BLUE_RED 39
+#define MAGENTA_RED 40
 
 #endif /* colorDefs_hpp */
 

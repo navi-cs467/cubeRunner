@@ -8,6 +8,8 @@
 
 #include "../HEADER/loadGraphic.hpp"
 
+extern WINDOW *scrn;
+
 void loadInstructions(void){
 	/*fstream f;
 	string line;
@@ -84,7 +86,8 @@ void loadInstructions(void){
 		navigateInstructions = "** USE ARROW KEYS UP/DOWN TO SCROLL. PRESS ENTER TO RETURN. **" :
 		navigateInstructions = "** PRESS ENTER TO RETURN. **";
 		
-		move(LINES - 2, (COLS - navigateInstructions.length()) / 2);
+		int curX, curY; getyx(scrn, curX, curY);
+		move(curX + 1, (COLS - navigateInstructions.length()) / 2);
 		printw(navigateInstructions.c_str());
 		
 		refresh();
