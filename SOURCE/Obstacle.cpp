@@ -79,6 +79,36 @@ Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts,
 			//Initialize hits and mvsSinceLastHit
 			this->hits = hits;
 		}
+		if(type == 9) {
+			if(Asteroid::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Asteroid::_getGraphicLines()[gt][i].size();
+		}
+		else if(type == 10) {
+			if(Planet::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Planet::_getGraphicLines()[gt][i].size();
+		}
+		else if(type == 11) {
+			if(Comet::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Comet::_getGraphicLines()[gt][i].size();
+			//Initialize maxHits based on gameMode
+			if(gm == EASY) maxHits = 1;
+			else if(gm == NORMAL) maxHits = 2;
+			else maxHits = 3;
+			
+			//Initialize hits ands mvsSinceLastHit
+			this->hits = hits;
+		}
+		else if(type == 12) {
+			if(Spaceship::_getGraphicLines()[gt][i].size() > longestGS)
+				longestGS = Spaceship::_getGraphicLines()[gt][i].size();
+			//Initialize maxHits based on gameMode
+			if(gm == EASY) maxHits = 1;
+			else if(gm == NORMAL) maxHits = 2;
+			else maxHits = 3;
+			
+			//Initialize hits and mvsSinceLastHit
+			this->hits = hits;
+		}
 	}
 }
 
@@ -97,6 +127,9 @@ void Obstacle::createObstacle(World *world,
 		gt = (rand() % numGraphics);
 	else if(specificGraphic != -1) gt = specificGraphic;
 	else gt = 0;
+	
+	//Timer to make sure loop doesn't get stuck
+	double escapeTimer = omp_get_wtime();
 	
 	//Find random starting position that does not
 	//encroach on existing world obstacles or miniCubes
@@ -117,16 +150,32 @@ void Obstacle::createObstacle(World *world,
 		if(offScreenDirection != none) {
 			if(offScreenDirection == right ||
 			   offScreenDirection == right_up ||
-			   offScreenDirection == right_down)
+			   offScreenDirection == right_down) {
 				posY = posY + COLS;
+				if(typeid(*world) == typeid(Space) &&
+				   posY < COLS + 10) 
+						posY = COLS + 10;
+			}
 			else if(offScreenDirection == left ||
 				    offScreenDirection == left_up ||
-					offScreenDirection == left_down)
+					offScreenDirection == left_down) {
 				posY = -posY;
-			else if(offScreenDirection == up)
+					if(typeid(*world) == typeid(Space) &&
+					   posY > -10) 
+						posY = -10;
+			}
+			else if(offScreenDirection == up) {
 				posX = -posX;
-			else
+				if(typeid(*world) == typeid(Space) &&
+					posX > -4) 
+						posX = -4;
+			}
+			else {
 				posX = posX + LINES;
+				if(typeid(*world) == typeid(Space) &&
+					posX < LINES + 4) 
+						posX = LINES + 4;
+			}
 		}
 		
 		for(int i = 0; i < getGraphicLines()[gt].size(); i++) {
@@ -145,7 +194,8 @@ void Obstacle::createObstacle(World *world,
 			if(enchroaches == true) break;
 		}
 		
-	} while(enchroaches == true);
+	} while(enchroaches == true && 
+			omp_get_wtime() - escapeTimer < REFRESH_RATE);
 }
 
 void Obstacle::setGT(int newGraphic) {
@@ -255,10 +305,10 @@ void Obstacle::move(World* world) {
 						insert(make_pair(posX + j, posY));
 				}
 				//Update Obstacle's nonWSObsCoords	
-				for(int i = 0; i < gts; i++) {
-					for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
-						if(this->getGraphicLines()[gt][i][j] != ' ')
-								newNonWSObsCoords.insert(make_pair(posX + i, posY + j));
+				for(int j = 0; j < gts; j++) {
+					for(int k = 0; k < this->getGraphicLines()[gt][j].length(); k++) {
+						if(this->getGraphicLines()[gt][j][k] != ' ')
+								newNonWSObsCoords.insert(make_pair(posX + j, posY + k));
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
@@ -343,10 +393,10 @@ void Obstacle::move(World* world) {
 						insert(make_pair(posX + gts - 1, posY + j));
 				}
 				//Update Obstacle's nonWSObsCoords	
-				for(int i = 0; i < gts; i++) {
-					for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
-						if(this->getGraphicLines()[gt][i][j] != ' ')
-								newNonWSObsCoords.insert(make_pair(posX + i, posY + j));
+				for(int j = 0; j < gts; j++) {
+					for(int k = 0; k < this->getGraphicLines()[gt][j].length(); k++) {
+						if(this->getGraphicLines()[gt][j][k] != ' ')
+								newNonWSObsCoords.insert(make_pair(posX + j, posY + k));
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
@@ -410,16 +460,15 @@ void Obstacle::move(World* world) {
 				}
 				//Update Obstacle's position and (if Spaceship) graphic
 				posX++;
-				if(gts > 2) setGT(3);
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX + gts - 1, posY + j));
 				}
 				//Update Obstacle's nonWSObsCoords	
-				for(int i = 0; i < gts; i++) {
-					for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
-						if(this->getGraphicLines()[gt][i][j] != ' ')
-								newNonWSObsCoords.insert(make_pair(posX + i, posY + j));
+				for(int j = 0; j < gts; j++) {
+					for(int k = 0; k < this->getGraphicLines()[gt][j].length(); k++) {
+						if(this->getGraphicLines()[gt][j][k] != ' ')
+								newNonWSObsCoords.insert(make_pair(posX + j, posY + k));
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
@@ -503,10 +552,10 @@ void Obstacle::move(World* world) {
 						insert(make_pair(posX + gts - 1, posY + j));
 				}
 				//Update Obstacle's nonWSObsCoords	
-				for(int i = 0; i < gts; i++) {
-					for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
-						if(this->getGraphicLines()[gt][i][j] != ' ')
-								newNonWSObsCoords.insert(make_pair(posX + i, posY + j));
+				for(int j = 0; j < gts; j++) {
+					for(int k = 0; k < this->getGraphicLines()[gt][j].length(); k++) {
+						if(this->getGraphicLines()[gt][j][k] != ' ')
+								newNonWSObsCoords.insert(make_pair(posX + j, posY + k));
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
@@ -571,10 +620,10 @@ void Obstacle::move(World* world) {
 						insert(make_pair(posX + j, posY + longestGS - 1));
 				}
 				//Update Obstacle's nonWSObsCoords	
-				for(int i = 0; i < gts; i++) {
-					for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
-						if(this->getGraphicLines()[gt][i][j] != ' ')
-								newNonWSObsCoords.insert(make_pair(posX + i, posY + j));
+				for(int j = 0; j < gts; j++) {
+					for(int k = 0; k < this->getGraphicLines()[gt][j].length(); k++) {
+						if(this->getGraphicLines()[gt][j][k] != ' ')
+								newNonWSObsCoords.insert(make_pair(posX + j, posY + k));
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
@@ -653,10 +702,10 @@ void Obstacle::move(World* world) {
 						insert(make_pair(posX, posY + j));
 				}
 				//Update Obstacle's nonWSObsCoords	
-				for(int i = 0; i < gts; i++) {
-					for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
-						if(this->getGraphicLines()[gt][i][j] != ' ')
-								newNonWSObsCoords.insert(make_pair(posX + i, posY + j));
+				for(int j = 0; j < gts; j++) {
+					for(int k = 0; k < this->getGraphicLines()[gt][j].length(); k++) {
+						if(this->getGraphicLines()[gt][j][k] != ' ')
+								newNonWSObsCoords.insert(make_pair(posX + j, posY + k));
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
@@ -715,16 +764,15 @@ void Obstacle::move(World* world) {
 				}
 				//Update Obstacle's position and (if Spaceship) graphic
 				posX--;
-				if(gts > 2) setGT(2);
 				for(int j = 0; j < longestGS; j++) {
 					world->getObsCoords().
 						insert(make_pair(posX, posY + j));
 				}
 				//Update Obstacle's nonWSObsCoords	
-				for(int i = 0; i < gts; i++) {
-					for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
-						if(this->getGraphicLines()[gt][i][j] != ' ')
-								newNonWSObsCoords.insert(make_pair(posX + i, posY + j));
+				for(int j = 0; j < gts; j++) {
+					for(int k = 0; k < this->getGraphicLines()[gt][j].length(); k++) {
+						if(this->getGraphicLines()[gt][j][k] != ' ')
+								newNonWSObsCoords.insert(make_pair(posX + j, posY + k));
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
@@ -803,10 +851,10 @@ void Obstacle::move(World* world) {
 						insert(make_pair(posX, posY + j));
 				}
 				//Update Obstacle's nonWSObsCoords	
-				for(int i = 0; i < gts; i++) {
-					for(int j = 0; j < this->getGraphicLines()[gt][i].length(); j++) {
-						if(this->getGraphicLines()[gt][i][j] != ' ')
-								newNonWSObsCoords.insert(make_pair(posX + i, posY + j));
+				for(int j = 0; j < gts; j++) {
+					for(int k = 0; k < this->getGraphicLines()[gt][j].length(); k++) {
+						if(this->getGraphicLines()[gt][j][k] != ' ')
+								newNonWSObsCoords.insert(make_pair(posX + j, posY + k));
 					}
 				}
 				swap(nonWSObsCoords, newNonWSObsCoords);
@@ -846,11 +894,14 @@ void Obstacle::move(World* world) {
 	}
 	if(moveCleared && hits > 0) {
 		mvsSinceLastHit++;
-		if(world->getGameMode() == EASY && mvsSinceLastHit == 60)
+		if(world->getGameMode() == EASY && 
+		   mvsSinceLastHit == OBS_REGEN_RATE_EASY)
 			hits--;
-		else if(world->getGameMode() == NORMAL && mvsSinceLastHit == 40)
+		else if(world->getGameMode() == NORMAL && 
+				mvsSinceLastHit == OBS_REGEN_RATE_NORMAL)
 			hits--;
-		else if(world->getGameMode() == HARD && mvsSinceLastHit == 20)
+		else if(world->getGameMode() == HARD && 
+				mvsSinceLastHit == OBS_REGEN_RATE_HARD)
 			hits--;
 	}
 }

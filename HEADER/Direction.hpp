@@ -9,15 +9,15 @@
 #ifndef Direction_hpp
 #define Direction_hpp
 
-enum Direction { left,
+enum Direction { none,
+				 left,
 				 left_down,
 				 down,
 				 right_down,
 				 right,
 				 right_up,
 				 up,
-				 left_up,
-				 none
+				 left_up
 			   };
 			   
 Direction& operator++(Direction& dir);

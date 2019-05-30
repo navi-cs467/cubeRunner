@@ -29,24 +29,56 @@ Rock::Rock(World *world, Direction offScreen,
 
 vector<vector<wstring>> Rock::initializeVectorGraphics () {
 	vector<vector<wstring>> tmpV {{L" __ ",
-								   L"/  \\",
-								   L"\\__/"},
+								   L"/*#\\",
+								   L"\\-*/",
+								   L" ^^"},
 								
 								  {L"    _____ ",
-								   L"___/   __\\",
-								   L"\\     \\_   ",
-								   L" \\     /   ",
-								   L"/__   \\   ",
-								   L"   \\__/   "},
+								   L"___/##--_\\",
+								   L"\\***:*^%&@\\",
+								   L" \\=*&%%*%$/",
+								   L"/--#^&!*%&\\",
+								   L"^^^\\**/^^^",
+								   L"    ^^"},
 								   
 								  {L"    _____         ",
-								   L"   /     \\   ___  ",
-								   L"  /       \\_/   \\ ",
-								   L"  \\              \\",
-								   L"   \\___      /\\__/",
-								   L"       \\____/     "}};
+								   L"   /^&$@*\\   ___  ",
+								   L"  /**~~--`\\_/%&%\\ ",
+								   L"  \\**&~~--~~#%*$^\\",
+								   L"   \\___******/\\~~/",
+								   L"       \\____/  ^^"}};
+								   
+	//Generate random Rock graphics according to the
+	//number of graphic types specified in NUM_ROCK_TYPES
+	//(see constants.hpp)
+	/*vector<vector<wstring>> tmpV(NUM_ROCK_TYPES);
+	for(int i = 0; i < NUM_ROCK_TYPES; i++) {
+		int randSize = rand() % 6 + 3;
+		for(int j = 0; j < randSize; j++) {
+			int randStrLength = rand() % 8 + 3;
+			wstring tmpStr;
+			for(int k = 0; k < randStrLength; k++) {
+				int randomAsteroidChar = rand() % 6;
+				if(randomAsteroidChar == 0)
+					tmpStr.push_back(' ');
+				else if (randomAsteroidChar == 1)
+					tmpStr.push_back('/');
+				else if (randomAsteroidChar == 2)
+					tmpStr.push_back('\\');
+				else if (randomAsteroidChar == 3)
+					tmpStr.push_back(')');
+				else if (randomAsteroidChar == 4)
+					tmpStr.push_back('(');	
+				else if (randomAsteroidChar == 5)
+					tmpStr.push_back('*');
+				else
+					tmpStr.push_back('#');	
+			}
+			tmpV[i].push_back(tmpStr);
+		}
+	} */
 								  
-	return tmpV;
+	return tmpV; 
 }
 
 vector<vector<wstring>> Rock::getGraphicLines() {

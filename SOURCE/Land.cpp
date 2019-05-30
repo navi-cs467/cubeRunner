@@ -123,14 +123,16 @@ void Land::renderWorld(Cube *cube) {
 	for(int i = bottomRow + 1; i < LINES - 1; i++)
 		mvhline(i, 0, ' ', COLS);
 	
-	//Print all the miniCubes
+	//Print all the onscreen miniCubes
 	wchar_t mc[] = L"\u25A0";		
 	//char mc = 'c';
+	attron(COLOR_PAIR(GREEN_WHITE));
 	for(set<pair<int, int>>::iterator it = miniCubes.begin();
 		it != miniCubes.end(); it++) {
-			attron(COLOR_PAIR(GREEN_WHITE));
+			if(it->first >= 0 && it->first <= bottomRow &&
+			   it->second >= 0 && it->second < COLS)
             mvaddwstr(it->first, it->second, mc); //refresh();
-		}
+	}
 	
 	//Print all Obstacles
 	for(list<Obstacle*>::iterator it = obstacles.begin();
@@ -286,7 +288,7 @@ void Land::renderWorld(Cube *cube) {
 	//refresh();
 }
 
-void Land::scroll_(Cube* cube) {
+void Land::scroll_(Cube* cube, Direction lockedDirection) {
 	
 	/* //Paint blank background
 	attron(COLOR_PAIR(BLUE_BLUE));

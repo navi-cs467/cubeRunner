@@ -237,7 +237,9 @@ int main(int argc, char* argv[]) {
 		//Used to ensure user sees every move input
 		//(so cube doesn't appear to "skip" around)
 		//if input is coming in too fast
-		bool renderedLastMv1 = true, renderedLastMv2 = true, deathFlag = false;
+		bool renderedLastMv1 = true, renderedLastMv2 = true, deathFlag = false,
+			 scrollLock = false, scrollDirChanged = false;
+		Direction lockedScrollDir = right, lastScrollDir = right;
 		int userInput1, userInput2;
 
 		if(DEBUG)
@@ -299,12 +301,12 @@ int main(int argc, char* argv[]) {
 							cube->updateCubePosition(0, 0, 1, 0);
 							cube->setCubeDirection(down);
 						}
-						else if((userInput1 == KEY_RIGHT || userInput2 == '6' || userInput2 == 'd') &&
+						else if((userInput1 == KEY_RIGHT || userInput1 == '6' || userInput1 == 'd') &&
 									cube->getCubePositionCol() + CUBE_CHARS_WIDTH - 1 < COLS) {
 							cube->updateCubePosition(1, 0, 0, 0);
 							cube->setCubeDirection(right);
 						}
-						else if((userInput1 == KEY_LEFT || userInput2 == '4' || userInput2 == 'a') &&
+						else if((userInput1 == KEY_LEFT || userInput1 == '4' || userInput1 == 'a') &&
 								cube->getCubePositionCol() > 0) {
 							cube->updateCubePosition(0, 1, 0, 0);
 							cube->setCubeDirection(left);
@@ -313,6 +315,16 @@ int main(int argc, char* argv[]) {
 							cube->fireShot(); 
 							if(DEBUG)
 								printf("SHOT FIRED!!\n");
+						}
+						else if(userInput1 == 106 || userInput1 == 'l') {
+							scrollLock = true;
+							lockedScrollDir = cube->getCubeDirection();
+						}
+						else if(userInput1 == 117 || userInput1 == 'u') {
+							scrollLock = false;
+						}
+						else if(userInput1 == 116 || userInput1 == 't') {
+							cube->setTransitionScore(TRANSITION_SCORE_INTERVAL);
 						}
 
 						renderedLastMv1 = false;
@@ -373,12 +385,12 @@ int main(int argc, char* argv[]) {
 							cube->updateCubePosition(0, 1, 0, 0);
 							cube->setCubeDirection(left);
 						}
-						else if((userInput2 == KEY_UP || userInput1 == '8' || userInput1 == 'w')
+						else if((userInput2 == KEY_UP || userInput2 == '8' || userInput2 == 'w')
 								&& cube->getCubePositionRow() > 0){
 							cube->updateCubePosition(0, 0, 0, 1);
 							cube->setCubeDirection(up);
 						}
-						else if((userInput2 == KEY_DOWN || userInput1 == '2' || userInput1 == 's') &&
+						else if((userInput2 == KEY_DOWN || userInput2 == '2' || userInput2 == 's') &&
 									cube->getCubePositionRow() + CUBE_CHARS_HEIGHT - 1
 										< world->getBottomRow()) {
 							cube->updateCubePosition(0, 0, 1, 0);
@@ -388,6 +400,16 @@ int main(int argc, char* argv[]) {
 							cube->fireShot();
 							if(DEBUG)
 								printf("SHOT FIRED!!\n");
+						}
+						else if(userInput2 == 106 || userInput2 == 'l') {
+							scrollLock = true;
+							lockedScrollDir = cube->getCubeDirection();
+						}
+						else if(userInput2 == 117 || userInput2 == 'u') {
+							scrollLock = false;
+						}
+						else if(userInput2 == 116 || userInput2 == 't') {
+							cube->setTransitionScore(TRANSITION_SCORE_INTERVAL);
 						}
 
 						renderedLastMv2 = false;
@@ -421,7 +443,9 @@ int main(int argc, char* argv[]) {
 					   lastRefreshTime = omp_get_wtime(),
 					   lastNewObsTime = omp_get_wtime(),
 					   lastShotTime = omp_get_wtime();
-				int statsTime, startTime, scrollCountCols = 0, scrollCountRows = 0,
+				int statsTime, startTime, 
+					scrollCountRight = 0, scrollCountLeft = 0,
+					scrollCountUp = 0, scrollCountDown = 0,
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 
@@ -550,7 +574,7 @@ int main(int argc, char* argv[]) {
 								delete world;
 								
 								//Create new world
-								world = new Water(gameMode, true, true);
+								world = new Space(gameMode, true, true);
 								cube->transitionWorld(world);
 								newWorldType = 3;
 							}
@@ -560,7 +584,7 @@ int main(int argc, char* argv[]) {
 								delete world;
 								
 								//Create new world
-								world = new Space(gameMode, true, true);
+								world = new Water(gameMode, true, true);
 								cube->transitionWorld(world);
 								newWorldType = 1;
 							}
@@ -586,7 +610,7 @@ int main(int argc, char* argv[]) {
 														//then lock out input threads from updating until finished
 
 						//Check for death
-						cube->checkCubeCollision(world);
+						int obCollisionType = cube->checkCubeCollision(world);
 						deathFlag = cube->getCubeIsDead();
 
 						/**** SEND DEATH FLAG ****/
@@ -692,6 +716,18 @@ int main(int argc, char* argv[]) {
 						//		SEND Connection2: 0		//Death but no game over
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", 0);
+
+								sendMessage_S(player1, messageToSend);
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player1, clientConfirm);
+
+								sendMessage_S(player2, messageToSend);
+								memset(clientConfirm, '\0', sizeof clientConfirm);
+								receiveMessage_S(player2, clientConfirm);
+								
+								//Send Obstacle collision type
+								memset(messageToSend, '\0', sizeof messageToSend);
+								sprintf(messageToSend, "%d", obCollisionType);
 
 								sendMessage_S(player1, messageToSend);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
@@ -1657,6 +1693,9 @@ int main(int argc, char* argv[]) {
 								else if(typeid(**itObs) == typeid(Bird))
 									sprintf(messageToSend, "%d",
 										(static_cast<Bird*>(*itObs))->getColor());
+								else if(typeid(**itObs) == typeid(Comet))
+									sprintf(messageToSend, "%d",
+										(static_cast<Bird*>(*itObs))->getColor());
 								else
 									sprintf(messageToSend, "%d", -1);
 
@@ -1933,6 +1972,19 @@ int main(int argc, char* argv[]) {
 
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND TIME INFO  ****/
+						
+						/**** SEND SCROLL LOCK  ****/
+						memset(messageToSend, '\0', sizeof messageToSend);
+						sprintf(messageToSend, "%d", scrollLock);
+
+						sendMessage_S(player1, messageToSend);
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player1, clientConfirm);
+
+						sendMessage_S(player2, messageToSend);
+						memset(clientConfirm, '\0', sizeof clientConfirm);
+						receiveMessage_S(player2, clientConfirm);
+						/**** END SEND SCROLL LOCK  ****/
 
 						//Any move entered has been rendered
 						renderedLastMv1 = renderedLastMv2 = true;
@@ -1944,34 +1996,72 @@ int main(int argc, char* argv[]) {
 					//Scroll
 					if(omp_get_wtime() - lastScrollTime > scrollRate) {
 						lastScrollTime = omp_get_wtime();
-						world->scroll_(cube);	
 						
-						//Load new offscreen Obstacles and miniCubes every time
-						//a screens-worth has been scrolled
 						if(typeid(*world) != typeid(Space)) {
-							if(scrollCountCols == COLS) {
-								world->loadOSObs(right);
-								world->loadOSMCs(right);
-							}
+							world->scroll_(cube);
 						}
 						else {
-							if(scrollCountCols == COLS || scrollCountRows == LINES) {
-								world->loadOSObs(cube->getCubeDirection());
-								world->loadOSMCs(cube->getCubeDirection());
-							}
+							if(scrollLock)
+								world->scroll_(cube, lockedScrollDir);
+							else
+								world->scroll_(cube, none);
+								//Used for loading offscreen Obstacles when scroll,
+								//direction changes (Space only)
+								if(lastScrollDir != cube->getCubeDirection())
+									scrollDirChanged = true;
 						}
 						
-						if(scrollCountCols == COLS) scrollCountCols = 0;
-						else scrollCountCols++;
-						if(scrollCountRows == LINES) scrollCountRows = 0;
-						else scrollCountRows++;
+						//Load new offscreen Obstacles and miniCubes every time
+						//a screens-worth has been scrolled, or the scroll direction
+						//changes (Space only)
+						if(scrollCountRight++ == COLS) {
+							world->loadOSObs(right);
+							world->loadOSMCs(right);
+							scrollCountRight = 0;
+						}
+						if(scrollCountLeft++ == COLS) {
+							world->loadOSObs(left);
+							world->loadOSMCs(left);
+							scrollCountLeft = 0;
+						}
+						if(scrollCountUp++ == LINES) {
+							world->loadOSObs(up);
+							world->loadOSMCs(up);
+							scrollCountUp = 0;
+						}
+						if(scrollCountDown++ == LINES) {
+							world->loadOSObs(down);
+							world->loadOSMCs(down);
+							scrollCountDown = 0;
+						}
+						if(scrollDirChanged) {
+							world->loadOSObs(cube->getCubeDirection());
+							world->loadOSMCs(cube->getCubeDirection());
+							scrollDirChanged = false;
+						}
 
-						//Repopulate miniCubes if too many have been
+						//Repopulate onscreen miniCubes if too many have been
 						//consumed by moving obstacles according to this
 						//threshold
-						if(world->getMiniCubes().size() / 2
-								< (NUM_MCS_EASY / gameMode))
-							world->initMiniCubes(1);	
+						
+						//Determine existing onscreen miniCube count
+						int onscreenMCCount = 0;
+						set<pair<int, int>>::iterator mcs;
+						for(mcs = world->getMiniCubes().begin(); 
+							mcs != world->getMiniCubes().end(); mcs++) {
+							if(mcs->second < COLS && mcs->second >= 0 &&
+							   mcs->first < world->getBottomRow() && mcs->first >= 0) 
+									onscreenMCCount++;
+						}
+						if(onscreenMCCount < (NUM_MCS_EASY / gameMode) / 2)
+							world->initMiniCubes(1);
+						
+						//Used to determine if scroll direction changes 
+						//(Space only), for loading offscreen Obstacles
+						if(scrollLock) lastScrollDir = lockedScrollDir;
+						else if(typeid(*world) == typeid(Space))
+							lastScrollDir = cube->getCubeDirection();
+						else lastScrollDir = right;
 					}
 
 					//Move Obstacles according to moveRate

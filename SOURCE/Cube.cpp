@@ -617,10 +617,63 @@ void Cube::drawCube(void){
 
 }
 
-void Cube::drawCubeDeath(int *userInput){
+void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 
+	attron(COLOR_PAIR(BLACK_BLACK));
+	mvhline(LINES - 1, 0, ' ', COLS);
 	attron(COLOR_PAIR(YELLOW_BLACK));
-	mvaddstr(LINES - 1, 15, "Death! (Press Enter to Continue)");
+	if(obCollisionType) {
+		if(obCollisionType == 1)
+			mvaddstr(LINES - 1, 15, "Death! Seaweed Collision. (Press Enter to Continue)");
+		else if(obCollisionType == 2)
+			mvaddstr(LINES - 1, 15, "Death! Coral Collision. (Press Enter to Continue)");
+		else if(obCollisionType == 3)
+			mvaddstr(LINES - 1, 15, "Death! Shark Attack. (Press Enter to Continue)");
+		else if(obCollisionType == 4)
+			mvaddstr(LINES - 1, 15, "Death! Octopus Attack. (Press Enter to Continue)");
+		else if(obCollisionType == 5)
+			mvaddstr(LINES - 1, 15, "Death! Tree Collision. (Press Enter to Continue)");
+		else if(obCollisionType == 6)
+			mvaddstr(LINES - 1, 15, "Death! Rock Collision. (Press Enter to Continue)");
+		else if(obCollisionType == 7)
+			mvaddstr(LINES - 1, 15, "Death! Bird Attack. (Press Enter to Continue)");
+		else if(obCollisionType == 8)
+			mvaddstr(LINES - 1, 15, "Death! Bat Attack. (Press Enter to Continue)");
+		else if(obCollisionType == 9)
+			mvaddstr(LINES - 1, 15, "Death! Asteroid Collision. (Press Enter to Continue)");
+		else if(obCollisionType == 10)
+			mvaddstr(LINES - 1, 15, "Death! Planet Collision. (Press Enter to Continue)");
+		else if(obCollisionType == 11)
+			mvaddstr(LINES - 1, 15, "Death! Comet Collision. (Press Enter to Continue)");
+		else if(obCollisionType == 12)
+			mvaddstr(LINES - 1, 15, "Death! Spaceship Collision. (Press Enter to Continue)");
+	}
+	else {
+		if(typeid(*lastObCollided) == typeid(Seaweed))
+			mvaddstr(LINES - 1, 15, "Death! Seaweed Collision. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Coral))
+			mvaddstr(LINES - 1, 15, "Death! Coral Collision. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Shark))
+			mvaddstr(LINES - 1, 15, "Death! Shark Attack. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Octopus))
+			mvaddstr(LINES - 1, 15, "Death! Octopus Attack. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Tree))
+			mvaddstr(LINES - 1, 15, "Death! Tree Collision. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Rock))
+			mvaddstr(LINES - 1, 15, "Death! Rock Collision. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Bird))
+			mvaddstr(LINES - 1, 15, "Death! Bird Attack. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Bat))
+			mvaddstr(LINES - 1, 15, "Death! Bat Attack. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Asteroid))
+			mvaddstr(LINES - 1, 15, "Death! Asteroid Collision. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Planet))
+			mvaddstr(LINES - 1, 15, "Death! Planet Collision. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Comet))
+			mvaddstr(LINES - 1, 15, "Death! Comet Collision. (Press Enter to Continue)");
+		else if(typeid(*lastObCollided) == typeid(Spaceship))
+			mvaddstr(LINES - 1, 15, "Death! Spaceship Collision. (Press Enter to Continue)");
+	}
 	refresh();
 
 	int i = 0, j = 0, k = 0;
@@ -932,7 +985,7 @@ void Cube::drawCubeDeath(int *userInput){
 } */
 
 
-void Cube::checkCubeCollision(World *world){
+int Cube::checkCubeCollision(World *world){
 
 	list<Obstacle*>::iterator obs;
 	set<pair<int,int> >::iterator mcs, nonWSObs;
@@ -977,10 +1030,37 @@ void Cube::checkCubeCollision(World *world){
 					isDead = 1;
 					lives--;
 					obCollisionDetected = true;
+					lastObCollided = *obs;
+					if(typeid(*lastObCollided) == typeid(Seaweed))
+						return 1;
+					else if(typeid(*lastObCollided) == typeid(Coral))
+						return 2;
+					else if(typeid(*lastObCollided) == typeid(Shark))
+						return 3;
+					else if(typeid(*lastObCollided) == typeid(Octopus))
+						return 4;
+					else if(typeid(*lastObCollided) == typeid(Tree))
+						return 5;
+					else if(typeid(*lastObCollided) == typeid(Rock))
+						return 6;
+					else if(typeid(*lastObCollided) == typeid(Bird))
+						return 7;
+					else if(typeid(*lastObCollided) == typeid(Bat))
+						return 8;
+					else if(typeid(*lastObCollided) == typeid(Asteroid))
+						return 9;
+					else if(typeid(*lastObCollided) == typeid(Planet))
+						return 10;
+					else if(typeid(*lastObCollided) == typeid(Comet))
+						return 11;
+					else if(typeid(*lastObCollided) == typeid(Spaceship))
+						return 12;
+					
 				}
 			}
 		}
 	}
+	return 0;
 }
 
 /* void Cube::checkCubeCollision(set<pair<int, int> > miniCubes, set<pair<int, int> > obsCoords){

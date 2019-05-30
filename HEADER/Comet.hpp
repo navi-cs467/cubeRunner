@@ -39,6 +39,7 @@ class Comet : public Obstacle {
 		//Direction getDirection() {return curDirection;}
 		//void setDirection(Direction newDirection) {curDirection = newDirection;}
 		virtual vector<vector<wstring>> getGraphicLines() override;
+		virtual void move(World *world) override;
 		virtual ~Comet() {}
 		
 };

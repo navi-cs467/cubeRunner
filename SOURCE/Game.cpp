@@ -43,6 +43,8 @@ int Game::playGame(char host[], char port[]) {
 
 	bool deathFlag = false;
 	bool isConnected = false;
+	bool scrollLock = false, scrollDirChanged = false;
+	Direction lockedScrollDir = right, lastScrollDir = right;
 	int playerNum = 0;
 	int socketFD = -1;
 	int inputSocket = -1;
@@ -51,7 +53,8 @@ int Game::playGame(char host[], char port[]) {
 
 	bool hasTerminated = false;
 
-	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, playerNum, socketFD, hasTerminated, inputPort)
+	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, \
+	playerNum, socketFD, hasTerminated, inputPort, scrollLock, lockedScrollDir)
 	{
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
@@ -121,7 +124,16 @@ int Game::playGame(char host[], char port[]) {
 					else if(userInput == 32) {
 						cube->fireShot();
 					}
-
+					else if(userInput == 'l') {
+						scrollLock = true;
+						lockedScrollDir = cube->getCubeDirection();
+					}
+					else if(userInput == 'u') {
+						scrollLock = false;
+					}
+					else if(userInput == 't') {
+						cube->setTransitionScore(TRANSITION_SCORE_INTERVAL);
+					}
 					//Unlock the lock after movement update
 					omp_unset_lock(&userInputLock);
 
@@ -158,18 +170,42 @@ int Game::playGame(char host[], char port[]) {
 							sprintf(messageToSend, "%d", userInput);
 							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
 						}
 						else if(userInput == KEY_RIGHT) {
 							// SEND: KEY_RIGHT
 							sprintf(messageToSend, "%d", userInput);
 							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
 						}
 						else if(userInput == 32) {
 							// SEND: 32 (SPACE_BAR - For cube->fireShot())
 							sprintf(messageToSend, "%d", userInput);
 							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
+						else if(userInput == 'l') {
+							// SEND: 'l'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
+						else if(userInput == 'u') {
+							// SEND: 'u'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
+						else if(userInput == 't') {
+							// SEND: 't'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
 						}
 						else if(userInput == 27 ||
 								userInput == KEY_END ||
@@ -228,6 +264,27 @@ int Game::playGame(char host[], char port[]) {
 							sendMessage_C(inputSocket, messageToSend);
 							// RECEIEVE confirmation
 						}
+						else if(userInput == 'l') {
+							// SEND: 'l'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
+						else if(userInput == 'u') {
+							// SEND: 'u'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
+						else if(userInput == 't') {
+							// SEND: 't'
+							sprintf(messageToSend, "%d", userInput);
+							sendMessage_C(inputSocket, messageToSend);
+							// RECEIEVE confirmation
+							receiveMessage_C(inputSocket, confirm);
+						}
 						else if(userInput == 27 ||
 								userInput == KEY_END ||
 								userInput == 'q' ||
@@ -285,7 +342,9 @@ int Game::playGame(char host[], char port[]) {
 					   lastRefreshTime = omp_get_wtime(),
 					   lastNewObsTime = omp_get_wtime(),
 					   lastShotTime = omp_get_wtime();
-				int statsTime, startTime, scrollCountCols = 0, scrollCountRows = 0,
+				int statsTime, startTime, 
+					scrollCountRight = 0, scrollCountLeft = 0,
+					scrollCountUp = 0, scrollCountDown = 0,
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
@@ -370,7 +429,7 @@ int Game::playGame(char host[], char port[]) {
 								cube->transitionWorld(world);
 								omp_unset_lock(&userInputLock);		//Unlock input thread to confirm death animation
 								transitionAnimationInsideThread("GRAPHICS/Space.txt", 121,
-									16, BLACK_BLACK, 30, WHITE_BLACK, &userInput);
+									16, BLACK_BLACK, 1, WHITE_BLACK, &userInput);
 								omp_set_lock(&userInputLock);		//Relock
 							}
 							else if(typeid(*world) == typeid(Space)) {
@@ -445,7 +504,7 @@ int Game::playGame(char host[], char port[]) {
 
 						string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
-						//Render Time display
+						//Set time ostringstream
 						timeDisplay.clear();
 						if(hours < 10)
 							timeDisplay << "Time: " << "0" << hours << ":";
@@ -460,21 +519,39 @@ int Game::playGame(char host[], char port[]) {
 						else
 							timeDisplay << seconds;
 
-						//Render Life count display
+						//Setup life count ostringstream 
 						livesDisplay.clear();
 						livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
 						/* if(gameMode == EASY) livesDisplay << "Lives: " << 5;
 						else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
 						else if(gameMode == HARD) livesDisplay << "Lives: " << 3; */
 
-						//Render Score display
+						//Setup score ostreamstring
 						scoreDisplay.clear();
 						scoreDisplay << "Score: " << cube->getCubeScore();
+						
+						//If space world, prepare scroll lock indicator
+						string scrollLockIndicator;
+						if(typeid(*world) == typeid(Space)) {
+							if(scrollLock)
+								scrollLockIndicator = "Scroll Direction Locked. Press 'u' to Unlock.";
+							else
+								scrollLockIndicator = "Scroll Direction Unlocked. Press 'l' to Lock.";
+						}
+						else
+							scrollLockIndicator = "";
+						
+						//Render scroll lock indicator
+						attron(COLOR_PAIR(YELLOW_BLACK));
+						mvhline(LINES - 1, 0, ' ', COLS);
+						mvaddstr(LINES - 1, 10, scrollLockIndicator.c_str());
+						
+						//Render game stats display
 						output = string(timeDisplay.str().c_str())  + "   " +
 								 string(scoreDisplay.str().c_str()) + "   " +
 								 string(livesDisplay.str().c_str());
 						attron(COLOR_PAIR(YELLOW_BLACK));
-						mvhline(LINES - 1, 0, ' ', COLS);
+						mvhline(LINES - 1, 10 + scrollLockIndicator.length(), ' ', COLS);
 						mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
 						refresh();
 
@@ -486,34 +563,72 @@ int Game::playGame(char host[], char port[]) {
 					//Scroll
 					if(omp_get_wtime() - lastScrollTime > scrollRate) {
 						lastScrollTime = omp_get_wtime();
-						world->scroll_(cube);	
 						
-						//Load new offscreen Obstacles and miniCubes every time
-						//a screens-worth has been scrolled
 						if(typeid(*world) != typeid(Space)) {
-							if(scrollCountCols == COLS) {
-								world->loadOSObs(right);
-								world->loadOSMCs(right);
-							}
+							world->scroll_(cube);
 						}
 						else {
-							if(scrollCountCols == COLS || scrollCountRows == LINES) {
-								world->loadOSObs(cube->getCubeDirection());
-								world->loadOSMCs(cube->getCubeDirection());
-							}
+							if(scrollLock)
+								world->scroll_(cube, lockedScrollDir);
+							else
+								world->scroll_(cube, none);
+								//Used for loading offscreen Obstacles when scroll,
+								//direction changes (Space only)
+								if(lastScrollDir != cube->getCubeDirection())
+									scrollDirChanged = true;
+						}
+						
+						//Load new offscreen Obstacles and miniCubes every time
+						//a screens-worth has been scrolled, or the scroll direction
+						//changes (Space only)
+						if(scrollCountRight++ == COLS) {
+							world->loadOSObs(right);
+							world->loadOSMCs(right);
+							scrollCountRight = 0;
+						}
+						if(scrollCountLeft++ == COLS) {
+							world->loadOSObs(left);
+							world->loadOSMCs(left);
+							scrollCountLeft = 0;
+						}
+						if(scrollCountUp++ == LINES) {
+							world->loadOSObs(up);
+							world->loadOSMCs(up);
+							scrollCountUp = 0;
+						}
+						if(scrollCountDown++ == LINES) {
+							world->loadOSObs(down);
+							world->loadOSMCs(down);
+							scrollCountDown = 0;
+						}
+						if(scrollDirChanged) {
+							world->loadOSObs(cube->getCubeDirection());
+							world->loadOSMCs(cube->getCubeDirection());
+							scrollDirChanged = false;
 						}
 
-						//Repopulate miniCubes if too many have been
+						//Repopulate onscreen miniCubes if too many have been
 						//consumed by moving obstacles according to this
 						//threshold
-						if(world->getMiniCubes().size() / 2
-								< (NUM_MCS_EASY / gameMode))
+						
+						//Determine existing onscreen miniCube count
+						int onscreenMCCount = 0;
+						set<pair<int, int>>::iterator mcs;
+						for(mcs = world->getMiniCubes().begin(); 
+							mcs != world->getMiniCubes().end(); mcs++) {
+							if(mcs->second < COLS && mcs->second >= 0 &&
+							   mcs->first < world->getBottomRow() && mcs->first >= 0) 
+									onscreenMCCount++;
+						}
+						if(onscreenMCCount < (NUM_MCS_EASY / gameMode) / 2)
 							world->initMiniCubes(1);
-
-						if(scrollCountCols == COLS) scrollCountCols = 0;
-						else scrollCountCols++;
-						if(scrollCountRows == LINES) scrollCountRows = 0;
-						else scrollCountRows++;
+						
+						//Used to determine if scroll direction changes 
+						//(Space only), for loading offscreen Obstacles
+						if(scrollLock) lastScrollDir = lockedScrollDir;
+						else if(typeid(*world) == typeid(Space))
+							lastScrollDir = cube->getCubeDirection();
+						else lastScrollDir = right;
 					}
 
 					if(omp_get_wtime() - lastMoveTime > moveRate) {
@@ -593,7 +708,8 @@ int Game::playGame(char host[], char port[]) {
 				clear();  // curses clear-screen call
 				refresh();
 
-				//Set LINES and COLS to minimum values
+				//Set LINES and COLS to minimum values (save original values)
+				int original_LINES = LINES, original_COLS = COLS;
 				LINES = MIN_WIN_HEIGHT;
 				COLS = MIN_WIN_WIDTH;
 
@@ -696,6 +812,9 @@ int Game::playGame(char host[], char port[]) {
 				//For Time Display
 				int seconds, minutes, hours;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
+				
+				//For death message display
+				int collisionType = 0;
 
 				if(DEBUG) {
 					move(11,5); printw("Starting Game Loop..."); refresh();
@@ -841,6 +960,23 @@ int Game::playGame(char host[], char port[]) {
 							{
 								//set deathFlag
 								deathFlag = true;
+								
+								//receive Obstacle collision type
+								memset(gameData, '\0', sizeof gameData);
+								receiveMessage_C(socketFD, gameData);
+								if(DEBUG) {
+									move(z++, 8); printw("RECEIVED (ob collision type): %s\n", gameData); refresh();
+								}
+								
+								collisionType = atoi(gameData);
+								
+								//send confirmation
+								memset(sendConfirm, '\0', sizeof sendConfirm);
+								sprintf(sendConfirm, "%d", 1);
+								sendMessage_C(socketFD, sendConfirm);
+								if(DEBUG) {
+									//move(z++, 8); printw("SEND CONFIRM (ob collision type): %s\n", gameData); refresh();
+								}
 							}
 						}
 						//Else:
@@ -1110,6 +1246,14 @@ int Game::playGame(char host[], char port[]) {
 								cube->transitionWorld(world);
 								transitionAnimationInsideThread("GRAPHICS/Land.txt", 115,
 									16, WHITE_WHITE, 15, GREEN_WHITE, &userInput);
+							}
+							
+							else if(int_2 == 3)
+							{
+								world = new Space(isTwoPlayer);
+								cube->transitionWorld(world);
+								transitionAnimationInsideThread("GRAPHICS/Space.txt", 121,
+									16, BLACK_BLACK, 1, WHITE_BLACK, &userInput);
 							}
 							
 							//print waiting screen, in case waiting on other player's confirmation
@@ -1432,7 +1576,7 @@ int Game::playGame(char host[], char port[]) {
 						if(!deathFlag) cube->printShot();
 						cube->drawCube();
 						if(deathFlag) {
-							cube->drawCubeDeath(&userInput);
+							cube->drawCubeDeath(&userInput, collisionType);
 							deathFlag = false;
 						}
 
@@ -1482,7 +1626,7 @@ int Game::playGame(char host[], char port[]) {
 
 						string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
 
-						//Time display
+						//Set time ostringstream
 						timeDisplay.clear();
 						if(hours < 10)
 							timeDisplay << "Time: " << "0" << hours << ":";
@@ -1497,20 +1641,53 @@ int Game::playGame(char host[], char port[]) {
 						else
 							timeDisplay << seconds;
 
-						//Life count display
+						//Setup life count ostringstream 
 						livesDisplay.clear();
 						livesDisplay << "Lives: " << cube->getCubeLives() << "   ";
+						/* if(gameMode == EASY) livesDisplay << "Lives: " << 5;
+						else if(gameMode == NORMAL) livesDisplay << "Lives: " << 4;
+						else if(gameMode == HARD) livesDisplay << "Lives: " << 3; */
 
-						//Score display
+						//Setup score ostreamstring
 						scoreDisplay.clear();
 						scoreDisplay << "Score: " << cube->getCubeScore();
+						
+						/**** RECEIVE SCROLL LOCK  ****/
+						//RECEIVE int_1 into seconds
+						memset(gameData, '\0', sizeof gameData);
+						receiveMessage_C(socketFD, gameData);
+
+						memset(sendConfirm, '\0', sizeof sendConfirm);
+						sprintf(sendConfirm, "%d", 1);
+						sendMessage_C(socketFD, sendConfirm);
+
+						scrollLock = atoi(gameData);
+						// (Optional ?) SEND: confirmation
+						/**** END SCROLL LOCK****/
+						
+						//If space world, prepare scroll lock indicator
+						string scrollLockIndicator;
+						if(typeid(*world) == typeid(Space)) {
+							if(scrollLock)
+								scrollLockIndicator = "Scroll Direction Locked. Press 'u' to Unlock.";
+							else
+								scrollLockIndicator = "Scroll Direction Unlocked. Press 'l' to Lock.";
+						}
+						else
+							scrollLockIndicator = "";
+						
+						//Render scroll lock indicator
+						attron(COLOR_PAIR(YELLOW_BLACK));
+						mvhline(LINES - 1, 0, ' ', COLS);
+						mvaddstr(LINES - 1, 10, scrollLockIndicator.c_str());
+						
+						//Render game stats display
 						output = string(timeDisplay.str().c_str())  + "   " +
 								 string(scoreDisplay.str().c_str()) + "   " +
 								 string(livesDisplay.str().c_str());
 						attron(COLOR_PAIR(YELLOW_BLACK));
-						mvhline(LINES - 1, 0, ' ', COLS);
+						mvhline(LINES - 1, 10 + scrollLockIndicator.length(), ' ', COLS);
 						mvaddstr(LINES - 1, COLS - output.length() - 10, output.c_str());
-
 						refresh();
 
 						/**** RECEIVE GAME STATS RENDER CONFIRM REQUEST ****/
@@ -1527,10 +1704,13 @@ int Game::playGame(char host[], char port[]) {
 						usleep(1000);
 
 				}
+				//Reset screen size constants
+				LINES = original_LINES;
+				COLS = original_COLS;
 			}
 		}
 	}
-
+		
 	return cube->getCubeScore();
 }
 

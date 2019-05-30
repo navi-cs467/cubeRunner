@@ -52,7 +52,7 @@ class World {
 						   Direction offScreenDirection = none);
 		virtual void renderWorld(Cube *cube) = 0;
 		//virtual void scroll_(bool newObs) = 0;
-		virtual void scroll_(Cube *cube) = 0;
+		virtual void scroll_(Cube *cube, Direction lockedDirection = right) = 0;
 		virtual void loadOSObs(Direction dir) = 0;	//Load offscreen Obstacles (for scrolling)
 		virtual void loadOSMCs(Direction dir) = 0;	//Load offscreen miniCubes (for scrolling)
 		int getBottomRow() const {return bottomRow;}

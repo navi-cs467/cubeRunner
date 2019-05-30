@@ -32,7 +32,6 @@ class Asteroid : public Obstacle {
 		static int getColor() {return color;}
 		static vector<vector<wstring>> initializeVectorGraphics();
 		virtual vector<vector<wstring>> getGraphicLines() override;
-		virtual void move(World *world) override;
 		virtual ~Asteroid() {}
 		
 };

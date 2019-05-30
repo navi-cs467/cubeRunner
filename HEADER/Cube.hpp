@@ -53,6 +53,7 @@ class Cube{
 		pair<int, int> shotCoords;
 		int shotColor;
 		Direction shotDir;
+		Obstacle *lastObCollided;
 
     public:
 		//Cube(void);
@@ -77,13 +78,13 @@ class Cube{
 		World* getCubeCurrWorld(void){return currWorld;}
 		void setCubeCurrWorld(World *newWorld){currWorld = newWorld;}  //Set Cube's World
 		void drawCube(void); 										   //Draw token on console - ncurses
-		void drawCubeDeath(int *userInput); 									//Explosion Animation
+		void drawCubeDeath(int *userInput, int obCollisionType = 0); 									//Explosion Animation
 		void drawCubeDeath(void);
 		bool getCubeIsDead(void){return isDead;} 					//Return Token's isDead Status
 		int getCubeScore(void){return score;} 						//Return Token's current score
 		int getCubeTransitionScore(void){return transitionScore;}	//Return Cube's transitionScore
 		void resetCubeTransitionScore(void){transitionScore = 0;}	//Reset Cube's transitionScore
-		void checkCubeCollision(World *world); 						//Check for collision with minicubes and obstacles (updates score and isDead status)
+		int checkCubeCollision(World *world); 						//Check for collision with minicubes and obstacles (updates score and isDead status)
 		void checkCubeCollision(set<pair<int,int> >, set<pair<int,int> >);
 		int getCubeLives(void){return lives;}
 		void setCubeLives(int lives){this->lives = lives;}		//(multiplayer only)
@@ -91,6 +92,8 @@ class Cube{
 		void setCubeScore(int score){this->score = score;}
 		Direction getCubeDirection(void){return curDir;}
 		void setCubeDirection(Direction newDir) {curDir = newDir;}
+		void setTransitionScore(int transitionScore) 
+			{this->transitionScore = transitionScore;}
 		bool getUseLeftCube() {return useLeftCube;}
 		void setUseLeftCube(bool useLeftCube) {this->useLeftCube = useLeftCube;}
 		void fireShot();

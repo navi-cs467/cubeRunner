@@ -43,7 +43,7 @@
 #define NUM_DIRECTIONS 8
 #define MAX_MOVE_COUNTER 25
 #define MIN_MOVE_COUNTER 5
-#define TRANSITION_SCORE_INTERVAL 50
+#define TRANSITION_SCORE_INTERVAL 500
 
 //"Rates" are scan intervals,
 //so as the following three constants decrease,
@@ -58,6 +58,13 @@
 //interval between calls to move()) increases.
 #define MOVE_RATE_DIVISOR 6.
 
+//Number of moves since last hit 
+//before Obstacle's hit count is incremented
+//(up to max hits(
+#define OBS_REGEN_RATE_EASY 60
+#define OBS_REGEN_RATE_NORMAL 40
+#define OBS_REGEN_RATE_HARD 20
+
 //"Rate" at which the rate intervals described
 //above decrease as the game progresses.
 //As this value decreases, the rate at which
@@ -69,6 +76,7 @@
 
 //Number of randomly generated Asteroid graphic types
 #define NUM_ASTEROID_TYPES 100
+#define NUM_ROCK_TYPES 100
 
 /*** End Game-Related ***/
 
