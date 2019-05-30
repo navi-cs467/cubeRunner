@@ -75,7 +75,7 @@
 //message buffer size for all messages sent and received between client and server
 #define MSG_SIZE 20
 
-//Number of randomly generated Asteroid graphic types
+//Number of randomly generated Asteroid and Rock graphic types
 #define NUM_ASTEROID_TYPES 100
 #define NUM_ROCK_TYPES 100
 
