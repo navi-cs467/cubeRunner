@@ -46,7 +46,8 @@ void loadGraphicInstructions(void){
 		f.close();  //Close file
 	}
 	else{
-		printw("INSTRUCTIONS GRAPHIC FILE DID NOT OPEN\n");
+		printw("INSTRUCTIONS GRAPHIC FILE DID NOT OPEN\n\n\n");
+		printw("Press any key to continue...\n\n\n");
    	}
    
 
