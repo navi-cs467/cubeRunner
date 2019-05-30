@@ -19,6 +19,7 @@
 #include "../HEADER/initColors.hpp"
 #include "../HEADER/transitionAnimation.hpp"
 #include "../HEADER/loadGraphic.hpp"
+#include "../HEADER/loadInstructions.hpp"
 #include "../HEADER/paintCubeGraphic.hpp"
 #include "../HEADER/paintGraphic.hpp"
 #include "../HEADER/printMenu.hpp"
@@ -219,6 +220,39 @@ int main(void)
 					if(prevCurPos != cursorPos) {
 						toggled = true;
 						prevCurPos = cursorPos;
+						//Clear and reprint (to address menu "garble" issue, but causes
+						//screen "flicker")
+						/* clear();
+						if(currMenu == 1) {
+							//Outer Border
+							delwin(subscrnMenuBorder);
+							subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);
+							wattron(subscrnMenuBorder, COLOR_PAIR(WHITE_BLACK));
+							box(subscrnMenuBorder, '|', '_');
+							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+							wrefresh(subscrnMenuBorder);
+							//Menu
+							delwin(subscrnMenu1);
+							subscrnMenu1 = printMenu(menu1Items, startingLineColor, lineColors,
+												MENU1_LENGTH, MM_WIDTH);
+							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
+								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
+						}
+						else {
+							//Outer Border
+							delwin(subscrnMenuBorder);
+							subscrnMenuBorder = newwin(MENU2_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol); 
+							wattron(subscrnMenuBorder, COLOR_PAIR(WHITE_BLACK));
+							box(subscrnMenuBorder, '|', '_');
+							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+							wrefresh(subscrnMenuBorder);
+							//Menu
+							delwin(subscrnMenu2);
+							subscrnMenu2 = printMenu(menu2Items, startingLineColor, lineColors,
+												MENU2_LENGTH, MM_WIDTH);
+							highlight(subscrnMenu2, cursorPos, lineColors[cursorPos-1],
+								startingLineColor, menu2Items, MENU2_LENGTH, MM_WIDTH);
+						} */
 					}
 					else toggled = false;
 					if(currMenu == 1 && cursorPos == 1) {
@@ -374,7 +408,7 @@ int main(void)
 
 							//Update Outer Border
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
-							subscrnMenuBorder = newwin(MENU2_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
+							subscrnMenuBorder = newwin(MENU2_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol); 
 							box(subscrnMenuBorder, '|', '_');
 							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 							wrefresh(subscrnMenuBorder);
@@ -413,8 +447,8 @@ int main(void)
 								printw("FILE NOT OPEN");
 							}*/
 							clear();
-							loadGraphicInstructions();
-							getch();
+							loadInstructions();
+							//getch();
 
 							/////////////////REDRAW THE MENU/////////////////////
 							clear();

@@ -24,7 +24,7 @@ PROGRAM_NAME_SERVER = cubeRunnerServer
 
 #Objects (Client/Single-Player)
 _OBJ = cubeRunner.o highlight.o hostPrompt.o transitionAnimation.o \
-	   transitionAnimationInsideThread.o loadGraphic.o \
+	   transitionAnimationInsideThread.o loadGraphic.o loadInstructions.o\
 	   paintCubeGraphic.o paintGraphic.o printMenu.o validateWinSize.o \
 	   initColors.o Game.o World.o Water.o Land.o Space.o Obstacle.o Seaweed.o \
 	   Coral.o Shark.o Octopus.o Tree.o Rock.o Bird.o Bat.o \
@@ -42,8 +42,8 @@ OBJ_SERVER = $(patsubst %,$(ODIR_SERVER)/%,$(_OBJ_SERVER))
 
 #Headers (Client/Single-Player)
 _HDR = constants.hpp highlight.hpp hostPrompt.hpp include.hpp \
-	   colorDefs.hpp transitionAnimation.hpp loadGraphic.hpp paintCubeGraphic.hpp \
-	   paintGraphic.hpp printMenu.hpp using.hpp validateWinSize.hpp \
+	   colorDefs.hpp transitionAnimation.hpp loadGraphic.hpp loadInstructions.hpp\
+	   paintCubeGraphic.hpp paintGraphic.hpp printMenu.hpp using.hpp validateWinSize.hpp \
 	   initColors.hpp Game.hpp World.hpp Water.hpp Land.hpp Space.hpp Obstacle.hpp \
 	   Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp Tree.hpp Rock.hpp \
 	   Bird.hpp Bat.hpp Asteroid.hpp Planet.hpp Comet.hpp Spaceship.hpp \
@@ -62,7 +62,7 @@ HDR_SERVER = $(patsubst %,$(IDIR)/%,$(_HDR_SERVER))
 #Sources
 _SRC = cubeRunner.cpp cubeRunnerServer.cpp highlight.cpp hostPrompt.cpp \
 	   transitionAnimation.cpp transitionAnimationInsideThread.cpp \
-	   loadGraphic.cpp paintCubeGraphic.cpp \
+	   loadGraphic.cpp loadInstructions.cpp paintCubeGraphic.cpp \
 	   paintGraphic.cpp printMenu.cpp validateWinSize.cpp initColors.cpp \
 	   server.cpp client.cpp Game.cpp World.cpp Water.cpp Land.cpp Space.cpp \
 	   Obstacle.cpp Seaweed.cpp Coral.cpp Shark.cpp Octopus.cpp Tree.cpp \

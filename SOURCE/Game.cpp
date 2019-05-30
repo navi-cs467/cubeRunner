@@ -137,7 +137,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					else if(userInput == 'u') {
 						scrollLock = false;
 					}
-					else if(userInput == 't') {
+					else if(TRANSITION_WITH_INPUT && userInput == 't') {
 						cube->setTransitionScore(TRANSITION_SCORE_INTERVAL);
 					}
 					//Unlock the lock after movement update
@@ -155,168 +155,92 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					memset(messageToSend, '\0', sizeof(messageToSend));
 					char confirm[MSG_SIZE];
 					memset(confirm, '\0', sizeof(confirm));
-
-					if(playerNum == 1) {
-						if(userInput == KEY_UP) {
-							// SEND: KEY_UP
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == KEY_DOWN) {
-							// SEND: KEY_DOWN
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == KEY_LEFT) {
-							// SEND: KEY_LEFT
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == KEY_RIGHT) {
-							// SEND: KEY_RIGHT
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == 32) {
-							// SEND: 32 (SPACE_BAR - For cube->fireShot())
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == 'l') {
-							// SEND: 'l'
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == 'u') {
-							// SEND: 'u'
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == 't') {
-							// SEND: 't'
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == 27 ||
-								userInput == KEY_END ||
-								userInput == 'q' ||
-								userInput == 'Q') {
-							// SEND: q
-							userInput = 'q';
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-
-							// RECEIVE score into score (as in, into this->score)
-							memset(confirm, '\0', sizeof(confirm));
-							receiveMessage_C(inputSocket, confirm);
-							cube->setCubeScore(atoi(confirm));
-
-							// CLOSE CONNECTION
-							close(socketFD);
-							close(inputSocket);
-
-							hasTerminated = true;
-							break;
-						}
+					
+					//When the constant MULTIPLAYER_DUAL_AXIS_CONTROL is set
+					//to 0, only playerNum 1 can move up and down, and 
+					//only playerNum 2 can move left and right. This is 
+					//managed server-side. (See constants.hpp to set
+					//MULTIPLAYER_DUAL_AXIS_CONTROL.)
+					if(userInput == KEY_UP) {
+						// SEND: KEY_UP
+						sprintf(messageToSend, "%d", userInput);
+						sendMessage_C(inputSocket, messageToSend);
+						// RECEIEVE confirmation
+						receiveMessage_C(inputSocket, confirm);
 					}
-					else if(playerNum == 2){
-						if(userInput == KEY_LEFT) {
-							// SEND: KEY_LEFT
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-						}
-						else if(userInput == KEY_RIGHT) {
-							// SEND: KEY_RIGHT
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-						}
-						else if(userInput == KEY_UP) {
-							// SEND: KEY_UP
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == KEY_DOWN) {
-							// SEND: KEY_DOWN
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == 32) {
-							// SEND: 32 (SPACE_BAR - For cube->fireShot())
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-						}
-						else if(userInput == 'l') {
-							// SEND: 'l'
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == 'u') {
-							// SEND: 'u'
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == 't') {
-							// SEND: 't'
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-						}
-						else if(userInput == 27 ||
-								userInput == KEY_END ||
-								userInput == 'q' ||
-								userInput == 'Q') {
-							// SEND: q
-							userInput = 'q';
-							sprintf(messageToSend, "%d", userInput);
-							sendMessage_C(inputSocket, messageToSend);
-							// RECEIEVE confirmation
-							receiveMessage_C(inputSocket, confirm);
-							// RECEIVE score into score (as in, into this->score)
-							memset(confirm, '\0', sizeof(confirm));
-
-							receiveMessage_C(inputSocket, confirm);
-							cube->setCubeScore(atoi(confirm));
-
-							// CLOSE CONNECTION
-							close(socketFD);
-							close(inputSocket);
-
-							//set the FLAG
-							hasTerminated = true;
-							break;
-						}
+					else if(userInput == KEY_DOWN) {
+						// SEND: KEY_DOWN
+						sprintf(messageToSend, "%d", userInput);
+						sendMessage_C(inputSocket, messageToSend);
+						// RECEIEVE confirmation
+						receiveMessage_C(inputSocket, confirm);
 					}
-					fflush(stdin);		//This may not be portable and/or not work as intended, but let's hope that's not the case
+					else if(userInput == KEY_LEFT) {
+						// SEND: KEY_LEFT
+						sprintf(messageToSend, "%d", userInput);
+						sendMessage_C(inputSocket, messageToSend);
+						// RECEIEVE confirmation
+						receiveMessage_C(inputSocket, confirm);
+					}
+					else if(userInput == KEY_RIGHT) {
+						// SEND: KEY_RIGHT
+						sprintf(messageToSend, "%d", userInput);
+						sendMessage_C(inputSocket, messageToSend);
+						// RECEIEVE confirmation
+						receiveMessage_C(inputSocket, confirm);
+					}
+					else if(userInput == 32) {
+						// SEND: 32 (SPACE_BAR - For cube->fireShot())
+						sprintf(messageToSend, "%d", userInput);
+						sendMessage_C(inputSocket, messageToSend);
+						// RECEIEVE confirmation
+						receiveMessage_C(inputSocket, confirm);
+					}
+					else if(userInput == 'l') {
+						// SEND: 'l'
+						sprintf(messageToSend, "%d", userInput);
+						sendMessage_C(inputSocket, messageToSend);
+						// RECEIEVE confirmation
+						receiveMessage_C(inputSocket, confirm);
+					}
+					else if(userInput == 'u') {
+						// SEND: 'u'
+						sprintf(messageToSend, "%d", userInput);
+						sendMessage_C(inputSocket, messageToSend);
+						// RECEIEVE confirmation
+						receiveMessage_C(inputSocket, confirm);
+					}
+					else if(TRANSITION_WITH_INPUT && userInput == 't') {
+						// SEND: 't'
+						sprintf(messageToSend, "%d", userInput);
+						sendMessage_C(inputSocket, messageToSend);
+						// RECEIEVE confirmation
+						receiveMessage_C(inputSocket, confirm);
+					}
+					else if(userInput == 27 ||
+							userInput == KEY_END ||
+							userInput == 'q' ||
+							userInput == 'Q') {
+						// SEND: q
+						userInput = 'q';
+						sprintf(messageToSend, "%d", userInput);
+						sendMessage_C(inputSocket, messageToSend);
+						// RECEIEVE confirmation
+						receiveMessage_C(inputSocket, confirm);
+
+						// RECEIVE score into score (as in, into this->score)
+						memset(confirm, '\0', sizeof(confirm));
+						receiveMessage_C(inputSocket, confirm);
+						cube->setCubeScore(atoi(confirm));
+
+						// CLOSE CONNECTION
+						close(socketFD);
+						close(inputSocket);
+
+						hasTerminated = true;
+						break;
+					}
+					fflush(stdin);		//This may not be portable 
 				}
 				/***** END Client for multiplayer (SEND) *****/
 			}

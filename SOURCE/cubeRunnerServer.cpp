@@ -319,12 +319,14 @@ int main(int argc, char* argv[]) {
 							cube->updateCubePosition(0, 0, 1, 0);
 							cube->setCubeDirection(down);
 						}
-						else if((userInput1 == KEY_RIGHT || userInput1 == '6' || userInput1 == 'd') &&
+						else if(MULTIPLAYER_DUAL_AXIS_CONTROL &&
+							   (userInput1 == KEY_RIGHT || userInput1 == '6' || userInput1 == 'd') &&
 									cube->getCubePositionCol() + CUBE_CHARS_WIDTH - 1 < COLS) {
 							cube->updateCubePosition(1, 0, 0, 0);
 							cube->setCubeDirection(right);
 						}
-						else if((userInput1 == KEY_LEFT || userInput1 == '4' || userInput1 == 'a') &&
+						else if(MULTIPLAYER_DUAL_AXIS_CONTROL &&
+							   (userInput1 == KEY_LEFT || userInput1 == '4' || userInput1 == 'a') &&
 								cube->getCubePositionCol() > 0) {
 							cube->updateCubePosition(0, 1, 0, 0);
 							cube->setCubeDirection(left);
@@ -403,12 +405,14 @@ int main(int argc, char* argv[]) {
 							cube->updateCubePosition(0, 1, 0, 0);
 							cube->setCubeDirection(left);
 						}
-						else if((userInput2 == KEY_UP || userInput2 == '8' || userInput2 == 'w')
+						else if(MULTIPLAYER_DUAL_AXIS_CONTROL &&
+							   (userInput2 == KEY_UP || userInput2 == '8' || userInput2 == 'w')
 								&& cube->getCubePositionRow() > 0){
 							cube->updateCubePosition(0, 0, 0, 1);
 							cube->setCubeDirection(up);
 						}
-						else if((userInput2 == KEY_DOWN || userInput2 == '2' || userInput2 == 's') &&
+						else if(MULTIPLAYER_DUAL_AXIS_CONTROL &&
+							   (userInput2 == KEY_DOWN || userInput2 == '2' || userInput2 == 's') &&
 									cube->getCubePositionRow() + CUBE_CHARS_HEIGHT - 1
 										< world->getBottomRow()) {
 							cube->updateCubePosition(0, 0, 1, 0);
