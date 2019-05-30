@@ -769,7 +769,7 @@ int main(void)
 			//only save high scores from first player to prevent duplicates
 			if (gameinfo.playerNum == 1)
 			{
-				printf("%s\n", gameinfo.secondName);
+				printw("%s\n", gameinfo.secondName);
 				refresh();
 				endwin();
 				exit(0);
