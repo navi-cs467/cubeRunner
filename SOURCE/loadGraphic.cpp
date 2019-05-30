@@ -57,10 +57,10 @@ void loadGraphicInstructions(void){
 	printw("      sharks, octopuses, coral, and seaweed.\n");
 	printw("      Land -  With no user input or only horizontal input, the token will \"fall\" to the bottom of the console. Obstacles include\n");
 	printw("      birds, bats, rocks, and trees.\n");
-	printw("      Space - With no user input, the token will continue to move in the last commanded direction. Obstacles include comets,\n");
-	printw("      asteroids, etc.\n\n");
+	printw("      Space - The background will scroll in the direction of the last user commanded direction. Obstacles include comets,\n");
+	printw("      asteroids, planets, and rocketships.\n\n");
 	printw("   Colliding with obstacles results in token death and colliding with mini-cubes results in points added to the total score. Try to\n");
-	printw("   collect as many mini-cubes as you can to achieve the highest score. Shots can be fired to destroy obstacles.\n\n");
+	printw("   collect as many mini-cubes as you can to achieve the highest score. Shots can be fired to destroy obstacles and earn points.\n\n");
 	printw("   GAME CONTROLS:\n");
 	printw("   Command the token to move in various directions using the following keys:\n\n");
 	printw("      w or up arrow - up\n");
@@ -69,6 +69,7 @@ void loadGraphicInstructions(void){
 	printw("      d or right arrow - right\n");
 	printw("      spacebar - fire shot (shot is released in the last commanded token direction)\n");
 	printw("      t - transition to next world (intended for testing purposes only)\n\n");
+	printw("      l/u - lock/unlock scroll direction changes in the space world (intended for testing purposes only)\n\n");
 	printw("   In a single player game mode, the player will have access to all game controls. In a two player game mode, player 1 has up, down,\n");
 	printw("   and fire shots control and player 2 has left, right, and fire shots control.\n\n");
 	printw("   SCORE: \n");
