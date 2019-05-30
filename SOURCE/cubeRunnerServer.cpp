@@ -687,7 +687,7 @@ int main(int argc, char* argv[]) {
 
 						}
 
-						// SEND Connection2: deathFlag
+						// SEND Connection1: Game Over Indicator
 						if(deathFlag) {
 						//if(0) {
 							if(cube->getCubeLives() == 0) {
@@ -2152,6 +2152,7 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
+		gameOver = false;
 	}
 
 	//close server sockets

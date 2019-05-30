@@ -416,8 +416,6 @@ int main(void)
 							//Something strange causing bottom line to go uncleared on some occasions...
 							mvhline(startingRow + 8, 0, ' ', COLS); refresh();
 							
-							
-
 							subscrnMenu2 = printMenu(menu2Items,
 								startingLineColor, NULL, MENU2_LENGTH, MM_WIDTH);
 							cursorPos = NORMAL;
@@ -922,7 +920,9 @@ int main(void)
 					gameinfo.seconds, gameMode);
 			}
 		}
-		gameOn = false;
+		//Reinitialize Variables for Next Game Loop
+		cursorPos = 1; currMenu = 1; gameMode = -1;
+		gameOn = false; escaped = false; isTwoPlayer = false;
 	}
 	return 0;
 	endwin();

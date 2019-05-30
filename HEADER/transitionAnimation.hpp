@@ -27,6 +27,7 @@ void transitionAnimationInsideThread(const char* fileName,
 									 int backgroundColor,
 									 int startingSeedColor,
 									 int promptColor,
-									 int *userInput);
+									 int *userInput,
+									 int *confirmedGameOver = NULL);
 
 #endif /* transitionAnimation_hpp */

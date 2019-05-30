@@ -41,7 +41,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 	//Initialize lock
 	omp_init_lock(&userInputLock);
 
-	bool deathFlag = false;
+	bool deathFlag = false, gameOver = false; int confirmedGameOver = 0;
 	bool isConnected = false;
 	bool scrollLock = false, scrollDirChanged = false;
 	Direction lockedScrollDir = right, lastScrollDir = right;
@@ -60,20 +60,21 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 	bool hasTerminated = false;
 
 	#pragma omp parallel sections shared(userInput, deathFlag, isConnected, \
-	playerNum, socketFD, hasTerminated, inputPort, scrollLock, lockedScrollDir, secondName)
+	playerNum, socketFD, hasTerminated, inputPort, scrollLock, lockedScrollDir, \
+	secondName)
 	{
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
 		{
 
-			while ( cube->getCubeLives() > 0 &&
+			while ( !confirmedGameOver &&
 					userInput != 27 &&
 				    userInput != KEY_END &&
 				    userInput != 'q' &&
-				    userInput != 'Q' && !hasTerminated) {
+				    userInput != 'Q') {
 
 				userInput = getch();
-
+				
 				//Single Player
 				if(!isTwoPlayer && !deathFlag) {
 
@@ -413,8 +414,11 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 						//Game Over animation and break if game over occurred
 						if(cube->getCubeLives() == 0) {
-							transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 109,
-									16, RED_RED, 36, BLACK_RED, &userInput);
+							
+							gameOver = true;
+							
+							transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 97,
+									28, BLACK_BLACK, 1, RED_BLACK, &userInput, &confirmedGameOver);
 
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -425,8 +429,6 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							delete cube;
 							//Delete world
 							delete world;
-
-							hasTerminated = true;
 
 							break;
 						}
@@ -779,9 +781,6 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				cube->initializeCubeCoords();
 				
 				while (!hasTerminated) {
-					
-						//Block movement updates while render completes
-						omp_set_lock(&userInputLock);
 
 						//Pseudocode variables... change as desired
 						int int_1, int_2, int_3, int_4, int_5, int_6, int_7, int_8;
@@ -890,10 +889,13 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							  //CLOSE connections
 								close(socketFD);
 								close(inputSocket);
-								
+						
+							 //Set gameOver and hasTerminated flags
+							 hasTerminated = gameOver = true;
+							 
 							 //Game Over animation
-							 transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 109,
-								16, RED_RED, 36, BLACK_RED, &userInput);
+							 transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 97,
+							 		28, BLACK_BLACK, 1, RED_BLACK, &userInput, &confirmedGameOver);
 							  
 							  //Delete all Obstacles
 									for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -904,8 +906,6 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 									delete world;
 									//Delete cube
 									delete cube;
-
-									hasTerminated = true;
 
 									break;
 							}
@@ -1661,8 +1661,6 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						//sendMessage_C(socketFD, sendConfirm);
 						/**** END RECEIVE WORLD RENDER CONFIRM REQUEST ****/
 						
-						//Allow user input processing before next render
-						omp_unset_lock(&userInputLock);
 						usleep(1000);
 
 				}
@@ -1672,6 +1670,10 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 			}
 		}
 	}
+	
+	//Run Game Over animation
+    //if(gameOver) 
+	//	transitionAnimation("GRAPHICS/GameOver.txt", 97, 28, BLACK_BLACK, 1, RED_BLACK);
 
 	scoreInfo.secondName = secondName;
 	scoreInfo.playerNum = playerNum;
