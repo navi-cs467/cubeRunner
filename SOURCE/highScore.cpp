@@ -302,7 +302,7 @@ void displayScores(WINDOW **subscrnGraphic)
   vector<string> fileText;
 
   //display header
-  // *subscrnGraphic = paintCubeGraphic(*subscrnGraphic, "GRAPHICS/highScore.txt");
+  *subscrnGraphic = paintCubeGraphic(*subscrnGraphic, "GRAPHICS/highScore.txt");
 
   //open highScoresfile
   //open file for reading
@@ -325,11 +325,25 @@ void displayScores(WINDOW **subscrnGraphic)
 
   int row = LINES / 2; int col = (COLS / 2) - 6;
 
+  attron(MAGENTA_BLACK);
   move(row, col-21); printw("RANK");
+  attroff(MAGENTA_BLACK);
+
+  attron(RED_BLACK);
   move(row, col-11); printw("SCORE");
+  attroff(RED_BLACK);
+
+  attron(YELLOW_BLACK);
   move(row, col); printw("DIFFICULTY");
+  attroff(YELLOW_BLACK);
+
+  attron(GREEN_BLACK);
   move(row, col+16); printw("TIME");
+  attroff(GREEN_BLACK);
+
+  attron(CYAN_BLACK);
   move(row, col+26); printw("NAME");
+  attroff(CYAN_BLACK);
 
   //display top 10 scores
 
