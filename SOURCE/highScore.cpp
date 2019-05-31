@@ -373,12 +373,12 @@ void displayScores(WINDOW **subscrnGraphic)
       //otherwise, treat as single player entry
       else
       {
-        move(row, col-11); printw(players.c_str());
+        move(row, col+26); printw(players.c_str());
       }
 
   }
 
-  move(row+5, col); printw("** PRESS ANY KEY TO RETURN... **");
+  move(row+5, col-11); printw("** PRESS ANY KEY TO RETURN... **");
   getch();
 
   refresh();
