@@ -14,6 +14,8 @@ scores are saved for both multiplayer and single player.
 
 #include "../HEADER/highScore.hpp"
 
+extern WINDOW *scrn;
+
 using std::ifstream;
 using std::ofstream;
 using std::string;
