@@ -332,7 +332,7 @@ void displayScores(WINDOW **subscrnGraphic)
 
   int rank = 1;
 
-  j = 0;
+  int j = 0;
 
   for (int i = 0; i < fileText.size(); i++)
   {
