@@ -241,7 +241,7 @@ int main(void)
 						else {
 							//Outer Border
 							delwin(subscrnMenuBorder);
-							subscrnMenuBorder = newwin(MENU2_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol); 
+							subscrnMenuBorder = newwin(MENU2_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);
 							wattron(subscrnMenuBorder, COLOR_PAIR(WHITE_BLACK));
 							box(subscrnMenuBorder, '|', '_');
 							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
@@ -408,14 +408,14 @@ int main(void)
 
 							//Update Outer Border
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
-							subscrnMenuBorder = newwin(MENU2_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol); 
+							subscrnMenuBorder = newwin(MENU2_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);
 							box(subscrnMenuBorder, '|', '_');
 							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
 							wrefresh(subscrnMenuBorder);
-							
+
 							//Something strange causing bottom line to go uncleared on some occasions...
 							mvhline(startingRow + 8, 0, ' ', COLS); refresh();
-							
+
 							subscrnMenu2 = printMenu(menu2Items,
 								startingLineColor, NULL, MENU2_LENGTH, MM_WIDTH);
 							cursorPos = NORMAL;
@@ -427,7 +427,11 @@ int main(void)
 
 						}
 						else if(currMenu == 1 && cursorPos == HIGH_SCORE) {
-							//delwin(subscrnMenu1);
+							clear();
+
+							displayScores();
+
+							clear();
 							//showHighScores();
 						}
 						else if(currMenu == 1 && cursorPos == INSTRUCTIONS) {
@@ -906,7 +910,7 @@ int main(void)
 		if(isTwoPlayer == false) {
 			gameinfo = game.playGame(NULL, NULL, username);
 
-			addScoreSingle(gameinfo.finalScore, gameinfo.firstName, 
+			addScoreSingle(gameinfo.finalScore, gameinfo.firstName,
 				gameinfo.hours, gameinfo.minutes, gameinfo.seconds, gameMode);
 		}
 		else {
@@ -915,8 +919,8 @@ int main(void)
 			//only save high scores from first player to prevent duplicates
 			if (gameinfo.playerNum == 1)
 			{
-				addScoreMulti(gameinfo.finalScore, gameinfo.firstName, 
-					gameinfo.secondName, gameinfo.hours, gameinfo.minutes, 
+				addScoreMulti(gameinfo.finalScore, gameinfo.firstName,
+					gameinfo.secondName, gameinfo.hours, gameinfo.minutes,
 					gameinfo.seconds, gameMode);
 			}
 		}
