@@ -81,7 +81,7 @@ void transitionAnimationInsideThread(const char* fileName,
 	mvwhline(subscrn, row, 0, ' ', graphicWidth);	//correctly before threading below
 	mvwhline(subscrn, row + 1, 0, ' ', graphicWidth);	
 		
-	if(!userInput != 10) usleep(200 * 1000);	//Sleep for 200 milliseconds
+	if(*userInput != 10) usleep(200 * 1000);	//Sleep for 200 milliseconds
 	
 	//Print blinking continue prompt (if animation was not skipped)
 	//attron(A_BLINK);	//Doesn't work, (at least for some terminals)
