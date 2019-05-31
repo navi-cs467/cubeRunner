@@ -295,12 +295,21 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
 
 void displayScores(WINDOW **subscrnGraphic)
 {
+
   ifstream ifs;
   string line;
   vector<string> fileText;
 
   //display header
-  *subscrnGraphic = paintCubeGraphic(*subscrnGraphic, "GRAPHICS/highScore.txt");
+  //Clear subscrnGraphic, if not NULL
+  if(subscrnGraphic){
+    werase(subscrnGraphic);
+    wrefresh(subscrnGraphic);
+    delwin(subscrnGraphic);
+  }
+
+  paintGraphic(subscrnGraphic, "GRAPHICS/highScore.txt", rand()%6+1, false);
+  
   //open highScoresfile
   //open file for reading
   ifs.open("gameHighScores.txt");
