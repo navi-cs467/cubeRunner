@@ -309,8 +309,6 @@ void displayScores(WINDOW **subscrnGraphic)
   while(getline(ifs, line))
   {
      fileText.push_back(line);
-     //DEBUG
-     printw("%s\n",line.c_str());
   }
 
   ifs.close();
@@ -344,7 +342,7 @@ void displayScores(WINDOW **subscrnGraphic)
       string token;
 
       int j = 0;
-      
+
       while(getline(ss, token, ','))
       {
         if (j == 0)
