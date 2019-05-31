@@ -83,8 +83,8 @@ void loadInstructions(void){
 		//Provide navigation instructions
 		string navigateInstructions;
 		instructions.size() > LINES - 3 ? 
-		navigateInstructions = "** USE ARROW KEYS UP/DOWN TO SCROLL. PRESS ENTER TO RETURN. **" :
-		navigateInstructions = "** PRESS ENTER TO RETURN. **";
+		navigateInstructions = "** USE ARROW KEYS UP/DOWN TO SCROLL. PRESS ENTER OR END TO RETURN. **" :
+		navigateInstructions = "** PRESS ENTER OR END TO RETURN. **";
 		
 		int curX, curY; getyx(scrn, curX, curY);
 		move(curX + 1, (COLS - navigateInstructions.length()) / 2);
@@ -102,7 +102,8 @@ void loadInstructions(void){
 		else if(input == KEY_UP && scrollPos > 0) {
 			scrollPos--;
 		}
+		clear();
 	}
-	while(input != 10);
+	while(input != 126 && input != 10);
 
 }

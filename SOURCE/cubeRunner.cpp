@@ -128,12 +128,18 @@ int main(void)
 	char username[MSG_SIZE];
 	//WINDOW *subscrnMenuBorder;
 
-
 	while(1) {
 
 
 		//Set number of omp threads for menu
 		omp_set_num_threads(3);
+		
+		//Lock needed so only one thread attempts to modify
+		//subscrnGraphic at a time
+		omp_lock_t subscrnGraphicLock;
+
+		//Initialize lock
+		omp_init_lock(&subscrnGraphicLock);
 
 		clear();  // curses clear-screen call
 
@@ -255,6 +261,7 @@ int main(void)
 						} */
 					}
 					else toggled = false;
+					omp_set_lock(&subscrnGraphicLock);
 					if(currMenu == 1 && cursorPos == 1) {
 						if(graphicIterator == 0) paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft1_1.txt", seedColor, toggled);
@@ -286,6 +293,7 @@ int main(void)
 						if(toggled == true)
 						paintGraphic(subscrnGraphic,
 							"GRAPHICS/menuCubeLeft1_1.txt", seedColor, toggled);
+					omp_unset_lock(&subscrnGraphicLock);
 				}
 			}
 
@@ -303,6 +311,7 @@ int main(void)
 					if(currMenu == 2){
 						if(cursorPos == 1 && time1 + 0.25 < omp_get_wtime()) {
 							time1 = omp_get_wtime();
+							omp_set_lock(&subscrnGraphicLock);
 							if(isTwoPlayer == false)
 								subscrnGraphic =
 									paintCubeGraphic(subscrnGraphic,
@@ -312,10 +321,12 @@ int main(void)
 									paintCubeGraphic(subscrnGraphic,
 										"GRAPHICS/menuCubeRight1_2.txt", colOffset);
 							wrefresh(subscrnGraphic);
+							omp_unset_lock(&subscrnGraphicLock);
 							colOffset++;
 						}
 						else if(cursorPos == 2 && time1 + 0.1 < omp_get_wtime()) {
 							time1 = omp_get_wtime();
+							omp_set_lock(&subscrnGraphicLock);
 							if(isTwoPlayer == false)
 								subscrnGraphic =
 									paintCubeGraphic(subscrnGraphic,
@@ -325,10 +336,12 @@ int main(void)
 									paintCubeGraphic(subscrnGraphic,
 										"GRAPHICS/menuCubeRight1_2.txt", colOffset);
 							wrefresh(subscrnGraphic);
+							omp_unset_lock(&subscrnGraphicLock);
 							colOffset++;
 						}
 						else if(cursorPos == 3 && time1 + 0.05 < omp_get_wtime()) {
 							time1 = omp_get_wtime();
+							omp_set_lock(&subscrnGraphicLock);
 							if(isTwoPlayer == false)
 								subscrnGraphic =
 									paintCubeGraphic(subscrnGraphic,
@@ -338,6 +351,7 @@ int main(void)
 									paintCubeGraphic(subscrnGraphic,
 										"GRAPHICS/menuCubeRight1_2.txt", colOffset);
 							wrefresh(subscrnGraphic);
+							omp_unset_lock(&subscrnGraphicLock);
 							colOffset++;
 						}
 						if(colOffset == COLS - (COLS - MM_GRAPHIC_WIDTH)/2)
@@ -474,8 +488,9 @@ int main(void)
 								startingLineColor, NULL, MENU1_LENGTH, MM_WIDTH);
 							highlight(subscrnMenu1, INSTRUCTIONS, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
-
+							omp_set_lock(&subscrnGraphicLock);
 							paintGraphic(subscrnGraphic, "GRAPHICS/instructionsPic.txt", 1, true);
+							omp_unset_lock(&subscrnGraphicLock);
 
 						}
 						else if(currMenu == 1 && cursorPos == EXIT) {
@@ -489,10 +504,11 @@ int main(void)
 						else if(currMenu == 2 && cursorPos == EASY && isTwoPlayer == false) {
 							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
-
+							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu4 =
 								userPrompt(startingColMenu4, startingRowMenu4,
 									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
+							omp_unset_lock(&subscrnGraphicLock);
 
 							//return back to menu
 							if(escaped) {
@@ -528,9 +544,12 @@ int main(void)
 						else if(currMenu == 2 && cursorPos == EASY && isTwoPlayer == true) {
 							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							
+							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &escaped, host, port);
+							omp_unset_lock(&subscrnGraphicLock);
 
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
@@ -566,11 +585,13 @@ int main(void)
 									mvhline(y, 0, ' ', COLS);
 								}
 								refresh();
-
+								
+								omp_set_lock(&subscrnGraphicLock);
 								subscrnMenu4 =
 									userPrompt(startingColMenu4, startingRowMenu4,
 										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-
+								omp_unset_lock(&subscrnGraphicLock);
+								
 								if(escaped)
 								{
 									werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
@@ -611,10 +632,12 @@ int main(void)
 							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
 
+							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu4 =
 								userPrompt(startingColMenu4, startingRowMenu4,
 									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-
+							omp_unset_lock(&subscrnGraphicLock);
+							
 							//return back to menu
 							if(escaped) {
 								//Clear and delete username prompt
@@ -649,9 +672,12 @@ int main(void)
 						else if(currMenu == 2 && cursorPos == NORMAL && isTwoPlayer == true) {
 							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							
+							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &escaped, host, port);
+							omp_unset_lock(&subscrnGraphicLock);
 
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
@@ -686,10 +712,12 @@ int main(void)
 									mvhline(y, 0, ' ', COLS);
 								}
 								refresh();
-
+								
+								omp_set_lock(&subscrnGraphicLock);
 								subscrnMenu4 =
 									userPrompt(startingColMenu4, startingRowMenu4,
 										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
+								omp_unset_lock(&subscrnGraphicLock);
 
 								if(escaped)
 								{
@@ -730,9 +758,11 @@ int main(void)
 							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
 
+							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu4 =
 								userPrompt(startingColMenu4, startingRowMenu4,
 									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
+							omp_unset_lock(&subscrnGraphicLock);
 
 							//return back to menu
 							if(escaped) {
@@ -768,10 +798,13 @@ int main(void)
 						else if(currMenu == 2 && cursorPos == HARD && isTwoPlayer == true) {
 							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							
+							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &escaped, host, port);
-
+							omp_unset_lock(&subscrnGraphicLock);
+							
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
 								//Clear and delete host prompt menu
@@ -805,11 +838,13 @@ int main(void)
 									mvhline(y, 0, ' ', COLS);
 								}
 								refresh();
-
+								
+								omp_set_lock(&subscrnGraphicLock);
 								subscrnMenu4 =
 									userPrompt(startingColMenu4, startingRowMenu4,
 										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-
+								omp_unset_lock(&subscrnGraphicLock);
+								
 								if(escaped)
 								{
 									werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
@@ -860,8 +895,10 @@ int main(void)
 
 							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL,
 														MENU1_LENGTH, MM_WIDTH);
+							omp_set_lock(&subscrnGraphicLock);							
 							subscrnGraphic = paintCubeGraphic(subscrnGraphic,
 												"GRAPHICS/menuCubeRight1_1.txt");
+							omp_unset_lock(&subscrnGraphicLock);
 							if(isTwoPlayer == false) cursorPos = ONE_PLAYER;
 							else cursorPos = TWO_PLAYER;
 							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
@@ -886,8 +923,10 @@ int main(void)
 
 							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL,
 														MENU1_LENGTH, MM_WIDTH);
+							omp_set_lock(&subscrnGraphicLock);
 							subscrnGraphic = paintCubeGraphic(subscrnGraphic,
 												"GRAPHICS/menuCubeRight1_1.txt");
+							omp_unset_lock(&subscrnGraphicLock);
 							if(isTwoPlayer == false) cursorPos = ONE_PLAYER;
 							else cursorPos = TWO_PLAYER;
 							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
