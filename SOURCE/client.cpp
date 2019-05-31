@@ -78,7 +78,7 @@ int receiveMessage_C(int socketFD, char* buffer)
 /*
 	Send data to the server, returning the result
 */
-void sendMessage_C(int socketFD, char* buffer)
+int sendMessage_C(int socketFD, char* buffer)
 {
 
 	// Send message to server
