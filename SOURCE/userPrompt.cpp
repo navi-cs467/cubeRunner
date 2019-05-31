@@ -53,7 +53,7 @@ WINDOW *userPrompt(int startingColMenu4, int startingRowMenu4,
 			move(x, y);
 			refresh();
 		}
-		else if(i < 255 &&
+		else if(i < MSG_SIZE &&
 				!(ch == KEY_BACKSPACE || ch == 127 || ch == '\n')) {
 			username[i++] = ch;
 			char tmpStr[2]; tmpStr[0] = ch; tmpStr[1] = '\0';
