@@ -339,7 +339,7 @@ void displayScores(WINDOW **subscrnGraphic)
   for (int i = 0; i < fileText.size(); i++)
   {
       istringstream ss(fileText[i]);
-
+      ss.clear();
       string token;
 
       while(getline(ss, token, ','))
@@ -402,10 +402,6 @@ void displayScores(WINDOW **subscrnGraphic)
       {
         move(row, col+26); printw(players.c_str());
       }
-
-      //reset 
-      ss.str("");
-      ss.clear();
 
   }
 
