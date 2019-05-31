@@ -134,12 +134,13 @@ int main(void)
 		//Set number of omp threads for menu
 		omp_set_num_threads(3);
 
-		//Lock needed so only one thread attempts to modify
-		//subscrnGraphic at a time
-		omp_lock_t subscrnGraphicLock;
+		//Locks needed so only one thread attempts to modify
+		//subscrnGraphic or menu border at a time
+		omp_lock_t subscrnGraphicLock, menuBorder;
 
-		//Initialize lock
+		//Initialize locks
 		omp_init_lock(&subscrnGraphicLock);
+		omp_init_lock(&menuBorder);
 
 		clear();  // curses clear-screen call
 
@@ -421,7 +422,7 @@ int main(void)
 							delwin(subscrnMenu1);
 
 							//Update Outer Border
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenuBorder = newwin(MENU2_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);
 							box(subscrnMenuBorder, '|', '_');
 							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
@@ -455,7 +456,7 @@ int main(void)
 							refresh();
 
 							//Update Outer Border
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
 							box(subscrnMenuBorder, '|', '_');
 							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
@@ -503,7 +504,7 @@ int main(void)
 							refresh();
 
 							//Update Outer Border
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
 							box(subscrnMenuBorder, '|', '_');
 							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
@@ -528,7 +529,7 @@ int main(void)
 						//Easy game...
 						else if(currMenu == 2 && cursorPos == EASY && isTwoPlayer == false) {
 							delwin(subscrnMenu2);
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
 							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu4 =
 								userPrompt(startingColMenu4, startingRowMenu4,
@@ -538,7 +539,7 @@ int main(void)
 							//return back to menu
 							if(escaped) {
 								//Clear and delete username prompt
-								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+								wclear(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
 
 								//Reinstate outer menu border
 								box(subscrnMenuBorder, '|', '_');
@@ -568,7 +569,7 @@ int main(void)
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == EASY && isTwoPlayer == true) {
 							delwin(subscrnMenu2);
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 
 							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
@@ -579,7 +580,7 @@ int main(void)
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
 								//Clear and delete host prompt menu
-								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+								wclear(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
 								//Reinstate outer menu border
 								box(subscrnMenuBorder, '|', '_');
@@ -601,7 +602,7 @@ int main(void)
 
 							else {
 								//Clear and delete host prompt menu
-								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+								wclear(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 								clear();  // curses clear-screen call
 
 								//Paint screen black
@@ -619,7 +620,7 @@ int main(void)
 
 								if(escaped)
 								{
-									werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+									wclear(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
 
 									//Reinstate outer menu border
 									box(subscrnMenuBorder, '|', '_');
@@ -655,7 +656,7 @@ int main(void)
 						//Normal game...
 						else if(currMenu == 2 && cursorPos == NORMAL && isTwoPlayer == false) {
 							delwin(subscrnMenu2);
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
 
 							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu4 =
@@ -666,7 +667,7 @@ int main(void)
 							//return back to menu
 							if(escaped) {
 								//Clear and delete username prompt
-								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+								wclear(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
 
 								//Reinstate outer menu border
 								box(subscrnMenuBorder, '|', '_');
@@ -696,7 +697,7 @@ int main(void)
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == NORMAL && isTwoPlayer == true) {
 							delwin(subscrnMenu2);
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 
 							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
@@ -707,7 +708,7 @@ int main(void)
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
 								//Clear and delete host prompt menu
-								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+								wclear(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
 								//Reinstate outer menu border
 								box(subscrnMenuBorder, '|', '_');
@@ -728,7 +729,7 @@ int main(void)
 							}
 							else {
 								//Clear and delete host prompt menu
-								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+								wclear(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 								clear();  // curses clear-screen call
 
 								//Paint screen black
@@ -746,7 +747,7 @@ int main(void)
 
 								if(escaped)
 								{
-									werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+									wclear(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
 
 									//Reinstate outer menu border
 									box(subscrnMenuBorder, '|', '_');
@@ -781,7 +782,7 @@ int main(void)
 						//Hard game...
 						else if(currMenu == 2 && cursorPos == HARD && isTwoPlayer == false) {
 							delwin(subscrnMenu2);
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
 
 							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu4 =
@@ -792,7 +793,7 @@ int main(void)
 							//return back to menu
 							if(escaped) {
 								//Clear and delete username prompt
-								werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+								wclear(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
 
 								//Reinstate outer menu border
 								box(subscrnMenuBorder, '|', '_');
@@ -822,7 +823,7 @@ int main(void)
 						//Go to network prompt if multi-player mode is selected
 						else if(currMenu == 2 && cursorPos == HARD && isTwoPlayer == true) {
 							delwin(subscrnMenu2);
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 
 							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
@@ -833,7 +834,7 @@ int main(void)
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
 								//Clear and delete host prompt menu
-								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+								wclear(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 
 								//Reinstate outer menu border
 								box(subscrnMenuBorder, '|', '_');
@@ -854,7 +855,7 @@ int main(void)
 							}
 							else {
 								//Clear and delete host prompt menu
-								werase(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
+								wclear(subscrnMenu3); wrefresh(subscrnMenu3); delwin(subscrnMenu3);
 								clear();  // curses clear-screen call
 
 								//Paint screen black
@@ -872,7 +873,7 @@ int main(void)
 
 								if(escaped)
 								{
-									werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
+									wclear(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
 
 									//Reinstate outer menu border
 									box(subscrnMenuBorder, '|', '_');
@@ -909,7 +910,7 @@ int main(void)
 							delwin(subscrnMenu2);
 
 							//Update Outer Border
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
 							box(subscrnMenuBorder, '|', '_');
 							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
@@ -937,7 +938,7 @@ int main(void)
 							delwin(subscrnMenu2);
 
 							//Update Outer Border
-							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 							subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
 							box(subscrnMenuBorder, '|', '_');
 							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');

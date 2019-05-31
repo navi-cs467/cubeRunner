@@ -71,7 +71,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					userInput != 27 &&
 				    userInput != KEY_END &&
 				    userInput != 'q' &&
-				    userInput != 'Q') {
+				    userInput != 'Q' &&
+					!hasTerminated) {
 
 				userInput = getch();
 				
@@ -1693,6 +1694,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 	//Run Game Over animation
     //if(gameOver) 
 	//	transitionAnimation("GRAPHICS/GameOver.txt", 97, 28, BLACK_BLACK, 1, RED_BLACK);
+
+	clear(); refresh();
 
 	scoreInfo.secondName = secondName;
 	scoreInfo.playerNum = playerNum;
