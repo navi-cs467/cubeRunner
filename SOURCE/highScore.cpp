@@ -320,13 +320,13 @@ void displayScores(WINDOW **subscrnGraphic)
   string timeStr;
   int gameMode;
 
-  int row = LINES / 2; int col = 50;
+  int row = LINES / 2; int col = COLS / 2;
 
-  move(row, col); printw("RANK");
-  move(row, col+10); printw("SCORE");
-  move(row, col+21); printw("DIFFICULTY");
-  move(row, col+37); printw("TIME");
-  move(row, col+47); printw("NAME");
+  move(row, col-21); printw("RANK");
+  move(row, col-11); printw("SCORE");
+  move(row, col); printw("DIFFICULTY");
+  move(row, col+16); printw("TIME");
+  move(row, col+26); printw("NAME");
 
   //display top 10 scores
 
@@ -342,24 +342,24 @@ void displayScores(WINDOW **subscrnGraphic)
       ss >> std::noskipws >> score >> c >> players >> c >> timeStr >> c >> gameMode ;
       row++;
 
-      move(row, col); printw("%d", rank++);
-      move(row, col+10); printw(score.c_str());
+      move(row, col-21); printw("%d", rank++);
+      move(row, col-11); printw(score.c_str());
       if (gameMode == 1)
       {
-        move(row, col+21); printw("Easy");
+        move(row, col); printw("Easy");
       }
 
       if (gameMode == 2)
       {
-        move(row, col+21); printw("Normal");
+        move(row, col); printw("Normal");
       }
 
       if (gameMode == 3)
       {
-        move(row, col+21); printw("Hard");
+        move(row, col); printw("Hard");
       }
 
-      move(row, col+37); printw(timeStr.c_str());
+      move(row, col+16); printw(timeStr.c_str());
       // move(row, col+40); printw("NAME");
 
       //we search for & to know if this is multiplayer or single player
@@ -367,13 +367,13 @@ void displayScores(WINDOW **subscrnGraphic)
       {
         sscanf(players.c_str(), "%s&%s", player1, player2);
 
-        move(row, col+47); printw("%s & %s", player1, player2);
+        move(row, col+26); printw("%s & %s", player1, player2);
       }
 
       //otherwise, treat as single player entry
       else
       {
-        move(row, col+47); printw(players.c_str());
+        move(row, col+26); printw(players.c_str());
       }
 
   }
