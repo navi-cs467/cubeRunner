@@ -431,8 +431,29 @@ int main(void)
 
 							displayScores();
 
+							/////////////////REDRAW THE MENU/////////////////////
 							clear();
-							//showHighScores();
+
+
+
+							//Print Game Menu header
+							attron(COLOR_PAIR(WHITE_BLACK));
+							mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
+							refresh();
+
+							//Update Outer Border
+							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
+							subscrnMenuBorder = newwin(MENU1_LENGTH + 4, MM_WIDTH + 2, startingRow, startingCol);  //**************
+							box(subscrnMenuBorder, '|', '_');
+							wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+							wrefresh(subscrnMenuBorder);
+
+							subscrnMenu1 = printMenu(menu1Items,
+								startingLineColor, NULL, MENU1_LENGTH, MM_WIDTH);
+							highlight(subscrnMenu1, INSTRUCTIONS, lineColors[cursorPos-1],
+								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
+
+							paintGraphic(subscrnGraphic, "GRAPHICS/instructionsPic.txt", 1, true);
 						}
 						else if(currMenu == 1 && cursorPos == INSTRUCTIONS) {
 							/*fstream inFile;

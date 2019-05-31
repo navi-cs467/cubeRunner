@@ -320,13 +320,13 @@ void displayScores(void)
   string timeStr;
   int gameMode;
 
-  int row = 10; int col = 10;
+  int row = 18; int col = 50;
 
   move(row, col); printw("RANK");
-  move(row, col+10); printw("SCORE");
-  move(row, col+20); printw("DIFFICULTY");
-  move(row, col+30); printw("TIME");
-  move(row, col+40); printw("NAME");
+  move(row, col+11); printw("SCORE");
+  move(row, col+30); printw("DIFFICULTY");
+  move(row, col+40); printw("TIME");
+  move(row, col+50); printw("NAME");
 
   //display top 10 scores
 
@@ -343,23 +343,23 @@ void displayScores(void)
       row++;
 
       move(row, col); printw("%d", rank++);
-      move(row, col+10); printw(score.c_str());
+      move(row, col+11); printw(score.c_str());
       if (gameMode == 1)
       {
-        move(row, col+20); printw("Easy");
+        move(row, col+30); printw("Easy");
       }
 
       if (gameMode == 2)
       {
-        move(row, col+20); printw("Normal");
+        move(row, col+30); printw("Normal");
       }
 
       if (gameMode == 3)
       {
-        move(row, col+20); printw("Hard");
+        move(row, col+30); printw("Hard");
       }
 
-      move(row, col+30); printw(timeStr.c_str());
+      move(row, col+40); printw(timeStr.c_str());
       // move(row, col+40); printw("NAME");
 
       //we search for & to know if this is multiplayer or single player
@@ -367,13 +367,13 @@ void displayScores(void)
       {
         sscanf(players.c_str(), "%s&%s", player1, player2);
 
-        move(row, col+40); printw("%s & %s", player1, player2);
+        move(row, col+50); printw("%s & %s", player1, player2);
       }
 
       //otherwise, treat as single player entry
       else
       {
-        move(row, col+40); printw(players.c_str());
+        move(row, col+50); printw(players.c_str());
       }
 
   }
