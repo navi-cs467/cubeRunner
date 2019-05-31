@@ -71,8 +71,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					userInput != 27 &&
 				    userInput != KEY_END &&
 				    userInput != 'q' &&
-				    userInput != 'Q' &&
-					!hasTerminated) {
+				    userInput != 'Q') {// &&
+					//!hasTerminated) {
 
 				userInput = getch();
 				

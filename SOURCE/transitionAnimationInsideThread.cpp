@@ -26,6 +26,9 @@ void transitionAnimationInsideThread(const char* fileName,
 	//Explicitly set userInput
 	*userInput = 0;
 	
+	//Set hasTerminated true if applicable (multiplayer only)
+	if(hasTerminated) *hasTerminated = true;
+	
 	//animation1Completed marker
 	bool animation1Completed = false;
 	
@@ -147,7 +150,7 @@ void transitionAnimationInsideThread(const char* fileName,
 	//If this is the game over animation, set confirmedGameOver
 	//flag so user input loop(s) terminate
 	if(confirmedGameOver != NULL) {
-		*confirmedGameOver = 1; *hasTerminated = true;
+		*confirmedGameOver = 1;
 		clear(); attron(COLOR_PAIR(WHITE_BLACK)); refresh();
 		//printw("Print Final Game Stats Here..."); 
 		
