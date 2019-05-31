@@ -435,8 +435,13 @@ int main(void)
 							/////////////////REDRAW THE MENU/////////////////////
 							clear();
 
-
-
+							//Paint screen black
+							attron(COLOR_PAIR(BLACK_BLACK));
+							for (int y = 0; y < LINES; y++) {
+								mvhline(y, 0, ' ', COLS);
+							}
+							refresh();
+							
 							//Print Game Menu header
 							attron(COLOR_PAIR(WHITE_BLACK));
 							mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");

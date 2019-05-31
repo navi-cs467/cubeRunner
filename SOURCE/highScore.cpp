@@ -325,8 +325,8 @@ void displayScores(WINDOW **subscrnGraphic)
   move(row, col); printw("RANK");
   move(row, col+10); printw("SCORE");
   move(row, col+21); printw("DIFFICULTY");
-  move(row, col+41); printw("TIME");
-  move(row, col+51); printw("NAME");
+  move(row, col+37); printw("TIME");
+  move(row, col+47); printw("NAME");
 
   //display top 10 scores
 
@@ -359,7 +359,7 @@ void displayScores(WINDOW **subscrnGraphic)
         move(row, col+21); printw("Hard");
       }
 
-      move(row, col+41); printw(timeStr.c_str());
+      move(row, col+37); printw(timeStr.c_str());
       // move(row, col+40); printw("NAME");
 
       //we search for & to know if this is multiplayer or single player
@@ -367,13 +367,13 @@ void displayScores(WINDOW **subscrnGraphic)
       {
         sscanf(players.c_str(), "%s&%s", player1, player2);
 
-        move(row, col+51); printw("%s & %s", player1, player2);
+        move(row, col+47); printw("%s & %s", player1, player2);
       }
 
       //otherwise, treat as single player entry
       else
       {
-        move(row, col+51); printw(players.c_str());
+        move(row, col+47); printw(players.c_str());
       }
 
   }
