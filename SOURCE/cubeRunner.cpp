@@ -134,13 +134,12 @@ int main(void)
 		//Set number of omp threads for menu
 		omp_set_num_threads(3);
 
-		//Locks needed so only one thread attempts to modify
+		//Lock needed so only one thread attempts to modify
 		//subscrnGraphic or menu border at a time
-		omp_lock_t subscrnGraphicLock, menuBorder;
+		omp_lock_t subscrnGraphicLock;
 
-		//Initialize locks
+		//Initialize lock
 		omp_init_lock(&subscrnGraphicLock);
-		omp_init_lock(&menuBorder);
 
 		clear();  // curses clear-screen call
 
