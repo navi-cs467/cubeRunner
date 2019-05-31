@@ -133,7 +133,7 @@ int main(void)
 
 		//Set number of omp threads for menu
 		omp_set_num_threads(3);
-		
+
 		//Lock needed so only one thread attempts to modify
 		//subscrnGraphic at a time
 		omp_lock_t subscrnGraphicLock;
@@ -442,9 +442,9 @@ int main(void)
 						}
 						else if(currMenu == 1 && cursorPos == HIGH_SCORE) {
 							clear();
-							
+
 							omp_set_lock(&subscrnGraphicLock);
-							displayScores(&subscrnGraphic);
+							displayScores(subscrnGraphic);
 
 							/////////////////REDRAW THE MENU/////////////////////
 							clear();
@@ -465,7 +465,7 @@ int main(void)
 								startingLineColor, NULL, MENU1_LENGTH, MM_WIDTH);
 							highlight(subscrnMenu1, HIGH_SCORE, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
-							
+
 							paintGraphic(subscrnGraphic, "GRAPHICS/highScore.txt", 1, true);
 							omp_unset_lock(&subscrnGraphicLock);
 						}
@@ -569,7 +569,7 @@ int main(void)
 						else if(currMenu == 2 && cursorPos == EASY && isTwoPlayer == true) {
 							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
-							
+
 							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
@@ -610,13 +610,13 @@ int main(void)
 									mvhline(y, 0, ' ', COLS);
 								}
 								refresh();
-								
+
 								omp_set_lock(&subscrnGraphicLock);
 								subscrnMenu4 =
 									userPrompt(startingColMenu4, startingRowMenu4,
 										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
 								omp_unset_lock(&subscrnGraphicLock);
-								
+
 								if(escaped)
 								{
 									werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
@@ -662,7 +662,7 @@ int main(void)
 								userPrompt(startingColMenu4, startingRowMenu4,
 									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
 							omp_unset_lock(&subscrnGraphicLock);
-							
+
 							//return back to menu
 							if(escaped) {
 								//Clear and delete username prompt
@@ -697,7 +697,7 @@ int main(void)
 						else if(currMenu == 2 && cursorPos == NORMAL && isTwoPlayer == true) {
 							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
-							
+
 							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
@@ -737,7 +737,7 @@ int main(void)
 									mvhline(y, 0, ' ', COLS);
 								}
 								refresh();
-								
+
 								omp_set_lock(&subscrnGraphicLock);
 								subscrnMenu4 =
 									userPrompt(startingColMenu4, startingRowMenu4,
@@ -823,13 +823,13 @@ int main(void)
 						else if(currMenu == 2 && cursorPos == HARD && isTwoPlayer == true) {
 							delwin(subscrnMenu2);
 							werase(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
-							
+
 							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &escaped, host, port);
 							omp_unset_lock(&subscrnGraphicLock);
-							
+
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
 								//Clear and delete host prompt menu
@@ -863,13 +863,13 @@ int main(void)
 									mvhline(y, 0, ' ', COLS);
 								}
 								refresh();
-								
+
 								omp_set_lock(&subscrnGraphicLock);
 								subscrnMenu4 =
 									userPrompt(startingColMenu4, startingRowMenu4,
 										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
 								omp_unset_lock(&subscrnGraphicLock);
-								
+
 								if(escaped)
 								{
 									werase(subscrnMenu4); wrefresh(subscrnMenu4); delwin(subscrnMenu4);
@@ -920,7 +920,7 @@ int main(void)
 
 							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL,
 														MENU1_LENGTH, MM_WIDTH);
-							omp_set_lock(&subscrnGraphicLock);							
+							omp_set_lock(&subscrnGraphicLock);
 							subscrnGraphic = paintCubeGraphic(subscrnGraphic,
 												"GRAPHICS/menuCubeRight1_1.txt");
 							omp_unset_lock(&subscrnGraphicLock);
