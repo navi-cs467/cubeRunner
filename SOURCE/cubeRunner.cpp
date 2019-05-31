@@ -430,7 +430,7 @@ int main(void)
 							clear();
 							delwin(subscrnMenu1);
 
-							displayScores(&subscrnGraphic);
+							displayScores(&subscrnGraphic, &currMenu);
 
 							/////////////////REDRAW THE MENU/////////////////////
 							clear();
