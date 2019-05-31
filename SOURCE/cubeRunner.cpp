@@ -445,7 +445,6 @@ int main(void)
 							
 							omp_set_lock(&subscrnGraphicLock);
 							displayScores(&subscrnGraphic);
-							omp_unset_lock(&subscrnGraphicLock);
 
 							/////////////////REDRAW THE MENU/////////////////////
 							clear();
@@ -466,8 +465,9 @@ int main(void)
 								startingLineColor, NULL, MENU1_LENGTH, MM_WIDTH);
 							highlight(subscrnMenu1, HIGH_SCORE, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
-
+							
 							paintGraphic(subscrnGraphic, "GRAPHICS/highScore.txt", 1, true);
+							omp_unset_lock(&subscrnGraphicLock);
 						}
 						else if(currMenu == 1 && cursorPos == INSTRUCTIONS) {
 							/*fstream inFile;
