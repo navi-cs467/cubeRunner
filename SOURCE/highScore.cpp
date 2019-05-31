@@ -378,9 +378,9 @@ void displayScores(void)
 
   }
 
-  move(++row, col); printw("** PRESS ANY KEY TO RETURN... **";")
+  move(++row, col); printw("** PRESS ANY KEY TO RETURN... **";)
   getch();
-  
+
   refresh();
 
 }
