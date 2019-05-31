@@ -325,23 +325,23 @@ void displayScores(WINDOW **subscrnGraphic)
 
   int row = LINES / 2; int col = (COLS / 2) - 6;
 
-  attron(MAGENTA_BLACK);
+  attron(COLOR_PAIR(MAGENTA_BLACK));
   move(row, col-21); printw("RANK");
   refresh(); 
 
-  attron(RED_BLACK);
+  attron(COLOR_PAIR(RED_BLACK));
   move(row, col-11); printw("SCORE");
   refresh();
 
-  attron(YELLOW_BLACK);
+  attron(COLOR_PAIR(YELLOW_BLACK));
   move(row, col); printw("DIFFICULTY");
   refresh();
 
-  attron(GREEN_BLACK);
+  attron(COLOR_PAIR(GREEN_BLACK));
   move(row, col+16); printw("TIME");
   refresh();
 
-  attron(CYAN_BLACK);
+  attron(COLOR_PAIR(CYAN_BLACK));
   move(row, col+26); printw("NAME");
   refresh();
 
@@ -349,7 +349,7 @@ void displayScores(WINDOW **subscrnGraphic)
 
   int rank = 1;
 
-
+  attron(COLOR_PAIR(WHITE_BLACK));
 
   for (int i = 0; i < fileText.size(); i++)
   {
