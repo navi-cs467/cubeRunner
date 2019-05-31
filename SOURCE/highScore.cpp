@@ -318,8 +318,8 @@ void displayScores(WINDOW **subscrnGraphic)
 
   string score;
   string players;
-  char player1[MSG_SIZE];
-  char player2[MSG_SIZE];
+  string player1;
+  string player2;
   string timeStr;
   int gameMode;
 
@@ -396,9 +396,30 @@ void displayScores(WINDOW **subscrnGraphic)
       //we search for & to know if this is multiplayer or single player
       if (fileText[i].find("&") != string::npos)
       {
-        sscanf(players.c_str(), "%s&%s", player1, player2);
+        // sscanf(players.c_str(), "%s&%s", player1, player2);
 
-        move(row, col+26); printw("%s & %s", player1, player2);
+        istringstream playerss;
+        playerss.str(players);
+        playerss.clear();
+
+        int k = 0;
+
+        while(getline(playerss, token, '&'))
+        {
+          if (k == 0)
+          {
+            player1.assign(token);
+          }
+
+          if (k == 1)
+          {
+            player2.assign(token);
+          }
+
+          k++;
+        }
+
+        move(row, col+26); printw("%s & %s", player1.c_str(), player2.c_str());
       }
 
       //otherwise, treat as single player entry
