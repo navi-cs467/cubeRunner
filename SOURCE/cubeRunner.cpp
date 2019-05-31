@@ -444,7 +444,7 @@ int main(void)
 							clear();
 
 							omp_set_lock(&subscrnGraphicLock);
-							displayScores(subscrnGraphic);
+							displayScores(&subscrnGraphic);
 
 							/////////////////REDRAW THE MENU/////////////////////
 							clear();
