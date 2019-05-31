@@ -314,7 +314,7 @@ void displayScores(void)
   ifs.close();
 
   string score;
-  string players
+  string players;
   char player1[MSG_SIZE];
   char player2[MSG_SIZE];
   string timeStr;
