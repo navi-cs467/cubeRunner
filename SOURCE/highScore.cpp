@@ -338,7 +338,8 @@ void displayScores(WINDOW **subscrnGraphic)
 
   for (int i = 0; i < fileText.size(); i++)
   {
-      istringstream ss(fileText[i]);
+      istringstream ss;
+      ss.str(fileText[i]);
       ss.clear();
       string token;
 
