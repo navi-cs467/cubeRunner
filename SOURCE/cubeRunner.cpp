@@ -435,13 +435,6 @@ int main(void)
 							/////////////////REDRAW THE MENU/////////////////////
 							clear();
 
-							//Paint screen black
-							attron(COLOR_PAIR(BLACK_BLACK));
-							for (int y = 0; y < LINES; y++) {
-								mvhline(y, 0, ' ', COLS);
-							}
-							refresh();
-							
 							//Print Game Menu header
 							attron(COLOR_PAIR(WHITE_BLACK));
 							mvaddstr(startingRow - 1, startingCol + (MM_WIDTH - 7)/2, "Game Menu");
@@ -456,10 +449,10 @@ int main(void)
 
 							subscrnMenu1 = printMenu(menu1Items,
 								startingLineColor, NULL, MENU1_LENGTH, MM_WIDTH);
-							highlight(subscrnMenu1, INSTRUCTIONS, lineColors[cursorPos-1],
+							highlight(subscrnMenu1, HIGH_SCORE, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 
-							paintGraphic(subscrnGraphic, "GRAPHICS/instructionsPic.txt", 1, true);
+							paintGraphic(subscrnGraphic, "GRAPHICS/highScore.txt", 1, true);
 						}
 						else if(currMenu == 1 && cursorPos == INSTRUCTIONS) {
 							/*fstream inFile;
