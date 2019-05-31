@@ -332,14 +332,39 @@ void displayScores(WINDOW **subscrnGraphic)
 
   int rank = 1;
 
+  j = 0;
+
   for (int i = 0; i < fileText.size(); i++)
   {
       istringstream ss(fileText[i]);
 
-      //commas
-      char c;
+      string token;
 
-      ss >> score >> c >> players >> c >> timeStr >> c >> gameMode ;
+      while(getline(ss, token, ','))
+      {
+        if (j == 0)
+        {
+          score.assign(token);
+        }
+
+        if (j == 1)
+        {
+          players.assign(token);
+        }
+
+        if (j == 2)
+        {
+          timeStr.assign(token);
+        }
+
+        if (j == 3)
+        {
+          sscanf(token.c_str(), "%d", &gameMode);
+        }
+
+        j++;
+      }
+
       row++;
 
       move(row, col-21); printw("%d", rank++);
