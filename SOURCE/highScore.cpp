@@ -309,7 +309,8 @@ void displayScores(WINDOW **subscrnGraphic)
   while(getline(ifs, line))
   {
      fileText.push_back(line);
-     printw(line.c_str());
+     //DEBUG
+     printw("%s\n",line.c_str());
   }
 
   ifs.close();
@@ -402,9 +403,13 @@ void displayScores(WINDOW **subscrnGraphic)
         move(row, col+26); printw(players.c_str());
       }
 
+      //reset 
+      ss.str("");
+      ss.clear();
+
   }
 
-  move(row+5, col-11); printw("** PRESS ANY KEY TO RETURN... **");
+  move(row+5, col-11); printw("** PRESS ANY KEY TO RETURN **");
   getch();
 
   refresh();
