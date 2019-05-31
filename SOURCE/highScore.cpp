@@ -320,7 +320,7 @@ void displayScores(WINDOW **subscrnGraphic)
   string timeStr;
   int gameMode;
 
-  int row = LINES / 2; int col = COLS / 2;
+  int row = LINES / 2; int col = (COLS / 2) - 6;
 
   move(row, col-21); printw("RANK");
   move(row, col-11); printw("SCORE");
