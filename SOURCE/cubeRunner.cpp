@@ -177,7 +177,7 @@ int main(void)
 		WINDOW *subscrnMenu1 = printMenu(menu1Items, startingLineColor, lineColors,
 											MENU1_LENGTH, MM_WIDTH); // change menu2Items to menu1Items
 
-		//Declare menu 2 and 3 (for future use)
+		//Declare menu 2, 3, and 4 (for future use)
 		WINDOW *subscrnMenu2, *subscrnMenu3, *subscrnMenu4;;
 
 		//Initialize menu 3 starting position variables

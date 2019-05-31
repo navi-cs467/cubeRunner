@@ -445,9 +445,12 @@ void displayScores(WINDOW **subscrnGraphic)
   }
 
   move(row+2, col-11); printw("** PRESS ANY KEY TO RETURN **");
-  getch();
 
   refresh();
+  
+  getch();
+
+
 }
 
 /* References
