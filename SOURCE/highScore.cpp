@@ -295,7 +295,6 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
 
 void displayScores(WINDOW **subscrnGraphic)
 {
-  *currMenu = 3;
   ifstream ifs;
   string line;
   vector<string> fileText;
