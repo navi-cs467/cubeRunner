@@ -64,70 +64,28 @@ int startConnection(int socketFD, struct addrinfo *servinfo)
 }
 
 /*
-	Receives messages sent from sever over the socket, if the value of recv is 0
-	the server has closed the connection and the program exits
+	Receives messages sent from server over the socket, returns the result
 */
-void receiveMessage_C(int socketFD, char* buffer)
+int receiveMessage_C(int socketFD, char* buffer)
 {
+	//receive message from server
 	int bytes_received = recv(socketFD, buffer, MSG_SIZE, 0);
 
-	//check for error
-	if (bytes_received == -1)
-	{
-		fprintf(stderr,"Error receving from socket\n");
-		exit(0);
-	}
+	return bytes_received;
 
-	// server closed the connection so client is terminated
-	else if (bytes_received == 0)
-	{
-		fprintf(stderr,"Server has closed the connection\n");
-		close(socketFD);
-		endwin();
-		exit(0);
-	}
-
-		// int len = sizeof(buffer);
-		// char *p = buffer;
-		// int n;
-		// while ( len > 0 && (n=recv(socketFD,p,len,0)) > 0 ) {
-		//   p += n;
-		//   len =- n;
-		// }
-		// if ( len > 0 || n < 0 ) {
-		//   // oops, something went wrong
-		// }
 }
 
 /*
-Loops until all data is sent to the server, making sure the complete message is
-sent over the socket
+	Send data to the server, returning the result
 */
 void sendMessage_C(int socketFD, char* buffer)
 {
-	// adapted from cs 344 lectures, make sure all the data is sent over the socket
-	// Send message to client
+
+	// Send message to server
 	int charsWritten = send(socketFD, buffer, MSG_SIZE, 0);
-	// if (charsWritten < sizeof(buffer)) printf("WARNING: Not all data written to socket!\n");
-	//
-	// int checkSend = -5;  // Holds amount of bytes remaining in send buffer
-	// do
-	// {
-	// 	ioctl(socketFD, TIOCOUTQ, &checkSend);  // Check the send buffer for this socket
-	// }
-	//
-	// while (checkSend > 0);  // Loop forever until send buffer for this socket is empty
-			//
-			// int len = sizeof(buffer);
-			// char *p = buffer;
-			// int n;
-			// while ( len > 0 && (n=send(socketFD,p,len,0)) > 0 ) {
-			//   p += n;
-			//   len =- n;
-			// }
-			// if ( len > 0 || n < 0 ) {
-			//   // oops, something went wrong
-			// }
+
+	return charsWritten;
+
 }
 
 // initialize the socket for client to connect to server
