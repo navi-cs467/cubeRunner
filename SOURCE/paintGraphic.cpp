@@ -29,6 +29,7 @@ void paintGraphic(WINDOW *subscrn, const char* fileName,
 	
 	//Paint the rows to the screen
     int color, row;
+	wattron(subscrn, A_BOLD);
     for (row = 0, color = seedColor; 
 			row < MM_GRAPHIC_HEIGHT; row++, color++) {  
        if(color == 7) color = 1;		//Cycle to first index when necessary
