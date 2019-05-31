@@ -13,8 +13,8 @@
 #include "constants.hpp"
 
 int initSocket(char* hostname, char* portNum);
-void sendMessage_C(int socketFD, char* buffer);
-void receiveMessage_C(int socketFD, char* buffer);
+int sendMessage_C(int socketFD, char* buffer);
+int receiveMessage_C(int socketFD, char* buffer);
 int startConnection(int socketFD, struct addrinfo *servinfo);
 int createSocket_C(struct addrinfo *servinfo);
 struct addrinfo* getServerInfo_C(char* hostname, char* portNum);

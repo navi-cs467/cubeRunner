@@ -71,6 +71,9 @@ int createSocket_S(struct addrinfo *servinfo)
 	return socketFD;
 }
 
+/*
+	Send messages to client over the socket, returns the result
+*/
 int sendMessage_S(int socketFD, char* buffer)
 {
 	// Send message to client
@@ -79,21 +82,13 @@ int sendMessage_S(int socketFD, char* buffer)
 	return charsWritten;
 }
 
+/*
+	Receives messages sent from client over the socket, returns the result
+*/
 int receiveMessage_S(int socketFD, char* buffer)
 {
+	//receive message from client
 	int bytes_received = recv(socketFD, buffer, MSG_SIZE, 0);
-
-	//check for error
-	if (bytes_received == -1)
-	{
-
-	}
-
-	// connection closed
-	else if (bytes_received == 0)
-	{
-
-	}
 
 	return bytes_received;
 }
@@ -150,14 +145,3 @@ int initServer(char* portNum)
 
 	return socketFD;
 }
-
-// starting out with command line entered values for now, will change in coming weeks***
-/* int main(int argc, char *argv[])
-{
-
-	// save command-line entered port number
-	char* portNum = argv[1];
-
-	// starts server processes
-	initServer(portNum);
-} */
