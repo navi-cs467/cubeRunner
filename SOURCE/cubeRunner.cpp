@@ -442,8 +442,10 @@ int main(void)
 						}
 						else if(currMenu == 1 && cursorPos == HIGH_SCORE) {
 							clear();
-
+							
+							omp_set_lock(&subscrnGraphicLock);
 							displayScores(&subscrnGraphic);
+							omp_unset_lock(&subscrnGraphicLock);
 
 							/////////////////REDRAW THE MENU/////////////////////
 							clear();
