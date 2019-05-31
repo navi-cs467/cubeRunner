@@ -313,11 +313,11 @@ void displayScores(WINDOW **subscrnGraphic)
 
   ifs.close();
 
-  char score[256];
-  char players[256];
+  string score;
+  string players;
   char player1[MSG_SIZE];
   char player2[MSG_SIZE];
-  char timeStr[256];
+  string timeStr;
   int gameMode;
 
   int row = LINES / 2; int col = (COLS / 2) - 6;
@@ -336,10 +336,12 @@ void displayScores(WINDOW **subscrnGraphic)
   {
 
 
-      sscanf(fileText[i].c_str(), "%s,%s,%s,%d", score, players, timeStr, &gameMode);
+
+      ss >> score >> c >> players >> c >> timeStr >> c >> gameMode ;
+      row++;
 
       move(row, col-21); printw("%d", rank++);
-      move(row, col-11); printw(score);
+      move(row, col-11); printw(score.c_str());
       if (gameMode == 1)
       {
         move(row, col); printw("Easy");
@@ -355,13 +357,13 @@ void displayScores(WINDOW **subscrnGraphic)
         move(row, col); printw("Hard");
       }
 
-      move(row, col+16); printw(timeStr);
+      move(row, col+16); printw(timeStr.c_str());
       // move(row, col+40); printw("NAME");
 
       //we search for & to know if this is multiplayer or single player
       if (fileText[i].find("&") != string::npos)
       {
-        sscanf(players, "%s&%s", player1, player2);
+        sscanf(players.c_str(), "%s&%s", player1, player2);
 
         move(row, col+26); printw("%s & %s", player1, player2);
       }
@@ -369,7 +371,7 @@ void displayScores(WINDOW **subscrnGraphic)
       //otherwise, treat as single player entry
       else
       {
-        move(row, col+26); printw(players);
+        move(row, col+26); printw(players.c_str());
       }
 
   }
