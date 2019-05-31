@@ -31,6 +31,7 @@ void transitionAnimationInsideThread(const char* fileName,
 									 int promptColor,
 									 int *userInput,
 									 int *confirmedGameOver = NULL,
+									 bool *hasTerminated = NULL,
 									 struct gameData *gameStats = NULL);
 
 #endif /* transitionAnimation_hpp */

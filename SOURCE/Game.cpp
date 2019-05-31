@@ -428,7 +428,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							
 							transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 97,
 									28, BLACK_BLACK, 1, RED_BLACK, &userInput, &confirmedGameOver,
-									&scoreInfo);
+									&hasTerminated, &scoreInfo);
 
 							//Delete all Obstacles
 							for(list<Obstacle*>::iterator it = world->getObstacles().begin();
@@ -915,7 +915,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							 //Game Over animation
 							 transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 97,
 								28, BLACK_BLACK, 1, RED_BLACK, &userInput, &confirmedGameOver,
-								&scoreInfo);
+								&hasTerminated, &scoreInfo);
 							  
 							  //Delete all Obstacles
 									for(list<Obstacle*>::iterator it = world->getObstacles().begin();

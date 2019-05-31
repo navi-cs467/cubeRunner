@@ -18,6 +18,7 @@ void transitionAnimationInsideThread(const char* fileName,
 									 int promptColor,
 									 int *userInput,
 									 int *confirmedGameOver,
+									 bool *hasTerminated,
 									 struct gameData *gameStats)
 { 
 	clear();  //Curses clear-screen call
@@ -146,7 +147,7 @@ void transitionAnimationInsideThread(const char* fileName,
 	//If this is the game over animation, set confirmedGameOver
 	//flag so user input loop(s) terminate
 	if(confirmedGameOver != NULL) {
-		*confirmedGameOver = 1;
+		*confirmedGameOver = 1; *hasTerminated = true;
 		clear(); attron(COLOR_PAIR(WHITE_BLACK)); refresh();
 		//printw("Print Final Game Stats Here..."); 
 		
