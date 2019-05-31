@@ -309,6 +309,7 @@ void displayScores(WINDOW **subscrnGraphic)
   while(getline(ifs, line))
   {
      fileText.push_back(line);
+     printw(line.c_str());
   }
 
   ifs.close();
