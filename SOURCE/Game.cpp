@@ -163,6 +163,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					//only playerNum 2 can move left and right. This is 
 					//managed server-side. (See constants.hpp to set
 					//MULTIPLAYER_DUAL_AXIS_CONTROL.)
+					omp_set_lock(&userInputLock);		//Do not update user input (i.e. send/receive) while rendering
 					if(userInput == KEY_UP) {
 						// SEND: KEY_UP
 						sprintf(messageToSend, "%d", userInput);
@@ -240,10 +241,13 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						close(inputSocket);
 
 						hasTerminated = true;
+						omp_unset_lock(&userInputLock);
 						break;
 					}
 					fflush(stdin);		//This may not be portable 
+					omp_unset_lock(&userInputLock);
 				}
+				
 				/***** END Client for multiplayer (SEND) *****/
 			}
 		}
@@ -322,7 +326,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();
-
+						
 						//Movement updates must wait until current render completes
 						omp_set_lock(&userInputLock);
 
@@ -791,6 +795,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				cube->initializeCubeCoords();
 				
 				while (!hasTerminated) {
+					
+						//User input send/receive is blocked during render
+						omp_set_lock(&userInputLock);
 
 						//Pseudocode variables... change as desired
 						int int_1, int_2, int_3, int_4, int_5, int_6, int_7, int_8;
@@ -1209,11 +1216,13 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							}
 
 							int_2 = atoi(gameData);
-
+							
+							omp_unset_lock(&userInputLock);		//Allow user to confirm new world animation
 							if(int_2 == 1)
 							{
 								world = new Water(isTwoPlayer);
 								cube->transitionWorld(world);
+								
 								transitionAnimationInsideThread("GRAPHICS/Water.txt", 120,
 									16, BLUE_BLUE, 30, WHITE_BLUE, &userInput);
 							}
@@ -1233,6 +1242,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 								transitionAnimationInsideThread("GRAPHICS/Space.txt", 121,
 									16, BLACK_BLACK, 1, WHITE_BLACK, &userInput);
 							}
+							omp_set_lock(&userInputLock);
 							
 							//print waiting screen, in case waiting on other player's confirmation
 							waitingForOtherPlayer(playerNum);
@@ -1554,7 +1564,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						if(!deathFlag) cube->printShot();
 						cube->drawCube();
 						if(deathFlag) {
+							omp_unset_lock(&userInputLock);		//Allow user to confirm death animation
 							cube->drawCubeDeath(&userInput, collisionType);
+							omp_set_lock(&userInputLock);
 							deathFlag = false;
 						}
 
@@ -1681,6 +1693,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						//sendMessage_C(socketFD, sendConfirm);
 						/**** END RECEIVE WORLD RENDER CONFIRM REQUEST ****/
 						
+						omp_unset_lock(&userInputLock);
 						usleep(1000);
 
 				}

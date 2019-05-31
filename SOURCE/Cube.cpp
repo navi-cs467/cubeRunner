@@ -133,6 +133,7 @@ void Cube::importCubeImage(void){
 	cubeLeftChars[0][1] = '_';
 	cubeLeftChars[0][2] = '_';
 	cubeLeftChars[0][3] = '_';
+	cubeLeftChars[0][4] = ' ';
 	cubeLeftChars[1][0] = '/';
 	cubeLeftChars[1][1] = '_';
 	cubeLeftChars[1][2] = '_';
@@ -165,6 +166,7 @@ void Cube::importCubeImage(void){
 	cubeRightChars[0][1] = '_'; 
 	cubeRightChars[0][2] = '_'; 
 	cubeRightChars[0][3] = '_'; 
+	cubeRightChars[0][4] = ' '; 
 	cubeRightChars[1][0] = '/';
 	cubeRightChars[1][1] = '\\';
 	cubeRightChars[1][2] = '_';
