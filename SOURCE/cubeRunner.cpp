@@ -428,8 +428,9 @@ int main(void)
 						}
 						else if(currMenu == 1 && cursorPos == HIGH_SCORE) {
 							clear();
+							delwin(subscrnMenu1);
 
-							displayScores();
+							displayScores(&subscrnGraphic);
 
 							/////////////////REDRAW THE MENU/////////////////////
 							clear();
