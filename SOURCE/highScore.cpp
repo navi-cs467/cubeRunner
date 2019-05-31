@@ -14,8 +14,6 @@ scores are saved for both multiplayer and single player.
 
 #include "../HEADER/highScore.hpp"
 
-extern WINDOW *scrn;
-
 using std::ifstream;
 using std::ofstream;
 using std::string;
@@ -297,13 +295,15 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
 
 void displayScores(WINDOW **subscrnGraphic)
 {
+ 
   ifstream ifs;
   string line;
   vector<string> fileText;
-
+  
+  refresh();
   //display header
   *subscrnGraphic = paintCubeGraphic(*subscrnGraphic, "GRAPHICS/highScore.txt");
-
+  refresh();
   //open highScoresfile
   //open file for reading
   ifs.open("gameHighScores.txt");
@@ -327,23 +327,23 @@ void displayScores(WINDOW **subscrnGraphic)
 
   attron(MAGENTA_BLACK);
   move(row, col-21); printw("RANK");
-  attroff(MAGENTA_BLACK);
+  refresh(); 
 
   attron(RED_BLACK);
   move(row, col-11); printw("SCORE");
-  attroff(RED_BLACK);
+  refresh();
 
   attron(YELLOW_BLACK);
   move(row, col); printw("DIFFICULTY");
-  attroff(YELLOW_BLACK);
+  refresh();
 
   attron(GREEN_BLACK);
   move(row, col+16); printw("TIME");
-  attroff(GREEN_BLACK);
+  refresh();
 
   attron(CYAN_BLACK);
   move(row, col+26); printw("NAME");
-  attroff(CYAN_BLACK);
+  refresh();
 
   //display top 10 scores
 
