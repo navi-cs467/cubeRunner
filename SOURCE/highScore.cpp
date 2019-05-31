@@ -14,12 +14,15 @@ scores are saved for both multiplayer and single player.
 
 #include "../HEADER/highScore.hpp"
 
+extern WINDOW *scrn;
+
 using std::ifstream;
 using std::ofstream;
 using std::string;
 using std::getline;
 using std::vector;
 using std::endl;
+using std::istringstream;
 
 //check if score is a high score before we add it
 //if score is a high file, tell us what number it should be
@@ -122,7 +125,7 @@ void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, 
   }
 
   //create a string with game info
-  sprintf(str, "%d %s %s %d", score, name, timeStr, mode);
+  sprintf(str, "%d,%s,%s,%d", score, name, timeStr, mode);
   strToAdd = string(str);
 
   //open file for reading
@@ -236,7 +239,7 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
   }
 
   //create a string with score
-  sprintf(str, "%d %s&%s %s %d", score, firstName, secondName, timeStr, mode);
+  sprintf(str, "%d,%s&%s,%s,%d", score, firstName, secondName, timeStr, mode);
   strToAdd = string(str);
 
   //open file for reading
@@ -292,23 +295,129 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
   ofs.close();
 }
 
-//testing
-// int main()
-// {
-//   char first[10] = "Tom";
-//
-//   char second[10] = "Sally";
-//
-//   addScoreSingle(500, first);
-//   addScoreSingle(3000, second);
-//   addScoreSingle(4000, first);
-//   addScoreMulti(5000, first, second);
-//   addScoreSingle(6500, first);
-//   addScoreMulti(1000, first, second);
-//   addScoreSingle(5000, first);
-//   addScoreMulti(1500, second, first);
-//   addScoreSingle(4500, second);
-//   addScoreSingle(7000, second);
-//   addScoreSingle(7500, first);
-//   return 0;
-// }
+void displayScores(WINDOW **subscrnGraphic)
+{
+  ifstream ifs;
+  string line;
+  vector<string> fileText;
+
+  //display header
+  // *subscrnGraphic = paintCubeGraphic(*subscrnGraphic, "GRAPHICS/highScore.txt");
+
+  //open highScoresfile
+  //open file for reading
+  ifs.open("gameHighScores.txt");
+
+  //read line by line and store in a vector
+  while(getline(ifs, line))
+  {
+     fileText.push_back(line);
+  }
+
+  ifs.close();
+
+  string score;
+  string players;
+  char player1[MSG_SIZE];
+  char player2[MSG_SIZE];
+  string timeStr;
+  int gameMode;
+
+  int row = LINES / 2; int col = (COLS / 2) - 6;
+
+  move(row, col-21); printw("RANK");
+  move(row, col-11); printw("SCORE");
+  move(row, col); printw("DIFFICULTY");
+  move(row, col+16); printw("TIME");
+  move(row, col+26); printw("NAME");
+
+  //display top 10 scores
+
+  int rank = 1;
+
+
+
+  for (int i = 0; i < fileText.size(); i++)
+  {
+      istringstream ss;
+      ss.str(fileText[i]);
+      ss.clear();
+      string token;
+
+      int j = 0;
+
+      while(getline(ss, token, ','))
+      {
+        if (j == 0)
+        {
+          score.assign(token);
+        }
+
+        if (j == 1)
+        {
+          players.assign(token);
+        }
+
+        if (j == 2)
+        {
+          timeStr.assign(token);
+        }
+
+        if (j == 3)
+        {
+          sscanf(token.c_str(), "%d", &gameMode);
+        }
+
+        j++;
+      }
+
+      row++;
+
+      move(row, col-21); printw("%d", rank++);
+      move(row, col-11); printw(score.c_str());
+      if (gameMode == 1)
+      {
+        move(row, col); printw("Easy");
+      }
+
+      if (gameMode == 2)
+      {
+        move(row, col); printw("Normal");
+      }
+
+      if (gameMode == 3)
+      {
+        move(row, col); printw("Hard");
+      }
+
+      move(row, col+16); printw(timeStr.c_str());
+      // move(row, col+40); printw("NAME");
+
+      //we search for & to know if this is multiplayer or single player
+      if (fileText[i].find("&") != string::npos)
+      {
+        sscanf(players.c_str(), "%s&%s", player1, player2);
+
+        move(row, col+26); printw("%s & %s", player1, player2);
+      }
+
+      //otherwise, treat as single player entry
+      else
+      {
+        move(row, col+26); printw(players.c_str());
+      }
+
+  }
+
+  move(row+2, col-11); printw("** PRESS ANY KEY TO RETURN **");
+  getch();
+
+  refresh();
+}
+
+/* References
+https://stackoverflow.com/questions/21814297/how-to-extract-mixed-format-using-istringstream
+http://www.cplusplus.com/reference/ios/noskipws/
+
+
+*/
