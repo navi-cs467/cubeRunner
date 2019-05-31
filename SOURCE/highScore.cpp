@@ -334,8 +334,10 @@ void displayScores(WINDOW **subscrnGraphic)
 
   for (int i = 0; i < fileText.size(); i++)
   {
+      istringstream ss(fileText[i]);
 
-
+      //commas
+      char c;
 
       ss >> score >> c >> players >> c >> timeStr >> c >> gameMode ;
       row++;
