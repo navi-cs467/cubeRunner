@@ -315,13 +315,6 @@ void displayScores(WINDOW **subscrnGraphic)
 
   ifs.close();
 
-  string score;
-  string players;
-  char player1[MSG_SIZE];
-  char player2[MSG_SIZE];
-  string timeStr;
-  int gameMode;
-
   int row = LINES / 2; int col = (COLS / 2) - 6;
 
   move(row, col-21); printw("RANK");
@@ -338,6 +331,13 @@ void displayScores(WINDOW **subscrnGraphic)
 
   for (int i = 0; i < fileText.size(); i++)
   {
+      string score;
+      string players;
+      char player1[MSG_SIZE];
+      char player2[MSG_SIZE];
+      string timeStr;
+      int gameMode;
+
       istringstream ss;
       ss.str(fileText[i]);
       ss.clear();
