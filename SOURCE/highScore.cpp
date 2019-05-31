@@ -14,8 +14,6 @@ scores are saved for both multiplayer and single player.
 
 #include "../HEADER/highScore.hpp"
 
-extern WINDOW *scrn;
-
 using std::ifstream;
 using std::ofstream;
 using std::string;
@@ -297,13 +295,15 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
 
 void displayScores(WINDOW **subscrnGraphic)
 {
+ 
   ifstream ifs;
   string line;
   vector<string> fileText;
-
+  
+  refresh();
   //display header
-  // *subscrnGraphic = paintCubeGraphic(*subscrnGraphic, "GRAPHICS/highScore.txt");
-
+  *subscrnGraphic = paintCubeGraphic(*subscrnGraphic, "GRAPHICS/highScore.txt");
+  refresh();
   //open highScoresfile
   //open file for reading
   ifs.open("gameHighScores.txt");
@@ -318,18 +318,32 @@ void displayScores(WINDOW **subscrnGraphic)
 
   string score;
   string players;
-  char player1[MSG_SIZE];
-  char player2[MSG_SIZE];
+  string player1;
+  string player2;
   string timeStr;
   int gameMode;
 
   int row = LINES / 2; int col = (COLS / 2) - 6;
 
+  attron(MAGENTA_BLACK);
   move(row, col-21); printw("RANK");
+  refresh(); 
+
+  attron(RED_BLACK);
   move(row, col-11); printw("SCORE");
+  refresh();
+
+  attron(YELLOW_BLACK);
   move(row, col); printw("DIFFICULTY");
+  refresh();
+
+  attron(GREEN_BLACK);
   move(row, col+16); printw("TIME");
+  refresh();
+
+  attron(CYAN_BLACK);
   move(row, col+26); printw("NAME");
+  refresh();
 
   //display top 10 scores
 
@@ -396,9 +410,30 @@ void displayScores(WINDOW **subscrnGraphic)
       //we search for & to know if this is multiplayer or single player
       if (fileText[i].find("&") != string::npos)
       {
-        sscanf(players.c_str(), "%s&%s", player1, player2);
+        // sscanf(players.c_str(), "%s&%s", player1, player2);
 
-        move(row, col+26); printw("%s & %s", player1, player2);
+        istringstream playerss;
+        playerss.str(players);
+        playerss.clear();
+
+        int k = 0;
+
+        while(getline(playerss, token, '&'))
+        {
+          if (k == 0)
+          {
+            player1.assign(token);
+          }
+
+          if (k == 1)
+          {
+            player2.assign(token);
+          }
+
+          k++;
+        }
+
+        move(row, col+26); printw("%s & %s", player1.c_str(), player2.c_str());
       }
 
       //otherwise, treat as single player entry
@@ -410,9 +445,12 @@ void displayScores(WINDOW **subscrnGraphic)
   }
 
   move(row+2, col-11); printw("** PRESS ANY KEY TO RETURN **");
-  getch();
 
   refresh();
+  
+  getch();
+
+
 }
 
 /* References
