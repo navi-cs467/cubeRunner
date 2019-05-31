@@ -313,11 +313,11 @@ void displayScores(WINDOW **subscrnGraphic)
 
   ifs.close();
 
-  string score;
-  string players;
+  char score[256];
+  char players[256];
   char player1[MSG_SIZE];
   char player2[MSG_SIZE];
-  string timeStr;
+  char timeStr[256];
   int gameMode;
 
   int row = LINES / 2; int col = (COLS / 2) - 6;
@@ -334,16 +334,12 @@ void displayScores(WINDOW **subscrnGraphic)
 
   for (int i = 0; i < fileText.size(); i++)
   {
-      istringstream ss(fileText[i]);
 
-      //commas
-      char c;
 
-      ss >> std::noskipws >> score >> c >> players >> c >> timeStr >> c >> gameMode ;
-      row++;
+      sscanf(fileText[i].c_str(), "%s,%s,%s,%d", score, players, timeStr, &gameMode);
 
       move(row, col-21); printw("%d", rank++);
-      move(row, col-11); printw(score.c_str());
+      move(row, col-11); printw(score);
       if (gameMode == 1)
       {
         move(row, col); printw("Easy");
@@ -359,13 +355,13 @@ void displayScores(WINDOW **subscrnGraphic)
         move(row, col); printw("Hard");
       }
 
-      move(row, col+16); printw(timeStr.c_str());
+      move(row, col+16); printw(timeStr);
       // move(row, col+40); printw("NAME");
 
       //we search for & to know if this is multiplayer or single player
       if (fileText[i].find("&") != string::npos)
       {
-        sscanf(players.c_str(), "%s&%s", player1, player2);
+        sscanf(players, "%s&%s", player1, player2);
 
         move(row, col+26); printw("%s & %s", player1, player2);
       }
@@ -373,7 +369,7 @@ void displayScores(WINDOW **subscrnGraphic)
       //otherwise, treat as single player entry
       else
       {
-        move(row, col+26); printw(players.c_str());
+        move(row, col+26); printw(players);
       }
 
   }
