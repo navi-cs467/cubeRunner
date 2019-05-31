@@ -334,7 +334,7 @@ void displayScores(void)
 
   for (int i = 0; i < fileText.size(); i++)
   {
-      istringstream ss(fileTest[i]);
+      istringstream ss(fileText[i]);
 
       //commas
       char c;
