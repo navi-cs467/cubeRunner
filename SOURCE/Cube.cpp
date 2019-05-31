@@ -824,19 +824,20 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 	}
 
 	attroff(COLOR_PAIR(7));
-	
-	attron(COLOR_PAIR(YELLOW_BLACK));
-	mvaddstr(LINES - 1, 15, "Death! (Press Enter to Continue)");
-	refresh();
 
 	//Block here until user presses Enter key
 	while(*userInput != 10){}
 
 	//Clear Enter key prompt
 	attron(COLOR_PAIR(BLACK_BLACK));
-	mvaddstr(LINES - 1, 15, "                                ");
+	mvhline(LINES - 1, 15, ' ', 75);
 	refresh();
-
+	
+	if(currWorld->getIsTwoPlayer()) {
+		attron(COLOR_PAIR(YELLOW_BLACK));
+		mvprintw(LINES - 1, 15, "Waiting for other player to press enter...");
+		refresh();
+	}
 }
 
 //void Cube::drawCubeDeath(int *userInput){
