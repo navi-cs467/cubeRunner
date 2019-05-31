@@ -491,6 +491,7 @@ int Cube::updateCubeCoords(int colPrev, int colCurr, int rowPrev, int rowCurr){
 void Cube::drawCube(void){
 	
 	attron(COLOR_PAIR(color));
+	attron(A_BOLD);
 	
 	//Use right cube
 	if(useLeftCube == 0){
@@ -619,6 +620,7 @@ void Cube::drawCube(void){
 
 void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 
+	attron(A_BOLD);
 	attron(COLOR_PAIR(BLACK_BLACK));
 	mvhline(LINES - 1, 0, ' ', COLS);
 	attron(COLOR_PAIR(YELLOW_BLACK));

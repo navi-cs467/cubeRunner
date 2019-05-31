@@ -147,8 +147,119 @@ void transitionAnimationInsideThread(const char* fileName,
 	//flag so user input loop(s) terminate
 	if(confirmedGameOver != NULL) {
 		*confirmedGameOver = 1;
-		clear(); attron(COLOR_PAIR(WHITE_BLACK));
-		printw("Print Final Game Stats Here..."); refresh();
+		clear(); attron(COLOR_PAIR(WHITE_BLACK)); refresh();
+		//printw("Print Final Game Stats Here..."); 
+		
+		WINDOW *subscrnGraphic = NULL;
+		if(gameStats->secondName == NULL)
+			subscrnGraphic =
+				paintCubeGraphic(subscrnGraphic,
+					"GRAPHICS/menuCubeRight1_1.txt");
+		else
+			subscrnGraphic =
+				paintCubeGraphic(subscrnGraphic,
+					"GRAPHICS/menuCubeRight1_2.txt");
+		
+		int startingCol = (COLS - MM_GRAPHIC_WIDTH)/2 + 
+						(MM_GRAPHIC_WIDTH - MM_WIDTH)/2 + 1,
+			startingRow = ((LINES - MM_GRAPHIC_HEIGHT)/4) + 
+							MM_GRAPHIC_HEIGHT + 2;
+		
+		string gameStatStr = "Game Stats";
+		mvprintw(startingRow, COLS / 2 - (gameStatStr.length() / 2),
+				 gameStatStr.c_str());
+		attron(A_BOLD); refresh();
+		
+		ostringstream firstName, secondName, playerNum, time, finalScore;
+		
+		//Setup firstName display
+		firstName.clear();
+		firstName << " Name: " << gameStats->firstName;
+		
+		//Setup secondName display
+		secondName.clear();
+		if(gameStats->secondName != NULL)
+			secondName << " Other Player: " << gameStats->secondName;
+		else
+			secondName << " Other Player: N/A";
+		
+		//Setup playerNum
+		playerNum << " Player Number: " << gameStats->playerNum;
+		
+		//Setup time display		
+		time.clear();
+		if(gameStats->hours < 10)
+			time << " Time: " << "0" << gameStats->hours << ":";
+		else
+			time << " Time: " << gameStats->hours << ":";
+		if(gameStats->minutes < 10)
+			time << "0" << gameStats->minutes << ":";
+		else
+			time << gameStats->minutes << ":";
+		if(gameStats->seconds < 10)
+			time << "0" << gameStats->seconds;
+		else
+			time << gameStats->seconds;
+		
+		//Setup finalScore display
+		finalScore.clear();
+		finalScore << " FINAL SCORE: " << gameStats->finalScore;
+		
+		//Determine longest string that will be displayed
+		ostringstream testStr; int longest = 0;
+		testStr.clear(); testStr << gameStats->firstName;
+		if(testStr.str().length() > longest) longest = testStr.str().length();
+		testStr.clear(); testStr << gameStats->secondName;
+		if(testStr.str().length() > longest) longest = testStr.str().length();
+		if(time.str().length() > longest) longest = time.str().length();
+		testStr.clear(); testStr << gameStats->finalScore;
+		if(testStr.str().length() > longest) longest = testStr.str().length();
+		
+		//mvprintw(5, 5, "%d", longest); refresh();
+		
+		//Create Outer Border
+		WINDOW *subscrnMenuBorder = newwin(9, longest + 12, startingRow + 1, 
+			//startingCol - 1);
+			COLS / 2 - ((longest + 12) / 2));
+		wattron(subscrnMenuBorder, A_BOLD);
+		box(subscrnMenuBorder, '|', '_');
+		wborder(subscrnMenuBorder, '|', '|', '-', '-', '*', '*', '*', '*');
+		wattron(subscrnMenuBorder, A_BOLD); wrefresh(subscrnMenuBorder);
+		
+		//Create and load inner window
+		WINDOW *subscrnMenu = newwin(7, longest + 10, startingRow + 2, 
+			//startingCol);
+			COLS / 2 - ((longest + 10) / 2));		
+		wattron(subscrnMenu, COLOR_PAIR(WHITE_BLACK));
+		wattron(subscrnMenu, A_BOLD);		
+		box(subscrnMenu, '|', '_'); 
+		wborder(subscrnMenu, '|', '|', '-', '-', '*', '*', '*', '*');
+		
+		mvwprintw(subscrnMenu, 1, 2, firstName.str().c_str());
+		mvwprintw(subscrnMenu, 2, 2, secondName.str().c_str());
+		mvwprintw(subscrnMenu, 3, 2, playerNum.str().c_str());
+		mvwprintw(subscrnMenu, 4, 2, time.str().c_str());
+		mvwprintw(subscrnMenu, 5, 2, finalScore.str().c_str());
+		
+		string highScoreMessage = "CONGRATULATIONS! NEW HIGH SCORE.",
+			   exitMessage = "** PRESS ANY KEY TO RETURN TO MAIN MENU **";
+		if(isHighScore(gameStats->finalScore) != -2) {
+			mvprintw(startingRow + 11, COLS / 2 - (highScoreMessage.length() / 2),
+					 highScoreMessage.c_str());
+			mvprintw(startingRow + 13, COLS / 2 - (exitMessage.length() / 2),
+					 exitMessage.c_str());
+		}
+		else {
+			mvprintw(startingRow + 11, COLS / 2 - (exitMessage.length() / 2),
+					 exitMessage.c_str());
+		}
+		
+		refresh();
+			
+		wrefresh(subscrnMenu);
+		
+		delwin(subscrnMenu);
+		delwin(subscrnMenuBorder);
 	}
 	
 	delwin(subscrn);

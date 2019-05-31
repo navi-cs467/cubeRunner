@@ -13,6 +13,7 @@
 #include "constants.hpp"
 #include "using.hpp"
 #include "loadGraphic.hpp"
+#include "highScore.hpp"
 #include "Game.hpp"
 
 void transitionAnimation(const char* fileName,

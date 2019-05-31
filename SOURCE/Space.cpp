@@ -174,6 +174,7 @@ void Space::renderWorld(Cube *cube) {
 	//refresh();
 
 	//Paint blank background
+	attron(A_BOLD);
 	attron(COLOR_PAIR(BLACK_BLACK));
 	for(int i = 0; i <= bottomRow; i++)
 		mvhline(i, 0, ' ', COLS);
