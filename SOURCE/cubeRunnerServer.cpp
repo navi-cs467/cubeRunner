@@ -510,7 +510,7 @@ int main(int argc, char* argv[]) {
 							sendMessage_S(player2, messageToSend);
 
 							memset(clientConfirm, '\0', sizeof clientConfirm);
-							receiveMessage_S(player1, clientConfirm);
+							receiveMessage_S(player2, clientConfirm);
 
 							//CLOSE CONNECTION2
 							close(player2);
