@@ -159,48 +159,82 @@ int main(int argc, char* argv[]) {
 		memset(LINES_P2, '\0', sizeof LINES_P2);
 		memset(COLS_P1, '\0', sizeof COLS_P1);
 		memset(COLS_P2, '\0', sizeof COLS_P2);
-
+		
+		memset(confirm, '\0', sizeof confirm);
+		confirm[0] = '1';
+		
 		//Exchanging LINES and sending back smallest...
 		if(DEBUG)
 			printf("Exchanging LINES between players and determining smallest...\n");
 		
+		//Receive LINES from player 1
 		receiveMessage_S(player1, LINES_P1);
-		printf("Received LINES from player 1: %s...\n", LINES_P1);
+		if(DEBUG)
+			printf("Received LINES from player 1: %s\n", LINES_P1);
+		//Send confirm
+		sendMessage_S(player1, confirm);
+		
+		//Receive LINES from player 2
 		receiveMessage_S(player2, LINES_P2);
-		printf("Received LINES from player 2: %s...\n", LINES_P2);
+		if(DEBUG)
+			printf("Received LINES from player 2: %s\n", LINES_P2);
+		//Send confirm
+		sendMessage_S(player2, confirm);
+		
+		//Receive COLS from player 1
+		receiveMessage_S(player1, COLS_P1);
+		if(DEBUG)
+			printf("Received COLS from player 1: %s\n", COLS_P1);
+		//Send confirm
+		sendMessage_S(player1, confirm);
+		
+		//Receive COLS from player 2
+		receiveMessage_S(player2, COLS_P2);
+		if(DEBUG)
+			printf("Received COLS from player 2: %s\n", COLS_P2);
+		//Send confirm
+		sendMessage_S(player2, confirm);
 		
 		char SMALLEST_LINES[MSG_SIZE];
 		memset(SMALLEST_LINES, '\0', sizeof SMALLEST_LINES);
 		sprintf(SMALLEST_LINES, "%d", atoi(LINES_P1) <= atoi(LINES_P2) ? 
 									  atoi(LINES_P1) : atoi(LINES_P2));
-		
-		//Send back SMALLEST_LINES to both players
-		sendMessage_S(player1, SMALLEST_LINES);
-		sendMessage_S(player2, SMALLEST_LINES);
-		
-		if(DEBUG)
-			printf("Finished Exchanging LINES between players and determining smallest.\n");
-		
-		//Exchanging COLS and sending back smallest...
-		if(DEBUG)
-			printf("Exchanging COLS between players and determining smallest...\n");
-		
-		receiveMessage_S(player1, COLS_P1);
-		printf("Received COLS from player 1: %s...\n", COLS_P1);
-		receiveMessage_S(player2, COLS_P2);
-		printf("Received COLS from player 2: %s...\n", COLS_P2);
-		
+									  
 		char SMALLEST_COLS[MSG_SIZE];
 		memset(SMALLEST_COLS, '\0', sizeof SMALLEST_COLS);
 		sprintf(SMALLEST_COLS, "%d", atoi(COLS_P1) <= atoi(COLS_P2) ? 
 									  atoi(COLS_P1) : atoi(COLS_P2));
 		
-		//Send back SMALLEST_COLS to both players
+		//Receive new LINES request from player 1
+		receiveMessage_S(player1, LINES_P1);
+		if(DEBUG)
+			printf("Received LINES request from player 1: %s...\n", LINES_P1);
+		//Send new LINES
+		sendMessage_S(player1, SMALLEST_LINES);
+		
+		//Receive new LINES request from player 2
+		receiveMessage_S(player2, LINES_P2);
+		if(DEBUG)
+			printf("Received LINES request from player 2: %s...\n", LINES_P2);
+		//Send new LINES
+		sendMessage_S(player2, SMALLEST_LINES);
+		
+		//Receive new COLS request from player 1
+		receiveMessage_S(player1, LINES_P1);
+		if(DEBUG)
+			printf("Received COLS request from player 1: %s...\n", COLS_P1);
+		//Send new COLS
 		sendMessage_S(player1, SMALLEST_COLS);
+		
+		//Receive new COLS request from player 2
+		receiveMessage_S(player2, LINES_P2);
+		if(DEBUG)
+			printf("Received COLS request from player 2: %s...\n", COLS_P2);
+		//Send new COLS
 		sendMessage_S(player2, SMALLEST_COLS);
 		
 		if(DEBUG)
-			printf("Finished Exchanging LINES between players and determining smallest.\n");
+			printf("Finished Exchanging LINES & COLS between players and determining smallest.\n");
 
 		//Set new game dimensions based on smallest sizes
 		LINES = atoi(SMALLEST_LINES);		

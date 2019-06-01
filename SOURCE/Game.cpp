@@ -770,22 +770,43 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				memset(confirm, '\0', sizeof confirm);
 				memset(message, '\0', sizeof message);
 
-				//Send & receive LINES
+				//Send LINES
 				sprintf(message, "%d", LINES);
 				sendMessage_C(socketFD, message);
-				//Confirmation is new LINES constant, smallest of 
-				//both players' LINES (current screen size number of rows)
+				//Receive confirmation
 				receiveMessage_C(socketFD, confirm);
+
+				memset(message, '\0', sizeof message);
+				memset(message, '\0', sizeof message);
 				
-				LINES = atoi(confirm);
-				
-				//Send & receive COLS
+				//Send COLS
 				sprintf(message, "%d", COLS);
 				sendMessage_C(socketFD, message);
-				//Confirmation is new LINES constant, smallest of 
-				//both players' LINES (current screen size number of rows)
+				//Receive confirmation
 				receiveMessage_C(socketFD, confirm);
 				
+				memset(confirm, '\0', sizeof confirm);
+				memset(message, '\0', sizeof message);
+				
+				char request[MSG_SIZE]; 
+				memset(request, '\0', sizeof request); 
+				request[0] = '1';
+				//Send request for new LINES based on smallest LINES
+				//of both clients
+				sendMessage_C(socketFD, request);
+				//Receive new LINES (in confirm)
+				receiveMessage_C(socketFD, confirm);
+				//Save new LINES
+				LINES = atoi(confirm);
+				
+				memset(confirm, '\0', sizeof confirm);
+				
+				//Send request for new COLS based on smallest COLS
+				//of both clients
+				sendMessage_C(socketFD, request);
+				//Receive new LINES in confirmation
+				receiveMessage_C(socketFD, confirm);
+				//Save new LINES
 				COLS = atoi(confirm);
 
 				//receive dataPort from server, send confirmation to server
