@@ -543,22 +543,26 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							world->loadOSMCs(right);
 							scrollCountRight = 0;
 						}
-						if(scrollCountLeft++ == COLS) {
+						if(typeid(*world) == typeid(Space) &&
+						   scrollCountLeft++ == COLS) {
 							world->loadOSObs(left);
 							world->loadOSMCs(left);
 							scrollCountLeft = 0;
 						}
-						if(scrollCountUp++ == LINES) {
+						if(typeid(*world) == typeid(Space) &&
+						   scrollCountUp++ == LINES) {
 							world->loadOSObs(up);
 							world->loadOSMCs(up);
 							scrollCountUp = 0;
 						}
-						if(scrollCountDown++ == LINES) {
+						if(typeid(*world) == typeid(Space) &&
+						   scrollCountDown++ == LINES) {
 							world->loadOSObs(down);
 							world->loadOSMCs(down);
 							scrollCountDown = 0;
 						}
-						if(scrollDirChanged) {
+						if(typeid(*world) == typeid(Space) &&
+						   scrollDirChanged) {
 							world->loadOSObs(cube->getCubeDirection());
 							world->loadOSMCs(cube->getCubeDirection());
 							scrollDirChanged = false;
@@ -665,10 +669,10 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				clear();  // curses clear-screen call
 				refresh();
 
-				//Set LINES and COLS to minimum values (save original values)
+				//Save original LINES and COLS
 				int original_LINES = LINES, original_COLS = COLS;
-				LINES = MIN_WIN_HEIGHT;
-				COLS = MIN_WIN_WIDTH;
+				//LINES = MIN_WIN_HEIGHT;
+				//COLS = MIN_WIN_WIDTH;
 
 				//connect to server
 				socketFD = initSocket(host, port);
@@ -760,6 +764,29 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					receiveMessage_C(socketFD, secondName);
 					sendMessage_C(socketFD, username);
 				}
+				
+				//Send LINES and COLS, so server can send back smallest
+				//of both players LINES and COLS for game play
+				memset(confirm, '\0', sizeof confirm);
+				memset(message, '\0', sizeof message);
+
+				//Send & receive LINES
+				sprintf(message, "%d", LINES);
+				sendMessage_C(socketFD, message);
+				//Confirmation is new LINES constant, smallest of 
+				//both players' LINES (current screen size number of rows)
+				receiveMessage_C(socketFD, confirm);
+				
+				LINES = atoi(confirm);
+				
+				//Send & receive COLS
+				sprintf(message, "%d", COLS);
+				sendMessage_C(socketFD, message);
+				//Confirmation is new LINES constant, smallest of 
+				//both players' LINES (current screen size number of rows)
+				receiveMessage_C(socketFD, confirm);
+				
+				COLS = atoi(confirm);
 
 				//receive dataPort from server, send confirmation to server
 				memset(confirm, '\0', sizeof confirm);

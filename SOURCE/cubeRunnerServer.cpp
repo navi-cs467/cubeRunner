@@ -112,8 +112,6 @@ int main(int argc, char* argv[]) {
 				printf("Sent Game Mode Indicator (GM Match)...\n");
 		}
 
-		printf("After sending GM Match Loop (if applicable)...\n");
-
 		char message[MSG_SIZE];
 		memset(message, '\0', sizeof message);
 
@@ -126,32 +124,95 @@ int main(int argc, char* argv[]) {
 			sendMessage_S(player1, confirm);
 			sendMessage_S(player2, confirm);
 			if(DEBUG)
-				printf("Sent Game Mode Indicator (GM No Match)...\n");
+				printf("Sent Game Mode Indicator (GM No Match)...\n");	
 		}
 
 		//receive username from both clients, send back username of other player
 		char player1name[MSG_SIZE]; char player2name[MSG_SIZE];
-		//receive username from player 1
+		//receive username from player 2
 		memset(player1name, '\0', sizeof player1name);
 		memset(player2name, '\0', sizeof player2name);
 
-	  receiveMessage_S(player2, player2name);
-
-		printf("Received player name of player 2: %s...\n", player2name);
+		receiveMessage_S(player2, player2name);
+		if(DEBUG)
+			printf("Received player name of player 2: %s...\n", player2name);
 		sendMessage_S(player1, player2name);
+		if(DEBUG)
+			printf("Sent player name of player 2 to player 1: %s...\n", player2name);
 
-
+		//receive username from player 1
 		receiveMessage_S(player1, player1name);
 
-		printf("Received player name of player 1: %s...\n", player1name);
-		sendMessage_S(player2, player1name);
-
 		if(DEBUG)
-			printf("After sending GM No Match Loop (if applicable)...\n");
+			printf("Received player name of player 1: %s...\n", player1name);
+		sendMessage_S(player2, player1name);
+		if(DEBUG)
+			printf("Sent player name of player 1 to player 2: %s...\n", player2name);
 
+		
+		//Determine smallest dimensions (for LINES and COLS)
+		//for both player's screen sizes, so smallest can
+		//be utilized...
+		char LINES_P1[MSG_SIZE], LINES_P2[MSG_SIZE], 
+			 COLS_P1[MSG_SIZE], COLS_P2[MSG_SIZE];
+		memset(LINES_P1, '\0', sizeof LINES_P1);
+		memset(LINES_P2, '\0', sizeof LINES_P2);
+		memset(COLS_P1, '\0', sizeof COLS_P1);
+		memset(COLS_P2, '\0', sizeof COLS_P2);
+
+		//Exchanging LINES and sending back smallest...
+		if(DEBUG)
+			printf("Exchanging LINES between players and determining smallest...\n");
+		
+		receiveMessage_S(player1, LINES_P1);
+		printf("Received LINES from player 1: %s...\n", LINES_P1);
+		receiveMessage_S(player2, LINES_P2);
+		printf("Received LINES from player 2: %s...\n", LINES_P2);
+		
+		char SMALLEST_LINES[MSG_SIZE];
+		memset(SMALLEST_LINES, '\0', sizeof SMALLEST_LINES);
+		sprintf(SMALLEST_LINES, "%d", atoi(LINES_P1) <= atoi(LINES_P2) ? 
+									  atoi(LINES_P1) : atoi(LINES_P2));
+		
+		//Send back SMALLEST_LINES to both players
+		sendMessage_S(player1, SMALLEST_LINES);
+		sendMessage_S(player2, SMALLEST_LINES);
+		
+		if(DEBUG)
+			printf("Finished Exchanging LINES between players and determining smallest.\n");
+		
+		//Exchanging COLS and sending back smallest...
+		if(DEBUG)
+			printf("Exchanging COLS between players and determining smallest...\n");
+		
+		receiveMessage_S(player1, COLS_P1);
+		printf("Received COLS from player 1: %s...\n", COLS_P1);
+		receiveMessage_S(player2, COLS_P2);
+		printf("Received COLS from player 2: %s...\n", COLS_P2);
+		
+		char SMALLEST_COLS[MSG_SIZE];
+		memset(SMALLEST_COLS, '\0', sizeof SMALLEST_COLS);
+		sprintf(SMALLEST_COLS, "%d", atoi(COLS_P1) <= atoi(COLS_P2) ? 
+									  atoi(COLS_P1) : atoi(COLS_P2));
+		
+		//Send back SMALLEST_COLS to both players
+		sendMessage_S(player1, SMALLEST_COLS);
+		sendMessage_S(player2, SMALLEST_COLS);
+		
+		if(DEBUG)
+			printf("Finished Exchanging LINES between players and determining smallest.\n");
+
+		//Set new game dimensions based on smallest sizes
+		LINES = atoi(SMALLEST_LINES);		
+		COLS = atoi(SMALLEST_COLS);
+		
+		if(DEBUG) {
+			printf("LINES: %d COLS: %d", LINES, COLS);
+		}
+		
 		if(DEBUG)
 			printf("Sending Input Port Number To Clients...\n");
-
+		
 		//send second port number to clients
 		char portToSend[MSG_SIZE];
 
@@ -2043,22 +2104,26 @@ int main(int argc, char* argv[]) {
 							world->loadOSMCs(right);
 							scrollCountRight = 0;
 						}
-						if(scrollCountLeft++ == COLS) {
+						if(typeid(*world) == typeid(Space) &&
+						   scrollCountLeft++ == COLS) {
 							world->loadOSObs(left);
 							world->loadOSMCs(left);
 							scrollCountLeft = 0;
 						}
-						if(scrollCountUp++ == LINES) {
+						if(typeid(*world) == typeid(Space) &&
+						   scrollCountUp++ == LINES) {
 							world->loadOSObs(up);
 							world->loadOSMCs(up);
 							scrollCountUp = 0;
 						}
-						if(scrollCountDown++ == LINES) {
+						if(typeid(*world) == typeid(Space) &&
+						   scrollCountDown++ == LINES) {
 							world->loadOSObs(down);
 							world->loadOSMCs(down);
 							scrollCountDown = 0;
 						}
-						if(scrollDirChanged) {
+						if(typeid(*world) == typeid(Space) &&
+						   scrollDirChanged) {
 							world->loadOSObs(cube->getCubeDirection());
 							world->loadOSMCs(cube->getCubeDirection());
 							scrollDirChanged = false;
