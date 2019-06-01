@@ -10,7 +10,7 @@
 
 //Message informing the player that the other player has terminated early
 //let player confirm
-void earlyTermTransition(int playerNum, int *confirmedGameOver, bool *hasTerminated) {
+void earlyTermTransition(int playerNum, int *userInput, int *confirmedGameOver, bool *hasTerminated) {
 
 	clear();  //Curses clear-screen call
 
