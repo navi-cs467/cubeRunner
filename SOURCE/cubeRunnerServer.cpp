@@ -516,7 +516,7 @@ int main(int argc, char* argv[]) {
 							//CLOSE CONNECTION2
 							close(player2);
 							close(player2In);
-							gameOver == true;
+							gameOver = true;
 							break;
 						}
 						//Otherwise report no early termination to other player
@@ -557,7 +557,7 @@ int main(int argc, char* argv[]) {
 							//CLOSE CONNECTION1
 							close(player1);
 							close(player1In);
-							gameOver == true;
+							gameOver = true;
 							break;
 						}
 						//Otherwise report no early termination to other player
