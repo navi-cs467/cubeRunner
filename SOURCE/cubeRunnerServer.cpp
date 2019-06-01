@@ -258,7 +258,7 @@ int main(int argc, char* argv[]) {
 		bool renderedLastMv1 = true, renderedLastMv2 = true, deathFlag = false,
 			 scrollLock = false, scrollDirChanged = false;
 		Direction lockedScrollDir = right, lastScrollDir = right;
-		int userInput1 = 0; userInput2 = 0;
+		int userInput1 = 0; int userInput2 = 0;
 
 		if(DEBUG)
 			printf("Instantiating Game and starting...\n"); fflush(stdout);
