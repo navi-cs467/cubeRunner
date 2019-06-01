@@ -36,6 +36,7 @@ int main(int argc, char* argv[]) {
 	char* inputPort = argv[2];
 
 	bool gameOver = false;
+	bool earlyTerm = false;
 
 	//initialize server on first port number
 	int servSock1 = initServer(portNum);
@@ -46,6 +47,7 @@ int main(int argc, char* argv[]) {
 	while(1) {
 		printf("Listening For New Connections On Port %s...\n", portNum);
 		gameOver = false;
+		earlyTerm = false;
 		//Optional: int gmP1, gmP2;		//"game mode player 1" & "game mode player 2"
 
 		// Set up listener1, wait for connection
@@ -124,7 +126,7 @@ int main(int argc, char* argv[]) {
 			sendMessage_S(player1, confirm);
 			sendMessage_S(player2, confirm);
 			if(DEBUG)
-				printf("Sent Game Mode Indicator (GM No Match)...\n");	
+				printf("Sent Game Mode Indicator (GM No Match)...\n");
 		}
 
 		//receive username from both clients, send back username of other player
@@ -149,11 +151,11 @@ int main(int argc, char* argv[]) {
 		if(DEBUG)
 			printf("Sent player name of player 1 to player 2: %s...\n", player2name);
 
-		
+
 		//Determine smallest dimensions (for LINES and COLS)
 		//for both player's screen sizes, so smallest can
 		//be utilized...
-		char LINES_P1[MSG_SIZE], LINES_P2[MSG_SIZE], 
+		char LINES_P1[MSG_SIZE], LINES_P2[MSG_SIZE],
 			 COLS_P1[MSG_SIZE], COLS_P2[MSG_SIZE];
 		memset(LINES_P1, '\0', sizeof LINES_P1);
 		memset(LINES_P2, '\0', sizeof LINES_P2);
@@ -202,7 +204,7 @@ int main(int argc, char* argv[]) {
 									  
 		char SMALLEST_COLS[MSG_SIZE];
 		memset(SMALLEST_COLS, '\0', sizeof SMALLEST_COLS);
-		sprintf(SMALLEST_COLS, "%d", atoi(COLS_P1) <= atoi(COLS_P2) ? 
+		sprintf(SMALLEST_COLS, "%d", atoi(COLS_P1) <= atoi(COLS_P2) ?
 									  atoi(COLS_P1) : atoi(COLS_P2));
 		
 		//Receive new LINES request from player 1
@@ -223,30 +225,30 @@ int main(int argc, char* argv[]) {
 		receiveMessage_S(player1, LINES_P1);
 		if(DEBUG)
 			printf("Received COLS request from player 1: %s...\n", COLS_P1);
-		//Send new COLS
+		//Send new COLS to player 1
 		sendMessage_S(player1, SMALLEST_COLS);
 		
 		//Receive new COLS request from player 2
 		receiveMessage_S(player2, LINES_P2);
 		if(DEBUG)
 			printf("Received COLS request from player 2: %s...\n", COLS_P2);
-		//Send new COLS
+		//Send new COLS to player 2
 		sendMessage_S(player2, SMALLEST_COLS);
-		
+
 		if(DEBUG)
 			printf("Finished Exchanging LINES & COLS between players and determining smallest.\n");
 
 		//Set new game dimensions based on smallest sizes
-		LINES = atoi(SMALLEST_LINES);		
+		LINES = atoi(SMALLEST_LINES);
 		COLS = atoi(SMALLEST_COLS);
-		
+
 		if(DEBUG) {
 			printf("LINES: %d COLS: %d", LINES, COLS);
 		}
-		
+
 		if(DEBUG)
 			printf("Sending Input Port Number To Clients...\n");
-		
+
 		//send second port number to clients
 		char portToSend[MSG_SIZE];
 
@@ -371,7 +373,7 @@ int main(int argc, char* argv[]) {
 				char messageToReceive[MSG_SIZE];
 				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
-				while (userInput1 != 'q' && gameOver == false) {
+				while (userInput1 != 'q' && gameOver == false && earlyTerm == false) {
 
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput1 from connection1;
@@ -457,7 +459,7 @@ int main(int argc, char* argv[]) {
 				char messageToReceive[MSG_SIZE];
 				memset(messageToReceive, '\0', sizeof(messageToReceive));
 
-				while (userInput2 != 'q' && gameOver == false) {
+				while (userInput2 != 'q' && gameOver == false && earlyTerm == false) {
 
 					// Blocks here waiting for input
 					// RECEIVE int_1 into userInput2 from connection2;
@@ -610,7 +612,7 @@ int main(int argc, char* argv[]) {
 							//CLOSE CONNECTION2
 							close(player2);
 							close(player2In);
-							gameOver = true;
+							earlyTerm = true;
 							break;
 						}
 						//Otherwise report no early termination to other player
@@ -651,7 +653,7 @@ int main(int argc, char* argv[]) {
 							//CLOSE CONNECTION1
 							close(player1);
 							close(player1In);
-							gameOver = true;
+							earlyTerm = true;
 							break;
 						}
 						//Otherwise report no early termination to other player
