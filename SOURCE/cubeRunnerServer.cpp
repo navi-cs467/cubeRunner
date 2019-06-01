@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
 
 	while(1) {
 		printf("Listening For New Connections On Port %s...\n", portNum);
+		gameOver = false;
 		//Optional: int gmP1, gmP2;		//"game mode player 1" & "game mode player 2"
 
 		// Set up listener1, wait for connection
@@ -515,6 +516,7 @@ int main(int argc, char* argv[]) {
 							//CLOSE CONNECTION2
 							close(player2);
 							close(player2In);
+							gameOver == true;
 							break;
 						}
 						//Otherwise report no early termination to other player
@@ -555,6 +557,7 @@ int main(int argc, char* argv[]) {
 							//CLOSE CONNECTION1
 							close(player1);
 							close(player1In);
+							gameOver == true;
 							break;
 						}
 						//Otherwise report no early termination to other player
