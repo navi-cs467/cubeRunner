@@ -137,15 +137,14 @@ int main(int argc, char* argv[]) {
 
 	  receiveMessage_S(player2, player2name);
 
-		printf("Received player name of player 2 %s...\n", player2name);
+		printf("Received player name of player 2: %s...\n", player2name);
 		sendMessage_S(player1, player2name);
 
-		memset(player2name, '\0', sizeof player2name);
+
 		receiveMessage_S(player1, player1name);
 
-		printf("Received confirm name of player 2 from client 1 %s...\n", player1name);
-
-
+		printf("Received player name of player 1: %s...\n", player1name);
+		sendMessage_S(player2, player1name);
 
 		if(DEBUG)
 			printf("After sending GM No Match Loop (if applicable)...\n");
