@@ -978,7 +978,7 @@ int main(void)
 			gameinfo = game.playGame(host, port, username);
 
 			//only save high scores from first player to prevent duplicates
-			if (gameinfo.playerNum == 1)
+			if (gameinfo.playerNum == 1 && gameinfo.earlyTerm == false)
 			{
 				addScoreMulti(gameinfo.finalScore, gameinfo.firstName,
 					gameinfo.secondName, gameinfo.hours, gameinfo.minutes,

@@ -33,6 +33,7 @@ struct gameData {
 	int seconds;
 	int finalScore;
 	int playerNum;
+	bool earlyTerm;
 };
 
 class Game {
