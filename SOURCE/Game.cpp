@@ -800,8 +800,11 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				while (!hasTerminated) {
 
 						//User input send/receive is blocked during render
-						omp_set_lock(&userInputLock);
-
+						if(!hasTerminated)
+						{
+							omp_set_lock(&userInputLock);
+						}
+						
 						//Pseudocode variables... change as desired
 						int int_1, int_2, int_3, int_4, int_5, int_6, int_7, int_8;
 						char earlyTerm[MSG_SIZE], scoreStr[MSG_SIZE],
@@ -832,6 +835,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						{
 							// display message to user here ***
 							scoreInfo.earlyTerm = true;
+							hasTerminated = false;
 
 							//receive score
 							receiveMessage_C(socketFD, scoreStr);
