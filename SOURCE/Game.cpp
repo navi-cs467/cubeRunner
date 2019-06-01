@@ -764,7 +764,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					receiveMessage_C(socketFD, secondName);
 					sendMessage_C(socketFD, username);
 				}
-				
+
 				//Send LINES and COLS, so server can send back smallest
 				//of both players LINES and COLS for game play
 				memset(confirm, '\0', sizeof confirm);
@@ -778,18 +778,18 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 				memset(message, '\0', sizeof message);
 				memset(message, '\0', sizeof message);
-				
+
 				//Send COLS
 				sprintf(message, "%d", COLS);
 				sendMessage_C(socketFD, message);
 				//Receive confirmation
 				receiveMessage_C(socketFD, confirm);
-				
+
 				memset(confirm, '\0', sizeof confirm);
 				memset(message, '\0', sizeof message);
-				
-				char request[MSG_SIZE]; 
-				memset(request, '\0', sizeof request); 
+
+				char request[MSG_SIZE];
+				memset(request, '\0', sizeof request);
 				request[0] = '1';
 				//Send request for new LINES based on smallest LINES
 				//of both clients
@@ -798,9 +798,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				receiveMessage_C(socketFD, confirm);
 				//Save new LINES
 				LINES = atoi(confirm);
-				
+
 				memset(confirm, '\0', sizeof confirm);
-				
+
 				//Send request for new COLS based on smallest COLS
 				//of both clients
 				sendMessage_C(socketFD, request);
@@ -848,10 +848,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				while (!hasTerminated) {
 
 						//User input send/receive is blocked during render
-						if(!hasTerminated)
-						{
-							omp_set_lock(&userInputLock);
-						}
+						omp_set_lock(&userInputLock);
 
 						//Pseudocode variables... change as desired
 						int int_1, int_2, int_3, int_4, int_5, int_6, int_7, int_8;
@@ -898,7 +895,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							// close connection
 							close(socketFD);
 							close(inputSocket);
-
+							omp_unset_lock(&userInputLock);
 							break;
 						}
 
