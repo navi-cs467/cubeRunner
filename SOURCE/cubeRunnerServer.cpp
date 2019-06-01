@@ -258,7 +258,7 @@ int main(int argc, char* argv[]) {
 		bool renderedLastMv1 = true, renderedLastMv2 = true, deathFlag = false,
 			 scrollLock = false, scrollDirChanged = false;
 		Direction lockedScrollDir = right, lastScrollDir = right;
-		int userInput1, userInput2;
+		int userInput1 = 0; userInput2 = 0;
 
 		if(DEBUG)
 			printf("Instantiating Game and starting...\n"); fflush(stdout);
@@ -465,7 +465,7 @@ int main(int argc, char* argv[]) {
 					   lastRefreshTime = omp_get_wtime(),
 					   lastNewObsTime = omp_get_wtime(),
 					   lastShotTime = omp_get_wtime();
-				int statsTime, startTime, 
+				int statsTime, startTime,
 					scrollCountRight = 0, scrollCountLeft = 0,
 					scrollCountUp = 0, scrollCountDown = 0,
 					seconds = 0, minutes = 0, hours = 0;
@@ -601,10 +601,10 @@ int main(int argc, char* argv[]) {
 								newWorldType = 3;
 							}
 							else if(typeid(*world) == typeid(Space)) {
-								
+
 								//Delete the existing world
 								delete world;
-								
+
 								//Create new world
 								world = new Water(gameMode, true, true);
 								cube->transitionWorld(world);
@@ -746,7 +746,7 @@ int main(int argc, char* argv[]) {
 								sendMessage_S(player2, messageToSend);
 								memset(clientConfirm, '\0', sizeof clientConfirm);
 								receiveMessage_S(player2, clientConfirm);
-								
+
 								//Send Obstacle collision type
 								memset(messageToSend, '\0', sizeof messageToSend);
 								sprintf(messageToSend, "%d", obCollisionType);
@@ -1994,7 +1994,7 @@ int main(int argc, char* argv[]) {
 
 						// (Optional ?) RECEIVE connection2: confirmation
 						/**** END SEND TIME INFO  ****/
-						
+
 						/**** SEND SCROLL LOCK  ****/
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", scrollLock);
@@ -2018,7 +2018,7 @@ int main(int argc, char* argv[]) {
 					//Scroll
 					if(omp_get_wtime() - lastScrollTime > scrollRate) {
 						lastScrollTime = omp_get_wtime();
-						
+
 						if(typeid(*world) != typeid(Space)) {
 							world->scroll_(cube);
 						}
@@ -2032,7 +2032,7 @@ int main(int argc, char* argv[]) {
 								if(lastScrollDir != cube->getCubeDirection())
 									scrollDirChanged = true;
 						}
-						
+
 						//Load new offscreen Obstacles and miniCubes every time
 						//a screens-worth has been scrolled, or the scroll direction
 						//changes (Space only)
@@ -2065,20 +2065,20 @@ int main(int argc, char* argv[]) {
 						//Repopulate onscreen miniCubes if too many have been
 						//consumed by moving obstacles according to this
 						//threshold
-						
+
 						//Determine existing onscreen miniCube count
 						int onscreenMCCount = 0;
 						set<pair<int, int>>::iterator mcs;
-						for(mcs = world->getMiniCubes().begin(); 
+						for(mcs = world->getMiniCubes().begin();
 							mcs != world->getMiniCubes().end(); mcs++) {
 							if(mcs->second < COLS && mcs->second >= 0 &&
-							   mcs->first < world->getBottomRow() && mcs->first >= 0) 
+							   mcs->first < world->getBottomRow() && mcs->first >= 0)
 									onscreenMCCount++;
 						}
 						if(onscreenMCCount < (NUM_MCS_EASY / gameMode) / 2)
 							world->initMiniCubes(1);
-						
-						//Used to determine if scroll direction changes 
+
+						//Used to determine if scroll direction changes
 						//(Space only), for loading offscreen Obstacles
 						if(scrollLock) lastScrollDir = lockedScrollDir;
 						else if(typeid(*world) == typeid(Space))
