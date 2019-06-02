@@ -677,8 +677,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				//connect to server
 				socketFD = initSocket(host, port);
 
-				if(DEBUG)
+				if(DEBUG) {
 					move(5,5); printw("Connected..."); refresh();
+				}
 
 				//hold server connection confirmation
 				char message[256];
