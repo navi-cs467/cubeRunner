@@ -701,8 +701,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					char gM[MSG_SIZE];
 					sprintf(gM, "%d", gameMode);
 					sendMessage_C(socketFD, gM);
-					if(DEBUG)
+					if(DEBUG) {   //// ***** added {}
 						move(7,5); printw("Sent GM Player 1...\n"); refresh();
+					}
 
 					//check for other player and gamemode match
 					memset(message, '\0', sizeof message);
