@@ -675,7 +675,17 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				//COLS = MIN_WIN_WIDTH;
 
 				//connect to server
-				socketFD = initSocket(host, port);
+				//////////// *********************
+				int i = 0;
+				socketFD = -5;
+				while(socketFD < 0){
+					socketFD = initSocket(host, port);//original line
+					if(DEBUG) {
+						move(4,5); printw("Attempting to connect, tries: %d, socket: %d", i++, socketFD); refresh(); 
+					}
+					usleep(100000);
+				}
+				//////////// *********************
 
 				if(DEBUG) {
 					move(5,5); printw("Connected..."); refresh();
