@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 
 	if (argc != 3)
 	{
-		fprintf("Wrong number of arguments. Usage: %s PORT_NUM INPUT_PORT_NUM\n", argv[0]);
+		printf("Wrong number of arguments. Usage: %s PORT_NUM INPUT_PORT_NUM\n", argv[0]);
 		exit(0);
 	}
 
