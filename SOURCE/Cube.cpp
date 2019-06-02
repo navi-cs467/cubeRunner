@@ -115,8 +115,8 @@ void Cube::importCubeImage(void){
 
 	//Left Cube
 	inFile.open("gameCubeLeft.txt", ios::in); //sleep(50);
-	
-	if(inFile.is_open()){ 
+
+	if(inFile.is_open()){
 		k = 0;
 		j = 0;
 		while(getline(inFile, inLine)){
@@ -127,7 +127,7 @@ void Cube::importCubeImage(void){
 		}
 		inFile.close();
 	} */
-	
+
 	//Left Cube
 	cubeLeftChars[0][0] = ' ';
 	cubeLeftChars[0][1] = '_';
@@ -145,10 +145,10 @@ void Cube::importCubeImage(void){
 	cubeLeftChars[2][3] = '\\';
 	cubeLeftChars[2][4] = '/';
 
-	
+
 	/* //Right Cube
 	inFile.open("gameCubeRight.txt", ios::in);
-	
+
 	if(inFile.is_open()){
 		k = 0;
 		j = 0;
@@ -160,13 +160,13 @@ void Cube::importCubeImage(void){
 		}
 		inFile.close();
 	} */
-	
+
 	//Right Cube
-	cubeRightChars[0][0] = ' '; 
-	cubeRightChars[0][1] = '_'; 
-	cubeRightChars[0][2] = '_'; 
-	cubeRightChars[0][3] = '_'; 
-	cubeRightChars[0][4] = ' '; 
+	cubeRightChars[0][0] = ' ';
+	cubeRightChars[0][1] = '_';
+	cubeRightChars[0][2] = '_';
+	cubeRightChars[0][3] = '_';
+	cubeRightChars[0][4] = ' ';
 	cubeRightChars[1][0] = '/';
 	cubeRightChars[1][1] = '\\';
 	cubeRightChars[1][2] = '_';
@@ -188,7 +188,7 @@ void Cube::initializeCubeCoords(void){
 			cubeCoords[k][0] = row + i;  //set row number
 			cubeCoords[k][1] = col + j;  //set column number
 			++k;
-		}		
+		}
 	}
 }
 
@@ -308,7 +308,7 @@ void Cube::cubeReset(World *world){
 	cubeCoords[15][1] = 5;
 */
 	curDir = right;
-	
+
 	//Initialize shotOff and shotCoords
 	shotOff = false;
 	shotCoords.first = -1; shotCoords.second = -1;
@@ -435,7 +435,7 @@ void Cube::updateCubePositionHelper(int colDec, int colInc, int rowInc, int rowD
 		rowPrev = row;
 		col = col + colInc - colDec;
 		row = row + rowInc - rowDec;
-		if(rowPrev == row){ 
+		if(rowPrev == row){
 			row = row + 1;
 		}
 		Cube::updateCubeCoords(colPrev, col, rowPrev, row);
@@ -466,8 +466,8 @@ void Cube::updateCubePositionHelper(int colDec, int colInc, int rowInc, int rowD
 		Cube::updateCubeCoords(colPrev, col, rowPrev, row);
 	} */
 
-	
-	
+
+
 
 }
 
@@ -482,7 +482,7 @@ int Cube::updateCubeCoords(int colPrev, int colCurr, int rowPrev, int rowCurr){
 
 	for(i = 0; i < CUBE_COORDS_HEIGHT; ++i){
 		cubeCoords[i][0] = cubeCoords[i][0] + rowChange;
-		cubeCoords[i][1] = cubeCoords[i][1] + colChange;	
+		cubeCoords[i][1] = cubeCoords[i][1] + colChange;
 
 	}
 
@@ -491,10 +491,10 @@ int Cube::updateCubeCoords(int colPrev, int colCurr, int rowPrev, int rowCurr){
 }
 
 void Cube::drawCube(void){
-	
+
 	attron(COLOR_PAIR(color));
 	attron(A_BOLD);
-	
+
 	//Use right cube
 	if(useLeftCube == 0){
 		move(cubeCoords[0][0],cubeCoords[0][1]); printw("%c", cubeRightChars[0][0]);
@@ -513,7 +513,7 @@ void Cube::drawCube(void){
 		move(cubeCoords[13][0],cubeCoords[13][1]); printw("%c", cubeRightChars[2][3]);
 		move(cubeCoords[14][0],cubeCoords[14][1]); printw("%c", cubeRightChars[2][4]);
 	}
-	
+
 	//Use left cube
 	else {
 		move(cubeCoords[0][0],cubeCoords[0][1]); printw("%c", cubeLeftChars[0][0]);
@@ -532,7 +532,7 @@ void Cube::drawCube(void){
 		move(cubeCoords[13][0],cubeCoords[13][1]); printw("%c", cubeLeftChars[2][3]);
 		move(cubeCoords[14][0],cubeCoords[14][1]); printw("%c", cubeLeftChars[2][4]);
 	}
-	
+
 	/* if(useLeftCube == 0){
 		mvaddch(cubeCoords[0][0],cubeCoords[0][1],cubeRightChars[0][0]);
 		mvaddch(cubeCoords[1][0],cubeCoords[1][1],cubeRightChars[0][1]);
@@ -567,7 +567,7 @@ void Cube::drawCube(void){
 		mvaddch(cubeCoords[13][0],cubeCoords[13][1],cubeLeftChars[2][3]);
 		mvaddch(cubeCoords[14][0],cubeCoords[14][1],cubeLeftChars[2][4]);
 	} */
-	
+
 	//Add Direction Color Highlight
 	if(curDir != none){
 		//start_color();
@@ -682,9 +682,9 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 
 	int i = 0, j = 0, k = 0;
 
-	start_color();
-	init_pair(1, COLOR_RED, COLOR_BLACK);
-	attron(COLOR_PAIR(1));
+	// start_color();
+	// init_pair(1, COLOR_RED, COLOR_BLACK);
+	attron(COLOR_PAIR(RED_BLACK));
 
 	//So animation isn't skipped if last user input is enter
 	*userInput = 0;
@@ -702,9 +702,9 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 	for(int i = 0; *userInput != 10 && i < 500000 / 100; i++)
 		usleep(50);
 
-	attroff(COLOR_PAIR(1));
-	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
-	attron(COLOR_PAIR(2));
+	attroff(COLOR_PAIR(RED_BLACK));
+	// init_pair(2, COLOR_YELLOW, COLOR_BLACK);
+	attron(COLOR_PAIR(YELLOW_BLACK));
 
 	//Death Part 2 - larger ring around token
 	for(i = (col-2); i <= (col+6); ++i){ //draw top/bottom sides
@@ -719,9 +719,9 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 	for(int i = 0; *userInput != 10 && i < 450000 / 100; i++)
 		usleep(50);
 
-	attroff(COLOR_PAIR(2));
-	init_pair(3, COLOR_GREEN, COLOR_BLACK);
-	attron(COLOR_PAIR(3));
+	attroff(COLOR_PAIR(YELLOW_BLACK));
+	// init_pair(3, COLOR_GREEN, COLOR_BLACK);
+	attron(COLOR_PAIR(GREEN_BLACK));
 
 
 	//Death Part 3 - first broken ring around token
@@ -737,9 +737,9 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 	for(int i = 0; *userInput != 10 && i < 400000 / 100; i++)
 		usleep(50);
 
-	attroff(COLOR_PAIR(3));
-	init_pair(4, COLOR_BLUE, COLOR_BLACK);
-	attron(COLOR_PAIR(4));
+	attroff(COLOR_PAIR(GREEN_BLACK));
+	// init_pair(4, COLOR_BLUE, COLOR_BLACK);
+	attron(COLOR_PAIR(BLUE_BLACK));
 
 
 	//Death Part 4 - second broken ring around token
@@ -755,9 +755,9 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 	for(int i = 0; *userInput != 10 && i < 350000 / 100; i++)
 		usleep(50);
 
-	attroff(COLOR_PAIR(4));
-	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
-	attron(COLOR_PAIR(5));
+	attroff(COLOR_PAIR(BLUE_BLACK));
+	// init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+	attron(COLOR_PAIR(MAGENTA_BLACK));
 
 	//Death Part 5 - third broken ring around token
 	for(i = (col-5); i <= (col+9); (i=i+2)){ //draw top/bottom sides
@@ -772,9 +772,9 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 	for(int i = 0; *userInput != 10 && i < 300000 / 100; i++)
 		usleep(50);
 
-	attroff(COLOR_PAIR(5));
-	init_pair(6, COLOR_CYAN, COLOR_BLACK);
-	attron(COLOR_PAIR(6));
+	attroff(COLOR_PAIR(MAGENTA_BLACK));
+	// init_pair(6, COLOR_CYAN, COLOR_BLACK);
+	attron(COLOR_PAIR(CYAN_BLACK));
 
 	//Death Part 6 - fourth broken ring around token (shorter)
 	for(i = (col-3); i <= (col+7); (i=i+2)){ //draw top/bottom sides
@@ -799,14 +799,14 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 	for(int i = 0; *userInput != 10 && i < 300000 / 100; i++)
 		usleep(50);
 
-	attroff(COLOR_PAIR(6));
-	init_pair(7, COLOR_WHITE, COLOR_BLACK);
-	attron(COLOR_PAIR(7));
+	attroff(COLOR_PAIR(CYAN_BLACK));
+	// init_pair(7, COLOR_WHITE, COLOR_BLACK);
+	attron(COLOR_PAIR(WHITE_BLACK));
 
 	for(k = 0; k < 5; ++k){
 		//Token Flash Part 1 - blank
 		for(i = row; i <= (row+2); ++i){
-			for(j = col; j <= (col+4); ++j){ 
+			for(j = col; j <= (col+4); ++j){
 				mvaddch(i,j,' ');
 			}
 		}
@@ -816,7 +816,7 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 
 		//Token Flash Part 2 - appear
 		for(i = row; i <= (row+2); ++i){
-			for(j = col; j <= (col+4); ++j){ 
+			for(j = col; j <= (col+4); ++j){
 				mvaddch(i,j,'X');
 			}
 		}
@@ -825,7 +825,7 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 			usleep(50);
 	}
 
-	attroff(COLOR_PAIR(7));
+	attroff(COLOR_PAIR(WHITE_BLACK));
 
 	//Block here until user presses Enter key
 	while(*userInput != 10){}
@@ -834,7 +834,7 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 	attron(COLOR_PAIR(BLACK_BLACK));
 	mvhline(LINES - 1, 15, ' ', 75);
 	refresh();
-	
+
 	if(currWorld->getIsTwoPlayer()) {
 		attron(COLOR_PAIR(YELLOW_BLACK));
 		mvprintw(LINES - 1, 15, "Waiting for other player to press enter...");
@@ -845,12 +845,12 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 //void Cube::drawCubeDeath(int *userInput){
 /* void Cube::drawCubeDeath(void){
 
-	
+
 	int i = 0, j = 0, k = 0;
 
 	//*userInput = 0;
 
-	start_color();			
+	start_color();
 	init_pair(1, COLOR_RED, COLOR_BLACK);
 	attron(COLOR_PAIR(1));
 
@@ -865,7 +865,7 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 		mvaddch(i,(col+5),'@');
 	}
 	refresh();
-	usleep(500000);	
+	usleep(500000);
 
 	attroff(COLOR_PAIR(1));
 	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
@@ -969,7 +969,7 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 	for(k = 0; k < 5; ++k){
 		//Token Flash Part 1 - blank
 		for(i = row; i <= (row+2); ++i){
-			for(j = col; j <= (col+4); ++j){ 
+			for(j = col; j <= (col+4); ++j){
 				mvaddch(i,j,' ');
 			}
 		}
@@ -978,7 +978,7 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 
 		//Token Flash Part 2 - X's
 		for(i = row; i <= (row+2); ++i){
-			for(j = col; j <= (col+4); ++j){ 
+			for(j = col; j <= (col+4); ++j){
 				mvaddch(i,j,'X');
 			}
 		}
@@ -1005,7 +1005,7 @@ int Cube::checkCubeCollision(World *world){
 				world->getMiniCubes().erase(mcs);
 				//increment score
 				score += 10;
-				transitionScore += 10;				
+				transitionScore += 10;
 				}
 		}
 	}
@@ -1060,7 +1060,7 @@ int Cube::checkCubeCollision(World *world){
 						return 11;
 					else if(typeid(*lastObCollided) == typeid(Spaceship))
 						return 12;
-					
+
 				}
 			}
 		}
@@ -1071,7 +1071,7 @@ int Cube::checkCubeCollision(World *world){
 /* void Cube::checkCubeCollision(set<pair<int, int> > miniCubes, set<pair<int, int> > obsCoords){
 	int i = 0;
 	set<pair<int,int> >::iterator setIterator;
-	
+
 	//Check MiniCube Collisions
 	for(setIterator=miniCubes.begin(); setIterator!=miniCubes.end(); ++setIterator){
 		for(i = 0; i < 15; ++i){
@@ -1083,7 +1083,7 @@ int Cube::checkCubeCollision(World *world){
 				mvaddstr(39,0,"SCORE INC");
 			}
 		}
-	}	
+	}
 
 	//Check Obstacle Collisions
 	for(setIterator=obsCoords.begin(); setIterator!=obsCoords.end(); ++setIterator){
@@ -1122,8 +1122,8 @@ void Cube::fireShot() {
 			shotCoords.first = row + cubeHeight - 1;
 			shotCoords.second = col + cubeWidth / 2;
 			shotDir = down;
-		}			
-		
+		}
+
 		shotOff = true;
 	}
 }
@@ -1155,7 +1155,7 @@ void Cube::processShot() {
 			mcIt != currWorld->getMiniCubes().end() &&
 			shotOff;
 			++mcIt){
-			if(mcIt->first == shotCoords.first && 
+			if(mcIt->first == shotCoords.first &&
 			   mcIt->second == shotCoords.second) {
 				currWorld->getMiniCubes().erase(mcIt);
 					shotOff = false;
@@ -1190,10 +1190,10 @@ void Cube::processShot() {
 					   }
 					   //Track hits if non-stationary
 					   else {
-							//Increment Obstacle's hit counter 
+							//Increment Obstacle's hit counter
 							(*obsIt)->incHits();
 							(*obsIt)->resetMvsSinceLastHit();
-					   
+
 						   //If Obstacle has reached maxHits, delete it and
 						   //increment score based on Obstacle's maxHits
 						   if((*obsIt)->getMaxHits() == (*obsIt)->getHits()) {
@@ -1203,18 +1203,18 @@ void Cube::processShot() {
 								currWorld->getObstacles().erase(obsIt);
 						   }
 					   }
-					   
+
 					   shotOff = false;
 					   shotCoords.first = -1; shotCoords.second = -1;
-					   
-					   
+
+
 				}
 			}
 		}
 	}
 	//If no hit, print shot indicator at new position
 	if(shotOff) {
-		if(shotCoords.first > 0 && 
+		if(shotCoords.first > 0 &&
 		   shotCoords.first <= currWorld->getBottomRow() &&
 		   shotCoords.second > 0 &&
 		   shotCoords.second < COLS) {
@@ -1327,7 +1327,7 @@ void Cube::printShot() {
 	cubeA.Cube::cubeInitWorld3();
 	cubeA.Cube::drawCube();
 	refresh();
-	
+
     }
 
   }
