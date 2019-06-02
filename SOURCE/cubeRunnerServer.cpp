@@ -31,9 +31,31 @@ int main(int argc, char* argv[]) {
 
 	srand(time(NULL));	//Seed random number generator with system time
 
+	if (argc != 3)
+	{
+		fprintf("Wrong number of arguments. Usage: %s PORT_NUM INPUT_PORT_NUM\n", argv[0]);
+		exit(0);
+	}
+
   //receive port number to start server on
 	char* portNum = argv[1];
 	char* inputPort = argv[2];
+
+	int checkPort = atoi(argv[1]);
+
+	if (checkPort < 1 || checkPort > 65535)
+	{
+		printf("Invalid port number %s entered. Valid port numbers are 1-65535. Please try another port number.\n", portNum);
+		exit(0);
+	}
+
+	checkPort = atoi(argv[2]);
+
+	if (checkPort < 1 || checkPort > 65535)
+	{
+		printf("Invalid port number %s entered. Valid port numbers are 1-65535. Please try another port number.\n", inputPort);
+		exit(0);
+	}
 
 	bool gameOver = false;
 

@@ -344,6 +344,7 @@ void displayScores(WINDOW **subscrnGraphic)
   int row = LINES / 2; int col = (COLS / 2) - 6;
 
   //display header
+  attron(A_BOLD);
   attron(COLOR_PAIR(MAGENTA_BLACK));
   move(row, col-21); printw("RANK");
   refresh();
