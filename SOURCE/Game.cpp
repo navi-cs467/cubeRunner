@@ -681,7 +681,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				while(socketFD < 0){
 					socketFD = initSocket(host, port);//original line
 					if(DEBUG) {
-						move(4,5); printw("Attempting to connect, tries: %d, socket: %d", i++, socketFD); refresh(); 
+						move(3,5); printw("Attempting to connect, tries: %d, socket: %d", i++, socketFD); refresh(); 
 					}
 					usleep(100000);
 				}
@@ -694,6 +694,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				//hold server connection confirmation
 				char message[256];
 				memset(message, '\0', sizeof message);
+
+				move(4,5); printw("PLEASE WAIT FOR ANOTHER PLAYER TO CONNECT..."); refresh();   ////// ***************
 
 				//receive message, either 0 or 1 depending on player 1 or 2
 				receiveMessage_C(socketFD, message);
@@ -725,6 +727,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 					//if we got to this point, player is player 1 so change the value
 					playerNum = 1;
+					
+					
+					move(4,5); printw("YOU ARE CONNECTED AS PLAYER 1                              "); refresh();   ////// ***************
 				}
 
 				if ((strcmp(message,"1") == 0) && playerNum != 1)
@@ -748,6 +753,15 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 					//if we got to this point, player is player 2 so change the value
 					playerNum = 2;
+
+					//clear();
+					move(4,5); printw("YOU ARE CONNECTED AS PLAYER 2                              "); refresh();   ////// ***************
+				}
+
+				int cntDown = 9;
+				while(cntDown >= 0){
+					move(6,5); printw("Starting in %d", cntDown--); refresh();   ////// ***************
+					usleep(1000000);
 				}
 
 				//at this point, message holds gameMode result
