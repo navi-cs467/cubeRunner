@@ -46,13 +46,22 @@ void earlyTermTransition(int playerNum, int *userInput, int *confirmedGameOver, 
 	box(subscrn, '|', '_');
 	wborder(subscrn, '|', '|', '-', '-', '*', '*', '*', '*');
 
-	ostringstream ostr;
+        ostringstream ostr1;
+	ostringstream ostr2;
 	if(playerNum == 1)
-		ostr << "Player 2 has terminated early.\nThe score for this game will not be saved.";
+	{
+		ostr1 << "Player 2 has terminated early.";
+		ostr2 << "Game score will not be saved.";
+	}
 	else
-		ostr << "Player 1 has terminated early.\nThe score for this game will not be saved.";
-	mvwprintw(subscrn, 1, 7, ostr.str().c_str());
-	mvwprintw(subscrn, 6, 11, "Press Any Key to Continue");
+	{
+		ostr1 << "Player 1 has terminated early.";
+		ostr2 << "Game score will not be saved.";
+	}
+	
+	mvwprintw(subscrn, 1, 7, ostr1.str().c_str());
+	mvwprintw(subscrn, 2, 7, ostr2.str().c_str());
+	mvwprintw(subscrn, 6, 9, "Press Any Key to Continue");
 	refresh();
 	wrefresh(subscrn);
 

@@ -34,7 +34,7 @@ void loadInstructions(void){
    	instructions.push_back("   \"mini-cubes\" as possible. The token movement behavior and obstacles differ in the various worlds:\n");
    	instructions.push_back("\n");
 	instructions.push_back("      Water - With no user input, the token will remain in the same location relative to console boundaries. Obstacles include\n");
-	instructions.push_back("      Sharks, Octopuses, Coral, and Seaweed.\n");
+	instructions.push_back("              Sharks, Octopuses, Coral, and Seaweed.\n");
 	instructions.push_back("      Land -  With no user input or only horizontal input, the token will \"fall\" to the bottom of the console. Obstacles include\n");
 	instructions.push_back("              Birds, Bats, Rocks, and Trees.\n");
 	instructions.push_back("      Space - The background will scroll in the direction of the last user commanded direction, unless locked by the user(s) (see\n");

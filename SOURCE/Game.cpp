@@ -675,7 +675,17 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				//COLS = MIN_WIN_WIDTH;
 
 				//connect to server
-				socketFD = initSocket(host, port);
+				//////////// *********************
+				int i = 0;
+				socketFD = -5;
+				while(socketFD < 0){
+					socketFD = initSocket(host, port);//original line
+					if(DEBUG) {
+						move(3,5); printw("Attempting to connect, tries: %d, socket: %d", i++, socketFD); refresh(); 
+					}
+					usleep(100000);
+				}
+				//////////// *********************
 
 				if(DEBUG) {
 					move(5,5); printw("Connected..."); refresh();
@@ -684,6 +694,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				//hold server connection confirmation
 				char message[256];
 				memset(message, '\0', sizeof message);
+
+				move(4,5); printw("PLEASE WAIT FOR ANOTHER PLAYER TO CONNECT..."); refresh();   ////// ***************
 
 				//receive message, either 0 or 1 depending on player 1 or 2
 				receiveMessage_C(socketFD, message);
@@ -701,8 +713,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					char gM[MSG_SIZE];
 					sprintf(gM, "%d", gameMode);
 					sendMessage_C(socketFD, gM);
-					if(DEBUG)
+					if(DEBUG) {   //// ***** added {}
 						move(7,5); printw("Sent GM Player 1...\n"); refresh();
+					}
 
 					//check for other player and gamemode match
 					memset(message, '\0', sizeof message);
@@ -714,6 +727,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 					//if we got to this point, player is player 1 so change the value
 					playerNum = 1;
+					
+					
+					move(4,5); printw("YOU ARE CONNECTED AS PLAYER 1                              "); refresh();   ////// ***************
 				}
 
 				if ((strcmp(message,"1") == 0) && playerNum != 1)
@@ -737,6 +753,15 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 					//if we got to this point, player is player 2 so change the value
 					playerNum = 2;
+
+					//clear();
+					move(4,5); printw("YOU ARE CONNECTED AS PLAYER 2                              "); refresh();   ////// ***************
+				}
+
+				int cntDown = 9;
+				while(cntDown >= 0){
+					move(6,5); printw("Starting in %d", cntDown--); refresh();   ////// ***************
+					usleep(1000000);
 				}
 
 				//at this point, message holds gameMode result
@@ -765,7 +790,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					receiveMessage_C(socketFD, secondName);
 					sendMessage_C(socketFD, username);
 				}
-				
+
 				//Send LINES and COLS, so server can send back smallest
 				//of both players LINES and COLS for game play
 				memset(confirm, '\0', sizeof confirm);
@@ -779,18 +804,18 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 				memset(message, '\0', sizeof message);
 				memset(message, '\0', sizeof message);
-				
+
 				//Send COLS
 				sprintf(message, "%d", COLS);
 				sendMessage_C(socketFD, message);
 				//Receive confirmation
 				receiveMessage_C(socketFD, confirm);
-				
+
 				memset(confirm, '\0', sizeof confirm);
 				memset(message, '\0', sizeof message);
-				
-				char request[MSG_SIZE]; 
-				memset(request, '\0', sizeof request); 
+
+				char request[MSG_SIZE];
+				memset(request, '\0', sizeof request);
 				request[0] = '1';
 				//Send request for new LINES based on smallest LINES
 				//of both clients
@@ -799,9 +824,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				receiveMessage_C(socketFD, confirm);
 				//Save new LINES
 				LINES = atoi(confirm);
-				
+
 				memset(confirm, '\0', sizeof confirm);
-				
+
 				//Send request for new COLS based on smallest COLS
 				//of both clients
 				sendMessage_C(socketFD, request);
@@ -849,10 +874,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				while (!hasTerminated) {
 
 						//User input send/receive is blocked during render
-						if(!hasTerminated)
-						{
-							omp_set_lock(&userInputLock);
-						}
+						omp_set_lock(&userInputLock);
 
 						//Pseudocode variables... change as desired
 						int int_1, int_2, int_3, int_4, int_5, int_6, int_7, int_8;
@@ -899,7 +921,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							// close connection
 							close(socketFD);
 							close(inputSocket);
-
+							omp_unset_lock(&userInputLock);
 							break;
 						}
 

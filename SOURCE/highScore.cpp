@@ -23,17 +23,26 @@ using std::endl;
 using std::istringstream;
 
 //check if score is a high score before we add it
-//if score is a high file, tell us what number it should be
-//return -1 if not a high score
+//if score is a high file, tell us what position it should be in
+//return -2 if not a high score
+//return -1 if score is the only high score (just created file)
 int isHighScore (int score)
 {
   //if high score file can't be opened, then we should create a new file
   ifstream file;
   file.open("gameHighScores.txt");
 
-  if(!file)
+  //if file can't be accessed, we know that this score is the first high score
+  //unless it is equal to 0
+  if(!file && score != 0)
   {
     return -1;
+  }
+
+  //don't save high score if the score is 0
+  if(score == 0)
+  {
+    return -2;
   }
 
   int currentScore = 0;
@@ -42,12 +51,16 @@ int isHighScore (int score)
 
   int i = 0;
 
+  //otherwise, search through the scores of the file,
+  //checking if score is greater than any scores already in the file
   while(getline(file, line))
   {
+    //grab score from current line
     sscanf(line.c_str(), "%i ", &currentScore);
     if(score > currentScore)
     {
       file.close();
+      //return position if score is higher than score in the current line
       return i;
     }
       i++;
@@ -55,6 +68,8 @@ int isHighScore (int score)
 
   file.close();
 
+  //score is not greater than any existing scores, but there are less than 10
+  //scores already in the files so we know it must be a high score
   if (i < 10)
   {
     return i;
@@ -129,6 +144,7 @@ void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, 
   //open file for reading
   ifs.open("gameHighScores.txt");
 
+  //not a high score
   if (highScore == -2)
   {
     ifs.close();
@@ -167,7 +183,7 @@ void addScoreSingle(int score, char* name, int hours, int minutes, int seconds, 
 
   ifs.close();
 
-  //overwrite file with contents of vector
+  //overwrite current file with contents of vector
   ofs.open("gameHighScores.txt", std::ios::out | std::ios::trunc);
   for (int i = 0; i < fileText.size(); i++)
   {
@@ -295,15 +311,17 @@ void addScoreMulti(int score, char* firstName, char* secondName, int hours, int 
 
 void displayScores(WINDOW **subscrnGraphic)
 {
- 
+
   ifstream ifs;
   string line;
   vector<string> fileText;
-  
+
   refresh();
-  //display header
+
+  //display high score graphic
   *subscrnGraphic = paintCubeGraphic(*subscrnGraphic, "GRAPHICS/highScore.txt");
   refresh();
+
   //open highScoresfile
   //open file for reading
   ifs.open("gameHighScores.txt");
@@ -325,9 +343,11 @@ void displayScores(WINDOW **subscrnGraphic)
 
   int row = LINES / 2; int col = (COLS / 2) - 6;
 
+  //display header
+  attron(A_BOLD);
   attron(COLOR_PAIR(MAGENTA_BLACK));
   move(row, col-21); printw("RANK");
-  refresh(); 
+  refresh();
 
   attron(COLOR_PAIR(RED_BLACK));
   move(row, col-11); printw("SCORE");
@@ -351,6 +371,7 @@ void displayScores(WINDOW **subscrnGraphic)
 
   attron(COLOR_PAIR(WHITE_BLACK));
 
+  //iterate through vector and read comma separated variables on each line for displaying
   for (int i = 0; i < fileText.size(); i++)
   {
       istringstream ss;
@@ -405,13 +426,11 @@ void displayScores(WINDOW **subscrnGraphic)
       }
 
       move(row, col+16); printw(timeStr.c_str());
-      // move(row, col+40); printw("NAME");
 
       //we search for & to know if this is multiplayer or single player
+      //if multiplayer, divide the players string into the player variables
       if (fileText[i].find("&") != string::npos)
       {
-        // sscanf(players.c_str(), "%s&%s", player1, player2);
-
         istringstream playerss;
         playerss.str(players);
         playerss.clear();
@@ -436,7 +455,7 @@ void displayScores(WINDOW **subscrnGraphic)
         move(row, col+26); printw("%s & %s", player1.c_str(), player2.c_str());
       }
 
-      //otherwise, treat as single player entry
+      //otherwise, treat as single player entry, so we just print the players string
       else
       {
         move(row, col+26); printw(players.c_str());
@@ -447,7 +466,7 @@ void displayScores(WINDOW **subscrnGraphic)
   move(row+2, col-11); printw("** PRESS ANY KEY TO RETURN **");
 
   refresh();
-  
+
   getch();
 
 
