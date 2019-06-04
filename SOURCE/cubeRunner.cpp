@@ -366,6 +366,7 @@ int main(void)
 			#pragma omp section
 			{
 				while(!gameOn) {
+					usleep(1000);
 					int c = getch();
 					if(c == KEY_DOWN || c == 'k') {
 						if(cursorPos != EXIT && currMenu == 1) {
