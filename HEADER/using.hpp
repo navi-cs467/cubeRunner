@@ -13,6 +13,7 @@
 
 using std::string;
 using std::fstream;
+using std::wfstream;
 using std::ostringstream;
 using std::istringstream;
 using std::vector;

@@ -68,7 +68,7 @@ void transitionAnimation(const char* fileName,
 			   if(color == startingSeedColor + 6) color = startingSeedColor;		//Cycle to first index when necessary
 			   //Change color
 			   wattron(subscrn, COLOR_PAIR(color)); 
-			   mvwaddstr(subscrn, row, 0,
+			   mvwaddwstr(subscrn, row, 0,
 				 cmdoutlinesGraphics[row].c_str());  //Curses call to move to the
 											 //specified position and
 											 //paint a string there
@@ -119,7 +119,7 @@ void transitionAnimation(const char* fileName,
 					if(time + 0.6 < omp_get_wtime() && visible == false){
 						time = omp_get_wtime();
 						wattron(subscrn, COLOR_PAIR(promptColor));
-						mvwaddstr(subscrn, row + 1, 0, 
+						mvwaddwstr(subscrn, row + 1, 0, 
 							cmdoutlinesGraphics[row + 1].c_str());
 						wrefresh(subscrn);
 						visible = true;
@@ -144,9 +144,9 @@ void transitionAnimation(const char* fileName,
 
 	//Makes sure nothing erroneous is printed next time cmdoutlinesGraphics
 	//is used.
-	for(vector<string>::iterator it = cmdoutlinesGraphics.begin();
+	for(vector<wstring>::iterator it = cmdoutlinesGraphics.begin();
 		it < cmdoutlinesGraphics.end(); it++)
-			*it = "";
+			*it = L"";
 	
 	//Set to STDIN_FILENO back to non-blocking for second
 	//animation sequence.

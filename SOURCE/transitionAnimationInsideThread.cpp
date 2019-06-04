@@ -70,7 +70,7 @@ void transitionAnimationInsideThread(const char* fileName,
 	   if(color == startingSeedColor + 6) color = startingSeedColor;		//Cycle to first index when necessary
 	   //Change color
 	   wattron(subscrn, COLOR_PAIR(color)); 
-	   mvwaddstr(subscrn, row, 0,
+	   mvwaddwstr(subscrn, row, 0,
 		 cmdoutlinesGraphics[row].c_str());  //Curses call to move to the
 									 //specified position and
 									 //paint a string there
@@ -115,9 +115,9 @@ void transitionAnimationInsideThread(const char* fileName,
 
 	//Makes sure nothing erroneous is printed next time cmdoutlinesGraphics
 	//is used.
-	for(vector<string>::iterator it = cmdoutlinesGraphics.begin();
+	for(vector<wstring>::iterator it = cmdoutlinesGraphics.begin();
 		it < cmdoutlinesGraphics.end(); it++)
-			*it = "";
+			*it = L"";
 	
 	//Paint in alternating color perimeters converging into middle of screen
 	if(animation1Completed)	{

@@ -13,7 +13,7 @@
 #include "constants.hpp"
 #include "using.hpp"
 
-extern vector<string> cmdoutlinesGraphics;
+extern vector<wstring> cmdoutlinesGraphics;
 
 void loadGraphic(const char* fileName);
 

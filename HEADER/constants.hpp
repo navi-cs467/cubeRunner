@@ -48,6 +48,7 @@
 #define TRANSITION_SCORE_INTERVAL 500
 #define MULTIPLAYER_DUAL_AXIS_CONTROL 1
 #define TRANSITION_WITH_INPUT 1
+#define COUNT_DOWN 5
 
 //"Rates" are scan intervals,
 //so as the following three constants decrease,

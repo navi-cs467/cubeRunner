@@ -496,7 +496,7 @@ int main(int argc, char* argv[]) {
 					//reset char array
 					memset(messageToReceive, '\0', sizeof(messageToReceive));
 
-					// (Optional ?) SEND: Confirmation Connection2
+					//Confirm
 					sprintf(confirm, "%d", 1);
 
 					status = sendMessage_S(player2In, confirm);

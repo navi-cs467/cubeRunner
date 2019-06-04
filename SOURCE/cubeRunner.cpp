@@ -41,7 +41,7 @@ using namespace std;
 WINDOW *scrn; 	//Will point to curses window object
 
 vector<string> cmdoutlines;  			//Screen output vector
-vector<string> cmdoutlinesGraphics;		//Reserved for graphics only (multi-threaded)
+vector<wstring> cmdoutlinesGraphics;	//Reserved for graphics only (multi-threaded)
 
 //Menus
 const char* menu1[] = {"1 Player",
@@ -151,7 +151,7 @@ int main(void)
 		refresh();
 
 		//Paint initial cube graphic
-		WINDOW* subscrnGraphic = paintCubeGraphic(NULL, "../GRAPHICS/menuCubeRight1_1.txt");
+		WINDOW* subscrnGraphic = paintCubeGraphic(NULL, "GRAPHICS/menuCubeRight1_1.txt");
 
 		//Setup subscreen for menu outer border
 		int startingCol = (COLS - MM_GRAPHIC_WIDTH)/2 +

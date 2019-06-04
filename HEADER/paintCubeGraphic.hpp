@@ -15,6 +15,8 @@
 #include "paintGraphic.hpp"
 
 WINDOW* paintCubeGraphic(WINDOW *subscrnGraphic, 
-							const char* fileName, int offset = 0);
+						 char* fileName, int offset = 0,
+						 int obsEndCol = -1, int obsColor = -1, 
+					     int backgroundColor = -1);
 							
 #endif /* paintCubeGraphic_hpp */

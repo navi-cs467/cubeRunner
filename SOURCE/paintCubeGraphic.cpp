@@ -13,7 +13,9 @@
 //offset parameter.) Returns (pointer to) ncurses subwindow 
 //object with painted cube graphic.
 WINDOW* paintCubeGraphic(WINDOW *subscrnGraphic, 
-							const char* fileName, int offset) {
+						 char* fileName, int offset,
+						 int obsEndCol, int obsColor, 
+						 int backgroundColor) {
 	//Clear subscrnGraphic, if not NULL
 	if(subscrnGraphic){
 		werase(subscrnGraphic);
@@ -33,9 +35,11 @@ WINDOW* paintCubeGraphic(WINDOW *subscrnGraphic,
 	//Paint cube graphic
 	if(offset < -(COLS - MM_GRAPHIC_WIDTH)/2) 
 		paintGraphic(subscrnGraphic, fileName, rand()%6+1, false,
-				 -(offset + (COLS - MM_GRAPHIC_WIDTH)/2));
+				 -(offset + (COLS - MM_GRAPHIC_WIDTH)/2),
+				 obsEndCol, obsColor, backgroundColor);
 	else
-		paintGraphic(subscrnGraphic, fileName, rand()%6+1, false);
+		paintGraphic(subscrnGraphic, fileName, rand()%6+1, false, 0,
+		obsEndCol, obsColor, backgroundColor);
 	
 	return subscrnGraphic;
 }

@@ -14,7 +14,9 @@
 #include "constants.hpp"
 #include "using.hpp"
 
-void paintGraphic(WINDOW *subscrn, const char* fileName, 
-					int seedColor, bool toggled, int offset = 0);
+void paintGraphic(WINDOW *subscrn, char* fileName, 
+					int seedColor, bool toggled, int offset = 0,
+					int obsEndCol = -1, int obsColor = -1, 
+					int backgroundColor = -1);
 
 #endif /* paintGraphic_hpp */

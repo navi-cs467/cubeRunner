@@ -19,7 +19,7 @@ void loadGraphic(const char* fileName)
    //      *it = "";
    cmdoutlinesGraphics.clear();
    
-   fstream f; string line;
+   wfstream f; wstring line;
    f.open(fileName, ios::in);  //Open transitionAnimation graphic file
    for (int row = 0; row < INTRO_HEIGHT; row++) {
       if (getline(f, line))	{	  //If not end of file, add line to cmdoutlines
