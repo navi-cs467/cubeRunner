@@ -50,6 +50,10 @@ void loadInstructions(void){
 	instructions.push_back("      s or down arrow - down\n");
    	instructions.push_back("      a or left arrow - left\n");
 	instructions.push_back("      d or right arrow - right\n");
+	instructions.push_back("      e - left_up    (single player only)\n");
+	instructions.push_back("      r - right_up   (single player only)\n");
+	instructions.push_back("      c - left_down  (single player only)\n");
+	instructions.push_back("      v - right_down (single player only)\n");
 	instructions.push_back("      spacebar - fire shot (shot is released in the last commanded token direction)\n");
 	instructions.push_back("      l/u - lock/unlock scroll direction changes in the Space world\n");
 	instructions.push_back("      t - transition to next world (intended for testing/grading purposes only, set TRANSITION_WITH_INPUT in constants.hpp)\n");
