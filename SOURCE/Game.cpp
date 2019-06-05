@@ -175,6 +175,9 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					else if(TRANSITION_WITH_INPUT && userInput == 't') {
 						cube->setTransitionScore(TRANSITION_SCORE_INTERVAL);
 					}
+					else if(userInput != 27 || userInput != KEY_END || userInput != 'q' || userInput != 'Q') {
+						scoreInfo.earlyTerm = true;
+					}
 					//Unlock the lock after movement update
 					omp_unset_lock(&userInputLock);
 
