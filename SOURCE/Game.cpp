@@ -77,13 +77,13 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				int colOffset = 0;
 				WINDOW* subscrnGraphic = NULL;
 				double time1 = omp_get_wtime();
-				while(!confirmedGameOver) { 
+				while(!confirmedGameOver) {
 					while(waitingForOtherPlayer && !confirmedGameOver) {
 						usleep(25 * 1000);
 						if(time1 + 0.1 < omp_get_wtime()) {
 							time1 = omp_get_wtime();
 							subscrnGraphic = paintCubeGraphic(subscrnGraphic,
-								chaseGraphic, colOffset, chaseGraphicColorOffset, 
+								chaseGraphic, colOffset, chaseGraphicColorOffset,
 								chaseObColor);
 							//wrefresh(subscrnGraphic);
 							colOffset++;
@@ -95,7 +95,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				}
 			}
 		 }
-		
+
 		//Thread (1) for updating userInput and cube position
 		#pragma omp section
 		{
@@ -175,7 +175,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					else if(TRANSITION_WITH_INPUT && userInput == 't') {
 						cube->setTransitionScore(TRANSITION_SCORE_INTERVAL);
 					}
-					else if(userInput != 27 || userInput != KEY_END || userInput != 'q' || userInput != 'Q') {
+					else if(userInput == 27 || userInput == KEY_END || userInput == 'q' || userInput == 'Q') {
 						scoreInfo.earlyTerm = true;
 					}
 					//Unlock the lock after movement update
@@ -260,11 +260,11 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							userInput == KEY_END ||
 							userInput == 'q' ||
 							userInput == 'Q') {
-						
-						userInput = 'q'; 
+
+						userInput = 'q';
 						hasTerminated = true;
-						confirmedGameOver = true; 
-						
+						confirmedGameOver = true;
+
 						// SEND: q
 						sprintf(messageToSend, "%d", userInput);
 						sendMessage_C(inputSocket, messageToSend);
@@ -275,19 +275,19 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						memset(messageToSend, '\0', sizeof(messageToSend));
 						sprintf(messageToSend, "%d", 1);
 						sendMessage_C(inputSocket, messageToSend);
-						
+
 						// RECEIVE score into score (as in, into this->score)
 						memset(confirm, '\0', sizeof(confirm));
 						receiveMessage_C(inputSocket, confirm);
-			
+
 						cube->setCubeScore(atoi(confirm));
 						scoreInfo.earlyTerm = true;
 						omp_unset_lock(&userInputLock);
-						
+
 						// CLOSE CONNECTION
 						close(socketFD);
 						close(inputSocket);
-						
+
 						break;
 					}
 					fflush(stdin);		//This may not be portable
@@ -666,7 +666,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 								mvhline(i, 0, ' ', COLS);
 						} */
 					}
-					
+
 					//Shot moves HORIZONTAL_SHOT_DIVISOR times as fast as Obstacles move if
 					//moving horizontally, and VERTICAL_SHOT_DIVISOR times as fast as Obstacles
 					//move if moving vertically.
@@ -751,7 +751,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				while(socketFD < 0){
 					socketFD = initSocket(host, port);//original line
 					if(DEBUG) {
-						move(3,5); printw("Attempting to connect, tries: %d, socket: %d", i++, socketFD); refresh(); 
+						move(3,5); printw("Attempting to connect, tries: %d, socket: %d", i++, socketFD); refresh();
 					}
 					usleep(100000);
 				}
@@ -766,12 +766,12 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				memset(message, '\0', sizeof message);
 
 				string pleaseWaitForOtherPlayerStr = "PLEASE WAIT FOR ANOTHER PLAYER TO CONNECT...";
-				move(LINES / 2, COLS / 2 - (pleaseWaitForOtherPlayerStr.length() / 2)); 
+				move(LINES / 2, COLS / 2 - (pleaseWaitForOtherPlayerStr.length() / 2));
 				attron(COLOR_PAIR(WHITE_BLACK));
-				printw("%s", pleaseWaitForOtherPlayerStr.c_str()); 
-				refresh(); 
-				waitingForOtherPlayer = true;	
-					
+				printw("%s", pleaseWaitForOtherPlayerStr.c_str());
+				refresh();
+				waitingForOtherPlayer = true;
+
 				//receive message, either 0 or 1 depending on player 1 or 2
 				receiveMessage_C(socketFD, message);
 
@@ -802,14 +802,14 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 					//if we got to this point, player is player 1 so change the value
 					playerNum = 1;
-					
+
 					attron(COLOR_PAIR(BLACK_BLACK));
 					mvhline(LINES / 2, 0, ' ', COLS);
 					string connectedConfirmP1Str = "YOU ARE CONNECTED AS PLAYER 1.";
 					attron(COLOR_PAIR(WHITE_BLACK));
 					move(LINES / 2, COLS / 2 - (connectedConfirmP1Str.length() / 2));
-					printw("%s", connectedConfirmP1Str.c_str()); 
-					refresh();   
+					printw("%s", connectedConfirmP1Str.c_str());
+					refresh();
 				}
 
 				if ((strcmp(message,"1") == 0) && playerNum != 1)
@@ -840,8 +840,8 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					string connectedConfirmP2Str = "YOU ARE CONNECTED AS PLAYER 2.";
 					attron(COLOR_PAIR(WHITE_BLACK));
 					move(LINES / 2, COLS / 2 - (connectedConfirmP2Str.length() / 2));
-					printw("%s", connectedConfirmP2Str.c_str()); 
-					refresh(); 
+					printw("%s", connectedConfirmP2Str.c_str());
+					refresh();
 				}
 
 				cntDown = COUNT_DOWN;
@@ -850,7 +850,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					printw("Starting in %d...", cntDown--); refresh();   ////// ***************
 					usleep(1000000);
 				}
-				
+
 				waitingForOtherPlayer = false;
 
 				//at this point, message holds gameMode result
@@ -1020,7 +1020,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 						//Used for debugging only
 						int z = 13;
-						
+
 						/**** RECEIVE DEATH FLAG ****/
 						//RECEIVE int_1
 						receiveMessage_C(socketFD, gameData);
@@ -1317,13 +1317,13 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 						// cube->loadCubeCoords(coords); cube->loadCubeChars(chars); cube->setLives(int_3);
 						// cube->setCubePositionRow(int_5); cube->setCubePositionCol(int_6);
-						
+
 						/**** END RECEIVE CUBE DATA ****/
 
 						/**** RECEIVE GAME SCORE ****/
 						// RECEIVE int_1
 						// cube->setCubeScore(int_1);
-						
+
 
 						memset(gameData, '\0', sizeof gameData);
 						receiveMessage_C(socketFD, gameData);
@@ -1419,7 +1419,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 									16, BLACK_BLACK, 1, WHITE_BLACK, &userInput);
 							}
 
-							//Clear screen, paint black, print waiting string, 
+							//Clear screen, paint black, print waiting string,
 							//run waiting animation (via waitingForOtherPlayer set 'true')
 							clear();
 							attron(COLOR_PAIR(BLACK_BLACK));
@@ -1431,7 +1431,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							mvaddstr(LINES / 2, COLS / 2 - (waitingForOtherPlayerWT.length() / 2),
 									 waitingForOtherPlayerWT.c_str());
 							refresh();
-							
+
 							waitingForOtherPlayer = true;
 							//Receive new world player confirm request
 							memset(gameData, '\0', sizeof gameData);
@@ -1473,7 +1473,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						if(DEBUG) {
 							//move(z, 60); printw("SENT CONFIRM (numObs): %s\n", sendConfirm); refresh();
 						}
-						
+
 						//If world has been transitioned, inform both players confirmed
 						//and start countdown before resuming.
 						if(int_1 == 1) {
@@ -1486,7 +1486,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 								printw("Other player confirmed. Starting in %d...", cntDown--); refresh();   ////// ***************
 								usleep(1000000);
 							}
-							
+
 							waitingForOtherPlayer = false;
 							//Lock was unset to allow user to confirm world transition
 							//and/or early term while waiting for other player to confirm.
@@ -1669,7 +1669,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 																			  int_5, int_6, int_7,
 																			  int_8, gameMode));
 
-							
+
 
 							//If Obstacle is stationary, get holes
 							if(world->getObstacles().back()->getIsStationary()) {
@@ -1732,7 +1732,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 
 						int_1 = atoi(gameData);
 
-						
+
 						for(int i = 0; i < int_1; i++) {
 							//RECEIVE int_2, int_3			//miniCube x & y
 
@@ -1755,7 +1755,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							int_3 = atoi(gameData);
 
 							world->getMiniCubes().insert(make_pair(int_2, int_3));
-							
+
 						}
 						/**** END RECEIVE MINICUBES  ****/
 
@@ -1794,7 +1794,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						sendMessage_C(socketFD, sendConfirm);
 
 						hours = atoi(gameData);
-						
+
 
 						//RECEIVE int_1 into minutes
 						memset(gameData, '\0', sizeof gameData);
@@ -1805,7 +1805,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						sendMessage_C(socketFD, sendConfirm);
 
 						minutes = atoi(gameData);
-						
+
 
 						//RECEIVE int_1 into seconds
 						memset(gameData, '\0', sizeof gameData);
@@ -1816,7 +1816,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						sendMessage_C(socketFD, sendConfirm);
 
 						seconds = atoi(gameData);
-						
+
 						/**** END RECEIVE TIME  ****/
 
 						string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
@@ -1861,7 +1861,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						sendMessage_C(socketFD, sendConfirm);
 
 						scrollLock = atoi(gameData);
-						
+
 						/**** END SCROLL LOCK****/
 
 						//If space world, prepare scroll lock indicator
