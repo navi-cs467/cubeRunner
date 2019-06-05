@@ -40,7 +40,7 @@ vector<vector<wstring>> Coral::initializeVectorGraphics () {
 								   L"\\      \\/  \\",
 								   L" \\         /",
 								   L"  \\/\\     /",
-								   L"  /	 \\___/",
+								   L"  /  \\___/",
 								   L"         \\",
 								   L"          \\"}};
 								  

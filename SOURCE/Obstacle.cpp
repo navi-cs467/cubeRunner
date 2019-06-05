@@ -134,7 +134,7 @@ void Obstacle::createObstacle(World *world,
 	//Find random starting position that does not
 	//encroach on existing world obstacles or miniCubes
 	set<pair<int,int>>::iterator it1, it2;
-	bool enchroaches;
+	bool enchroaches, timedOut = false;
 	do {
 		posX = rand() % world->getBottomRow();
 		if(typeid(*world) != typeid(Space))
@@ -193,13 +193,14 @@ void Obstacle::createObstacle(World *world,
 			}
 			if(enchroaches == true) break;
 		}
+		if(omp_get_wtime() - escapeTimer > REFRESH_RATE)
+			timedOut = true;
 		
-	} while(enchroaches == true && 
-			omp_get_wtime() - escapeTimer < REFRESH_RATE);
+	} while(enchroaches == true && !timedOut);
 	
 	//If Obstacle was not assigned valid coordinates due to timeout,
 	//set posX so that it will be deleted on the next cleanup.
-	if(enchroaches == true) posX = LINES * 1000;
+	if(enchroaches == true || timedOut == true) posX = LINES * 1000;
 }
 
 void Obstacle::setGT(int newGraphic) {
