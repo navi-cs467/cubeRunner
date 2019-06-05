@@ -111,7 +111,7 @@ void Land::loadOSMCs(Direction dir) {
 
 void Land::renderWorld(Cube *cube) {
 
-	//clear();
+	clear();
 	//refresh();
 
 	//Paint blank background

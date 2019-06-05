@@ -113,7 +113,7 @@ void Water::loadOSMCs(Direction dir) {
 
 void Water::renderWorld(Cube *cube) {
 
-	//clear();
+	clear();
 	//refresh();
 
 	//Paint blank background
