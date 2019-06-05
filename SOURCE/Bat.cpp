@@ -31,7 +31,7 @@ Bat::Bat(World *world, Direction offScreen,
 	//Initialize maxHits based on gameMode
 	if(world->getGameMode() == EASY) maxHits = 1;
 	else if(world->getGameMode() == NORMAL) maxHits = 2;
-	else maxHits = 3;
+	else maxHits = 2;
 	
 	//Initialize hits and mvsSinceLastHit
 	hits = 0;
