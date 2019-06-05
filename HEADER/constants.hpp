@@ -41,17 +41,17 @@
 #define OBS_COUNT_HARD 25
 #define OBS_COUNT_MED 15
 #define OBS_COUNT_EASY 10
-#define NUM_MCS_EASY 60
+#define NUM_MCS_EASY 60						//Starting on-screen minicube count for easy. Other game modes are calculated by using a divisor against this value.
 #define NUM_DIRECTIONS 8
-#define MAX_MOVE_COUNTER 25
-#define MIN_MOVE_COUNTER 5
+#define MAX_MOVE_COUNTER 25					//Maximum number of Obstacles moves before switching direction (except for Comet)
+#define MIN_MOVE_COUNTER 5					//Minimum number of Obstacles moves before switching direction (except for Comet)
 #define TRANSITION_SCORE_INTERVAL 500
-#define MULTIPLAYER_DUAL_AXIS_CONTROL 1
+#define MULTIPLAYER_DUAL_AXIS_CONTROL 1		//Allows both players to control movement along both axes for multiplayer when not 0
 #define TRANSITION_WITH_INPUT 1
 #define COUNT_DOWN 5
-#define RESET_WIDTH 20
-#define VERTICAL_SHOT_DIVISOR 3
-#define HORIZONTAL_SHOT_DIVISOR 6
+#define RESET_WIDTH 20						//No obstacles start in first RESET_WIDTH columns, and all Obstacles in first RESET_WIDTH columns are cleared after cube death
+#define VERTICAL_SHOT_DIVISOR 3				//Controls the speed of the vertical shot. A bigger number is a faster shot.
+#define HORIZONTAL_SHOT_DIVISOR 6			//Controls the speed of the horizontal shot. A bigger number is a faster shot.
 
 //"Rates" are scan intervals,
 //so as the following three constants decrease,
@@ -84,7 +84,7 @@
 
 //Number of randomly generated Asteroid and Rock graphic types
 #define NUM_ASTEROID_TYPES 100
-#define NUM_ROCK_TYPES 100
+#define NUM_ROCK_TYPES 100		//Not currently used
 
 /*** End Game-Related ***/
 
