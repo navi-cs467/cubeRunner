@@ -406,16 +406,35 @@ int main(int argc, char* argv[]) {
 
 					//convert to int
 					userInput1 = atoi(messageToReceive);
+					
+					// (Optional ?) SEND Confirmation Connection1
+					sprintf(confirm, "%d", 1);
+					status = sendMessage_S(player1In, confirm);
+					
+					if (status <= 0)
+					{
+						break;
+					}
 
 					//reset char array
 					memset(messageToReceive, '\0', sizeof(messageToReceive));
 
-					// (Optional ?) SEND Confirmation Connection1
-					sprintf(confirm, "%d", 1);
-					status = sendMessage_S(player1In, confirm);
+					//Receive request for score if early termination
+					if(userInput1 == 'q') {
+						status = receiveMessage_S(player1In, messageToReceive);
+						if (status <= 0)
+						{
+							break;
+						}
+						
+						//SEND Connection1 score
+						memset(confirm, '\0', sizeof(confirm));
+						sprintf(confirm, "%d", cube->getCubeScore());
+						sendMessage_S(player1, confirm);
 
-					if (status <= 0)
-					{
+						//CLOSE CONNECTION1
+						close(player1);
+						close(player1In);
 						break;
 					}
 
@@ -492,17 +511,35 @@ int main(int argc, char* argv[]) {
 
 					//convert to int
 					userInput2 = atoi(messageToReceive);
+					
+					// (Optional ?) SEND Confirmation Connection2
+					sprintf(confirm, "%d", 1);
+					status = sendMessage_S(player2In, confirm);
+					
+					if (status <= 0)
+					{
+						break;
+					}
 
 					//reset char array
 					memset(messageToReceive, '\0', sizeof(messageToReceive));
 
-					//Confirm
-					sprintf(confirm, "%d", 1);
+					//Receive request for score if early termination
+					if(userInput2 == 'q') {
+						status = receiveMessage_S(player2In, messageToReceive);
+						if (status <= 0)
+						{
+							break;
+						}
+						
+						//SEND Connection1 score
+						memset(confirm, '\0', sizeof(confirm));
+						sprintf(confirm, "%d", cube->getCubeScore());
+						sendMessage_S(player2, confirm);
 
-					status = sendMessage_S(player2In, confirm);
-
-					if (status <= 0)
-					{
+						//CLOSE CONNECTION1
+						close(player2);
+						close(player2In);
 						break;
 					}
 
@@ -601,18 +638,17 @@ int main(int argc, char* argv[]) {
 					if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 						lastRefreshTime = omp_get_wtime();
 
-
 						/**** SEND EARLY TERMINATION STATUS ****/
 						//If either user quits, report back early termination to other player,
 						//and score to both, then break
 						if(userInput1 == 'q') {
-							//SEND Connection1 score
+							/* //SEND Connection1 score
 							sprintf(messageToSend, "%d", cube->getCubeScore());
 							sendMessage_S(player1In, messageToSend);
 
 							//CLOSE CONNECTION1
 							close(player1);
-							close(player1In);
+							close(player1In); */
 
 							//SEND Connection2 "ET"		//Early Termination
 							memset(messageToSend, '\0', sizeof messageToSend);
@@ -746,7 +782,7 @@ int main(int argc, char* argv[]) {
 						}
 
 						// ** COMMS WITH CLIENTS **
-
+						
 						omp_set_lock(&userInputLock);	//Block here if updating cube parameters via playerInputs,
 														//then lock out input threads from updating until finished
 
