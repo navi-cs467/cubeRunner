@@ -170,7 +170,7 @@ void Space::loadOSMCs(Direction dir) {
 
 void Space::renderWorld(Cube *cube) {
 
-	clear();
+	//clear();
 	//refresh();
 
 	//Paint blank background

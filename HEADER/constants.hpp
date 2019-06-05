@@ -37,7 +37,7 @@
 /*** End Menu-Related ***/
 
 /*** Game-Related ***/
-#define REFRESH_RATE 0.06
+#define REFRESH_RATE 0.01
 #define OBS_COUNT_HARD 25
 #define OBS_COUNT_MED 15
 #define OBS_COUNT_EASY 10
