@@ -2252,18 +2252,18 @@ int main(int argc, char* argv[]) {
 						world->moveObs();
 					}
 
-					//Shot moves 4 times as fast as Obstacles move if
-					//moving horizontally, and 2 times as fast as Obstacles
+					//Shot moves HORIZONTAL_SHOT_DIVISOR times as fast as Obstacles move if
+					//moving horizontally, and VERTICAL_SHOT_DIVISOR times as fast as Obstacles
 					//move if moving vertically.
 					if((cube->getShotDir() == up || cube->getShotDir() == down) &&
-						omp_get_wtime() - lastShotTime > moveRate / 2) {
+						omp_get_wtime() - lastShotTime > moveRate / VERTICAL_SHOT_DIVISOR) {
 							lastShotTime = omp_get_wtime();
 							cube->moveShot();
 							cube->processShot();
 					}
 					else if(cube->getShotDir() != up &&
 							cube->getShotDir() != down &&
-							omp_get_wtime() - lastShotTime > moveRate / 4) {
+							omp_get_wtime() - lastShotTime > moveRate / HORIZONTAL_SHOT_DIVISOR) {
 						lastShotTime = omp_get_wtime();
 							cube->moveShot();
 							cube->processShot();

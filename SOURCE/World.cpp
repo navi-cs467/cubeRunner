@@ -74,7 +74,7 @@ void World::resetPlayer(Cube *cube) {
 	//reset in "safety zone"
 	for(list<Obstacle*>::iterator it = obstacles.begin();
 		it != obstacles.end(); it++) {
-		if((*it)->getPosY() <= 10) {
+		if((*it)->getPosY() <= RESET_WIDTH) {
 			//Remove coords from obsCoords and nonWSObsCoords
 			for(int i = 0; i < (*it)->getGTS(); i++)
 				for(int j = 0; j < (*it)->getLongestGS(); j++) {

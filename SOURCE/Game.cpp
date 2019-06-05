@@ -638,7 +638,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						world->moveObs();
 						//clear();
 						//Repaint screen after every clear call
-						if(typeid(*world) == typeid(Water)) {
+						/* if(typeid(*world) == typeid(Water)) {
 							attron(A_BOLD);
 							attron(COLOR_PAIR(BLUE_BLUE));
 							for(int i = 0; i <= world->getBottomRow(); i++)
@@ -661,20 +661,20 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							attron(COLOR_PAIR(BLACK_BLACK));
 							for(int i = 0; i <= world->getBottomRow(); i++)
 								mvhline(i, 0, ' ', COLS);
-						}
+						} */
 					}
 					
-					//Shot moves 4 times as fast as Obstacles move if
-					//moving horizontally, and 2 times as fast as Obstacles
+					//Shot moves HORIZONTAL_SHOT_DIVISOR times as fast as Obstacles move if
+					//moving horizontally, and VERTICAL_SHOT_DIVISOR times as fast as Obstacles
 					//move if moving vertically.
 					if((cube->getShotDir() == up || cube->getShotDir() == down) &&
-						omp_get_wtime() - lastShotTime > moveRate / 2) {
+						omp_get_wtime() - lastShotTime > moveRate / VERTICAL_SHOT_DIVISOR) {
 							lastShotTime = omp_get_wtime();
 							cube->moveShot();
 					}
 					else if(cube->getShotDir() != up &&
 							cube->getShotDir() != down &&
-							omp_get_wtime() - lastShotTime > moveRate / 4) {
+							omp_get_wtime() - lastShotTime > moveRate / HORIZONTAL_SHOT_DIVISOR) {
 						lastShotTime = omp_get_wtime();
 						cube->moveShot();
 					}

@@ -143,7 +143,7 @@ void Obstacle::createObstacle(World *world,
 			posX = world->getBottomRow() - (getGraphicLines()[gt].size() - 1);
 		
 		if(offScreenDirection == none)
-			posY = (rand() % (COLS - 10)) + 10;		//No obstacles start in first 10 columns
+			posY = (rand() % (COLS - RESET_WIDTH)) + RESET_WIDTH;		//No obstacles start in first 10 columns
 		else
 			posY = rand() % COLS;
 		

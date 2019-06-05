@@ -37,7 +37,7 @@
 /*** End Menu-Related ***/
 
 /*** Game-Related ***/
-#define REFRESH_RATE 0.01
+#define REFRESH_RATE 0.001
 #define OBS_COUNT_HARD 25
 #define OBS_COUNT_MED 15
 #define OBS_COUNT_EASY 10
@@ -49,11 +49,14 @@
 #define MULTIPLAYER_DUAL_AXIS_CONTROL 1
 #define TRANSITION_WITH_INPUT 1
 #define COUNT_DOWN 5
+#define RESET_WIDTH 20
+#define VERTICAL_SHOT_DIVISOR 3
+#define HORIZONTAL_SHOT_DIVISOR 6
 
 //"Rates" are scan intervals,
 //so as the following three constants decrease,
 //their  respective rates increase
-#define SCROLL_RATE_HARD 0.35
+#define SCROLL_RATE_HARD 0.5
 #define SCROLL_RATE_NORMAL 0.75
 #define SCROLL_RATE_EASY 1.5
 

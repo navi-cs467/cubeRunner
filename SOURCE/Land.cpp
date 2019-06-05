@@ -70,7 +70,7 @@ Land::Land(int gameMode, bool isTwoPlayer, bool forServer) :
 		for (int y = bottomRow + 1; y < LINES - 1; y++)
 			mvhline(y, 0, ' ', COLS);
 
-		refresh();
+		//refresh();
 
 		//renderWorld();
 

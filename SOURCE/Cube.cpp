@@ -616,7 +616,7 @@ void Cube::drawCube(void){
 		//attroff(COLOR_PAIR(1));
 	}
 
-	refresh();
+	//refresh();
 
 }
 
