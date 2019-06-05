@@ -196,6 +196,10 @@ void Obstacle::createObstacle(World *world,
 		
 	} while(enchroaches == true && 
 			omp_get_wtime() - escapeTimer < REFRESH_RATE);
+	
+	//If Obstacle was not assigned valid coordinates due to timeout,
+	//set posX so that it will be deleted on the next cleanup.
+	if(enchroaches == true) posX = LINES * 1000;
 }
 
 void Obstacle::setGT(int newGraphic) {

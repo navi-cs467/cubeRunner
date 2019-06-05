@@ -579,13 +579,13 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						//Load new offscreen Obstacles and miniCubes every time
 						//a screens-worth has been scrolled, or the scroll direction
 						//changes (Space only)
-						if(scrollCountRight++ == COLS) {
+						if(scrollCountRight++ == COLS / 2) {
 							world->loadOSObs(right);
 							world->loadOSMCs(right);
 							scrollCountRight = 0;
 						}
 						if(typeid(*world) == typeid(Space) &&
-						   scrollCountLeft++ == COLS) {
+						   scrollCountLeft++ == COLS / 2) {
 							world->loadOSObs(left);
 							world->loadOSMCs(left);
 							scrollCountLeft = 0;
