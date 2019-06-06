@@ -48,7 +48,7 @@
 #define TRANSITION_SCORE_INTERVAL 500
 #define MULTIPLAYER_DUAL_AXIS_CONTROL 1		//Allows both players to control movement along both axes for multiplayer when not 0
 #define TRANSITION_WITH_INPUT 1
-#define COUNT_DOWN 5
+#define COUNT_DOWN 3
 #define RESET_WIDTH 20						//No obstacles start in first RESET_WIDTH columns, and all Obstacles in first RESET_WIDTH columns are cleared after cube death
 #define VERTICAL_SHOT_DIVISOR 3				//Controls the speed of the vertical shot. A bigger number is a faster shot.
 #define HORIZONTAL_SHOT_DIVISOR 6			//Controls the speed of the horizontal shot. A bigger number is a faster shot.
