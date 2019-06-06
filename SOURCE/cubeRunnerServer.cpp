@@ -5,6 +5,13 @@
 ** Date: 4/23/2019
 ** Description: Main for Capstone Project "Cube Runner" game (server).
 **				(See "cubeRunner.cpp" for client main.)
+** The server will keep running until SIGINT, use ctrl-c to quit.
+** Program receives two inputs from the command line, both valid port numbers.
+** 		i.e. cubeRunnerServer DATA_PORT INPUT_PORT
+** The first port number is for initial communication with both clients,
+** and for rendering of the game (this is the port number the clients
+** must connect to when running the game). The second port number is for
+** receiving user input from both clients.
 ***********************************************************************/
 
 //See constants.hpp for constant definitions
@@ -33,12 +40,15 @@ int main(int argc, char* argv[]) {
 
 	if (argc != 3)
 	{
-		printf("Wrong number of arguments. Usage: %s PORT_NUM INPUT_PORT_NUM\n", argv[0]);
+		printf("Wrong number of arguments. Usage: %s DATA_PORT INPUT_PORT\n", argv[0]);
 		exit(0);
 	}
 
   //receive port number to start server on
+	//data port, for sending data to client and rendering
 	char* portNum = argv[1];
+
+	//input port, for receiving client user input
 	char* inputPort = argv[2];
 
 	int checkPort = atoi(argv[1]);
@@ -66,26 +76,9 @@ int main(int argc, char* argv[]) {
 	int servSock2  = initServer(inputPort);
 
 	while(1) {
-		printf("Listening For New Connections On Port %s...\n", portNum);
+		printf("\nListening For Connections... Ctrl-C To Quit...\n");
+		printf("Accepting New Connections On Data Port %s...\n", portNum);
 		gameOver = false;
-		//Optional: int gmP1, gmP2;		//"game mode player 1" & "game mode player 2"
-
-		// Set up listener1, wait for connection
-
-		// RECEIVE connection1 (Optional: RECEIVE gameMode into gmP1)
-		// SEND connection1 "0" (1 Player connected)
-
-		// Set up listener2, wait for connection
-
-		// RECEIVE connection2 (Optional: RECEIVE gameMode into gmP2)
-		// (Optional) If gmP1 == gmP2:
-			// SEND connection1 "1" (2 Players connected - same game mode specified)
-			// SEND connection2 "1" (2 Players connected - same game mode specified)
-		// (Optional) Else If gmP1 != gmP2:
-			//	Optional: SEND connection1 "2" [2 Players connected, but game mode does not match])
-		//	//	Optional: SEND connection2 "2" [2 Players connected, but game mode does not match])
-			//  Optional: RECEIVE connection1 "1" (Confirmation acknowledgment that game modes do not match)
-			//  Optional: RECEIVE connection2 "1" (Confirmation acknowledgment that game modes do not match)
 
 		//hold player socket FDs
 		int player1, player2, player1In, player2In = -1;
@@ -408,11 +401,11 @@ int main(int argc, char* argv[]) {
 
 					//convert to int
 					userInput1 = atoi(messageToReceive);
-					
+
 					// (Optional ?) SEND Confirmation Connection1
 					sprintf(confirm, "%d", 1);
 					status = sendMessage_S(player1In, confirm);
-					
+
 					if (status <= 0)
 					{
 						break;
@@ -428,7 +421,7 @@ int main(int argc, char* argv[]) {
 						{
 							break;
 						}
-						
+
 						//SEND Connection1 score
 						memset(confirm, '\0', sizeof(confirm));
 						sprintf(confirm, "%d", cube->getCubeScore());
@@ -439,7 +432,7 @@ int main(int argc, char* argv[]) {
 						close(player1In);
 						break;
 					}
-					
+
 					//Set paused flag if applicable
 					if(userInput1 == 'p') {
 						player1Paused = !player1Paused;
@@ -519,11 +512,11 @@ int main(int argc, char* argv[]) {
 
 					//convert to int
 					userInput2 = atoi(messageToReceive);
-					
+
 					// (Optional ?) SEND Confirmation Connection2
 					sprintf(confirm, "%d", 1);
 					status = sendMessage_S(player2In, confirm);
-					
+
 					if (status <= 0)
 					{
 						break;
@@ -539,7 +532,7 @@ int main(int argc, char* argv[]) {
 						{
 							break;
 						}
-						
+
 						//SEND Connection1 score
 						memset(confirm, '\0', sizeof(confirm));
 						sprintf(confirm, "%d", cube->getCubeScore());
@@ -550,7 +543,7 @@ int main(int argc, char* argv[]) {
 						close(player2In);
 						break;
 					}
-					
+
 					//Set paused flag if applicable
 					if(userInput2 == 'p') {
 						player2Paused = !player2Paused;
@@ -736,7 +729,7 @@ int main(int argc, char* argv[]) {
 							receiveMessage_S(player1, clientConfirm);
 						}
 						/**** END SEND EARLY TERMINATION STATUS ****/
-						
+
 						/*** SEND 'OTHER PLAYER PAUSED' FLAG ***/
 						//To Player 1...
 						memset(messageToSend, '\0', sizeof messageToSend);
@@ -744,7 +737,7 @@ int main(int argc, char* argv[]) {
 						sendMessage_S(player1, messageToSend);
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player1, clientConfirm);
-						
+
 						//To Player 2...
 						memset(messageToSend, '\0', sizeof messageToSend);
 						sprintf(messageToSend, "%d", player1Paused);
@@ -752,7 +745,7 @@ int main(int argc, char* argv[]) {
 						memset(clientConfirm, '\0', sizeof clientConfirm);
 						receiveMessage_S(player2, clientConfirm);
 						/*** END SEND 'OTHER PLAYER PAUSED' FLAG ***/
-						
+
 						if(!player1Paused && !player2Paused) {
 							// World transition if cube->transitionCount
 							//reaches TRANSITION_SCORE_INTERVAL
@@ -813,7 +806,7 @@ int main(int argc, char* argv[]) {
 							}
 
 							// ** COMMS WITH CLIENTS **
-							
+
 							omp_set_lock(&userInputLock);	//Block here if updating cube parameters via playerInputs,
 															//then lock out input threads from updating until finished
 
