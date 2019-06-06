@@ -888,7 +888,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 				if (strcmp(message,"2") == 0)
 				{
 					//inform players that easiest chosen game mode will be used automatically
-					string gMNotMatchStr = "CHOSEN GAME MODES DID NOT MATCH. STARTING GAME WITH EASIER GAME MODE."
+					string gMNotMatchStr = "CHOSEN GAME MODES DID NOT MATCH. STARTING GAME WITH EASIER GAME MODE.";
 					attron(COLOR_PAIR(WHITE_BLACK));
 					move(LINES / 2 + 2, COLS / 2 - (gMNotMatchStr.length() / 2));
 					printw("%s", gMNotMatchStr.c_str());
