@@ -385,7 +385,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						userInput != 'q' &&
 						userInput != 'Q' && !hasTerminated) {
 					if(!paused) {
-						
+
 						if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
 							lastRefreshTime = omp_get_wtime();
 
@@ -870,23 +870,40 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 					refresh();
 				}
 
-				cntDown = COUNT_DOWN;
-				while(cntDown >= 0){
-					move(LINES / 2 + 2, COLS / 2 - (16 / 2));
-					printw("Starting in %d...", cntDown--); refresh();   ////// ***************
-					usleep(1000000);
+				//at this point, message holds gameMode result
+				//gamemodes match
+				//go straight to countdown
+				if(strcmp(message,"1") == 0)
+				{
+					cntDown = COUNT_DOWN;
+					while(cntDown >= 0){
+						move(LINES / 2 + 2, COLS / 2 - (16 / 2));
+						printw("Starting in %d...", cntDown--); refresh();   ////// ***************
+						usleep(1000000);
+					}
+				}
+
+				//gamemodes don't match
+				//so we display error message before countdown
+				if (strcmp(message,"2") == 0)
+				{
+					//inform players that easiest chosen game mode will be used automatically
+					string gMNotMatchStr = "CHOSEN GAME MODES DID NOT MATCH. STARTING GAME WITH EASIER GAME MODE."
+					attron(COLOR_PAIR(WHITE_BLACK));
+					move(LINES / 2 + 2, COLS / 2 - (gMNotMatchStr.length() / 2));
+					printw("%s", gMNotMatchStr.c_str());
+
+					refresh();
+					//do a longer countdown so the players can see the warning
+					cntDown = 10;
+					while(cntDown >= 0){
+						move(LINES / 2 + 4, COLS / 2 - (16 / 2));
+						printw("Starting in %d...", cntDown--); refresh();   ////// ***************
+						usleep(1000000);
+					}
 				}
 
 				waitingForOtherPlayer = false;
-
-				//at this point, message holds gameMode result
-				//gamemodes don't match
-				if (strcmp(message,"2") == 0)
-				{
-					//display error message of some kind
-					//maybe send acknowledgment if necessary
-					//easiest game mode used automatically
-				}
 
 				//receive dataPort from server, send confirmation to server
 				char confirm[MSG_SIZE];
@@ -1048,10 +1065,10 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 						}
 
 						/**** END RECEIVE (OTHER PLAYER) EARLY TERMINATION STATUS ****/
-						
+
 						//Used for debugging only
 						int z = 13;
-						
+
 						/*** RECEIEVE OTHER PLAYER PAUSED FLAG ***/
 						receiveMessage_C(socketFD, pausedMsg);
 						if(DEBUG) {
@@ -1064,7 +1081,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 							//move(z, 60); printw("SEND CONFIRM (paused): %s\n", sendConfirm); refresh();
 						}
 						/*** END RECEIVE OTHER PLAYER PAUSED FLAG ***/
-						
+
 						otherPlayerPaused = atoi(pausedMsg);
 
 						if(!paused && !otherPlayerPaused) {
@@ -1152,7 +1169,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 										delete world;
 										//Delete cube
 										delete cube;
-										
+
 										//Reset screen size constants
 										LINES = original_LINES;
 										COLS = original_COLS;
@@ -1961,14 +1978,14 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 								attron(A_BOLD);
 								attron(COLOR_PAIR(YELLOW_BLACK));
 								mvhline(LINES - 1, 0, ' ', COLS);
-								if(paused) 
+								if(paused)
 									mvaddstr(LINES - 1, 15, "Paused. Press 'p' to Resume. Cube will reset. ");
-								else 
+								else
 									mvaddstr(LINES - 1, 15, "Other Player Paused. "
 															"Waiting on Other Player to Resume. Cube will reset.");
 								refresh();
 							}
-							
+
 							omp_unset_lock(&userInputLock);
 							usleep(1000);
 				}
