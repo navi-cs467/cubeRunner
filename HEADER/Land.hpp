@@ -25,7 +25,6 @@ class Land : public World {
 		Land(bool isTwoPlayer) : World(isTwoPlayer) {bottomRow = LINES - 5;};
 		Land(int gameMode, bool isTwoPlayer, bool forServer = false);
 		virtual void renderWorld(Cube *cube);
-		//virtual void scroll_(bool newObs);
 		virtual void scroll_(Cube *cube, Direction lockedDirection);
 		virtual void loadOSObs(Direction dir);	//Load offscreen Obstacles (for scrolling)
 		virtual void loadOSMCs(Direction dir);	//Load offscreen miniCubes (for scrolling)

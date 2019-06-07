@@ -47,11 +47,9 @@ class World {
 			isTwoPlayer(isTwoPlayer), 
 			forServer(forServer) {}
 		void updateObsCoords(Obstacle *ob);
-		//void updateMiniCubes(pair<int, int>);
 		void initMiniCubes(int numMiniCubes, 
 						   Direction offScreenDirection = none);
 		virtual void renderWorld(Cube *cube) = 0;
-		//virtual void scroll_(bool newObs) = 0;
 		virtual void scroll_(Cube *cube, Direction lockedDirection = right) = 0;
 		virtual void loadOSObs(Direction dir) = 0;	//Load offscreen Obstacles (for scrolling)
 		virtual void loadOSMCs(Direction dir) = 0;	//Load offscreen miniCubes (for scrolling)

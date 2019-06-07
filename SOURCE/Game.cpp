@@ -26,7 +26,7 @@ Game::Game(int gameMode, bool isTwoPlayer) :
 
 }
 
-struct gameData Game::playGame(char host[], char port[], char username[]) {
+struct GameData Game::playGame(char host[], char port[], char username[]) {
 
 	int userInput = 0;
 
@@ -58,7 +58,7 @@ struct gameData Game::playGame(char host[], char port[], char username[]) {
 	memset(inputPort, '\0', sizeof inputPort);
 	memset(secondName, '\0', sizeof secondName);
 
-	struct gameData scoreInfo;
+	struct GameData scoreInfo;
 
 	scoreInfo.firstName = username;
 	scoreInfo.earlyTerm = false;

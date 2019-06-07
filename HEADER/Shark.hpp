@@ -20,8 +20,6 @@ class Shark : public Obstacle {
 	private:
 		static vector<vector<wstring>> graphicLines;
 		static int color;
-		//Direction curDirection;
-		//int sameDirectionMoveCount;
 	
 	public:
 		Shark(int type, int posX, int posY, int gt, int gts,
@@ -33,8 +31,6 @@ class Shark : public Obstacle {
 		static vector<vector<wstring>> _getGraphicLines() {return graphicLines;}
 		static int getColor() {return color;}
 		static vector<vector<wstring>> initializeVectorGraphics();
-		//Direction getDirection() {return curDirection;}
-		//void setDirection(Direction newDirection) {curDirection = newDirection;}
 		virtual vector<vector<wstring>> getGraphicLines() override;
 		virtual ~Shark() {}
 		

@@ -58,7 +58,7 @@ const char* menu2[] = {"Easy",
 const char* menu3[] = {"Hostname or IP Address: ",
 						"Port Number: ",
 						"",
-						"   *Press End or Esc To Go Back*"};
+						"   * Press Enter to Continue at Each Prompt. Press End or Esc To Go Back. *"};
 
 const char* menu4[] = {"Username: ",
 						"",
@@ -966,7 +966,7 @@ int main(void)
 		Game game = Game(gameMode, isTwoPlayer);
 		//Initial transition animation
 		transitionAnimation("GRAPHICS/Water.txt", 120, 16, BLUE_BLUE, 30, WHITE_BLUE);
-		struct gameData gameinfo;
+		struct GameData gameinfo;
 
 		if(isTwoPlayer == false) {
 			gameinfo = game.playGame(NULL, NULL, username);

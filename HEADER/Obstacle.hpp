@@ -35,8 +35,10 @@ class Obstacle {
 		Direction lastMV;	//Last Move Direction
 		int mvCounter;		//Counter to keep Obstacle moving in
 							//the same direction if possible for
-							//a random number of moves [between 5 - 25,
-							//see Obstacle.cpp - move(World* world)]
+							//a random number of moves [in range 
+							//MIN_MOVE_COUTNER - MAX_MOVE_COUNTER, 
+							//see constants.hpp and Obstacle.cpp :
+							//move(World* world])
 		vector<vector<wstring>> graphicLines;
 		set<pair<int, int>> nonWSObsCoords, holes;
 		int hits, maxHits, mvsSinceLastHit;

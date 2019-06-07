@@ -48,66 +48,6 @@ currWorld(world), lives(lives) {
 
 }
 
-//Default Initialization
-/*
-Cube::Cube(World *world, int lives) :
-	currWorld(world), lives(lives) {
-	//col = 0;
-	//row = 0;
-	//currWorld = 1;
-	isDead = 0;
-	score = 0;
-	color = WHITE_BLACK;
-
-	importCubeImage();
-
-
-	//Update row and col
-	row = (LINES - (LINES - world->getBottomRow())) / 2;
-	col = 2;
-
-	initializeCubeCoords();
-	useLeftCube = 0;
-
-
-	cubeCoords[0][0] = (LINES - (LINES - world->getBottomRow())) / 2;
-	cubeCoords[0][1] = 2;
-	cubeCoords[1][0] = (LINES - (LINES - world->getBottomRow())) / 2;
-	cubeCoords[1][1] = 3;
-	cubeCoords[2][0] = (LINES - (LINES - world->getBottomRow())) / 2;
-	cubeCoords[2][1] = 4;
-	cubeCoords[3][0] = (LINES - (LINES - world->getBottomRow())) / 2;
-	cubeCoords[3][1] = 5;
-	cubeCoords[4][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 1;
-	cubeCoords[4][1] = 2;
-	cubeCoords[5][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 1;
-	cubeCoords[5][1] = 3;
-	cubeCoords[6][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 1;
-	cubeCoords[6][1] = 4;
-	cubeCoords[7][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 1;
-	cubeCoords[7][1] = 5;
-	cubeCoords[8][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 2;
-	cubeCoords[8][1] = 2;
-	cubeCoords[9][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 2;
-	cubeCoords[9][1] = 3;
-	cubeCoords[10][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 2;
-	cubeCoords[10][1] = 4;
-	cubeCoords[11][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 2;
-	cubeCoords[11][1] = 5;
-	cubeCoords[12][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 3;
-	cubeCoords[12][1] = 2;
-	cubeCoords[13][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 3;
-	cubeCoords[13][1] = 3;
-	cubeCoords[14][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 3;
-	cubeCoords[14][1] = 4;
-	cubeCoords[15][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 3;
-	cubeCoords[15][1] = 5;
-
-	curDir = right;
-
-}
-*/
-
 void Cube::importCubeImage(void){
 	/* fstream inFile;
 	string inLine;
@@ -212,52 +152,6 @@ void Cube::transitionWorld(World *world) {
 	}
 	shotCoords.first = -1; shotCoords.second = -1;
 }
-
-//Initialize for World 1
-/* void Cube::cubeInitWorld1(void){
-	col = 5;
-	row = 15;
-	currWorld = 1;
-	score = 0;
-	isDead = 0;
-	curDir = none;
-	prevDir = none;
-	useLeftCube = 0;
-	initializeCubeCoords();
-	lives = 2;
-} */
-
-//Initialize for World 2
-/* void Cube::cubeInitWorld2(void){
-	col = 5;
-	row = 15;
-	currWorld = 2;
-	transitionScore = score;
-	score = 0;
-	isDead = 0;
-	curDir = none;
-	prevDir = none;
-	useLeftCube = 0;
-	initializeCubeCoords();
-	lives = 2;
-
-} */
-
-//Initialize for World 3
-/* void Cube::cubeInitWorld3(void){
-	col = 5;
-	row = 15;
-	currWorld = 3;
-	transitionScore = score;
-	score = 0;
-	isDead = 0;
-	curDir = none;
-	prevDir = right;
-	useLeftCube = 0;
-	initializeCubeCoords();
-	lives = 2;
-
-}  */
 
 void Cube::cubeReset(World *world){
 	col = 0;
@@ -1067,37 +961,6 @@ int Cube::checkCubeCollision(World *world){
 	}
 	return 0;
 }
-
-/* void Cube::checkCubeCollision(set<pair<int, int> > miniCubes, set<pair<int, int> > obsCoords){
-	int i = 0;
-	set<pair<int,int> >::iterator setIterator;
-
-	//Check MiniCube Collisions
-	for(setIterator=miniCubes.begin(); setIterator!=miniCubes.end(); ++setIterator){
-		for(i = 0; i < 15; ++i){
-			if((setIterator->first == cubeCoords[i][0]) && (setIterator->second == cubeCoords[i][1])){ //token collision with minicube
-				//delete minicube entry
-				miniCubes.erase(setIterator);
-				//increment score
-				++score;
-				mvaddstr(39,0,"SCORE INC");
-			}
-		}
-	}
-
-	//Check Obstacle Collisions
-	for(setIterator=obsCoords.begin(); setIterator!=obsCoords.end(); ++setIterator){
-		for(i = 0; i < 15; ++i){
-			if((setIterator->first == cubeCoords[i][0]) && (setIterator->second == cubeCoords[i][1])){ //token collision with minicube
-				//set isDead status to true (1)
-				isDead = 1;
-				mvaddstr(39,0,"DEAD");
-
-			}
-		}
-	}
-
-} */
 
 void Cube::fireShot() {
 	if(!shotOff) {

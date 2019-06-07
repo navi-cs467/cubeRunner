@@ -32,6 +32,6 @@ void transitionAnimationInsideThread(const char* fileName,
 									 int *userInput,
 									 int *confirmedGameOver = NULL,
 									 bool *hasTerminated = NULL,
-									 struct gameData *gameStats = NULL);
+									 struct GameData *gameStats = NULL);
 
 #endif /* transitionAnimation_hpp */

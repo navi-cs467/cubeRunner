@@ -56,25 +56,16 @@ class Cube{
 		Obstacle *lastObCollided;
 
     public:
-		//Cube(void);
 		Cube(World *world, int lives);
 		void transitionWorld(World *world);
-		void cubeInitWorld1(void);
-		void cubeInitWorld2(void);
-		void cubeInitWorld3(void);
 		void cubeReset(World *world);
 		void initializeCubeCoords(void);
 		int updateCubeCoords(int, int, int, int);
 		void updateCubePosition(bool, bool, bool, bool, bool = true);
 		int getCubePositionCol(void){return col;}  					//Return Cube's Current Column
-		void setCubePositionCol(int col){this->col = col;}  				//Set Cube's Current Column (multiplayer only)
+		void setCubePositionCol(int col){this->col = col;}  		//Set Cube's Current Column (multiplayer only)
 		int getCubePositionRow(void){return row;}  					//Return Cube's Current Row
-		void setCubePositionRow(int row){this->row = row;}  				//Set Cube's Current Row (multiplayer only)
-		//char (*getCubeChars(void))[4]{return cubeChars;}				//Return's Cube's characters
-		//void loadCubeChars(char chars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH]);							//Load Cube's characters (multiplayer only)
-		//int (*getCubeCoords(void))[2]{return cubeCoords;}			//Return Cube's coordinates
-		//void loadCubeCoords(int coords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH]);							//Return Cube's coordinates
-		//int getCubeCurrWorld(void){return currWorld;}  				//Return Cube's World
+		void setCubePositionRow(int row){this->row = row;}  		//Set Cube's Current Row (multiplayer only)
 		World* getCubeCurrWorld(void){return currWorld;}
 		void setCubeCurrWorld(World *newWorld){currWorld = newWorld;}  //Set Cube's World
 		void drawCube(void); 										   //Draw token on console - ncurses
@@ -85,7 +76,6 @@ class Cube{
 		int getCubeTransitionScore(void){return transitionScore;}	//Return Cube's transitionScore
 		void resetCubeTransitionScore(void){transitionScore = 0;}	//Reset Cube's transitionScore
 		int checkCubeCollision(World *world); 						//Check for collision with minicubes and obstacles (updates score and isDead status)
-		void checkCubeCollision(set<pair<int,int> >, set<pair<int,int> >);
 		int getCubeLives(void){return lives;}
 		void setCubeLives(int lives){this->lives = lives;}		//(multiplayer only)
 		int getColor(void){return color;}
