@@ -360,7 +360,8 @@ void displayScores(WINDOW **subscrnGraphic)
   //if file can't be opened, display a message that there are no high scores yet
   if(!ifs)
   {
-    move(row+1, col-5); printw("NO HIGH SCORES ON FILE. PLAY THE GAME TO GENERATE HIGH SCORES!");
+    attron(COLOR_PAIR(WHITE_BLACK));
+    move(row+1, col-14); printw("NO HIGH SCORES ON FILE. PLAY THE GAME TO GENERATE HIGH SCORES!");
   }
 
   //read line by line and store in a vector
