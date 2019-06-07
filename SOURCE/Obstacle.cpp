@@ -103,7 +103,7 @@ Obstacle::Obstacle(int type, int posX, int posY, int gt, int gts,
 				longestGS = Spaceship::_getGraphicLines()[gt][i].size();
 			//Initialize maxHits based on gameMode
 			if(gm == EASY) maxHits = 1;
-			else if(gm == NORMAL) maxHits = 1;
+			else if(gm == NORMAL) maxHits = 2;
 			else maxHits = 2;
 			
 			//Initialize hits and mvsSinceLastHit
