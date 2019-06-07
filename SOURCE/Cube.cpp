@@ -21,11 +21,6 @@
 #include "../HEADER/using.hpp"
 
 
-//using namespace std;
-
-
-//Create Cube
-//Cube::Cube(){
 Cube::Cube(World *world, int lives) :
 currWorld(world), lives(lives) {
 	col = 2;
@@ -33,9 +28,7 @@ currWorld(world), lives(lives) {
 	isDead = 0;
 	score = 0;
 	transitionScore = 0;
-	//currWorld = 1;
 	currWorld = world;
-	//lives = 2;
 	importCubeImage();
 	initializeCubeCoords();
 	curDir = right;
@@ -166,79 +159,13 @@ void Cube::cubeReset(World *world){
 
 	initializeCubeCoords();
 	useLeftCube = 0;
-
-/*
-	cubeCoords[0][0] = (LINES - (LINES - world->getBottomRow())) / 2;
-	cubeCoords[0][1] = 2;
-	cubeCoords[1][0] = (LINES - (LINES - world->getBottomRow())) / 2;
-	cubeCoords[1][1] = 3;
-	cubeCoords[2][0] = (LINES - (LINES - world->getBottomRow())) / 2;
-	cubeCoords[2][1] = 4;
-	cubeCoords[3][0] = (LINES - (LINES - world->getBottomRow())) / 2;
-	cubeCoords[3][1] = 5;
-	cubeCoords[4][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 1;
-	cubeCoords[4][1] = 2;
-	cubeCoords[5][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 1;
-	cubeCoords[5][1] = 3;
-	cubeCoords[6][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 1;
-	cubeCoords[6][1] = 4;
-	cubeCoords[7][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 1;
-	cubeCoords[7][1] = 5;
-	cubeCoords[8][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 2;
-	cubeCoords[8][1] = 2;
-	cubeCoords[9][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 2;
-	cubeCoords[9][1] = 3;
-	cubeCoords[10][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 2;
-	cubeCoords[10][1] = 4;
-	cubeCoords[11][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 2;
-	cubeCoords[11][1] = 5;
-	cubeCoords[12][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 3;
-	cubeCoords[12][1] = 2;
-	cubeCoords[13][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 3;
-	cubeCoords[13][1] = 3;
-	cubeCoords[14][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 3;
-	cubeCoords[14][1] = 4;
-	cubeCoords[15][0] = ((LINES - (LINES - world->getBottomRow())) / 2) + 3;
-	cubeCoords[15][1] = 5;
-*/
+	
 	curDir = right;
 
 	//Initialize shotOff and shotCoords
 	shotOff = false;
 	shotCoords.first = -1; shotCoords.second = -1;
 }
-
-//OLD CUBE ONLY
-/* void Cube::loadCubeChars(char chars[CUBE_CHARS_HEIGHT][CUBE_CHARS_WIDTH]){
-	//Load cubeChars with new values (clientside multiplayer only)
-
-	for(int i = 0; i < CUBE_CHARS_HEIGHT; i++){
-		for(int j = 0; j < CUBE_CHARS_WIDTH; j++){
-			if(useLeftCube == 0){
-				cubeRightChars[i][j] = chars[i][j];
-			}
-			else{
-				cubeLeftChars[i][j] = chars[i][j];
-			}
-		}
-	}
-
-
-
-	for(int i = 0; i < CUBE_CHARS_HEIGHT; i++)
-		for(int j = 0; j < CUBE_CHARS_WIDTH; j++)
-			cubeChars[i][j] = chars[i][j];
-
-} */
-
-//OLD CUBE ONLY
-/* void Cube::loadCubeCoords(int coords[CUBE_COORDS_HEIGHT][CUBE_COORDS_WIDTH]){
-	//Load cubeChars with new values (clientside multiplayer only)
-	for(int i = 0; i < CUBE_COORDS_HEIGHT; i++)
-		for(int j = 0; j < CUBE_COORDS_WIDTH; j++)
-			cubeCoords[i][j] = coords[i][j];
-} */
-
 
 //Update the cube token position based on input by the user(s)
 void Cube::updateCubePosition(bool colInc, bool colDec, bool rowInc, bool rowDec,
@@ -309,60 +236,11 @@ void Cube::updateCubePosition(bool colInc, bool colDec, bool rowInc, bool rowDec
 void Cube::updateCubePositionHelper(int colDec, int colInc, int rowInc, int rowDec){
 
 	int colPrev = 0, rowPrev = 0;
-
-	//In World 1 (Water), the token will move one unit in the col/row
-	//position as directed by the user(s). If the user(s) is not
-	//providing input for an col/row direction or if both a positive col/row
-	//and negative col/row
-	//if(typeid(*currWorld) == typeid(Water)){
-	//if(currWorld == 1){
-		colPrev = col;
-		rowPrev = row;
-		col = col + colInc - colDec;
-		row = row + rowInc - rowDec;
-		Cube::updateCubeCoords(colPrev, col, rowPrev, row);
-
-	//}
-	/* else if(typeid(*currWorld) == typeid(Land)){
-	//else if(currWorld == 2){
-		colPrev = col;
-		rowPrev = row;
-		col = col + colInc - colDec;
-		row = row + rowInc - rowDec;
-		if(rowPrev == row){
-			row = row + 1;
-		}
-		Cube::updateCubeCoords(colPrev, col, rowPrev, row);
-	} */
-	/* else if(typeid(*currWorld) == typeid(Space)){
-	//else if(currWorld == 3){
-		colPrev = col;
-		rowPrev = row;
-		col = col + colInc - colDec;
-		row = row + rowInc - rowDec;
-		if(curDir == none){
-			refresh();
-			if((prevDir == up)||(prevDir == right_up)||(prevDir == left_up)){
-				row = row - 1;
-			}
-			if((prevDir == down)||(prevDir == right_down)||(prevDir == left_down)){
-				row = row + 1;
-			}
-			if((prevDir == right)||(prevDir == right_up)||(prevDir == right_down)){
-				col = col + 1;
-			}
-			if((prevDir == left)||(prevDir == left_up)||(prevDir == left_down)){
-				col = col - 1;
-			}
-
-		}
-
-		Cube::updateCubeCoords(colPrev, col, rowPrev, row);
-	} */
-
-
-
-
+	colPrev = col;
+	rowPrev = row;
+	col = col + colInc - colDec;
+	row = row + rowInc - rowDec;
+	Cube::updateCubeCoords(colPrev, col, rowPrev, row);
 }
 
 
@@ -427,41 +305,6 @@ void Cube::drawCube(void){
 		move(cubeCoords[14][0],cubeCoords[14][1]); printw("%c", cubeLeftChars[2][4]);
 	}
 
-	/* if(useLeftCube == 0){
-		mvaddch(cubeCoords[0][0],cubeCoords[0][1],cubeRightChars[0][0]);
-		mvaddch(cubeCoords[1][0],cubeCoords[1][1],cubeRightChars[0][1]);
-		mvaddch(cubeCoords[2][0],cubeCoords[2][1],cubeRightChars[0][2]);
-		mvaddch(cubeCoords[3][0],cubeCoords[3][1],cubeRightChars[0][3]);
-		mvaddch(cubeCoords[4][0],cubeCoords[4][1],cubeRightChars[0][4]);
-		mvaddch(cubeCoords[5][0],cubeCoords[5][1],cubeRightChars[1][0]);
-		mvaddch(cubeCoords[6][0],cubeCoords[6][1],cubeRightChars[1][1]);
-		mvaddch(cubeCoords[7][0],cubeCoords[7][1],cubeRightChars[1][2]);
-		mvaddch(cubeCoords[8][0],cubeCoords[8][1],cubeRightChars[1][3]);
-		mvaddch(cubeCoords[9][0],cubeCoords[9][1],cubeRightChars[1][4]);
-		mvaddch(cubeCoords[10][0],cubeCoords[10][1],cubeRightChars[2][0]);
-		mvaddch(cubeCoords[11][0],cubeCoords[11][1],cubeRightChars[2][1]);
-		mvaddch(cubeCoords[12][0],cubeCoords[12][1],cubeRightChars[2][2]);
-		mvaddch(cubeCoords[13][0],cubeCoords[13][1],cubeRightChars[2][3]);
-		mvaddch(cubeCoords[14][0],cubeCoords[14][1],cubeRightChars[2][4]);
-	}
-	if(useLeftCube == 1){
-		mvaddch(cubeCoords[0][0],cubeCoords[0][1],cubeLeftChars[0][0]);
-		mvaddch(cubeCoords[1][0],cubeCoords[1][1],cubeLeftChars[0][1]);
-		mvaddch(cubeCoords[2][0],cubeCoords[2][1],cubeLeftChars[0][2]);
-		mvaddch(cubeCoords[3][0],cubeCoords[3][1],cubeLeftChars[0][3]);
-		mvaddch(cubeCoords[4][0],cubeCoords[4][1],cubeLeftChars[0][4]);
-		mvaddch(cubeCoords[5][0],cubeCoords[5][1],cubeLeftChars[1][0]);
-		mvaddch(cubeCoords[6][0],cubeCoords[6][1],cubeLeftChars[1][1]);
-		mvaddch(cubeCoords[7][0],cubeCoords[7][1],cubeLeftChars[1][2]);
-		mvaddch(cubeCoords[8][0],cubeCoords[8][1],cubeLeftChars[1][3]);
-		mvaddch(cubeCoords[9][0],cubeCoords[9][1],cubeLeftChars[1][4]);
-		mvaddch(cubeCoords[10][0],cubeCoords[10][1],cubeLeftChars[2][0]);
-		mvaddch(cubeCoords[11][0],cubeCoords[11][1],cubeLeftChars[2][1]);
-		mvaddch(cubeCoords[12][0],cubeCoords[12][1],cubeLeftChars[2][2]);
-		mvaddch(cubeCoords[13][0],cubeCoords[13][1],cubeLeftChars[2][3]);
-		mvaddch(cubeCoords[14][0],cubeCoords[14][1],cubeLeftChars[2][4]);
-	} */
-
 	//Add Direction Color Highlight
 	if(curDir != none){
 		//start_color();
@@ -506,13 +349,8 @@ void Cube::drawCube(void){
 
 			}
 		}
-
-		//attroff(COLOR_PAIR(1));
 	}
-
-	//refresh();
-
-}
+} 
 
 void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 
@@ -735,154 +573,6 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 		refresh();
 	}
 }
-
-//void Cube::drawCubeDeath(int *userInput){
-/* void Cube::drawCubeDeath(void){
-
-
-	int i = 0, j = 0, k = 0;
-
-	//*userInput = 0;
-
-	start_color();
-	init_pair(1, COLOR_RED, COLOR_BLACK);
-	attron(COLOR_PAIR(1));
-
-
-	//Death Part 1 - small ring around token
-	for(i = (col-1); i <= (col+5); ++i){ //draw top/bottom sides
-		mvaddch((row-1),i,'@');
-		mvaddch((row+3),i,'@');
-	}
-	for(i = row; i <= (row+2); ++i){ //draw left/right sides
-		mvaddch(i,(col-1),'@');
-		mvaddch(i,(col+5),'@');
-	}
-	refresh();
-	usleep(500000);
-
-	attroff(COLOR_PAIR(1));
-	init_pair(2, COLOR_YELLOW, COLOR_BLACK);
-	attron(COLOR_PAIR(2));
-
-
-	//Death Part 2 - larger ring around token
-	for(i = (col-2); i <= (col+6); ++i){ //draw top/bottom sides
-		mvaddch((row-2),i,'@');
-		mvaddch((row+4),i,'@');
-	}
-	for(i = (row-1); i <= (row+3); ++i){ //draw left/right sides
-		mvaddch(i,(col-2),'@');
-		mvaddch(i,(col+6),'@');
-	}
-	refresh();
-	usleep(450000);
-
-	attroff(COLOR_PAIR(2));
-	init_pair(3, COLOR_GREEN, COLOR_BLACK);
-	attron(COLOR_PAIR(3));
-
-
-	//Death Part 3 - first broken ring around token
-	for(i = (col-3); i <= (col+7); (i=i+2)){ //draw top/bottom sides
-		mvaddch((row-3),i,'@');
-		mvaddch((row+5),i,'@');
-	}
-	for(i = (row-1); i <= (row+3); (i=i+2)){ //draw left/right sides
-		mvaddch(i,(col-3),'@');
-		mvaddch(i,(col+7),'@');
-	}
-	refresh();
-	usleep(400000);
-
-	attroff(COLOR_PAIR(3));
-	init_pair(4, COLOR_BLUE, COLOR_BLACK);
-	attron(COLOR_PAIR(4));
-
-
-	//Death Part 4 - second broken ring around token
-	for(i = (col-4); i <= (col+8); (i=i+2)){ //draw top/bottom sides
-		mvaddch((row-4),i,'@');
-		mvaddch((row+6),i,'@');
-	}
-	for(i = (row-2); i <= (row+4); (i=i+2)){ //draw left/right sides
-		mvaddch(i,(col-4),'@');
-		mvaddch(i,(col+8),'@');
-	}
-	refresh();
-	usleep(350000);
-
-	attroff(COLOR_PAIR(4));
-	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
-	attron(COLOR_PAIR(5));
-
-	//Death Part 5 - third broken ring around token
-	for(i = (col-5); i <= (col+9); (i=i+2)){ //draw top/bottom sides
-		mvaddch((row-5),i,'@');
-		mvaddch((row+7),i,'@');
-	}
-	for(i = (row-3); i <= (row+5); (i=i+2)){ //draw left/right sides
-		mvaddch(i,(col-5),'@');
-		mvaddch(i,(col+9),'@');
-	}
-	refresh();
-	usleep(300000);
-
-	attroff(COLOR_PAIR(5));
-	init_pair(6, COLOR_CYAN, COLOR_BLACK);
-	attron(COLOR_PAIR(6));
-
-	//Death Part 6 - fourth broken ring around token (shorter)
-	for(i = (col-3); i <= (col+7); (i=i+2)){ //draw top/bottom sides
-		mvaddch((row-6),i,'@');
-		mvaddch((row+8),i,'@');
-	}
-	for(i = (row-4); i <= (row+6); (i=i+2)){ //draw left/right sides
-		mvaddch(i,(col-6),'@');
-		mvaddch(i,(col+10),'@');
-	}
-	refresh();
-	usleep(300000);
-
-	for(i = (col-2); i <= (col+6); (i=i+2)){ //draw top/bottom sides
-		mvaddch((row-7),i,'@');
-		mvaddch((row+9),i,'@');
-	}
-	for(i = (row-3); i <= (row+5); (i=i+2)){ //draw left/right sides
-		mvaddch(i,(col-7),'@');
-		mvaddch(i,(col+11),'@');
-	}
-	refresh();
-	usleep(300000);
-
-
-	attroff(COLOR_PAIR(6));
-	init_pair(7, COLOR_WHITE, COLOR_BLACK);
-	attron(COLOR_PAIR(7));
-
-	for(k = 0; k < 5; ++k){
-		//Token Flash Part 1 - blank
-		for(i = row; i <= (row+2); ++i){
-			for(j = col; j <= (col+4); ++j){
-				mvaddch(i,j,' ');
-			}
-		}
-		refresh();
-		usleep(500000);
-
-		//Token Flash Part 2 - X's
-		for(i = row; i <= (row+2); ++i){
-			for(j = col; j <= (col+4); ++j){
-				mvaddch(i,j,'X');
-			}
-		}
-		refresh();
-		usleep(500000);
-	}
-
-	attroff(COLOR_PAIR(7));
-} */
-
 
 int Cube::checkCubeCollision(World *world){
 
@@ -1109,100 +799,6 @@ void Cube::printShot() {
 			//refresh();
 	 }
 }
-
-
-
-/* int main () {
-  Cube cubeA;
-  char userInput[2];
-  int i = 0;
-  int numMoves = 30;
-  int* cubeDeathParameter;
-
-  set<pair<int,int> > miniCubeCoords;
-  set<pair<int,int> > obsCoords;
-
-  miniCubeCoords.insert(make_pair(13, 20));
-  obsCoords.insert(make_pair(20, 20));
-
-  cubeA.Cube::cubeInitWorld3();
-
-  initscr(); //Start Curses
-
-  cubeA.Cube::drawCube();
-  refresh();
-
-  while(1){
-    mvaddstr(13,20,"M");
-    mvaddstr(20,20,"B");
-
-    //Get user input for where the token should be moved next
-    mvaddstr(37,0,"IsDead: ");
-    printw("%s", cubeA.Cube::getCubeIsDead() ? "true" : "false");
-    mvaddstr(36,0,"Score: ");
-    printw("%d", cubeA.Cube::getCubeScore());
-    mvaddstr(35,0,"Enter Direction >> ");
-    getstr(userInput); //Wait for user input
-
-    //Update token position depending on user input
-    if(userInput[0] == '4'){
-      cubeA.Cube::updateCubePosition(0, 1, 0, 0);
-    }
-    else if(userInput[0] == '6'){
-      cubeA.Cube::updateCubePosition(1, 0, 0, 0);
-    }
-    else if(userInput[0] == '8'){
-      cubeA.Cube::updateCubePosition(0, 0, 0, 1);
-    }
-    else if(userInput[0] == '2'){
-      cubeA.Cube::updateCubePosition(0, 0, 1, 0);
-    }
-    else if(userInput[0] == '7'){
-      cubeA.Cube::updateCubePosition(0, 1, 0, 1);
-    }
-    else if(userInput[0] == '1'){
-      cubeA.Cube::updateCubePosition(0, 1, 1, 0);
-    }
-    else if(userInput[0] == '9'){
-      cubeA.Cube::updateCubePosition(1, 0, 0, 1);
-    }
-    else if(userInput[0] == '3'){
-      cubeA.Cube::updateCubePosition(1, 0, 1, 0);
-    }
-    else if(userInput[0] == 'd'){
-      //cubeA.Cube::drawCubeDeath(cubeDeathParameter);
-      cubeA.Cube::drawCubeDeath();
-    }
-    else{
-      cubeA.Cube::updateCubePosition(0, 0, 0, 0);
-    }
-
-    clear();
-    cubeA.Cube::drawCube();
-    mvaddstr(13,20,"M");
-    mvaddstr(20,20,"B");
-    cubeA.Cube::checkCubeCollision(miniCubeCoords, obsCoords);
-    refresh();
-
-    if(cubeA.Cube::IsDead() == 1){
-	cubeA.Cube::drawCubeDeath();
-	clear();
-	cubeA.Cube::cubeInitWorld3();
-	cubeA.Cube::drawCube();
-	refresh();
-
-    }
-
-  }
-
-
-
-  getch(); //Wait for user input
-  endwin(); //End Curses
-
-
-  return 0;
-}  */
 
 //http://www.cplusplus.com/doc/tutorial/classes/
 //http://tldp.org/HOWTO/NCURSES-Programming-HOWTO/printw.html
