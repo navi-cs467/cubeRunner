@@ -322,18 +322,6 @@ void displayScores(WINDOW **subscrnGraphic)
   *subscrnGraphic = paintCubeGraphic(*subscrnGraphic, "GRAPHICS/highScore.txt");
   refresh();
 
-  //open highScoresfile
-  //open file for reading
-  ifs.open("gameHighScores.txt");
-
-  //read line by line and store in a vector
-  while(getline(ifs, line))
-  {
-     fileText.push_back(line);
-  }
-
-  ifs.close();
-
   string score;
   string players;
   string player1;
@@ -364,6 +352,25 @@ void displayScores(WINDOW **subscrnGraphic)
   attron(COLOR_PAIR(CYAN_BLACK));
   move(row, col+26); printw("NAME");
   refresh();
+
+  //open highScoresfile
+  //open file for reading
+  ifs.open("gameHighScores.txt");
+
+  //if file can't be opened, display a message that there are no high scores yet
+  if(!file)
+  {
+    move(row+1, col-5); printw("NO HIGH SCORES ON FILE. PLAY THE GAME TO GENERATE HIGH SCORES!");
+  }
+
+  //read line by line and store in a vector
+  while(getline(ifs, line))
+  {
+     fileText.push_back(line);
+  }
+
+  ifs.close();
+
 
   //display top 10 scores
 
