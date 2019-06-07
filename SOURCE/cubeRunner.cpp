@@ -368,6 +368,7 @@ int main(void)
 				while(!gameOn) {
 					usleep(1000);
 					int c = getch();
+					omp_set_lock(&subscrnGraphicLock);
 					if(c == KEY_DOWN || c == 'k') {
 						if(cursorPos != EXIT && currMenu == 1) {
 							cursorPos++;
@@ -444,7 +445,6 @@ int main(void)
 						else if(currMenu == 1 && cursorPos == HIGH_SCORE) {
 							clear();
 
-							omp_set_lock(&subscrnGraphicLock);
 							displayScores(&subscrnGraphic);
 
 							/////////////////REDRAW THE MENU/////////////////////
@@ -468,7 +468,6 @@ int main(void)
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 
 							paintGraphic(subscrnGraphic, "GRAPHICS/highScore.txt", 1, true);
-							omp_unset_lock(&subscrnGraphicLock);
 						}
 						else if(currMenu == 1 && cursorPos == INSTRUCTIONS) {
 							/*fstream inFile;
@@ -514,9 +513,7 @@ int main(void)
 								startingLineColor, NULL, MENU1_LENGTH, MM_WIDTH);
 							highlight(subscrnMenu1, INSTRUCTIONS, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
-							omp_set_lock(&subscrnGraphicLock);
 							paintGraphic(subscrnGraphic, "GRAPHICS/instructionsPic.txt", 1, true);
-							omp_unset_lock(&subscrnGraphicLock);
 
 						}
 						else if(currMenu == 1 && cursorPos == EXIT) {
@@ -530,11 +527,9 @@ int main(void)
 						else if(currMenu == 2 && cursorPos == EASY && isTwoPlayer == false) {
 							delwin(subscrnMenu2);
 							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
-							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu4 =
 								userPrompt(startingColMenu4, startingRowMenu4,
 									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-							omp_unset_lock(&subscrnGraphicLock);
 
 							//return back to menu
 							if(escaped) {
@@ -571,11 +566,9 @@ int main(void)
 							delwin(subscrnMenu2);
 							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 
-							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &escaped, host, port);
-							omp_unset_lock(&subscrnGraphicLock);
 
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
@@ -612,11 +605,9 @@ int main(void)
 								}
 								refresh();
 
-								omp_set_lock(&subscrnGraphicLock);
 								subscrnMenu4 =
 									userPrompt(startingColMenu4, startingRowMenu4,
 										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-								omp_unset_lock(&subscrnGraphicLock);
 
 								if(escaped)
 								{
@@ -658,11 +649,9 @@ int main(void)
 							delwin(subscrnMenu2);
 							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
 
-							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu4 =
 								userPrompt(startingColMenu4, startingRowMenu4,
 									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-							omp_unset_lock(&subscrnGraphicLock);
 
 							//return back to menu
 							if(escaped) {
@@ -699,11 +688,9 @@ int main(void)
 							delwin(subscrnMenu2);
 							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 
-							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &escaped, host, port);
-							omp_unset_lock(&subscrnGraphicLock);
 
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
@@ -739,11 +726,9 @@ int main(void)
 								}
 								refresh();
 
-								omp_set_lock(&subscrnGraphicLock);
 								subscrnMenu4 =
 									userPrompt(startingColMenu4, startingRowMenu4,
 										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-								omp_unset_lock(&subscrnGraphicLock);
 
 								if(escaped)
 								{
@@ -784,11 +769,9 @@ int main(void)
 							delwin(subscrnMenu2);
 							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder);
 
-							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu4 =
 								userPrompt(startingColMenu4, startingRowMenu4,
 									&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-							omp_unset_lock(&subscrnGraphicLock);
 
 							//return back to menu
 							if(escaped) {
@@ -825,11 +808,9 @@ int main(void)
 							delwin(subscrnMenu2);
 							wclear(subscrnMenuBorder); wrefresh(subscrnMenuBorder); //Clear outer menu border
 
-							omp_set_lock(&subscrnGraphicLock);
 							subscrnMenu3 =
 								hostPrompt(startingColMenu3, startingRowMenu3,
 									&subscrnGraphic, &currMenu, &escaped, host, port);
-							omp_unset_lock(&subscrnGraphicLock);
 
 							//Return from network prompt if user escapes the menu
 							if(escaped) {
@@ -865,11 +846,9 @@ int main(void)
 								}
 								refresh();
 
-								omp_set_lock(&subscrnGraphicLock);
 								subscrnMenu4 =
 									userPrompt(startingColMenu4, startingRowMenu4,
 										&subscrnGraphic, &currMenu, &escaped, username, isTwoPlayer);
-								omp_unset_lock(&subscrnGraphicLock);
 
 								if(escaped)
 								{
@@ -921,10 +900,8 @@ int main(void)
 
 							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL,
 														MENU1_LENGTH, MM_WIDTH);
-							omp_set_lock(&subscrnGraphicLock);
 							subscrnGraphic = paintCubeGraphic(subscrnGraphic,
 												"GRAPHICS/menuCubeRight1_1.txt");
-							omp_unset_lock(&subscrnGraphicLock);
 							if(isTwoPlayer == false) cursorPos = ONE_PLAYER;
 							else cursorPos = TWO_PLAYER;
 							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
@@ -949,16 +926,15 @@ int main(void)
 
 							subscrnMenu1 = printMenu(menu1Items, startingLineColor, NULL,
 														MENU1_LENGTH, MM_WIDTH);
-							omp_set_lock(&subscrnGraphicLock);
 							subscrnGraphic = paintCubeGraphic(subscrnGraphic,
 												"GRAPHICS/menuCubeRight1_1.txt");
-							omp_unset_lock(&subscrnGraphicLock);
 							if(isTwoPlayer == false) cursorPos = ONE_PLAYER;
 							else cursorPos = TWO_PLAYER;
 							highlight(subscrnMenu1, cursorPos, lineColors[cursorPos-1],
 								startingLineColor, menu1Items, MENU1_LENGTH, MM_WIDTH);
 							currMenu = 1;
-						}
+					}
+					omp_unset_lock(&subscrnGraphicLock);
 				}
 			}
 		}

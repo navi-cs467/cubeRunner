@@ -51,13 +51,11 @@ void loadInstructions(void){
 	instructions.push_back("   both players are given control of movement along both axes. See constants.hpp to modify this constant.)\n");
 	instructions.push_back("\n");
 	instructions.push_back("   SCORE: \n");
-	instructions.push_back("   Collect as many mini-cubes as possible. Each mini-cube collected is worth 10 points.\n");
-	instructions.push_back("   Shoot down as many Obstacles as possible. The number of hits required to do so varies by\n");
-	instructions.push_back("   Obstacle type and game mode (difficulty). Points obtained equals number of hits required x 10.\n");
-	instructions.push_back("   When an Obstacle has been hit and is 'damaged', it will turn red and an indicator at its top-\n");
-	instructions.push_back("   left corner will display the number of hits remaining before it is shot down. Careful though,\n");
-	instructions.push_back("   as Obstacles will regenerate after they are hit if they are not hit again in quick enough\n");
-	instructions.push_back("   succession!\n");
+	instructions.push_back("   Collect as many mini-cubes as possible. Each mini-cube collected is worth 10 points. Shoot down as many Obstacles as possible.\n");
+	instructions.push_back("   The number of hits required to do so varies by Obstacle type and game mode (difficulty). Points obtained equals number of hits\n");
+	instructions.push_back("   required x 10. When an Obstacle has been hit and is 'damaged', it will turn red and an indicator at its top-left corner will display\n");
+	instructions.push_back("   the number of hits remaining before it is shot down. Careful though, as Obstacles will regenerate after they are hit if they are not\n");
+	instructions.push_back("   hit again in quick enough succession!\n");
 
 	int scrollPos = 0, input;
 	do {
