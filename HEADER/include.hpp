@@ -27,7 +27,6 @@
 #include <sstream>
 #include <set>
 #include <list>
-#include <set>
 #include <utility>
 #include <limits>
 #include <typeinfo>
