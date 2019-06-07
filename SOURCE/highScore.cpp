@@ -358,7 +358,7 @@ void displayScores(WINDOW **subscrnGraphic)
   ifs.open("gameHighScores.txt");
 
   //if file can't be opened, display a message that there are no high scores yet
-  if(!file)
+  if(!ifs)
   {
     move(row+1, col-5); printw("NO HIGH SCORES ON FILE. PLAY THE GAME TO GENERATE HIGH SCORES!");
   }
