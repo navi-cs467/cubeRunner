@@ -362,7 +362,7 @@ void displayScores(WINDOW **subscrnGraphic)
   {
     row++;
     attron(COLOR_PAIR(WHITE_BLACK));
-    move(row+1, col-27); printw("NO HIGH SCORES ON FILE. PLAY THE GAME TO GENERATE HIGH SCORES!");
+    move(row+1, col-26); printw("NO HIGH SCORES ON FILE. PLAY THE GAME TO GENERATE HIGH SCORES!");
     row++;
   }
 
