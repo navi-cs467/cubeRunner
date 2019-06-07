@@ -31,7 +31,7 @@ _OBJ = cubeRunner.o highlight.o hostPrompt.o transitionAnimation.o \
 	   Coral.o Shark.o Octopus.o Tree.o Rock.o Bird.o Bat.o \
 	   Asteroid.o Planet.o Comet.o Spaceship.o \
 	   Direction.o Cube.o client.o waitingForOtherPlayer.o userPrompt.o highScore.o \
-		 earlyTermTransition.o
+	   earlyTermTransition.o noServerAvailable.o
 
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
@@ -49,8 +49,8 @@ _HDR = constants.hpp highlight.hpp hostPrompt.hpp include.hpp \
 	   initColors.hpp Game.hpp World.hpp Water.hpp Land.hpp Space.hpp Obstacle.hpp \
 	   Seaweed.hpp Coral.hpp Shark.hpp Octopus.hpp Tree.hpp Rock.hpp \
 	   Bird.hpp Bat.hpp Asteroid.hpp Planet.hpp Comet.hpp Spaceship.hpp \
-	   Direction.hpp Cube.hpp client.hpp waitingForOtherPlayer.hpp userPrompt.hpp highScore.hpp \
-		 earlyTermTransition.hpp
+	   Direction.hpp Cube.hpp client.hpp waitingForOtherPlayer.hpp userPrompt.hpp \
+	   highScore.hpp earlyTermTransition.hpp noServerAvailable.hpp
 
 HDR = $(patsubst %,$(IDIR)/%,$(_HDR))
 
@@ -71,7 +71,7 @@ _SRC = cubeRunner.cpp cubeRunnerServer.cpp highlight.cpp hostPrompt.cpp \
 	   Obstacle.cpp Seaweed.cpp Coral.cpp Shark.cpp Octopus.cpp Tree.cpp \
 	   Rock.cpp Bird.cpp Bat.cpp Asteroid.o Planet.o Comet.o Spaceship.o \
 	   Direction.cpp Cube.cpp waitingForOtherPlayer.cpp userPrompt.cpp highScore.cpp \
-		 earlyTermTransition.cpp
+	   earlyTermTransition.cpp noServerAvailable.cpp
 
 SRC = $(patsubst %,$(SDIR)/%,$(_SRC))
 

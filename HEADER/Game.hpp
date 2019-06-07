@@ -21,7 +21,8 @@ class World;
 #include "constants.hpp"
 #include "transitionAnimation.hpp"
 #include "waitingForOtherPlayer.hpp"
-#include "../HEADER/earlyTermTransition.hpp"
+#include "noServerAvailable.hpp"
+#include "earlyTermTransition.hpp"
 
 //client network functions
 #include "client.hpp"

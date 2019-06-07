@@ -774,221 +774,236 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 				//////////// *********************
 				int i = 0;
 				socketFD = -5;
-				while(socketFD < 0){
+				while(socketFD < 0 && i < 5){
 					socketFD = initSocket(host, port);//original line
 					if(DEBUG) {
-						move(3,5); printw("Attempting to connect, tries: %d, socket: %d", i++, socketFD); refresh();
+						move(3,5); printw("Attempting to connect, tries: %d, socket: %d", i, socketFD); refresh();
 					}
+					i++;
 					usleep(100000);
 				}
 				//////////// *********************
-
-				if(DEBUG) {
-					move(5,5); printw("Connected..."); refresh();
+				
+				if(socketFD < 0) {
+					noServerAvailable(host, port, &userInput, &confirmedGameOver);
+					scoreInfo.earlyTerm = true;
 				}
-
-				//hold server connection confirmation
-				char message[256];
-				memset(message, '\0', sizeof message);
-
-				string pleaseWaitForOtherPlayerStr = "PLEASE WAIT FOR ANOTHER PLAYER TO CONNECT...";
-				move(LINES / 2, COLS / 2 - (pleaseWaitForOtherPlayerStr.length() / 2));
-				attron(COLOR_PAIR(WHITE_BLACK));
-				printw("%s", pleaseWaitForOtherPlayerStr.c_str());
-				refresh();
-				waitingForOtherPlayer = true;
-
-				//receive message, either 0 or 1 depending on player 1 or 2
-				receiveMessage_C(socketFD, message);
-
-				if(DEBUG) {
-					move(6,5); printw("Received Player Indicator..."); refresh();
-				}
-
-				//check for other player
-				//if we received 0, we are connected but other player isn't
-				//so we check for next confirmation which should tell us if gamemodes match or not
-				if (strcmp(message,"0") == 0)
-				{
-					//send chosen game mode
-					char gM[MSG_SIZE];
-					sprintf(gM, "%d", gameMode);
-					sendMessage_C(socketFD, gM);
-					if(DEBUG) {   //// ***** added {}
-						move(7,5); printw("Sent GM Player 1...\n"); refresh();
+				
+				if(!confirmedGameOver) {
+					if(DEBUG) {
+						move(5,5); printw("Connected..."); refresh();
 					}
 
-					//check for other player and gamemode match
+					//hold server connection confirmation
+					char message[256];
 					memset(message, '\0', sizeof message);
+
+					string pleaseWaitForOtherPlayerStr = "PLEASE WAIT FOR ANOTHER PLAYER TO CONNECT...";
+					move(LINES / 2, COLS / 2 - (pleaseWaitForOtherPlayerStr.length() / 2));
+					attron(COLOR_PAIR(WHITE_BLACK));
+					printw("%s", pleaseWaitForOtherPlayerStr.c_str());
+					refresh();
+					waitingForOtherPlayer = true;
+
+					//receive message, either 0 or 1 depending on player 1 or 2
 					receiveMessage_C(socketFD, message);
 
 					if(DEBUG) {
-						move(8,5); printw("Received Confirmation Other Player Now Connected & GM Match Indicator...\n"); refresh();
+						move(6,5); printw("Received Player Indicator..."); refresh();
 					}
 
-					//if we got to this point, player is player 1 so change the value
-					playerNum = 1;
+					//check for other player
+					//if we received 0, we are connected but other player isn't
+					//so we check for next confirmation which should tell us if gamemodes match or not
+					if (strcmp(message,"0") == 0)
+					{
+						//send chosen game mode
+						char gM[MSG_SIZE];
+						sprintf(gM, "%d", gameMode);
+						sendMessage_C(socketFD, gM);
+						if(DEBUG) {   //// ***** added {}
+							move(7,5); printw("Sent GM Player 1...\n"); refresh();
+						}
 
-					attron(COLOR_PAIR(BLACK_BLACK));
-					mvhline(LINES / 2, 0, ' ', COLS);
-					string connectedConfirmP1Str = "YOU ARE CONNECTED AS PLAYER 1.";
-					attron(COLOR_PAIR(WHITE_BLACK));
-					move(LINES / 2, COLS / 2 - (connectedConfirmP1Str.length() / 2));
-					printw("%s", connectedConfirmP1Str.c_str());
-					refresh();
-				}
+						//check for other player and gamemode match
+						memset(message, '\0', sizeof message);
+						receiveMessage_C(socketFD, message);
 
-				if ((strcmp(message,"1") == 0) && playerNum != 1)
-				{
-					//send chosen game mode
-					char gM[MSG_SIZE];
-					sprintf(gM, "%d", gameMode);
-					sendMessage_C(socketFD, gM);
+						if(DEBUG) {
+							move(8,5); printw("Received Confirmation Other Player Now Connected & GM Match Indicator...\n"); refresh();
+						}
 
-					if(DEBUG) {
-						move(9,5); printw("Sent GM Player 2...\n"); refresh();
+						//if we got to this point, player is player 1 so change the value
+						playerNum = 1;
+
+						attron(COLOR_PAIR(BLACK_BLACK));
+						mvhline(LINES / 2, 0, ' ', COLS);
+						string connectedConfirmP1Str = "YOU ARE CONNECTED AS PLAYER 1.";
+						attron(COLOR_PAIR(WHITE_BLACK));
+						move(LINES / 2, COLS / 2 - (connectedConfirmP1Str.length() / 2));
+						printw("%s", connectedConfirmP1Str.c_str());
+						refresh();
 					}
 
-					//check for gamemode match
+					if ((strcmp(message,"1") == 0) && playerNum != 1)
+					{
+						//send chosen game mode
+						char gM[MSG_SIZE];
+						sprintf(gM, "%d", gameMode);
+						sendMessage_C(socketFD, gM);
+
+						if(DEBUG) {
+							move(9,5); printw("Sent GM Player 2...\n"); refresh();
+						}
+
+						//check for gamemode match
+						memset(message, '\0', sizeof message);
+						receiveMessage_C(socketFD, message);
+
+						if(DEBUG) {
+							move(10,5); printw("Received GM Match Indicator...\n"); refresh();
+						}
+
+						//if we got to this point, player is player 2 so change the value
+						playerNum = 2;
+
+						//clear();
+						attron(COLOR_PAIR(BLACK_BLACK));
+						mvhline(LINES / 2, 0, ' ', COLS);
+						string connectedConfirmP2Str = "YOU ARE CONNECTED AS PLAYER 2.";
+						attron(COLOR_PAIR(WHITE_BLACK));
+						move(LINES / 2, COLS / 2 - (connectedConfirmP2Str.length() / 2));
+						printw("%s", connectedConfirmP2Str.c_str());
+						refresh();
+					}
+
+					//at this point, message holds gameMode result
+					//gamemodes match
+					//go straight to countdown
+					if(strcmp(message,"1") == 0)
+					{
+						cntDown = COUNT_DOWN;
+						while(cntDown >= 0){
+							move(LINES / 2 + 2, COLS / 2 - (16 / 2));
+							printw("Starting in %d...", cntDown--); refresh();   ////// ***************
+							usleep(1000000);
+						}
+					}
+
+					//gamemodes don't match
+					//so we display error message before countdown
+					if (strcmp(message,"2") == 0)
+					{
+						//inform players that easiest chosen game mode will be used automatically
+						string gMNotMatchStr = "CHOSEN GAME MODES DID NOT MATCH. STARTING GAME WITH EASIER GAME MODE.";
+						attron(COLOR_PAIR(WHITE_BLACK));
+						move(LINES / 2 + 2, COLS / 2 - (gMNotMatchStr.length() / 2));
+						printw("%s", gMNotMatchStr.c_str());
+
+						refresh();
+						//do a longer countdown so the players can see the warning
+						cntDown = 10;
+						while(cntDown >= 0){
+							move(LINES / 2 + 4, COLS / 2 - (16 / 2));
+							printw("Starting in %d...", cntDown--); refresh();   ////// ***************
+							usleep(1000000);
+						}
+					}
+
+					waitingForOtherPlayer = false;
+
+					//receive dataPort from server, send confirmation to server
+					char confirm[MSG_SIZE];
+					memset(confirm, '\0', sizeof confirm);
 					memset(message, '\0', sizeof message);
-					receiveMessage_C(socketFD, message);
+
+					//receive other player's username
+					if (playerNum == 2)
+					{
+						sendMessage_C(socketFD, username);
+						receiveMessage_C(socketFD, secondName);
+					}
+
+					if(playerNum == 1)
+					{
+						receiveMessage_C(socketFD, secondName);
+						sendMessage_C(socketFD, username);
+					}
+
+					//Send LINES and COLS, so server can send back smallest
+					//of both players LINES and COLS for game play
+					memset(confirm, '\0', sizeof confirm);
+					memset(message, '\0', sizeof message);
+
+					//Send LINES
+					sprintf(message, "%d", LINES);
+					sendMessage_C(socketFD, message);
+					//Receive confirmation
+					receiveMessage_C(socketFD, confirm);
+
+					memset(message, '\0', sizeof message);
+					memset(message, '\0', sizeof message);
+
+					//Send COLS
+					sprintf(message, "%d", COLS);
+					sendMessage_C(socketFD, message);
+					//Receive confirmation
+					receiveMessage_C(socketFD, confirm);
+
+					memset(confirm, '\0', sizeof confirm);
+					memset(message, '\0', sizeof message);
+
+					char request[MSG_SIZE];
+					memset(request, '\0', sizeof request);
+					request[0] = '1';
+					//Send request for new LINES based on smallest LINES
+					//of both clients
+					sendMessage_C(socketFD, request);
+					//Receive new LINES (in confirm)
+					receiveMessage_C(socketFD, confirm);
+					//Save new LINES
+					LINES = atoi(confirm);
+
+					memset(confirm, '\0', sizeof confirm);
+
+					//Send request for new COLS based on smallest COLS
+					//of both clients
+					sendMessage_C(socketFD, request);
+					//Receive new LINES in confirmation
+					receiveMessage_C(socketFD, confirm);
+					//Save new LINES
+					COLS = atoi(confirm);
+
+					//receive dataPort from server, send confirmation to server
+					memset(confirm, '\0', sizeof confirm);
+					sprintf(confirm, "%d", 1);
+
+					receiveMessage_C(socketFD, inputPort);
+					sendMessage_C(socketFD, confirm);
+
+					//connect to input socket
+					inputSocket = initSocket(host, inputPort);
+
+					//receive confirmation from server
+					memset(message, '\0', sizeof message);
+					receiveMessage_C(inputSocket, message);
+
+					//send confirmation on new connection
+					memset(confirm, '\0', sizeof confirm);
+					sprintf(confirm, "%d", playerNum);
+					sendMessage_C(inputSocket, confirm);
+
+					//set isConnected to TRUE
+					isConnected = TRUE;
 
 					if(DEBUG) {
-						move(10,5); printw("Received GM Match Indicator...\n"); refresh();
+						move(11,5); printw("Starting Game Loop..."); refresh();
 					}
 
-					//if we got to this point, player is player 2 so change the value
-					playerNum = 2;
-
-					//clear();
-					attron(COLOR_PAIR(BLACK_BLACK));
-					mvhline(LINES / 2, 0, ' ', COLS);
-					string connectedConfirmP2Str = "YOU ARE CONNECTED AS PLAYER 2.";
-					attron(COLOR_PAIR(WHITE_BLACK));
-					move(LINES / 2, COLS / 2 - (connectedConfirmP2Str.length() / 2));
-					printw("%s", connectedConfirmP2Str.c_str());
-					refresh();
+					//initialize cube coords
+					cube->initializeCubeCoords();
 				}
-
-				//at this point, message holds gameMode result
-				//gamemodes match
-				//go straight to countdown
-				if(strcmp(message,"1") == 0)
-				{
-					cntDown = COUNT_DOWN;
-					while(cntDown >= 0){
-						move(LINES / 2 + 2, COLS / 2 - (16 / 2));
-						printw("Starting in %d...", cntDown--); refresh();   ////// ***************
-						usleep(1000000);
-					}
-				}
-
-				//gamemodes don't match
-				//so we display error message before countdown
-				if (strcmp(message,"2") == 0)
-				{
-					//inform players that easiest chosen game mode will be used automatically
-					string gMNotMatchStr = "CHOSEN GAME MODES DID NOT MATCH. STARTING GAME WITH EASIER GAME MODE.";
-					attron(COLOR_PAIR(WHITE_BLACK));
-					move(LINES / 2 + 2, COLS / 2 - (gMNotMatchStr.length() / 2));
-					printw("%s", gMNotMatchStr.c_str());
-
-					refresh();
-					//do a longer countdown so the players can see the warning
-					cntDown = 10;
-					while(cntDown >= 0){
-						move(LINES / 2 + 4, COLS / 2 - (16 / 2));
-						printw("Starting in %d...", cntDown--); refresh();   ////// ***************
-						usleep(1000000);
-					}
-				}
-
-				waitingForOtherPlayer = false;
-
-				//receive dataPort from server, send confirmation to server
-				char confirm[MSG_SIZE];
-				memset(confirm, '\0', sizeof confirm);
-				memset(message, '\0', sizeof message);
-
-				//receive other player's username
-				if (playerNum == 2)
-				{
-					sendMessage_C(socketFD, username);
-					receiveMessage_C(socketFD, secondName);
-				}
-
-				if(playerNum == 1)
-				{
-					receiveMessage_C(socketFD, secondName);
-					sendMessage_C(socketFD, username);
-				}
-
-				//Send LINES and COLS, so server can send back smallest
-				//of both players LINES and COLS for game play
-				memset(confirm, '\0', sizeof confirm);
-				memset(message, '\0', sizeof message);
-
-				//Send LINES
-				sprintf(message, "%d", LINES);
-				sendMessage_C(socketFD, message);
-				//Receive confirmation
-				receiveMessage_C(socketFD, confirm);
-
-				memset(message, '\0', sizeof message);
-				memset(message, '\0', sizeof message);
-
-				//Send COLS
-				sprintf(message, "%d", COLS);
-				sendMessage_C(socketFD, message);
-				//Receive confirmation
-				receiveMessage_C(socketFD, confirm);
-
-				memset(confirm, '\0', sizeof confirm);
-				memset(message, '\0', sizeof message);
-
-				char request[MSG_SIZE];
-				memset(request, '\0', sizeof request);
-				request[0] = '1';
-				//Send request for new LINES based on smallest LINES
-				//of both clients
-				sendMessage_C(socketFD, request);
-				//Receive new LINES (in confirm)
-				receiveMessage_C(socketFD, confirm);
-				//Save new LINES
-				LINES = atoi(confirm);
-
-				memset(confirm, '\0', sizeof confirm);
-
-				//Send request for new COLS based on smallest COLS
-				//of both clients
-				sendMessage_C(socketFD, request);
-				//Receive new LINES in confirmation
-				receiveMessage_C(socketFD, confirm);
-				//Save new LINES
-				COLS = atoi(confirm);
-
-				//receive dataPort from server, send confirmation to server
-				memset(confirm, '\0', sizeof confirm);
-				sprintf(confirm, "%d", 1);
-
-				receiveMessage_C(socketFD, inputPort);
-				sendMessage_C(socketFD, confirm);
-
-				//connect to input socket
-				inputSocket = initSocket(host, inputPort);
-
-				//receive confirmation from server
-				memset(message, '\0', sizeof message);
-				receiveMessage_C(inputSocket, message);
-
-				//send confirmation on new connection
-				memset(confirm, '\0', sizeof confirm);
-				sprintf(confirm, "%d", playerNum);
-				sendMessage_C(inputSocket, confirm);
-
-				//set isConnected to TRUE
-				isConnected = TRUE;
-
+				
 				//For Time Display
 				int seconds, minutes, hours;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
@@ -996,14 +1011,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 				//For death message display
 				int collisionType = 0;
 
-				if(DEBUG) {
-					move(11,5); printw("Starting Game Loop..."); refresh();
-				}
-
-				//initialize cube coords
-				cube->initializeCubeCoords();
-
-				while (!hasTerminated) {
+				while (!hasTerminated && !confirmedGameOver) {
 
 						//User input send/receive is blocked during render
 						omp_set_lock(&userInputLock);

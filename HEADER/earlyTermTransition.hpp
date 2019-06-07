@@ -17,4 +17,4 @@ extern WINDOW *scrn;
 
 void earlyTermTransition(int playerNum, int *userInput, int *confirmedGameOver, bool *hasTerminated);
 
-#endif /* waitingForOtherPlayer_hpp */
+#endif /* earlyTermTransition_hpp */
