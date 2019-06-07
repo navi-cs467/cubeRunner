@@ -41,7 +41,7 @@ void loadInstructions(void){
 	instructions.push_back("      c - left_down  (single player only)\n");
 	instructions.push_back("      v - right_down (single player only)\n");
 	instructions.push_back("      p - pause game (MULTIPLAYER ONLY: Cube will reset and moving Obstacles may advance beyond their current positions when resumed.)\n");
-	instructions.push_back("      spacebar - fire shot (shot is released in the last commanded token direction)\n");
+	instructions.push_back("      spacebar - fire shot (shot is released in the last move direction and fire shot is unavailable until the existing shot clears)\n");
 	instructions.push_back("      l/u - lock/unlock scroll direction changes in the Space world\n");
 	instructions.push_back("      t - transition to next world (intended for testing/grading purposes only, set TRANSITION_WITH_INPUT in constants.hpp)\n");
 	instructions.push_back("      q or Q or END or ESC - quit the game and return to main menu\n");
