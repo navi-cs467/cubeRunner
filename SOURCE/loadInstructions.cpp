@@ -11,28 +11,14 @@
 extern WINDOW *scrn;
 
 void loadInstructions(void){
-	/*fstream f;
-	string line;
-	f.open("../GRAPHICS/instructionsText.txt", ios::in);
-	move(0,0);
-	if(f.is_open()){
-		while(getline(f, line)){	
-           		instructions.push_back("%s\n", line.c_str());
-		}
-		f.close();  //Close file
-	}
-	else{
-		printw("INSTRUCTIONS GRAPHIC FILE DID NOT OPEN\n\n\n");
-		printw("Press any key to continue...\n\n\n");
-   	}*/
-	
+
 	vector<string> instructions;
 
 	instructions.push_back("\n");
 	instructions.push_back("   OBJECTIVE:\n");
 	instructions.push_back("   Navigate through three worlds (Water, Land, Space) while avoiding both stationary and moving obstacles and collecting as many\n");
-   	instructions.push_back("   \"mini-cubes\" as possible. The token movement behavior and obstacles differ in the various worlds:\n");
-   	instructions.push_back("\n");
+  instructions.push_back("   \"mini-cubes\" as possible. The token movement behavior and obstacles differ in the various worlds:\n");
+  instructions.push_back("\n");
 	instructions.push_back("      Water - With no user input, the token will remain in the same location relative to console boundaries. Obstacles include\n");
 	instructions.push_back("              Sharks, Octopuses, Coral, and Seaweed.\n");
 	instructions.push_back("      Land -  With no user input or only horizontal input, the token will \"fall\" to the bottom of the console. Obstacles include\n");
@@ -48,7 +34,7 @@ void loadInstructions(void){
 	instructions.push_back("\n");
 	instructions.push_back("      w or up arrow - up\n");
 	instructions.push_back("      s or down arrow - down\n");
-   	instructions.push_back("      a or left arrow - left\n");
+  instructions.push_back("      a or left arrow - left\n");
 	instructions.push_back("      d or right arrow - right\n");
 	instructions.push_back("      e - left_up    (single player only)\n");
 	instructions.push_back("      r - right_up   (single player only)\n");
@@ -58,6 +44,7 @@ void loadInstructions(void){
 	instructions.push_back("      spacebar - fire shot (shot is released in the last commanded token direction)\n");
 	instructions.push_back("      l/u - lock/unlock scroll direction changes in the Space world\n");
 	instructions.push_back("      t - transition to next world (intended for testing/grading purposes only, set TRANSITION_WITH_INPUT in constants.hpp)\n");
+	instructions.push_back("      q or Q or END or ESC - quit the game and return to main menu\n");
 	instructions.push_back("\n");
 	instructions.push_back("   In a single player game mode, the player will have access to all game controls. In a two player game mode, player 1 has up, down,\n");
 	instructions.push_back("   and fire shots control and player 2 has left, right, and fire shots control. (By enabling the constant MULTIPLAYER_DUAL_AXIS_MODE,\n");
@@ -71,35 +58,35 @@ void loadInstructions(void){
 	instructions.push_back("   left corner will display the number of hits remaining before it is shot down. Careful though,\n");
 	instructions.push_back("   as Obstacles will regenerate after they are hit if they are not hit again in quick enough\n");
 	instructions.push_back("   succession!\n");
-	
+
 	int scrollPos = 0, input;
 	do {
-		
+
 		move(0,0);
 		clear();
-		
+
 		//Print instructions (as will fit on the screen)
-		for(int i = scrollPos, j = 0; 
+		for(int i = scrollPos, j = 0;
 			i < instructions.size() &&
 			j < LINES - 3; i++, j++) {
 				printw(instructions[i].c_str());
 		}
-		
+
 		//Provide navigation instructions
 		string navigateInstructions;
-		instructions.size() > LINES - 3 ? 
+		instructions.size() > LINES - 3 ?
 		navigateInstructions = "** USE ARROW KEYS UP/DOWN TO SCROLL. PRESS ENTER OR END TO RETURN. **" :
 		navigateInstructions = "** PRESS ENTER OR END TO RETURN. **";
-		
+
 		int curX, curY; getyx(scrn, curX, curY);
 		move(curX + 1, (COLS - navigateInstructions.length()) / 2);
 		printw(navigateInstructions.c_str());
-		
+
 		refresh();
-		
-		
+
+
 		input = getch();
-		if(input == KEY_DOWN && 
+		if(input == KEY_DOWN &&
 		   instructions.size() > LINES - 3 &&
 		   scrollPos + 1 <= instructions.size() - (LINES - 3)) {
 			scrollPos++;
