@@ -174,6 +174,14 @@ void transitionAnimationInsideThread(const char* fileName,
 				refresh();
 		}
 	}
+	
+	//Indicates transition animation has completed entirely
+	if(*userInput != 10 &&
+	   *userInput != 'q' &&
+	   *userInput != 'Q' &&
+	   *userInput != KEY_END &&
+	   *userInput != 27)
+			*userInput = -1;
 
 	//attron(COLOR_PAIR(0));	//Reset to default
     //attroff(A_BOLD);

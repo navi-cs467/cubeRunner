@@ -591,7 +591,7 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 
 	attroff(COLOR_PAIR(WHITE_BLACK));
 
-	//Block here until user presses Enter key
+	//Block here until user presses Enter key or quits
 	while(*userInput != 10 &&
 		  *userInput != 'q' &&
 		  *userInput != 'Q' &&

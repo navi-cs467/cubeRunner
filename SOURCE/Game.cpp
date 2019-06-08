@@ -421,7 +421,8 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 										  userInput != 27 &&
 										  userInput != KEY_END &&
 										  userInput != 'q' &&
-										  userInput != 'Q') {}
+										  userInput != 'Q' &&
+										  userInput != -1) {}
 									omp_set_lock(&userInputLock);		//Relock
 								}
 								else if(typeid(*world) == typeid(Land)) {
@@ -440,7 +441,8 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 										  userInput != 27 &&
 										  userInput != KEY_END &&
 										  userInput != 'q' &&
-										  userInput != 'Q') {}
+										  userInput != 'Q' &&
+										  userInput != -1) {}
 									omp_set_lock(&userInputLock);		//Relock
 								}
 								else if(typeid(*world) == typeid(Space)) {
@@ -459,7 +461,8 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 										  userInput != 27 &&
 										  userInput != KEY_END &&
 										  userInput != 'q' &&
-										  userInput != 'Q') {}
+										  userInput != 'Q' &&
+										  userInput != -1) {}
 									omp_set_lock(&userInputLock);		//Relock
 								}
 
@@ -1490,6 +1493,19 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 								}
 
 								waitingForOtherPlayer = false;
+								
+								while(userInput != 10 && 
+									  userInput != 27 &&
+									  userInput != KEY_END &&
+									  userInput != 'q' &&
+									  userInput != 'Q' &&
+									  userInput != -1) {}
+									  
+							    if(userInput == 27 ||
+								   userInput == KEY_END ||
+								   userInput == 'q' ||
+								   userInput == 'Q') 
+										confirmedGameOver = true;
 
 								//Lock was unset to allow user to confirm world transition
 								//and/or early term while waiting for other player to confirm.
@@ -1782,7 +1798,51 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 								omp_unset_lock(&userInputLock);		//Allow user to confirm death animation
 								cube->drawCubeDeath(&userInput, collisionType);
 								//Relock userInputLock once user presses enter or quits
-								while(userInput != 10) {}
+								while(userInput != 10 &&
+									  userInput != 'q' &&
+									  userInput != 'Q' &&
+									  userInput != KEY_END &&
+									  userInput != 27) {}
+								
+								//If user quits during death animation
+								if(userInput == 'q' ||
+								   userInput == 'Q' ||
+								   userInput == KEY_END ||
+							       userInput == 27) {
+								
+									//make sure input thread has plenty of time of 
+									//exit loop
+									usleep(1000);
+									
+									userInput = 'q';
+									hasTerminated = true;
+									confirmedGameOver = true;
+
+									// SEND: q
+									char messageToSend[MSG_SIZE], confirm[MSG_SIZE];
+									sprintf(messageToSend, "%d", userInput);
+									sendMessage_C(inputSocket, messageToSend);
+									// RECEIEVE confirmation
+									receiveMessage_C(inputSocket, confirm);
+
+									//SEND Score request
+									memset(messageToSend, '\0', sizeof(messageToSend));
+									sprintf(messageToSend, "%d", 1);
+									sendMessage_C(inputSocket, messageToSend);
+
+									// RECEIVE score into score (as in, into this->score)
+									memset(confirm, '\0', sizeof(confirm));
+									receiveMessage_C(inputSocket, confirm);
+
+									cube->setCubeScore(atoi(confirm));
+									scoreInfo.earlyTerm = true;
+									omp_unset_lock(&userInputLock);
+
+									// CLOSE CONNECTION
+									close(socketFD);
+									close(inputSocket);
+									break;
+								}
 								omp_set_lock(&userInputLock);
 								deathFlag = false;
 							}
