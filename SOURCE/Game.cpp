@@ -609,32 +609,6 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 						//Scroll
 						if(omp_get_wtime() - lastScrollTime > scrollRate) {
 							lastScrollTime = omp_get_wtime();
-							
-							//Repaint screen after every scroll call
-							if(typeid(*world) == typeid(Water)) {
-								attron(A_BOLD);
-								attron(COLOR_PAIR(BLUE_BLUE));
-								for(int i = 0; i <= world->getBottomRow(); i++)
-									mvhline(i, 0, ' ', COLS);
-								attron(COLOR_PAIR(GREEN_GREEN));
-								for(int i = world->getBottomRow() + 1; i < LINES - 1; i++)
-									mvhline(i, 0, ' ', COLS);
-							}
-							else if(typeid(*world) == typeid(Land)) {
-								attron(A_BOLD);
-								attron(COLOR_PAIR(WHITE_WHITE));
-								for(int i = 0; i <= world->getBottomRow(); i++)
-									mvhline(i, 0, ' ', COLS);
-								attron(COLOR_PAIR(GREEN_GREEN));
-								for(int i = world->getBottomRow() + 1; i < LINES - 1; i++)
-									mvhline(i, 0, ' ', COLS);
-							}
-							else {
-								attron(A_BOLD);
-								attron(COLOR_PAIR(BLACK_BLACK));
-								for(int i = 0; i <= world->getBottomRow(); i++)
-									mvhline(i, 0, ' ', COLS);
-							}
 
 							if(typeid(*world) != typeid(Space)) {
 								world->scroll_(cube);
