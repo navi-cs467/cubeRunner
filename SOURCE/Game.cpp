@@ -101,11 +101,12 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 		#pragma omp section
 		{
 
-			while ( !confirmedGameOver &&
+			while ( (!confirmedGameOver &&
 					userInput != 27 &&
 				    userInput != KEY_END &&
-				    userInput != 'q' &&
-				    userInput != 'Q') {// &&
+				    (userInput != 'q' &&
+				    userInput != 'Q')) ||
+					waitingForOtherPlayer) {// &&
 					//!hasTerminated) {
 
 				userInput = getch();
