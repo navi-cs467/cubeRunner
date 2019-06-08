@@ -431,7 +431,11 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 		mvaddch(i,(col+5),'@');
 	}
 	refresh();
-	for(int i = 0; *userInput != 10 && i < 500000 / 100; i++)
+	for(int i = 0; *userInput != 10 &&
+				   *userInput != 'q' &&
+				   *userInput != 'Q' &&
+				   *userInput != KEY_END &&
+				   *userInput != 27 && i < 500000 / 100; i++)
 		usleep(50);
 
 	attroff(COLOR_PAIR(RED_BLACK));
@@ -448,7 +452,11 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 		mvaddch(i,(col+6),'@');
 	}
 	refresh();
-	for(int i = 0; *userInput != 10 && i < 450000 / 100; i++)
+	for(int i = 0; *userInput != 10 &&
+				   *userInput != 'q' &&
+				   *userInput != 'Q' &&
+				   *userInput != KEY_END &&
+				   *userInput != 27 && i < 450000 / 100; i++)
 		usleep(50);
 
 	attroff(COLOR_PAIR(YELLOW_BLACK));
@@ -466,7 +474,11 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 		mvaddch(i,(col+7),'@');
 	}
 	refresh();
-	for(int i = 0; *userInput != 10 && i < 400000 / 100; i++)
+	for(int i = 0; *userInput != 10 &&
+				   *userInput != 'q' &&
+				   *userInput != 'Q' &&
+				   *userInput != KEY_END &&
+				   *userInput != 27 && i < 400000 / 100; i++)
 		usleep(50);
 
 	attroff(COLOR_PAIR(GREEN_BLACK));
@@ -484,7 +496,11 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 		mvaddch(i,(col+8),'@');
 	}
 	refresh();
-	for(int i = 0; *userInput != 10 && i < 350000 / 100; i++)
+	for(int i = 0; *userInput != 10 &&
+				   *userInput != 'q' &&
+				   *userInput != 'Q' &&
+				   *userInput != KEY_END &&
+				   *userInput != 27 && i < 350000 / 100; i++)
 		usleep(50);
 
 	attroff(COLOR_PAIR(BLUE_BLACK));
@@ -501,7 +517,11 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 		mvaddch(i,(col+9),'@');
 	}
 	refresh();
-	for(int i = 0; *userInput != 10 && i < 300000 / 100; i++)
+	for(int i = 0; *userInput != 10 &&
+				   *userInput != 'q' &&
+				   *userInput != 'Q' &&
+				   *userInput != KEY_END &&
+				   *userInput != 27 && i < 300000 / 100; i++)
 		usleep(50);
 
 	attroff(COLOR_PAIR(MAGENTA_BLACK));
@@ -528,7 +548,11 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 	}
 	refresh();
 
-	for(int i = 0; *userInput != 10 && i < 300000 / 100; i++)
+	for(int i = 0; *userInput != 10 &&
+				   *userInput != 'q' &&
+				   *userInput != 'Q' &&
+				   *userInput != KEY_END &&
+				   *userInput != 27 && i < 300000 / 100; i++)
 		usleep(50);
 
 	attroff(COLOR_PAIR(CYAN_BLACK));
@@ -543,7 +567,11 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 			}
 		}
 		refresh();
-		for(int i = 0; *userInput != 10 && i < 500000 / 100; i++)
+		for(int i = 0; *userInput != 10 &&
+					   *userInput != 'q' &&
+					   *userInput != 'Q' &&
+					   *userInput != KEY_END &&
+					   *userInput != 27 && i < 500000 / 100; i++)
 			usleep(50);
 
 		//Token Flash Part 2 - appear
@@ -553,14 +581,22 @@ void Cube::drawCubeDeath(int *userInput, int obCollisionType){
 			}
 		}
 		refresh();
-		for(int i = 0; *userInput != 10 && i < 500000 / 100; i++)
+		for(int i = 0; *userInput != 10 &&
+					   *userInput != 'q' &&
+					   *userInput != 'Q' &&
+					   *userInput != KEY_END &&
+					   *userInput != 27 && i < 500000 / 100; i++)
 			usleep(50);
 	}
 
 	attroff(COLOR_PAIR(WHITE_BLACK));
 
 	//Block here until user presses Enter key
-	while(*userInput != 10){}
+	while(*userInput != 10 &&
+		  *userInput != 'q' &&
+		  *userInput != 'Q' &&
+		  *userInput != KEY_END &&
+		  *userInput != 27){}
 
 	//Clear Enter key prompt
 	attron(COLOR_PAIR(BLACK_BLACK));

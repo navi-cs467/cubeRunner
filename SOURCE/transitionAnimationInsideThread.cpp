@@ -33,7 +33,11 @@ void transitionAnimationInsideThread(const char* fileName,
 	bool animation1Completed = false;
 	
 	attron(A_BOLD);
-	if(*userInput != 10) {
+	if(*userInput != 10 &&
+	   *userInput != 'q' &&
+	   *userInput != 'Q' &&
+	   *userInput != KEY_END &&
+	   *userInput != 27) {
 		// paint screen background color
 		attron(COLOR_PAIR(backgroundColor));
 		for (int y = 0; y < LINES; y++) {
@@ -50,7 +54,11 @@ void transitionAnimationInsideThread(const char* fileName,
 	WINDOW *subscrn = newwin(graphicHeight, graphicWidth, 
 							 startingRow, startingCol);
 	
-	if(*userInput != 10) {
+	if(*userInput != 10 &&
+	   *userInput != 'q' &&
+	   *userInput != 'Q' &&
+	   *userInput != KEY_END &&
+	   *userInput != 27) {
 		// paint subscreen background color
 		wattron(subscrn, COLOR_PAIR(backgroundColor)); wattron(subscrn, A_BOLD);
 		for (int y = 0; y < graphicHeight; y++) {
@@ -65,7 +73,11 @@ void transitionAnimationInsideThread(const char* fileName,
     int color, row;
 	//Paint the rows to the screen
 	for (row = 0, color = rand() % 6 + startingSeedColor; 
-			row < graphicHeight - 2 && *userInput != 10;
+			row < graphicHeight - 2 && *userInput != 10 &&
+									   *userInput != 'q' &&
+									   *userInput != 'Q' &&
+									   *userInput != KEY_END &&
+									   *userInput != 27;
 			row++, color++) {  
 	   if(color == startingSeedColor + 6) color = startingSeedColor;		//Cycle to first index when necessary
 	   //Change color
@@ -84,22 +96,33 @@ void transitionAnimationInsideThread(const char* fileName,
 	mvwhline(subscrn, row, 0, ' ', graphicWidth);	//correctly before threading below
 	mvwhline(subscrn, row + 1, 0, ' ', graphicWidth);	
 		
-	if(*userInput != 10) usleep(200 * 1000);	//Sleep for 200 milliseconds
+	if(*userInput != 10 &&
+	   *userInput != 'q' &&
+	   *userInput != 'Q' &&
+	   *userInput != KEY_END &&
+	   *userInput != 27) usleep(200 * 1000);	//Sleep for 200 milliseconds
 	
 	//Print blinking continue prompt (if animation was not skipped)
 	//attron(A_BLINK);	//Doesn't work, (at least for some terminals)
 	double time = omp_get_wtime(); 
 	bool visible = false; 
-	if(*userInput != 10){
+	if(*userInput != 10 &&
+	   *userInput != 'q' &&
+	   *userInput != 'Q' &&
+	   *userInput != KEY_END &&
+	   *userInput != 27){
 		animation1Completed = true;
-		while(*userInput != 10) {
+		while(*userInput != 10 &&
+			  *userInput != 'q' &&
+			  *userInput != 'Q' &&
+			  *userInput != KEY_END &&
+			  *userInput != 27) {
 			if(time + 0.6 < omp_get_wtime() && visible == false){
 				time = omp_get_wtime();
 				wattron(subscrn, COLOR_PAIR(promptColor));
-				char prompt[28] = "Press Enter Key to Continue";
+				char prompt[] = "Press Enter Key to Continue...";
 				mvwaddstr(subscrn, row + 1, graphicWidth / 2 -
-										    strlen(prompt) / 2, 
-						  "Press Enter Key to Continue");
+										    strlen(prompt) / 2, prompt);
 				wrefresh(subscrn);
 				visible = true;
 			}
@@ -120,27 +143,35 @@ void transitionAnimationInsideThread(const char* fileName,
 			*it = L"";
 	
 	//Paint in alternating color perimeters converging into middle of screen
-	if(animation1Completed)	{
+	if(animation1Completed && *userInput != 'q' &&
+							  *userInput != 'Q' &&
+							  *userInput != KEY_END &&
+							  *userInput != 27)	{
 		//Reset input so, second animation can be bypassed with another stroke
 		//of the enter key
 		*userInput = 0;
 		for(int i = LINES, j = COLS, color = rand() % 6 + 9, z = 0; 
-			*userInput != 10 && i >= LINES/2 && j >= COLS/2; 
-			i -= MAIN_BORDER_ANIMATION_ROW_WIDTH, j -= MAIN_BORDER_ANIMATION_COL_WIDTH, color++, z++) {
-			if(color == 15) color = 9;	//Reset color when necessary
-			attron(COLOR_PAIR(color));
-			for(int k = LINES - i, l = 0; l < MAIN_BORDER_ANIMATION_ROW_WIDTH; l++) 
-				mvhline(k + l, COLS - j, ' ', j - (z * MAIN_BORDER_ANIMATION_COL_WIDTH));
-			for(int k = i - 1, l = 0; l < MAIN_BORDER_ANIMATION_ROW_WIDTH; l++) 
-				mvhline(k - l, COLS - j, ' ', j - (z * MAIN_BORDER_ANIMATION_COL_WIDTH));
-			for(int k = COLS - j, l = 0; l < MAIN_BORDER_ANIMATION_COL_WIDTH; l++) 
-				mvvline(LINES - i, k + l, ' ', i - (z * MAIN_BORDER_ANIMATION_ROW_WIDTH));
-			for(int l = 0; l < MAIN_BORDER_ANIMATION_COL_WIDTH; l++) 
-				mvvline(LINES - i, j - l, ' ', i - (z * MAIN_BORDER_ANIMATION_ROW_WIDTH));
-			
-			usleep(100 * 1000);	//Sleep for 100 milliseconds for animation effect
-			//usleep(1 * 1000);	//Sleep for 1 milliseconds (testing only)
-			refresh();
+			*userInput != 10 &&
+			*userInput != 'q' &&
+			*userInput != 'Q' &&
+			*userInput != KEY_END &&
+			*userInput != 27 && i >= LINES/2 && j >= COLS/2; 
+			i -= MAIN_BORDER_ANIMATION_ROW_WIDTH, 
+			j -= MAIN_BORDER_ANIMATION_COL_WIDTH, color++, z++) {
+				if(color == 15) color = 9;	//Reset color when necessary
+				attron(COLOR_PAIR(color));
+				for(int k = LINES - i, l = 0; l < MAIN_BORDER_ANIMATION_ROW_WIDTH; l++) 
+					mvhline(k + l, COLS - j, ' ', j - (z * MAIN_BORDER_ANIMATION_COL_WIDTH));
+				for(int k = i - 1, l = 0; l < MAIN_BORDER_ANIMATION_ROW_WIDTH; l++) 
+					mvhline(k - l, COLS - j, ' ', j - (z * MAIN_BORDER_ANIMATION_COL_WIDTH));
+				for(int k = COLS - j, l = 0; l < MAIN_BORDER_ANIMATION_COL_WIDTH; l++) 
+					mvvline(LINES - i, k + l, ' ', i - (z * MAIN_BORDER_ANIMATION_ROW_WIDTH));
+				for(int l = 0; l < MAIN_BORDER_ANIMATION_COL_WIDTH; l++) 
+					mvvline(LINES - i, j - l, ' ', i - (z * MAIN_BORDER_ANIMATION_ROW_WIDTH));
+				
+				usleep(100 * 1000);	//Sleep for 100 milliseconds for animation effect
+				//usleep(1 * 1000);	//Sleep for 1 milliseconds (testing only)
+				refresh();
 		}
 	}
 

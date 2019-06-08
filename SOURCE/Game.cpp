@@ -383,7 +383,8 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 				while ( userInput != 27 &&
 						userInput != KEY_END &&
 						userInput != 'q' &&
-						userInput != 'Q' && !hasTerminated) {
+						userInput != 'Q' && 
+						!hasTerminated) {
 					if(!paused) {
 
 						if(omp_get_wtime() - lastRefreshTime > REFRESH_RATE) {
@@ -415,6 +416,12 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 									omp_unset_lock(&userInputLock);		//Unlock input thread to confirm death animation
 									transitionAnimationInsideThread("GRAPHICS/Land.txt", 107,
 										16, WHITE_WHITE, 15, GREEN_WHITE, &userInput);
+									//Relock once user presses enter to confirm or quits
+									while(userInput != 10 && 
+										  userInput != 27 &&
+										  userInput != KEY_END &&
+										  userInput != 'q' &&
+										  userInput != 'Q') {}
 									omp_set_lock(&userInputLock);		//Relock
 								}
 								else if(typeid(*world) == typeid(Land)) {
@@ -428,6 +435,12 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 									omp_unset_lock(&userInputLock);		//Unlock input thread to confirm death animation
 									transitionAnimationInsideThread("GRAPHICS/Space.txt", 121,
 										16, BLACK_BLACK, 1, WHITE_BLACK, &userInput);
+									//Relock once user presses enter to confirm or quits
+									while(userInput != 10 && 
+										  userInput != 27 &&
+										  userInput != KEY_END &&
+										  userInput != 'q' &&
+										  userInput != 'Q') {}
 									omp_set_lock(&userInputLock);		//Relock
 								}
 								else if(typeid(*world) == typeid(Space)) {
@@ -441,6 +454,12 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 									omp_unset_lock(&userInputLock);		//Unlock input thread to confirm death animation
 									transitionAnimationInsideThread("GRAPHICS/Water.txt", 110,
 										16, BLUE_BLUE, 30, WHITE_BLUE, &userInput);
+									//Relock once user presses enter to confirm or quits
+									while(userInput != 10 && 
+										  userInput != 27 &&
+										  userInput != KEY_END &&
+										  userInput != 'q' &&
+										  userInput != 'Q') {}
 									omp_set_lock(&userInputLock);		//Relock
 								}
 
@@ -475,7 +494,12 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 								//Allow user to confirm death
 								omp_unset_lock(&userInputLock);
 								cube->drawCubeDeath(&userInput);
-								//Relock userInputLock
+								//Relock userInputLock once user presses enter or quits
+								while(userInput != 10 && 
+									  userInput != 27 &&
+									  userInput != KEY_END &&
+									  userInput != 'q' &&
+									  userInput != 'Q') {}
 								omp_set_lock(&userInputLock);
 							}
 
@@ -492,6 +516,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 								scoreInfo.seconds = seconds;
 								scoreInfo.finalScore = cube->getCubeScore();
 
+								omp_unset_lock(&userInputLock);
 								transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 97,
 										28, BLACK_BLACK, 1, RED_BLACK, &userInput, &confirmedGameOver,
 										&hasTerminated, &scoreInfo);
@@ -1164,6 +1189,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 								 scoreInfo.finalScore = cube->getCubeScore();
 
 								 //Game Over animation
+								 omp_unset_lock(&userInputLock);
 								 transitionAnimationInsideThread("GRAPHICS/GameOver.txt", 97,
 									28, BLACK_BLACK, 1, RED_BLACK, &userInput, &confirmedGameOver,
 									&hasTerminated, &scoreInfo);
@@ -1853,6 +1879,8 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 							if(deathFlag) {
 								omp_unset_lock(&userInputLock);		//Allow user to confirm death animation
 								cube->drawCubeDeath(&userInput, collisionType);
+								//Relock userInputLock once user presses enter or quits
+								while(userInput != 10) {}
 								omp_set_lock(&userInputLock);
 								deathFlag = false;
 							}
