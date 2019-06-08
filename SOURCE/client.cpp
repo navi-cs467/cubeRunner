@@ -1,10 +1,10 @@
-/*
- References: CS 372 & CS 344 Programming Assignments
- https://beej.us/guide/bgnet/
- https://www.comrevo.com/2016/01/how-to-create-threads-using-openmp-api.html?m=1
- https://linux.die.net/man/3/getch
- https://stackoverflow.com/questions/15306463/getchar-returns-the-same-value-27-for-up-and-down-arrow-keys
-*/
+/*****************************************************************
+** Program name: client.cpp
+** CS467 Capstone - 2D Runner - "Cube Runner"
+** Team: NAVI
+** Date: 4/25/2019
+** Description: Source file for client networking functions.
+******************************************************************/
 
 #include "../HEADER/client.hpp"
 
@@ -115,76 +115,7 @@ int initSocket(char* hostname, char* portNum)
 	return socketFD;
 }
 
-// // start game with connection to server, loops until SIGINT for now
-// void startGame(int socketFD)
-// {
-// 		//create two threads, one for sending data to server and one for receiving
-// 		//we do this so that we will still receive server data despite the blocking of getch
-// 		omp_set_num_threads(2);
-//
-// 		#pragma omp parallel sections
-// 		{
-// 			// get user input to send to server
-// 		 #pragma omp section
-//      {
-// 			 while(1)
-// 			 {
-// 					//buffers for messages for client to server
-// 	 			  char userInput[2048];
-//
-// 	 			  memset(userInput, '\0', sizeof(userInput));
-//
-// 	 		 		// Get input from the user using getch to avoid the user needing to press enter
-// 					int ch = getch();
-//
-// 					sprintf(userInput, "%c", ch);;
-//
-// 	 		 		sendMessage(socketFD, userInput);
-// 			 }
-//      }
-//
-// 		 //receving data from server periodically on different thread
-// 		 #pragma omp section
-//      {
-// 			while(1)
-// 			{
-// 				// buffer to hold messages received from the server
-// 				char messageReceived[2048];
-// 				memset(messageReceived, '\0', sizeof(messageReceived));
-//
-// 				//receive data from server, if there is any
-// 			 	receiveMessage(socketFD, messageReceived);
-//
-// 				//print out for testing purposes
-// 				printw("%s", messageReceived);
-// 				refresh();
-//
-// 				//create another function to parse server data (game metrics) ***
-// 			}
-//      }
-// 	}
-// }
-
-
-
-// starting out with command line entered values for now
-// int main(int argc, char *argv[])
-// {
-// 	/* Curses Initialisations */
-// 	initscr();
-// 	keypad(stdscr, TRUE);
-// 	noecho();
-// 	cbreak();
-//
-// 	// save command-line entered hostname
-// 	char* hostname = argv[1];
-//
-// 	// save command-line entered port number
-// 	char* portNum = argv[2];
-//
-// 	int socketFD = initSocket(hostname, portNum);
-//
-// 	// start game, with client sending first message
-// 	startGame(socketFD);
-// 	endwin();
-// }
+/*
+ References: CS 372 & CS 344 Programming Assignments
+ https://beej.us/guide/bgnet/
+*/
