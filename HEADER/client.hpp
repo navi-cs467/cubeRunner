@@ -3,7 +3,7 @@
 ** CS467 Capstone - 2D Runner - "Cube Runner"
 ** Team: NAVI
 ** Date: 5/14/2019
-** Description: Header file for client function.
+** Description: Header file for client functions.
 *****************************************************/
 
 #ifndef client_hpp

@@ -1,22 +1,12 @@
-/*
- References: CS 372 & CS 344 Programming Assignments, https://beej.us/guide/bgnet/
-*/
+/*****************************************************************
+** Program name: server.cpp
+** CS467 Capstone - 2D Runner - "Cube Runner"
+** Team: NAVI
+** Date: 4/22/2019
+** Description: Source file for server networking functions.
+******************************************************************/
 
 #include "../HEADER/server.hpp"
-
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <unistd.h>
-// #include <string.h>
-// #include <sys/types.h>
-// #include <sys/socket.h>
-// #include <netinet/in.h>
-// #include <netdb.h>
-// #include <sys/ioctl.h>
-// #include <arpa/inet.h>
-// #include <sys/stat.h>
-// #include <sys/time.h>
-// #include <omp.h>
 
 /*
 	Function uses getaddrinfo to return a addrinfo* struct, which
@@ -145,3 +135,7 @@ int initServer(char* portNum)
 
 	return socketFD;
 }
+
+/*
+ References: CS 372 & CS 344 Programming Assignments, https://beej.us/guide/bgnet/
+*/
