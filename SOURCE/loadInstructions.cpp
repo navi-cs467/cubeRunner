@@ -13,12 +13,11 @@ extern WINDOW *scrn;
 void loadInstructions(void){
 
 	vector<string> instructions;
-
 	instructions.push_back("\n");
 	instructions.push_back("   OBJECTIVE:\n");
 	instructions.push_back("   Navigate through three worlds (Water, Land, Space) while avoiding both stationary and moving obstacles and collecting as many\n");
-  instructions.push_back("   \"mini-cubes\" as possible. The token movement behavior and obstacles differ in the various worlds:\n");
-  instructions.push_back("\n");
+	instructions.push_back("   \"mini-cubes\" as possible. The token movement behavior and obstacles differ in the various worlds:\n");
+	instructions.push_back("\n");
 	instructions.push_back("      Water - With no user input, the token will remain in the same location relative to console boundaries. Obstacles include\n");
 	instructions.push_back("              Sharks, Octopuses, Coral, and Seaweed.\n");
 	instructions.push_back("      Land -  With no user input or only horizontal input, the token will \"fall\" to the bottom of the console. Obstacles include\n");
@@ -29,12 +28,18 @@ void loadInstructions(void){
 	instructions.push_back("   Colliding with obstacles results in token death and colliding with mini-cubes results in points added to the total score. Try to\n");
 	instructions.push_back("   collect as many mini-cubes as you can to achieve the highest score. Shots can be fired to destroy obstacles and earn points.\n");
 	instructions.push_back("\n");
+	instructions.push_back("   Upon accumulation of 500 points in each world, there will be a transition to the next world in the order Water>Land>Space>Water...\n");
+	instructions.push_back("   until game over criteria, token death with 0 lives, is met.\n");
+	instructions.push_back("\n");
+	instructions.push_back("   Other important information such as elapsed time, score, number of remaining lives, and any other notifications/instructions can\n");
+	instructions.push_back("   be found on the bottom line of the client console(s).\n");
+	instructions.push_back("\n");
 	instructions.push_back("   GAME CONTROLS:\n");
 	instructions.push_back("   Command the token to move in various directions using the following keys:\n");
 	instructions.push_back("\n");
 	instructions.push_back("      w or up arrow - up\n");
 	instructions.push_back("      s or down arrow - down\n");
-  instructions.push_back("      a or left arrow - left\n");
+	instructions.push_back("      a or left arrow - left\n");
 	instructions.push_back("      d or right arrow - right\n");
 	instructions.push_back("      e - left_up    (single player only)\n");
 	instructions.push_back("      r - right_up   (single player only)\n");
