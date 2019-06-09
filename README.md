@@ -19,11 +19,29 @@ For a pdf copy of these instructions and a more detailed overview of the game, s
      1. For two player mode, you will be asked to enter the hostname/IP address of the server (flip1, flip2, or flip3) and data port number (AAAAA for both clients).  
      ***NOTE: Both players must enter this information in order to connect to the server.***  
      2. (recommended) Visit the Instructions page from the Main Menu for game objectives, game controls, and scoring.
-  5. Game play will begin, command basic player token movement using the arrow keys or wasd keys (see the instructions for more info on game controls)
+  5. Game play will begin, command basic player token movement using the arrow keys or wasd keys (see the in game instructions or CS467_Instructions_Document.pdf for more info on game controls)
      1. For two player mode, by default, Player 1 controls only vertical movement and Player 2 controls only horizontal movement. All other game controls are available to both players.
      2. Follow instructions on any transitional menus that appear or at the very bottom of the console during game play, such as   “Press enter to continue.”
      3. Once the game has started, press any of the ESC or END or q or Q keys to end the game and return to the main game menu.
   6. When game play is over, the main game menu will be presented.
   7. (optional) To delete directories, executables, and textfiles
   created during compilation of the program run the following command from the command-line: ```make clean```
+  
+## Game Controls
+***NOTE: THE GAME IS NOT COMPATIBLE WITH NUMPAD KEYS, AND THEY MAY CAUSE UNDEFINED BEHAVIOR***  
+
+w or up arrow key - move up  
+s or down arrow key- move down  
+a or left arrow key- move left   
+d or right arrow key- move right   
+e - left up diagonal (single player only)  
+r - right up diagonal (single player only)  
+c - left down diagonal (single player only)  
+v - right down diagonal (single player only)  
+spacebar - fire shot  
+l - lock orientation (Space world only)  
+u - unlock orientation (Space world only)  
+p - pause/unpause game (MULTIPLAYER ONLY: Cube will reset and moving Obstacles may advance beyond their current positions when resumed.)  
+Q or q or END or ESC key- quit the game and return to main menu  
+t - transition to next world (testing/grading purposes only)  
 
