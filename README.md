@@ -7,6 +7,8 @@ Cube Runner is a terminal-based, 2D Endless Runner game written in the C++ progr
 
 
 ## Installation Instructions
+For a pdf copy of these instructions and a more detailed overview of the game, see the file CS467_Instructions_Document.pdf
+
 1. Extract the submitted zip file to the OSU flip server.
 2. To compile, enter the following command from the terminal line: ```make all```
 3. OSU flip server connection requirements:  
