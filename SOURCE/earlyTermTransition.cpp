@@ -51,12 +51,12 @@ void earlyTermTransition(int playerNum, int *userInput, int *confirmedGameOver, 
 	if(playerNum == 1)
 	{
 		ostr1 << "Player 2 has terminated early.";
-		ostr2 << " Game score will not be saved.";
+		ostr2 << "Game score will not be saved.";
 	}
 	else
 	{
 		ostr1 << "Player 1 has terminated early.";
-		ostr2 << " Game score will not be saved.";
+		ostr2 << "Game score will not be saved.";
 	}
 
 	mvwprintw(subscrn, 1, 7, ostr1.str().c_str());
