@@ -37,6 +37,7 @@ void loadInstructions(void){
 	instructions.push_back("   GAME CONTROLS:\n");
 	instructions.push_back("   Command the token to move in various directions using the following keys:\n");
 	instructions.push_back("\n");
+	instructions.push_back("   NOTE: THE GAME IS NOT COMPATIBLE WITH NUMPAD KEYS, AND THEY MAY CAUSE UNDEFINED BEHAVIOR\n");
 	instructions.push_back("      w or up arrow - up\n");
 	instructions.push_back("      s or down arrow - down\n");
 	instructions.push_back("      a or left arrow - left\n");
