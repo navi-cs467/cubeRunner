@@ -346,6 +346,9 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
+				
+				//Transition Count variable
+				int transitionCount = 0;
 
 				//Initial Time display
 				timeDisplay.clear();
@@ -399,6 +402,9 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 
 							if(cube->getCubeTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
 
+								//Increment transition count
+								transitionCount++;
+							
 								//Delete all Obstacles
 								for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 								it != world->getObstacles().begin(); it++) {
@@ -469,7 +475,8 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 
 								//Increase speeds after each transition.
 								//Speeds are capped after 6 world transitions
-								if(cube->getCubeScore() <= TRANSITION_SCORE_INTERVAL * 6) {
+								if(transitionCount <= TRANSITION_COUNT_RATE_INCREASE_CAP &&
+								   transitionCount > 1) {
 									scrollRate *= SCROLL_MOVE_UPDATE_RATE;
 									moveRate *= SCROLL_MOVE_UPDATE_RATE;
 								}
@@ -1494,13 +1501,6 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 								}
 
 								waitingForOtherPlayer = false;
-								
-								while(userInput != 10 && 
-									  userInput != 27 &&
-									  userInput != KEY_END &&
-									  userInput != 'q' &&
-									  userInput != 'Q' &&
-									  userInput != -1) {}
 									  
 							    if(userInput == 27 ||
 								   userInput == KEY_END ||

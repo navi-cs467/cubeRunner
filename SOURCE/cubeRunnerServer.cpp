@@ -630,6 +630,7 @@ int main(int argc, char* argv[]) {
 					scrollCountRight = 0, scrollCountLeft = 0,
 					scrollCountUp = 0, scrollCountDown = 0,
 					seconds = 0, minutes = 0, hours = 0;
+				int transitionCount = 0;
 				bool startTimeLogged = false;
 
 				//Flag to indicate world transition, int to indicate next world type
@@ -752,6 +753,9 @@ int main(int argc, char* argv[]) {
 
 							if(cube->getCubeTransitionScore() >= TRANSITION_SCORE_INTERVAL) {
 							//if(userInput1 == 't' || userInput2 == 't') {
+								//Update transition score count
+								transitionCount++;
+								
 								//Delete all Obstacles
 								for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 								it != world->getObstacles().begin(); it++) {
@@ -793,8 +797,13 @@ int main(int argc, char* argv[]) {
 								//If score is less than 3000, increase scroll and move time intervals by a constant
 								//(Once score is 3000, all three worlds have been cycled 3 times each,
 								// and the speeds are capped.)
-								scrollRate *= SCROLL_MOVE_UPDATE_RATE;
-								moveRate *= SCROLL_MOVE_UPDATE_RATE;
+								//Increase speeds after each transition.
+								//Speeds are capped after 6 world transitions
+								if(transitionCount <= TRANSITION_COUNT_RATE_INCREASE_CAP &&
+								   transitionCount > 1) {
+									scrollRate *= SCROLL_MOVE_UPDATE_RATE;
+									moveRate *= SCROLL_MOVE_UPDATE_RATE;
+								}
 
 								//Reset cubes position to left-middle starting point
 								world->resetPlayer(cube);
