@@ -46,7 +46,7 @@
 #define MAX_MOVE_COUNTER 25					//Maximum number of Obstacles moves before switching direction (except for Comet)
 #define MIN_MOVE_COUNTER 5					//Minimum number of Obstacles moves before switching direction (except for Comet)
 #define TRANSITION_SCORE_INTERVAL 500
-#define MULTIPLAYER_DUAL_AXIS_CONTROL 1		//Allows both players to control movement along both axes for multiplayer when not 0
+#define MULTIPLAYER_DUAL_AXIS_CONTROL 0		//Allows both players to control movement along both axes for multiplayer when not 0
 #define TRANSITION_WITH_INPUT 1
 #define COUNT_DOWN 3
 #define RESET_WIDTH 20						//No obstacles start in first RESET_WIDTH columns, and all Obstacles in first RESET_WIDTH columns are cleared after cube death
