@@ -888,6 +888,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 					//go straight to countdown
 					if(strcmp(message,"1") == 0)
 					{
+						scoreInfo.gameMode = gameMode;
 						cntDown = COUNT_DOWN;
 						while(cntDown >= 0){
 							move(LINES / 2 + 2, COLS / 2 - (16 / 2));
