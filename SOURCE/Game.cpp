@@ -346,7 +346,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 					seconds = 0, minutes = 0, hours = 0;
 				bool startTimeLogged = false;
 				string output; ostringstream timeDisplay, livesDisplay, scoreDisplay;
-				
+
 				//Transition Count variable
 				int transitionCount = 0;
 
@@ -387,7 +387,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 				while ( userInput != 27 &&
 						userInput != KEY_END &&
 						userInput != 'q' &&
-						userInput != 'Q' && 
+						userInput != 'Q' &&
 						!hasTerminated) {
 					if(!paused) {
 
@@ -404,7 +404,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 
 								//Increment transition count
 								transitionCount++;
-							
+
 								//Delete all Obstacles
 								for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 								it != world->getObstacles().begin(); it++) {
@@ -424,7 +424,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 									transitionAnimationInsideThread("GRAPHICS/Land.txt", 107,
 										16, WHITE_WHITE, 15, GREEN_WHITE, &userInput);
 									//Relock once user presses enter to confirm or quits
-									while(userInput != 10 && 
+									while(userInput != 10 &&
 										  userInput != 27 &&
 										  userInput != KEY_END &&
 										  userInput != 'q' &&
@@ -444,7 +444,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 									transitionAnimationInsideThread("GRAPHICS/Space.txt", 121,
 										16, BLACK_BLACK, 1, WHITE_BLACK, &userInput);
 									//Relock once user presses enter to confirm or quits
-									while(userInput != 10 && 
+									while(userInput != 10 &&
 										  userInput != 27 &&
 										  userInput != KEY_END &&
 										  userInput != 'q' &&
@@ -464,7 +464,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 									transitionAnimationInsideThread("GRAPHICS/Water.txt", 110,
 										16, BLUE_BLUE, 30, WHITE_BLUE, &userInput);
 									//Relock once user presses enter to confirm or quits
-									while(userInput != 10 && 
+									while(userInput != 10 &&
 										  userInput != 27 &&
 										  userInput != KEY_END &&
 										  userInput != 'q' &&
@@ -506,7 +506,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 								omp_unset_lock(&userInputLock);
 								cube->drawCubeDeath(&userInput);
 								//Relock userInputLock once user presses enter or quits
-								while(userInput != 10 && 
+								while(userInput != 10 &&
 									  userInput != 27 &&
 									  userInput != KEY_END &&
 									  userInput != 'q' &&
@@ -896,6 +896,9 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 						}
 					}
 
+					char confirm[MSG_SIZE];
+					memset(confirm, '\0', sizeof confirm);
+
 					//gamemodes don't match
 					//so we display error message before countdown
 					if (strcmp(message,"2") == 0)
@@ -914,12 +917,24 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 							printw("Starting in %d...", cntDown--); refresh();   ////// ***************
 							usleep(1000000);
 						}
+
+						//if player is player 1 get the new game mode from server for high scores
+						if (playerNum == 1)
+						{
+							memset(message, '\0', sizeof message);
+							receiveMessage_C(socketFD, message);
+
+							scoreInfo.gameMode = atoi(message);
+
+							memset(confirm, '\0', sizeof confirm);
+							sprintf(confirm, "%d", 1);
+							sendMessage_C(socketFD, confirm);
+						}
 					}
 
 					waitingForOtherPlayer = false;
 
 					//receive dataPort from server, send confirmation to server
-					char confirm[MSG_SIZE];
 					memset(confirm, '\0', sizeof confirm);
 					memset(message, '\0', sizeof message);
 
@@ -1501,11 +1516,11 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 								}
 
 								waitingForOtherPlayer = false;
-									  
+
 							    if(userInput == 27 ||
 								   userInput == KEY_END ||
 								   userInput == 'q' ||
-								   userInput == 'Q') 
+								   userInput == 'Q')
 										confirmedGameOver = true;
 
 								//Lock was unset to allow user to confirm world transition
@@ -1804,17 +1819,17 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 									  userInput != 'Q' &&
 									  userInput != KEY_END &&
 									  userInput != 27) {}
-								
+
 								//If user quits during death animation
 								if(userInput == 'q' ||
 								   userInput == 'Q' ||
 								   userInput == KEY_END ||
 							       userInput == 27) {
-								
-									//make sure input thread has plenty of time of 
+
+									//make sure input thread has plenty of time of
 									//exit loop
 									usleep(1000);
-									
+
 									userInput = 'q';
 									hasTerminated = true;
 									confirmedGameOver = true;
