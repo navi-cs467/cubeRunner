@@ -947,7 +947,7 @@ int main(void)
 		if(isTwoPlayer == false) {
 			gameinfo = game.playGame(NULL, NULL, username);
 
-            if (gameinfo.earlyTerm == false) 
+      if (gameinfo.earlyTerm == false)
 			{
 				addScoreSingle(gameinfo.finalScore, gameinfo.firstName,
 					gameinfo.hours, gameinfo.minutes, gameinfo.seconds, gameMode);
@@ -961,7 +961,7 @@ int main(void)
 			{
 				addScoreMulti(gameinfo.finalScore, gameinfo.firstName,
 					gameinfo.secondName, gameinfo.hours, gameinfo.minutes,
-					gameinfo.seconds, gameMode);
+					gameinfo.seconds, gameInfo.gameMode);
 			}
 		}
 		//Reinitialize Variables for Next Game Loop

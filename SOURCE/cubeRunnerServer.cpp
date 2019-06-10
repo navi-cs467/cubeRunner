@@ -130,6 +130,10 @@ int main(int argc, char* argv[]) {
 		char message[MSG_SIZE];
 		memset(message, '\0', sizeof message);
 
+		//Initialize gameMode
+		int gameMode;
+		gmP1 < gmP2 ? gameMode = gmP1 : gameMode = gmP2;			//If no match, use easiest of two modes specified
+
 		if (gmP1 != gmP2)
 		{
 			//send indicator to players
@@ -138,6 +142,14 @@ int main(int argc, char* argv[]) {
 			sprintf(confirm, "%d", 2);
 			sendMessage_S(player1, confirm);
 			sendMessage_S(player2, confirm);
+
+			//also inform player 1 of game mode change (only player 1 is saving the score)
+			memset(confirm, '\0', sizeof confirm);
+			sprintf(confirm, "%d", gameMode);
+			sendMessage_S(player1, confirm);
+			memset(confirm, '\0', sizeof confirm);
+			receiveMessage_S(player1, confirm);
+
 			if(DEBUG)
 				printf("Sent Game Mode Indicator (GM No Match)...\n");
 		}
@@ -329,10 +341,6 @@ int main(int argc, char* argv[]) {
 
 		if(DEBUG)
 			printf("Both Input Connections Established...\n");
-
-		//Initialize gameMode
-		int gameMode;
-		gmP1 < gmP2 ? gameMode = gmP1 : gameMode = gmP2;			//If no match, use easiest of two modes specified
 
 		//Initialize world
 		World *world = new Water(gameMode, true, true);
@@ -755,7 +763,7 @@ int main(int argc, char* argv[]) {
 							//if(userInput1 == 't' || userInput2 == 't') {
 								//Update transition score count
 								transitionCount++;
-								
+
 								//Delete all Obstacles
 								for(list<Obstacle*>::iterator it = world->getObstacles().begin();
 								it != world->getObstacles().begin(); it++) {

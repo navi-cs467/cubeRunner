@@ -36,6 +36,7 @@ struct GameData {
 	int finalScore;
 	int playerNum;
 	bool earlyTerm;
+  int gameMode;
 };
 
 class Game {
@@ -53,7 +54,7 @@ class Game {
 		int getScore() {return score;}
 		int getGameMode() {return gameMode;}
 		void setScore(int score) {this->score = score;}
-		struct GameData playGame(char host[] = NULL, char port[] = NULL, 
+		struct GameData playGame(char host[] = NULL, char port[] = NULL,
 								 char username[] = NULL);
 };
 
