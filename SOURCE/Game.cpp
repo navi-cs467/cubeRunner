@@ -740,7 +740,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 							startTimeLogged = true;
 						}
 
-						if(statsTime < static_cast<int>(omp_get_wtime())) {
+						if(!paused && statsTime < static_cast<int>(omp_get_wtime())) {
 							statsTime = static_cast<int>(omp_get_wtime());
 							seconds++;
 							if(seconds == 60) {

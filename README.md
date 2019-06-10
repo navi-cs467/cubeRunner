@@ -20,7 +20,7 @@ For a pdf copy of these instructions and a more detailed overview of the game, s
      ***NOTE: Both players must enter this information in order to connect to the server.***  
      2. (recommended) Visit the Instructions page from the Main Menu for game objectives, game controls, and scoring.
   5. Game play will begin, command basic player token movement using the arrow keys or wasd keys (see the in game instructions or CS467_Instructions_Document.pdf for more info on game controls)
-     1. For two player mode, by default, Player 1 controls only vertical movement and Player 2 controls only horizontal movement. All other game controls are available to both players.
+     1. For two player mode, by default, Player 1 controls only vertical movement and Player 2 controls only horizontal movement. All other game controls are available to both players. (To enable dual axis control for both players in multiplayer mode, set the constant MULTIPLAYER_DUAL_AXIS_CONTROL in constants.hpp to a non-zero value [see step 2 above].)
      2. Follow instructions on any transitional menus that appear or at the very bottom of the console during game play, such as   “Press enter to continue.”
      3. Once the game has started, press any of the ESC or END or q or Q keys to end the game and return to the main game menu.
   6. When game play is over, the main game menu will be presented.
@@ -43,5 +43,5 @@ l - lock orientation (Space world only)
 u - unlock orientation (Space world only)  
 p - pause/unpause game (MULTIPLAYER ONLY: Cube will reset and moving Obstacles may advance beyond their current positions when resumed.)  
 Q or q or END or ESC key- quit the game and return to main menu  
-t - transition to next world (testing/grading purposes only)  
+t - transition to next world (testing/grading purposes only - disable by setting TRANSITION_WITH_INPUT to 0 in constants.hpp and recompiling [see step 2 above])  
 
