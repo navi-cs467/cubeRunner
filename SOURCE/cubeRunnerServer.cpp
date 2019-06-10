@@ -2207,12 +2207,12 @@ int main(int argc, char* argv[]) {
 						}
 
 						//Update time every second
-						if(!player1Paused && !player2Paused &&
-						   !startTimeLogged) {
+						if(!startTimeLogged) {
 							statsTime = startTime = static_cast<int>(omp_get_wtime());
 							startTimeLogged = true;
 						}
-						if(statsTime < static_cast<int>(omp_get_wtime())) {
+						if(!player1Paused && !player2Paused &&
+							statsTime < static_cast<int>(omp_get_wtime())) {
 							statsTime = static_cast<int>(omp_get_wtime());
 							seconds++;
 							if(seconds == 60) {
