@@ -43,5 +43,5 @@ l - lock orientation (Space world only)
 u - unlock orientation (Space world only)  
 p - pause/unpause game (MULTIPLAYER ONLY: Cube will reset and moving Obstacles may advance beyond their current positions when resumed.)  
 Q or q or END or ESC key- quit the game and return to main menu  
-t - transition to next world (testing/grading purposes only)  
+t - transition to next world (testing/grading purposes only - disable by setting TRANSITION_WITH_INPUT to 0 in constants.hpp and recompiling [see step 2 above])  
 
