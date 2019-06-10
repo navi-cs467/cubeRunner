@@ -925,7 +925,7 @@ struct GameData Game::playGame(char host[], char port[], char username[]) {
 							receiveMessage_C(socketFD, message);
 
 							scoreInfo.gameMode = atoi(message);
-							
+
 							memset(confirm, '\0', sizeof confirm);
 							sprintf(confirm, "%d", 1);
 							sendMessage_C(socketFD, confirm);

@@ -961,7 +961,7 @@ int main(void)
 			{
 				addScoreMulti(gameinfo.finalScore, gameinfo.firstName,
 					gameinfo.secondName, gameinfo.hours, gameinfo.minutes,
-					gameinfo.seconds, gameInfo.gameMode);
+					gameinfo.seconds, gameinfo.gameMode);
 			}
 		}
 		//Reinitialize Variables for Next Game Loop
